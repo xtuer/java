@@ -20,5 +20,9 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="redis_main" target="1.5" />
+      <module name="redis_test" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
