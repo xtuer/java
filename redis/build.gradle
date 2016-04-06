@@ -1,0 +1,20 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.data:spring-data-redis:1.6.4.RELEASE'
+    compile 'redis.clients:jedis:2.8.1'
+}
+
+buildDir = file('/Users/Biao/temp/Java/' + project.name)
