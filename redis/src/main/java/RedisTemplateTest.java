@@ -22,9 +22,7 @@ public class RedisTemplateTest {
             public void run() {
                 try {
                     System.out.println((++count) + ":" + redisTemplate.opsForValue().get("name"));
-                } catch(Exception ex) {
-
-                }
+                } catch(Exception ex) {}
             }
         }, 0, 1, TimeUnit.SECONDS);
     }

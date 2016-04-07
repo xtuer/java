@@ -1,0 +1,20 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.apache.commons:commons-compress:1.11'
+    compile 'org.apache.commons:commons-lang3:3.4'
+}
+
+buildDir = file('/Users/Biao/temp/Java/' + project.name)
