@@ -1,0 +1,9 @@
+1. main/resources                        - 其他需要放到 classpath 下的配置文件, 如 logback, log4j 的配置
+2. main/resources/config                 - 配置文件，例如 Spring MVC, Spring Security, 数据库等的配置文件
+3. main/resources/config/mybatis-mapping - MyBatis 的映射文件
+4. /WEB-INF/view/jsp        - JSP 模版
+5. /WEB-INF/view/velocity   - Velocity 模版
+6. /WEB-INF/view/freemarker - Freemarker 模版
+7. /WEB-INF/asset/js        - JavaScript 文件
+8. /WEB-INF/asset/css       - CSS 文件
+9. /WEB-INF/asset/image     - image
