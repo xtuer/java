@@ -70,7 +70,7 @@ public class ExtractZip {
     }
 
     public static void main(String[] args) throws Exception {
-        List<String> names = unZip("/Users/Biao/Desktop/Archive.zip", "/Users/Biao/Desktop");
+        List<String> names = unZip("/Users/Biao/Desktop/exam.zip", "/Users/Biao/Desktop");
         System.out.println(names);
     }
 }

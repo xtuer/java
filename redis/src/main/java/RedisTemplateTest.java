@@ -5,6 +5,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 使用 spring-data-redis 的 RedisTemplate 访问 Redis, 连接断开后能自动重连
+ */
 public class RedisTemplateTest {
     static int count = 0;
 
