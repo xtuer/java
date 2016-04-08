@@ -6,5 +6,5 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd">
     <import resource="classpath:config/mybatis.xml"/>
 
-    <bean id="demoDao" class="com.xtuer.dao.mybatis.DemoDaoImpl"/>
+    <bean id="demoDao" class="com.xtuer.dao.impl.DemoDaoImpl"/>
 </beans>

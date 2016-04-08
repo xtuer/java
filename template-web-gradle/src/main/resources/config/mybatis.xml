@@ -16,6 +16,6 @@
 
     <!-- 3. Instantiate Mapper -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.xtuer.dao.mybatis.mapper" />
+        <property name="basePackage" value="com.xtuer.mybatis.mapper" />
     </bean>
 </beans>
