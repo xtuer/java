@@ -46,6 +46,7 @@ ext {
     freemarkerVersion = "2.3.20"
     jacksonVersion = "2.5.3"
     logbackVersion = "1.1.2"
+    jclOverSlfVersion = "1.7.7"
     mysqlVersion = "5.1.21"
     mybatisVersion = "3.2.1"
     mybatisSpringVersion = "1.2.2"
@@ -62,6 +63,7 @@ dependencies {
             "org.freemarker:freemarker:$freemarkerVersion",                 // Freemarker
             "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",  // JSON
             "ch.qos.logback:logback-classic:$logbackVersion",               // Logback
+            "org.slf4j:jcl-over-slf4j:$jclOverSlfVersion",
             "mysql:mysql-connector-java:$mysqlVersion",                     // MyBatis
             "org.springframework:spring-jdbc:$springVersion",
             "org.mybatis:mybatis-spring:$mybatisSpringVersion",

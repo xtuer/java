@@ -31,14 +31,14 @@
 
 <script type="text/javascript">
 $(function(){
-    $('.avatar').css({ "background-image": "url('/image/admin-offline.png')" });
+    $('.avatar').css({ "background-image": "url('/img/admin-offline.png')" });
     var status = $('#status').text();
 
     if ('login-success' == status) {
         // 已经登录状态， 显示注销按钮，隐藏名字和密码输入框
         $('input').hide();
         $('#login').html("注销").removeClass("btn-info").addClass("btn-default");
-        $('.avatar').css({ "background-image": "url('/image/admin-online.png')" });
+        $('.avatar').css({ "background-image": "url('/img/admin-online.png')" });
     } else if ('login-error' == status) {
         // 登录失败
         $("#output").removeClass('alert alert-success');
@@ -55,7 +55,7 @@ $(function(){
             // 如果名字或者密码为空，则不提交登录操作
             if (username == '' || password == '') {
                 e.preventDefault();
-                //remove success mesage replaced with error message
+                //remove success message replaced with error message
                 $("#output").removeClass('alert alert-success');
                 $("#output").addClass("alert alert-danger animated fadeInUp").html("请输入名字和密码");
                 return ;
