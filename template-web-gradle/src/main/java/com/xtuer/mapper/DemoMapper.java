@@ -1,4 +1,4 @@
-package com.xtuer.mybatis.mapper;
+package com.xtuer.mapper;
 
 import com.xtuer.domain.Demo;
 

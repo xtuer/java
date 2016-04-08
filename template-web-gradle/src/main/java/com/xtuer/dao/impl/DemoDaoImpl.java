@@ -1,7 +1,7 @@
 package com.xtuer.dao.impl;
 
 import com.xtuer.dao.DemoDao;
-import com.xtuer.mybatis.mapper.DemoMapper;
+import com.xtuer.mapper.DemoMapper;
 import com.xtuer.domain.Demo;
 import org.springframework.beans.factory.annotation.Autowired;
 
