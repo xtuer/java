@@ -17,8 +17,12 @@ buildscript {
 
 gretty {
     port = 80
-    contextPath = ''
+    contextPath = '/'
     servletContainer = 'tomcat7'
+
+    managedClassReload      = true  // 热部署：只加载 Class 文件，而不是加载整个 web 应用
+    reloadOnClassChange     = false // 禁止 Class 变化后重新加载整个 web 应用
+    recompileOnSourceChange = false // 禁止 Java 文件变化后自动编译
 }
 
 tasks.withType(JavaCompile) {
