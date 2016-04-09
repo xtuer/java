@@ -11,6 +11,6 @@ public class DemoController {
     @ResponseBody
     public String demo() {
         System.out.println("hi---");
-        return "Welcome---+++-----";
+        return "Welcome---+++";
     }
 }
