@@ -10,7 +10,6 @@ public class DemoController {
     @RequestMapping("/demo")
     @ResponseBody
     public String demo() {
-        System.out.println("hi---");
-        return "Welcome---+++";
+        return "Welcome---";
     }
 }
