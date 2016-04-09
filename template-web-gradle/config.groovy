@@ -1,3 +1,4 @@
+// gradle clean build -Penv=production
 environments {
     development {
         jdbc {
@@ -23,5 +24,3 @@ environments {
         logsDir = "/temp/logs"
     }
 }
-
-// gradle clean build -Penv=production
