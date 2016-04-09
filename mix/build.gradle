@@ -16,5 +16,3 @@ dependencies {
     compile 'org.apache.commons:commons-compress:1.11'
     compile 'org.apache.commons:commons-lang3:3.4'
 }
-
-buildDir = file('/Users/Biao/temp/Java/' + project.name)

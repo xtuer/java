@@ -18,7 +18,7 @@ buildscript {
 }
 
 gretty {
-    port = 8080
+    port = 80
     contextPath = ''
     servletContainer = 'tomcat7'
 }
@@ -93,5 +93,3 @@ processResources {
         filter(ReplaceTokens, tokens: loadConfiguration())
     }
 }
-
-buildDir = file('/Users/Biao/temp/Java/' + project.name)

@@ -16,5 +16,3 @@ dependencies {
     compile 'org.springframework.data:spring-data-redis:1.6.4.RELEASE'
     compile 'redis.clients:jedis:2.8.1'
 }
-
-buildDir = file('/Users/Biao/temp/Java/' + project.name)
