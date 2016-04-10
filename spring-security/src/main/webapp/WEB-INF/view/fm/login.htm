@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    ${error!}${logout!}
+    <form name="loginForm" action="/login" method="POST">
+        Username: <input type="text" name="username" /><br>
+        Password: <input type="password" name="password" /><br>
+        <input type="checkbox" name="remember-me"/> Remember Me<br>
+        <input name="submit" type="submit" value="登陆" />
+    </form>
+</body>
+</html>

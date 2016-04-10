@@ -16,7 +16,7 @@ buildscript {
 }
 
 gretty {
-    port = 80
+    port = 8081
     contextPath = '/'
     servletContainer = 'tomcat7'
 
@@ -41,18 +41,27 @@ repositories {
 
 ext {
     springVersion   = '4.2.5.RELEASE'
+    springSecurityVersion = '4.0.4.RELEASE'
+    springSessionDataRedisVersion = '1.1.1.RELEASE'
     jstlVersion     = '1.2'
     servletVersion  = '3.1.0'
     jacksonVersion  = '2.5.3'
     freemarkerVersion = '2.3.20'
+    logbackVersion = "1.1.2"
+    jclOverSlfVersion = "1.7.7"
 }
 
 dependencies {
     compile(
             "org.springframework:spring-webmvc:$springVersion",             // Spring MVC
+            "org.springframework.security:spring-security-web:$springSecurityVersion", // Spring Security
+            "org.springframework.security:spring-security-config:$springSecurityVersion",
             "org.springframework:spring-context-support:$springVersion",
             "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",  // JSON
-            "org.freemarker:freemarker:$freemarkerVersion"                  // Freemarker
+            "org.freemarker:freemarker:$freemarkerVersion",                 // Freemarker
+            "ch.qos.logback:logback-classic:$logbackVersion",               // Logback
+            "org.slf4j:jcl-over-slf4j:$jclOverSlfVersion",
+            "org.springframework.session:spring-session-data-redis:$springSessionDataRedisVersion" // Spring Session
     )
 
     compile("javax.servlet:jstl:$jstlVersion") // JSTL
