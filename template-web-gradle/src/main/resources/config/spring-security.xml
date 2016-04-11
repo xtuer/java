@@ -7,17 +7,21 @@
             http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/security
             http://www.springframework.org/schema/security/spring-security.xsd">
-
     <http auto-config="true">
-        <intercept-url pattern="/admin" access="ROLE_ADMIN" />
+        <intercept-url pattern="/admin" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/login" access="permitAll"/>
 
-        <form-login
-                login-page="/login"
-                username-parameter="username"
-                password-parameter="password"
-                authentication-failure-url="/login?error=1"/>
-        <logout logout-success-url="/login?logout=1" />
-        <access-denied-handler error-page="/deny" />
+        <form-login login-page="/login"
+                    login-processing-url="/login"
+                    default-target-url  ="/"
+                    authentication-failure-url="/login?error=1"
+                    username-parameter="username"
+                    password-parameter="password"/>
+        <access-denied-handler error-page="/deny"/>
+        <logout logout-url="/logout" logout-success-url="/login?logout=1"/>
+
+        <csrf disabled="true"/>
+        <remember-me key="uniqueAndSecret" token-validity-seconds="2592000"/>
     </http>
 
     <authentication-manager>

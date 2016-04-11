@@ -32,13 +32,12 @@ public class DemoController {
     @ResponseBody
     public Demo queryDemoFromDatabase(@PathVariable int id) {
         Demo demo = demoDao.findDemoById(id);
-
         return demo;
     }
 
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    @RequestMapping("/")
     @ResponseBody
-    public String adminPage(ModelMap model) {
-        return "admin.jsp";
+    public String index() {
+        return "Index page";
     }
 }

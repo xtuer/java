@@ -40,14 +40,6 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <!-- 视图解析器中没有⽤ suffix 是为了可以根据 suffix ⾃动选择视图解析器，为了同时支持多种视图解析器 -->
-    <!-- JSP 视图解析器，JSP 文件放在目录 WEB-INF/view/jsp 下 -->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/view/jsp/"/>
-        <property name="order" value="1"/>
-    </bean>
-
     <!-- Freemarker 视图解析器 -->
     <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
         <property name="prefix" value=""/>

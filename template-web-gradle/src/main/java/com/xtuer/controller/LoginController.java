@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class LoginController {
     /**
      * 处理登录，登录错误，注销，对应的 URL 为:
-     *    登录:    /login
-     *    登录错误: /login?error
-     *    注销:    /login?logout
+     *    登录页面: /login
+     *    登录错误: /login?error=1
+     *    注销成功: /login?logout=1
      *
      * @param error
      * @param logout
@@ -22,27 +22,19 @@ public class LoginController {
      * @return
      */
     @RequestMapping(value = UriConstants.URI_LOGIN, method = RequestMethod.GET)
-    public String handleLogin(@RequestParam(required = false) String error,
-                              @RequestParam(required = false) String logout,
-                              ModelMap model) {
+    public String loginPage(@RequestParam(required = false) String error,
+                            @RequestParam(required = false) String logout,
+                            ModelMap model) {
         String status = "";
-        String url = UriConstants.URI_SPRING_SECURITY_LOGIN;
+        status = (error == null)  ? status : "login-error";    // 登录错误
+        status = (logout == null) ? status : "logout-success"; // 注销成功
 
-        if (error != null) {
-            status = "login-error"; // 登录错误
-        } else if (logout != null) {
-            status = "logout-success"; // 注销成功
-        } else {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-            if (!"anonymousUser".equals(username)) {
-                // 已经登录时, 显示为注销按钮与注销的连接
-                status = "login-success";
-                url = UriConstants.URI_SPRING_SECURITY_LOGOUT;
-            }
+        // 已经登录
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!"anonymousUser".equals(username)) {
+            status = "login-success";
         }
 
-        model.addAttribute("url", url);
         model.addAttribute("status", status);
 
         return UriConstants.VIEW_LOGIN;
@@ -50,7 +42,7 @@ public class LoginController {
 
     @RequestMapping(UriConstants.URI_DENY)
     @ResponseBody
-    public String handleDeny() {
+    public String denyPage() {
         return "权限不够!";
     }
 }

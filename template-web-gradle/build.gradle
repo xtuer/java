@@ -18,7 +18,7 @@ buildscript {
 }
 
 gretty {
-    port = 80
+    port = 8080
     contextPath = '/'
     servletContainer = 'tomcat7'
 
@@ -27,8 +27,8 @@ gretty {
 }
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
 }
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
@@ -42,8 +42,8 @@ repositories {
 }
 
 ext {
-    springVersion = "4.1.1.RELEASE"
-    springSecurityVersion = "3.2.9.RELEASE"
+    springVersion   = '4.2.5.RELEASE'
+    springSecurityVersion = '4.0.4.RELEASE'
     servletVersion = "3.1.0"
     jstlVersion = "1.2"
     freemarkerVersion = "2.3.20"
@@ -58,22 +58,22 @@ ext {
 
 dependencies {
     compile(
-            "javax.servlet:jstl:$jstlVersion",                              // JSTL
             "org.springframework:spring-webmvc:$springVersion",             // Spring MVC
             "org.springframework:spring-context-support:$springVersion",
             "org.springframework.security:spring-security-web:$springSecurityVersion", // Spring Security
             "org.springframework.security:spring-security-config:$springSecurityVersion",
             "org.freemarker:freemarker:$freemarkerVersion",                 // Freemarker
             "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",  // JSON
-            "ch.qos.logback:logback-classic:$logbackVersion",               // Logback
-            "org.slf4j:jcl-over-slf4j:$jclOverSlfVersion",
             "mysql:mysql-connector-java:$mysqlVersion",                     // MyBatis
             "org.springframework:spring-jdbc:$springVersion",
             "org.mybatis:mybatis-spring:$mybatisSpringVersion",
             "org.mybatis:mybatis:$mybatisVersion",
             "commons-dbcp:commons-dbcp:$dbcpVersion",
+            "ch.qos.logback:logback-classic:$logbackVersion",               // Logback
+            "org.slf4j:jcl-over-slf4j:$jclOverSlfVersion",
     )
 
+    compile("javax.servlet:jstl:$jstlVersion") // JSTL
     compileOnly("javax.servlet:javax.servlet-api:$servletVersion")
 }
 

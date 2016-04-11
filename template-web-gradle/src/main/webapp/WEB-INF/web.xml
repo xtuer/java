@@ -57,7 +57,10 @@
 
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:config/spring-mvc.xml</param-value>
+            <param-value>
+                classpath:config/spring-mvc.xml
+                classpath:config/spring-transaction.xml
+            </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -67,10 +70,6 @@
     </servlet-mapping>
 
     <!-- 默认的错误处理页面 -->
-    <error-page>
-        <error-code>403</error-code>
-        <location>/403</location>
-    </error-page>
     <error-page>
         <error-code>404</error-code>
         <location>/404</location>

@@ -19,11 +19,11 @@
         <div class="avatar"></div>
 
         <div class="form-box">
-            <!-- url: /j_spring_security_check, /j_spring_security_logout -->
-            <form action="${url}" method="POST">
+            <form action="/login" method="POST">
                 <input name="username" type="text"     placeholder="名字">
                 <input name="password" type="password" placeholder="密码">
-                <button class="btn btn-info btn-block login" type="submit" id="login">登录</button>
+                <input type="checkbox" name="remember-me"/> Remember Me
+                <button id="login" class="btn btn-info btn-block login" type="submit">登录</button>
             </form>
         </div>
     </div>
@@ -37,6 +37,7 @@ $(function(){
     if ('login-success' == status) {
         // 已经登录状态， 显示注销按钮，隐藏名字和密码输入框
         $('input').hide();
+        $('form').attr('action', '/logout');
         $('#login').html("注销").removeClass("btn-info").addClass("btn-default");
         $('.avatar').css({ "background-image": "url('/img/admin-online.png')" });
     } else if ('login-error' == status) {
@@ -55,10 +56,10 @@ $(function(){
             // 如果名字或者密码为空，则不提交登录操作
             if (username == '' || password == '') {
                 e.preventDefault();
-                //remove success message replaced with error message
+                // remove success message replaced with error message
                 $("#output").removeClass('alert alert-success');
                 $("#output").addClass("alert alert-danger animated fadeInUp").html("请输入名字和密码");
-                return ;
+                return ; // 停止提交登陆表单
             }
         }
     });
