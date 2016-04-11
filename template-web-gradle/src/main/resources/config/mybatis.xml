@@ -12,6 +12,7 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="mapperLocations" value="classpath:mapper/**/*.xml" /> <!-- Mapper xml -->
+        <property name="typeAliasesPackage" value="com.xtuer.domain"/>
     </bean>
 
     <!-- 3. Instantiate Mapper -->
