@@ -39,31 +39,31 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    springVersion   = '4.2.5.RELEASE'
-    springSecurityVersion = '4.0.4.RELEASE'
-    springSessionDataRedisVersion = '1.1.1.RELEASE'
-    jstlVersion     = '1.2'
-    servletVersion  = '3.1.0'
-    jacksonVersion  = '2.5.3'
-    freemarkerVersion = '2.3.20'
-    logbackVersion = "1.1.2"
-    jclOverSlfVersion = "1.7.7"
-}
+ext.versions = [
+    spring: '4.2.5.RELEASE',
+    springSecurity: '4.0.4.RELEASE',
+    springSessionDataRedis: '1.1.1.RELEASE',
+    jstl: '1.2',
+    servlet: '3.1.0',
+    jackson: '2.5.3',
+    freemarker: '2.3.20',
+    logback: '1.1.2',
+    jclOverSlf: '1.7.7'
+]
 
 dependencies {
     compile(
-            "org.springframework:spring-webmvc:$springVersion",             // Spring MVC
-            "org.springframework.security:spring-security-web:$springSecurityVersion", // Spring Security
-            "org.springframework.security:spring-security-config:$springSecurityVersion",
-            "org.springframework:spring-context-support:$springVersion",
-            "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",  // JSON
-            "org.freemarker:freemarker:$freemarkerVersion",                 // Freemarker
-            "ch.qos.logback:logback-classic:$logbackVersion",               // Logback
-            "org.slf4j:jcl-over-slf4j:$jclOverSlfVersion",
-            "org.springframework.session:spring-session-data-redis:$springSessionDataRedisVersion" // Spring Session
+            "org.springframework:spring-webmvc:$versions.spring",             // Spring MVC
+            "org.springframework:spring-context-support:$versions.spring",
+            "org.springframework.security:spring-security-web:$versions.springSecurity", // Spring Security
+            "org.springframework.security:spring-security-config:$versions.springSecurity",
+            "com.fasterxml.jackson.core:jackson-databind:$versions.jackson",  // JSON
+            "org.freemarker:freemarker:$versions.freemarker",                 // Freemarker
+            "ch.qos.logback:logback-classic:$versions.logback",               // Logback
+            "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf",
+            "org.springframework.session:spring-session-data-redis:$versions.springSessionDataRedis" // Spring Session
     )
 
-    compile("javax.servlet:jstl:$jstlVersion") // JSTL
-    compileOnly("javax.servlet:javax.servlet-api:$servletVersion")
+    compile("javax.servlet:jstl:$versions.jstl") // JSTL
+    compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
 }
