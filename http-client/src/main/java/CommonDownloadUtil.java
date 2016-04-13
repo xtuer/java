@@ -6,11 +6,11 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.*;
 
-public class HttpClientTutorial {
-    public final static void main(String[] args) throws Exception {
+public class CommonDownloadUtil {
+    public static void downloadFile(String url, String localPath) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            HttpGet httpget = new HttpGet("http://img.netbian.com/file/2016/0412/352964091fb5d7b53beb0943825fb467.jpg");
+            HttpGet httpget = new HttpGet(url);
 
             System.out.println("Executing request " + httpget.getRequestLine());
             CloseableHttpResponse response = httpclient.execute(httpget);
@@ -31,7 +31,7 @@ public class HttpClientTutorial {
                         BufferedInputStream bufferedIn = new BufferedInputStream(in);
                         int len = 0;
 
-                        FileOutputStream fileOutStream = new FileOutputStream(new File("/Users/Biao/Desktop/c.jpg"));
+                        FileOutputStream fileOutStream = new FileOutputStream(new File(localPath));
                         BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOutStream);
 
                         while ((len = bufferedIn.read(buffer, 0, 1024)) != -1) {
@@ -54,5 +54,9 @@ public class HttpClientTutorial {
         } finally {
             httpclient.close();
         }
+    }
+
+    public final static void main(String[] args) throws Exception {
+        downloadFile("http://xtuer.github.io/img/dog.png", "/Users/Biao/Desktop/a.png"); // 下载图片
     }
 }
