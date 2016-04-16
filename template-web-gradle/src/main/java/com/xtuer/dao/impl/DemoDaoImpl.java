@@ -2,7 +2,7 @@ package com.xtuer.dao.impl;
 
 import com.xtuer.dao.DemoDao;
 import com.xtuer.mapper.DemoMapper;
-import com.xtuer.domain.Demo;
+import com.xtuer.bean.Demo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DemoDaoImpl implements DemoDao {

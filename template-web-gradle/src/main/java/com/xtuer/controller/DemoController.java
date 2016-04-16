@@ -1,18 +1,13 @@
 package com.xtuer.controller;
 
 import com.xtuer.dao.DemoDao;
-import com.xtuer.domain.Demo;
+import com.xtuer.bean.Demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 @Controller
 public class DemoController {

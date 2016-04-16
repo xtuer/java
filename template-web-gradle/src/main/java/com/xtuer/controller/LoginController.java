@@ -1,5 +1,6 @@
 package com.xtuer.controller;
 
+import com.xtuer.util.SecurityUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,15 +27,9 @@ public class LoginController {
                             @RequestParam(required = false) String logout,
                             ModelMap model) {
         String status = "";
-        status = (error == null)  ? status : "login-error";    // 登录错误
-        status = (logout == null) ? status : "logout-success"; // 注销成功
-
-        // 已经登录
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!"anonymousUser".equals(username)) {
-            status = "login-success";
-        }
-
+        status = (error == null)  ? status : "login-error";         // 登录错误
+        status = (logout == null) ? status : "logout-success";      // 注销成功
+        status = SecurityUtil.isLogin() ? "login-success" : status; // 登陆状态
         model.addAttribute("status", status);
 
         return UriConstants.VIEW_LOGIN;
@@ -45,4 +40,6 @@ public class LoginController {
     public String denyPage() {
         return "权限不够!";
     }
+
+
 }
