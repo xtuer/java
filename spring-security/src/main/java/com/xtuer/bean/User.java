@@ -1,4 +1,4 @@
-package com.xtuer.domain;
+package com.xtuer.bean;
 
 import java.util.HashSet;
 import java.util.Set;

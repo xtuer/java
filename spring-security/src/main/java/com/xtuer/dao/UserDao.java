@@ -1,7 +1,7 @@
 package com.xtuer.dao;
 
-import com.xtuer.domain.User;
-import com.xtuer.domain.UserRole;
+import com.xtuer.bean.User;
+import com.xtuer.bean.UserRole;
 
 import java.util.*;
 

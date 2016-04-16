@@ -1,4 +1,4 @@
-package com.xtuer.domain;
+package com.xtuer.bean;
 
 public class UserRole {
     private int id;

@@ -1,7 +1,7 @@
 package com.xtuer.service;
 
 import com.xtuer.dao.UserDao;
-import com.xtuer.domain.UserRole;
+import com.xtuer.bean.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -25,7 +25,7 @@ public class MyUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.xtuer.domain.User user = userDao.findUserByUsername(username);
+        com.xtuer.bean.User user = userDao.findUserByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException(username + " not found!");
@@ -39,7 +39,7 @@ public class MyUserDetailsService implements UserDetailsService {
      * @param user
      * @return
      */
-    private User buildUserDetails(com.xtuer.domain.User user) {
+    private User buildUserDetails(com.xtuer.bean.User user) {
         List<GrantedAuthority> authorities = buildUserAuthorities(user.getUserRoles());
         return new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, authorities);
     }
