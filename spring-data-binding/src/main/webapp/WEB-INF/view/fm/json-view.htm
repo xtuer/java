@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        var data = {username: 'Biao', age: 111};
+
+        $.ajax({
+            url: '/json-bind',
+            type: 'POST', // 1. 不能是 GET
+            dataType: 'json',
+            contentType: 'application/json', // 2. 少了就会报错
+            data: JSON.stringify(data) // 3. data 需要序列化一下
+        })
+        .done(function(result) {
+            console.log(result);
+        })
+        .fail(function() {
+            console.log("error");
+        })
+        .always(function() {
+            console.log("complete");
+        });
+    });
+    </script>
+</head>
+<body>
+</body>
+</html>
