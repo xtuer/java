@@ -20,13 +20,14 @@ gretty {
     contextPath = '/'
     servletContainer = 'tomcat7'
 
+    debugSuspend = false
     managedClassReload      = true
     recompileOnSourceChange = false
 }
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
 }
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'

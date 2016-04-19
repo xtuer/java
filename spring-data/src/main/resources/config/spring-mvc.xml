@@ -19,7 +19,7 @@
 
     <!-- 默认的注解映射支持 -->
     <!--<mvc:annotation-driven/>-->
-    <mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="customConversionService">
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <constructor-arg value="UTF-8" />
@@ -37,6 +37,17 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <bean id="customConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters">
+            <bean class="com.xtuer.formatter.UserFormatter"/>
+        </property>
+        <property name="converters">
+            <set>
+                <bean class="com.xtuer.converter.AdminConverter"/>
+            </set>
+        </property>
+    </bean>
 
     <!-- Freemarker 视图解析器 -->
     <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">

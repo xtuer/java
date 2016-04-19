@@ -4,11 +4,16 @@ import com.xtuer.bean.Admin;
 import com.xtuer.bean.User;
 import com.xtuer.bean.UserList;
 import com.xtuer.bean.UserMap;
+import com.xtuer.editor.UserEditor;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +82,7 @@ public class HelloController {
         return users;
     }
 
+    // http://localhost:8080/json-view
     @RequestMapping("/json-view")
     public String jsonView() {
         return "json-view.htm";
@@ -88,4 +94,36 @@ public class HelloController {
         System.out.println(user.getUsername());
         return user;
     }
+
+
+    // http://localhost:8080/format?user=Alice,123
+    @RequestMapping("/format")
+    @ResponseBody
+    public User format(User user) {
+        return user;
+    }
+
+    // http://localhost:8080/convert?admin=Bob, 40
+    @RequestMapping("/convert")
+    @ResponseBody
+    public Admin convert(Admin admin) {
+        return admin;
+    }
+
+    // http://localhost:8080/editor?date=2016-04-18
+    @RequestMapping("/editor")
+    @ResponseBody
+    public Date editor(Date date) {
+        return date;
+    }
+
+    @InitBinder("date")
+    public void initDate(WebDataBinder binder) {
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
+    }
+
+//    @InitBinder("user")
+//    public void initUserWithEditor(WebDataBinder binder) {
+//        binder.registerCustomEditor(User.class, new UserEditor());
+//    }
 }
