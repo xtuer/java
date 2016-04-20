@@ -17,7 +17,7 @@ repositories {
 dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
-    testCompile("junit:junit:$versions.junit")
+    testCompile("junit:junit:4.12")
 }
 
 // 创建目录结构的任务，执行后可删除
@@ -37,4 +37,4 @@ task "create-structure" << {
     └── test
         ├── java
         └── resources
-*
+*/
