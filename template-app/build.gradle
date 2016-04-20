@@ -21,7 +21,7 @@ dependencies {
 }
 
 // 创建目录结构的任务，执行后可删除
-task "create-dirs" << {
+task "create-structure" << {
    sourceSets*.java.srcDirs*.each { it.mkdirs() }
    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
 }
