@@ -1,0 +1,24 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
+    compile 'org.apache.solr:solr-solrj:6.0.0'
+    compile 'org.apache.httpcomponents:fluent-hc:4.5.2'
+    compile 'org.springframework.data:spring-data-solr:2.0.1.RELEASE'
+    testCompile 'junit:junit:4.12'
+}

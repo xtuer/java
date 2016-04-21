@@ -28,7 +28,6 @@ task "create-structure" << {
 
 /*
 生成的目录结构
-.
 ├── build.gradle
 └── src
     ├── main
