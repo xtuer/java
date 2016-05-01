@@ -18,13 +18,13 @@ public class MqttSubscriber {
         final Promise<Buffer> result = new Promise<Buffer>();
         MQTT mqtt = new MQTT();
         mqtt.setHost(HOST);
-        mqtt.setWillQos(QoS.AT_LEAST_ONCE);
+        mqtt.setWillQos(QoS.EXACTLY_ONCE);
         mqtt.setKeepAlive((short)3); // 默认是 30 秒
         mqtt.setReconnectDelay(500); // 500 毫秒重连一次, 默认是 10 毫秒
         mqtt.setReconnectDelayMax(500);
 
         // 订阅者持久化要同时满足下面 2 个条件, 消息发布者不需要
-//        mqtt.setCleanSession(false);
+        mqtt.setCleanSession(false);
         mqtt.setClientId("Biao1");
 
         final CallbackConnection connection = mqtt.callbackConnection();
@@ -38,15 +38,16 @@ public class MqttSubscriber {
              * 收到订阅的消息
              * @param topic 订阅队列的名字
              * @param payload 消息的内容
-             * @param onComplete
+             * @param ack
              */
             @Override
-            public void onPublish(UTF8Buffer topic, Buffer payload, Runnable onComplete) {
+            public void onPublish(UTF8Buffer topic, Buffer payload, Runnable ack) {
                 result.onSuccess(payload);
-                onComplete.run();
 
                 // 消息处理逻辑
                 System.out.println("Receive: " + new String(payload.toByteArray()));
+
+                ack.run();
             }
 
             /**
@@ -85,7 +86,7 @@ public class MqttSubscriber {
             @Override
             public void onSuccess(Void v) {
                 // 可以同时订阅几个 topic, 订阅消息只需要保证送达一次即可
-                Topic[] topics = {new Topic(TOPIC_NAME, QoS.AT_LEAST_ONCE), new Topic(WILL_TOPIC_NAME, QoS.AT_LEAST_ONCE)};
+                Topic[] topics = {new Topic(TOPIC_NAME, QoS.AT_LEAST_ONCE), new Topic(WILL_TOPIC_NAME, QoS.EXACTLY_ONCE)};
 
                 connection.subscribe(topics, new Callback<byte[]>() {
                     @Override

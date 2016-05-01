@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>jQuery File Upload Demo - Basic version</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.min.css">
+    <!-- CSS to style the file input field as button -->
+    <link rel="stylesheet" href="/css/dropzone.css">
+    <link rel="stylesheet" href="/css/jquery.fileupload.css">
+
+    <style>
+    .fileinput-button {
+        width: 150px;
+    }
+    </style>
+</head>
+
+<body style="padding: 50px">
+    <!-- The fileinput-button span is used to style the file input field as button -->
+    <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Select files...</span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="fileupload" type="file" name="files" multiple>
+    </span>
+    <div id="dropzone">Drop files here</div>
+    <!-- The container for the uploaded files -->
+    <div id="uploaded-files" class="uploaded-files"></div>
+
+    <script src="/js/jquery.min.js"></script>
+    <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+    <script src="/js/jquery.ui.widget.js"></script>
+    <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+    <script src="/js/jquery.iframe-transport.js"></script>
+    <!-- The basic File Upload plugin -->
+    <script src="/js/jquery.fileupload.js"></script>
+
+    <!-- 验证文件类型，大小等使用 -->
+    <script src="/js/jquery.fileupload-process.js"></script>
+    <script src="/js/jquery.fileupload-validate.js"></script>
+
+    <script>
+    $(function () {
+        var url = '/ajax-upload-files';
+        $('#fileupload').fileupload({
+            url: url,
+            dataType: 'json',
+            maxFileSize: 1024000, // 1M
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+            dropZone: $('#dropzone'),
+            done: function(e, data) {
+                $.each(data.result, function(index, file) {
+                    $('<p/>').text(file.fileName).appendTo('#uploaded-files');
+                });
+            }
+        }).on('fileuploadprocessalways', function (e, data) {
+            if (data.files.error) {
+                alert(data.files[0].error);
+            } else {
+                data.submit(); // do submission here: 每个文件执行一次上传
+            }
+        });
+
+        enableDropEffect();
+    });
+
+    // 当拖动文件到 dropzone 上时给其添加动态效果的 CSS
+    function enableDropEffect() {
+        $('#dropzone').bind('dragover', function(e) {
+            var dropZone = $('#dropzone');
+            var timeout = window.dropZoneTimeout;
+
+            if (!timeout) {
+                dropZone.addClass('in');
+            } else {
+                clearTimeout(timeout);
+            }
+
+            var found = false;
+            var node = e.target;
+
+            do {
+                if (node === dropZone[0]) {
+                    found = true;
+                    break;
+                }
+                node = node.parentNode;
+            } while (node != null);
+
+            if (found) {
+                dropZone.addClass('hover');
+            } else {
+                dropZone.removeClass('hover');
+            }
+
+            window.dropZoneTimeout = setTimeout(function () {
+                window.dropZoneTimeout = null;
+                dropZone.removeClass('in hover');
+            }, 100);
+        });
+    }
+    </script>
+</body>
+</html>

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 public class MqttPublisher {
     private static final String TOPIC_NAME = "foo";
     private static final String WILL_TOPIC_NAME = "foo-will";
-    private static final String HOST = "tcp://localhost:1883";
+    private static final String HOST = "tcp://127.0.0.1:1883";
     private static int messageNumber = 0;
 
     public static void main(String[] args) throws URISyntaxException {
@@ -17,7 +17,7 @@ public class MqttPublisher {
         mqtt.setReconnectDelay(500); // 500 毫秒重连一次, 默认是 10 毫秒
         mqtt.setReconnectDelayMax(500);
         mqtt.setWillTopic(WILL_TOPIC_NAME);
-        mqtt.setWillQos(QoS.AT_LEAST_ONCE);
+        mqtt.setWillQos(QoS.EXACTLY_ONCE);
         mqtt.setWillMessage("Will message: My ID is A, I have left. 3"); // 多个客户端的 will message 都可以放到同一个 topic 里
 
         final FutureConnection connection = mqtt.futureConnection();
@@ -37,7 +37,7 @@ public class MqttPublisher {
             public void run() {
                 if (connection != null && connection.isConnected()) {
                     String message = (++messageNumber) + " - A - 时间: " + System.currentTimeMillis();
-                    Future<Void> future = connection.publish(TOPIC_NAME, message.getBytes(), QoS.AT_LEAST_ONCE, false);
+                    Future<Void> future = connection.publish(TOPIC_NAME, message.getBytes(), QoS.EXACTLY_ONCE, false);
 
                     try {
                         future.await(2, TimeUnit.SECONDS); // 等待消息发送完成, 如果发送失败就会抛出异常, 例如网络断开的情况下
@@ -49,6 +49,6 @@ public class MqttPublisher {
                     System.out.println("Non-connected");
                 }
             }
-        }, 100, 1000, TimeUnit.MILLISECONDS);
+        }, 100, 1, TimeUnit.MILLISECONDS);
     }
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <style>
+    .wrapper {
+        padding: 20px;
+    }
+    </style>
+</head>
+<body>
+    <nav class="sidebar jsc-sidebar" id="jsi-nav" data-sidebar-options="">
+        <a href="#" class="jsc-sidebar-trigger"></a>
+        <ul class="sidebar-list">
+            <li><a class="header">资源提供方</a></li>
+            <li><a href="#" class="resource-provider" data-url="http://localhost:8080/xml/resource-gr.xml">工人出版社</a></li>
+            <li><a href="#" class="resource-provider" data-url="http://localhost:8080/xml/resource-st.xml">世界图书出版社</a></li>
+        </ul>
+    </nav>
+
+    <div class="wrapper jsc-sidebar-content jsc-sidebar-pulled1">
+        <button id="favoriteButton">添加到收藏夹</button>
+        <ul id="resource-resource" class="ztree"></ul>
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.ztree.all.js"></script>
+    <script src="/js/resource-tree.js"></script>
+    <script src="js/sidebar.js"></script>
+
+    <script>
+        var tree = null;
+
+        $(document).ready(function() {
+            showSidebar();
+
+            // 点击资源提供方，加载显示他提供的资源列表
+            $('.resource-provider').click(function(event) {
+                event.preventDefault();
+                var url = $(this).attr('data-url');
+                tree = new ResourceTree($('#resource-resource'), url);
+            });
+
+            // 保存选中的资源
+            $('#favoriteButton').click(function() {
+                var data = {resourcePaths: tree.getSelectedResourcePaths()};
+
+                $.ajax({
+                    url: '/save-resources',
+                    type: 'POST', // 1. 不能是 GET
+                    dataType: 'json',
+                    contentType: 'application/json', // 2. 少了就会报错
+                    data: JSON.stringify(data) // 3. data 需要序列化一下
+                })
+                .done(function(data) {
+                    console.log(data);
+                })
+                .fail(function(error) {
+                    console.log(error.responseText);
+                });
+            });
+        });
+
+        function showSidebar() {
+            $('#jsi-nav').sidebar({
+                trigger: '.jsc-sidebar-trigger',
+                scrollbarDisplay: true,
+            });
+
+            $('.jsc-sidebar-trigger').click();
+        }
+    </script>
+</body>
+</html>

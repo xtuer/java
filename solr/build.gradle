@@ -20,5 +20,6 @@ dependencies {
     compile 'org.apache.solr:solr-solrj:6.0.0'
     compile 'org.apache.httpcomponents:fluent-hc:4.5.2'
     compile 'org.springframework.data:spring-data-solr:2.0.1.RELEASE'
+    compile 'org.apache.lucene:lucene-analyzers-smartcn:5.5.0'
     testCompile 'junit:junit:4.12'
 }

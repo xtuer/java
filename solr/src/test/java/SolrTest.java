@@ -50,10 +50,20 @@ public class SolrTest {
         Person p1 = new Person("person-10001", "Bob", 34);
         Person p2 = new Person("person-10002", "John", 88);
         Person p3 = new Person("person-10003", "Alice", 88);
+        Person p4 = new Person("person-10004", "公孙二狗", 188);
+        Person p5 = new Person("person-10005", "慕容二狗", 288);
+        Person p6 = new Person("person-10006", "慕容狗蛋", 288);
+        Person p7 = new Person("person-10007", "大上海滩 text", 288);
+        Person p8 = new Person("person-10008", "一种是配置 TokenizerFactory 类", 288);
 
         solr.addBean(p1);
         solr.addBean(p2);
         solr.addBean(p3);
+        solr.addBean(p4);
+        solr.addBean(p5);
+        solr.addBean(p6);
+        solr.addBean(p7);
+        solr.addBean(p8);
         solr.commit();
     }
 

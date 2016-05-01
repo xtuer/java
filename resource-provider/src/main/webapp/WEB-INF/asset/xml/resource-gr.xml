@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+  <title>这是标题</title>
+  <rtype>知识点资源(1XX包)</rtype>
+  <keyword></keyword>
+  <description>这是资源介绍</description>
+  <company>这是开发单位</company>
+  <language>汉语</language>
+  <usage_type>课件(ppt)</usage_type>
+  <textbook_list>
+    <textbook>高中化学/人教课标版/高一/必修2第一章 物质的结构 元素周期律/第二节 元素周期律</textbook>
+    <textbook>高中化学/人教课标版/高一/必修2第二章 化学反应与能量/第一节 化学能与热能</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第一单元 古代中国的政治制度/1.夏商周的政治制度</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第一单元 古代中国的政治制度/2.秦朝中央集权制度的形成</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第二单元 列强武装侵略与中国人民的反抗/1.从鸦片战争到八国联军侵华</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第三单元　近代中国的民主革命/1.太平天国运动</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第三单元　近代中国的民主革命/2.辛亥革命</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第三单元　近代中国的民主革命/3.新民主主义革命的崛起</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第四单元 现代中国的政治建设与祖国统一/1.新中国的民主政治建设</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第四单元 现代中国的政治建设与祖国统一/2.民主政治建设的曲折发展</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第五单元 现代中国的对外关系/1.新中国初期的外交建树</textbook>
+    <textbook>高中历史/人教课标版/高一/必修1第五单元 现代中国的对外关系/3.改革开放以来的中国外交</textbook>
+    <textbook>高中地理/人教课标版/高一/必修1第一章 行星地球/第一节 宇宙中的地球</textbook>
+    <textbook>高中地理/人教课标版/高一/必修1第一章 行星地球/第二节 太阳对地球的影响</textbook>
+    <textbook>高中地理/人教课标版/高一/必修1第二章 地球上的大气/第一节 冷热不均引起大气运动</textbook>
+    <textbook>高中地理/人教课标版/高一/必修1第二章 地球上的大气/第二节 气压带和风带</textbook>
+    <textbook>高中地理/人教课标版/高一/必修1第三章 地球上的水/第一节 自然界的水循环</textbook>
+    <textbook>高中地理/人教课标版/高一/必修1第三章 地球上的水/第二节 大规模的海水运动</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第1章 走近细胞/第1节 从生物圈到细胞</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第1节 细胞中的元素和化合物</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第2节 生命活动的主要承担者――蛋白质</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第3节 遗传信息的携带者――核酸</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第3章 细胞的基本结构/第1节 细胞膜――系统的边界</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第3章 细胞的基本结构/第2节 细胞器――系统内的分工合作</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第4章 细胞的物质输入和输出/第1节 物质跨膜运输的实例</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第4章 细胞的物质输入和输出/第2节 生物膜的流动镶嵌模型</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第5章 细胞的能量供应和利用/第1节 降低化学反应活化能的酶</textbook>
+    <textbook>高中生物/人教课标版/高一/必修1第5章 细胞的能量供应和利用/第2节 细胞的能量“通货”――ATP</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第一课 神奇的货币/信用工具和外汇</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第二课 多变的价格/价格变动的影响</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第三课 多彩的消费/树立正确的消费观</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第四课　生产与经济制度/发展生产 满足消费</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第五课 企业与劳动者/新时代的劳动者</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第六课　投资的选择/储蓄存款和商业银行</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第七课 个人收入的分配/按劳分配为主体 多种分配方式并存</textbook>
+    <textbook>高中思想政治/人教课标版/高一/必修1第八课　国家收入的分配/财政收入与支出</textbook>
+    <textbook>高中数学/人教课标版/高一/必修1第一章  集合与函数概念/1.1 集合</textbook>
+    <textbook>高中数学/人教课标版/高一/必修1第一章  集合与函数概念/1.2  函数及其表示</textbook>
+    <textbook>高中数学/人教课标版/高一/必修1第二章 基本初等函数/2.1  指数函数</textbook>
+    <textbook>高中数学/人教课标版/高一/必修1第二章 基本初等函数/2.2  对数函数</textbook>
+    <textbook>高中数学/人教课标版/高一/必修1第三章  函数的应用/3.1  函数与方程</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第一章  空间几何体/1.1  空间几何体的结构</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第一章  空间几何体/1.2 空间几何体的三视图和直观图</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第二章 点.直线.平面之间的位置关系/2.1  空间点.直线.平面之间的位置关系</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第二章 点.直线.平面之间的位置关系/2.2 直线.平面平行的判定及其性质</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第三章 直线与方程/3.1  直线的倾斜角与斜率</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第三章 直线与方程/3.2  直线的方程</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第四章　圆与方程/4.1  圆的方程</textbook>
+    <textbook>高中数学/人教课标版/高一/必修2第四章　圆与方程/4.2  直线.圆的位置关系</textbook>
+  </textbook_list>
+  <curriculum_list>
+    <curriculum>语文</curriculum>
+    <curriculum>数学</curriculum>
+    <curriculum>英语/一、语言技能/三级/听/能识别不同句式的语调</curriculum>
+    <curriculum>英语/一、语言技能/三级/听/能辨认歌谣中的韵律</curriculum>
+    <curriculum>英语/一、语言技能/三级/听/能识别语段中句子间的联系</curriculum>
+    <curriculum>英语/一、语言技能/三级/听/能听懂有关熟悉话题的语段</curriculum>
+    <curriculum>物理/一、科学探究</curriculum>
+    <curriculum>物理/二、物质/物质的形态和变化</curriculum>
+    <curriculum>物理/二、物质/新材料及其应用</curriculum>
+    <curriculum>化学/一、科学探究/（二）发展科学探究能力</curriculum>
+    <curriculum>化学/一、科学探究/（一）增进对科学探究的理解</curriculum>
+    <curriculum>地理/三、中国地理/（五）认识区域/2．联系与差异</curriculum>
+    <curriculum>地理/三、中国地理/（五）认识区域/3．环境与发展</curriculum>
+    <curriculum>历史/五、世界近代史/（八）科学与思想文化</curriculum>
+    <curriculum>历史/五、世界近代史/（二）第一次工业革命</curriculum>
+    <curriculum>历史/五、世界近代史/（七）第一次世界大战</curriculum>
+    <curriculum>历史/五、世界近代史/（一）欧美主要国家的社会巨变</curriculum>
+    <curriculum>生物/一、科学探究/1．理解科学探究</curriculum>
+    <curriculum>生物/二、生物体的结构层次/2．细胞分裂、分化形成组织</curriculum>
+    <curriculum>生物/二、生物体的结构层次/3．多细胞生物体的结构层次</curriculum>
+    <curriculum>科学/3～6年级/一、科学探究</curriculum>
+    <curriculum>科学/3～6年级/二、情感态度与价值观</curriculum>
+  </curriculum_list>
+  <subject_list>
+    <subject>语言与文学/语文/写话与习作/作文辅导</subject>
+    <subject>语言与文学/语文/写话与习作/佳作鉴赏</subject>
+    <subject>数学/数学/高中数学/集合与简易逻辑/集合</subject>
+    <subject>数学/数学/高中数学/集合与简易逻辑/绝对值不等式的解法</subject>
+    <subject>数学/数学/高中数学/集合与简易逻辑/逻辑联结词</subject>
+    <subject>数学/数学/高中数学/函数/函数</subject>
+    <subject>数学/数学/高中数学/函数/反函数</subject>
+    <subject>数学/数学/高中数学/函数/指数函数</subject>
+    <subject>数学/数学/高中数学/数列/等差数列前n项和</subject>
+    <subject>数学/数学/高中数学/数列/等比数列</subject>
+    <subject>数学/数学/高中数学/平面向量/向量及其运算</subject>
+    <subject>数学/数学/高中数学/不等式/不等式的证明</subject>
+    <subject>数学/数学/高中数学/不等式/不等式的解法举例</subject>
+    <subject>数学/数学/高中数学/不等式/含绝对值的不等式</subject>
+  </subject_list>
+  <topic_list>
+    <topic>政治</topic>
+  </topic_list>
+  <type_list>
+    <type>媒体素材/文本类素材</type>
+    <type>媒体素材/图形（图像）类素材</type>
+    <type>课件/活动</type>
+    <type>课件/实验</type>
+    <type>课件/在线学习</type>
+  </type_list>
+  <format_list>
+    <format>文本/text/plain</format>
+    <format>文本/text/rtf</format>
+    <format>图片/图像/image/tif</format>
+    <format>图片/图像/image/gsp</format>
+    <format>视频/video/asf</format>
+    <format>视频/video/wmv</format>
+    <format>音频/audio/WAV</format>
+    <format>音频/audio/MIDI</format>
+    <format>动画/Animation/Swf</format>
+    <format>动画/Animation/flc</format>
+    <format>应用/application/msaccess</format>
+    <format>应用/application/msworks</format>
+  </format_list>
+  <learner_list>
+    <learner>学生</learner>
+    <learner>教师</learner>
+  </learner_list>
+  <edu_type_list>
+    <edu_type>高中教育</edu_type>
+  </edu_type_list>
+  <grade_list>
+    <grade>高中</grade>
+  </grade_list>
+</resource>

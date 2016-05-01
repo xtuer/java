@@ -1,18 +1,22 @@
-public class Test {
-    public static long stringToNumber(String str) {
-        String[] components = str.split("\\.");
-        long result = 0;
+import java.util.Random;
 
-        for (int i = 0; i < components.length; ++i) {
-            result = result * 100 + Integer.parseInt(components[i]);
+public class Test {
+    public static void main(String[] args) {
+//        for (int i = 1; i < 29; ++i) {
+//            if (i < 10) {
+//                System.out.print("'2016-02-0" + i + "', ");
+//            } else {
+//                System.out.print("'2016-02-" + i + "', ");
+//            }
+//        }
+
+        Random random = new Random();
+        for (int i = 1; i < 10; ++i) {
+            System.out.print(random.nextInt(200) + ", ");
         }
 
-        return result;
-    }
-
-    public static void main(String[] args) {
-        long r1 = stringToNumber("3.4.1");
-        long r2 = stringToNumber("3.4");
-        System.out.printf("r1: %d, r2: %d, r1 > r2: %b", r1, r2, r1 > r2);
+//        for (int i = 1; i < 17; ++i) {
+//            System.out.print("'高三 " + i + " 班', ");
+//        }
     }
 }

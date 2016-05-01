@@ -1,4 +1,5 @@
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 
 public class StringUtil {
     protected static final char[] hexArray = "0123456789ABCDEF".toCharArray();
