@@ -1,5 +1,6 @@
 package com.xtuer.service;
 
+import com.xtuer.bean.MyUserDetails;
 import com.xtuer.dao.UserDao;
 import com.xtuer.bean.UserRole;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,32 +32,32 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(username + " not found!");
         }
 
-        return buildUserDetails(user);
+        return new MyUserDetails(user);
     }
 
-    /**
-     * Converts User user to org.springframework.security.core.userdetails.User
-     * @param user
-     * @return
-     */
-    private User buildUserDetails(com.xtuer.bean.User user) {
-        List<GrantedAuthority> authorities = buildUserAuthorities(user.getUserRoles());
-        return new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, authorities);
-    }
-
-    /**
-     * 把用户的权限 UserRole 转换成 GrantedAuthority
-     * @param userRoles 用户的权限
-     * @return
-     */
-    private List<GrantedAuthority> buildUserAuthorities(Set<UserRole> userRoles) {
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-
-        // Build user's authorities
-        for (UserRole userRole : userRoles) {
-            authorities.add(new SimpleGrantedAuthority(userRole.getRole()));
-        }
-
-        return new ArrayList<GrantedAuthority>(authorities);
-    }
+//    /**
+//     * Converts User user to org.springframework.security.core.userdetails.User
+//     * @param user
+//     * @return
+//     */
+//    private User buildUserDetails(com.xtuer.bean.User user) {
+//        List<GrantedAuthority> authorities = buildUserAuthorities(user.getUserRoles());
+//        return new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, authorities);
+//    }
+//
+//    /**
+//     * 把用户的权限 UserRole 转换成 GrantedAuthority
+//     * @param userRoles 用户的权限
+//     * @return
+//     */
+//    private List<GrantedAuthority> buildUserAuthorities(Set<UserRole> userRoles) {
+//        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+//
+//        // Build user's authorities
+//        for (UserRole userRole : userRoles) {
+//            authorities.add(new SimpleGrantedAuthority(userRole.getRole()));
+//        }
+//
+//        return new ArrayList<GrantedAuthority>(authorities);
+//    }
 }

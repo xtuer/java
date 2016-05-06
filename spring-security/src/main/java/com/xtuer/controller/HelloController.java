@@ -1,5 +1,7 @@
 package com.xtuer.controller;
 
+import com.xtuer.bean.MyUserDetails;
+import com.xtuer.util.SecurityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -35,5 +37,18 @@ public class HelloController {
         model.addAttribute("username", userDetails.getUsername());
 
         return "admin.htm";
+    }
+
+    @RequestMapping("login-user")
+    @ResponseBody
+    public Object loginUser() {
+        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (SecurityUtils.isLogin()) {
+            MyUserDetails userDetails = (MyUserDetails) principle;
+            return userDetails;
+        }
+
+        return principle;
     }
 }
