@@ -54,8 +54,21 @@
             maxFileSize: 1024000, // 允许上传的文件的最大大小 (1M)
             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i, // 允许上传的文件类型
             dropZone: $('#dropzone'), // 限制拖拽到 dropzone 里才能上传文件, 如果没有这个参数, 拖拽到浏览器里任何地方就上传了
+            progressInterval: 10, // 隔多久刷新一下进度条
+            progress: function (e, data) { // 实时上传进度回调
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                console.log(progress); // 上传进度的百分比
+                console.log(data.files[data.index].name); // 正在上传的文件名
+            },
+            processalways: function (e, data) {
+                if (data.files.error) {
+                    alert(data.files[0].error); // 如果上传的文件验证不通过, 显示错误信息
+                } else {
+                    data.submit();
+                }
+            },
             done: function(e, data) {
-                // 显示上传的结果
+                // 上传完成
                 $.each(data.result, function(index, file) {
                     $('<p/>').text(file.fileName).appendTo('#uploaded-files');
                 });
@@ -73,37 +86,10 @@
 
     // 当拖拽文件到 dropzone 上时给其添加效果
     function enableDropEffect() {
-        $('#dropzone').bind('dragover', function(e) {
-            var dropZone = $('#dropzone');
-            var timeout = window.dropZoneTimeout;
-
-            if (!timeout) {
-                dropZone.addClass('in');
-            } else {
-                clearTimeout(timeout);
-            }
-
-            var found = false;
-            var node = e.target;
-
-            do {
-                if (node === dropZone[0]) {
-                    found = true;
-                    break;
-                }
-                node = node.parentNode;
-            } while (node != null);
-
-            if (found) {
-                dropZone.addClass('hover');
-            } else {
-                dropZone.removeClass('hover');
-            }
-
-            window.dropZoneTimeout = setTimeout(function () {
-                window.dropZoneTimeout = null;
-                dropZone.removeClass('in hover');
-            }, 100);
+        $('#dropzone').on('dragover', function(e){
+            $('#dropzone').addClass('hover');
+        }).on('dragleave', function(e) {
+            $('#dropzone').removeClass('hover');
         });
     }
     </script>
