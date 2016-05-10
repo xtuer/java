@@ -14,9 +14,12 @@ repositories {
 
 dependencies {
     compile 'org.apache.commons:commons-compress:1.11'
-    compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-csv:1.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
     compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'commons-beanutils:commons-beanutils:1.9.2'
 }
