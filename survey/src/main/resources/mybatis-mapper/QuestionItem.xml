@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.QuestionItemMapper">
+    <insert id="insert" parameterType="QuestionItem" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question_item (question_id, content, type) VALUES(#{questionId}, #{content}, #{type})
+    </insert>
+
+    <delete id="deleteQuestionItemsByQuestionId" parameterType="int">
+        DELETE FROM question_item WHERE question_id = #{questionId}
+    </delete>
+
+    <delete id="deleteQuestionItemsByQuestionIds" parameterType="list">
+        DELETE FROM question_item WHERE question_id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -47,4 +47,14 @@ public class HelloController {
 
         }
     }
+
+    @RequestMapping("/a")
+    public String pageA() {
+        return "a.html";
+    }
+
+    @RequestMapping("/b")
+    public String pageB() {
+        return "b.html";
+    }
 }

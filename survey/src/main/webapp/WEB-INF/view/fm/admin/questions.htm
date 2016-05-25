@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑调查问卷</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+    <link href="/js/lib/icheck/skins/square/blue.css" rel="stylesheet">
+    <link href="/css/lib/sidebar.css" rel="stylesheet">
+    <link href="/css/admin-common.css" rel="stylesheet">
+
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/js/lib/jquery-ui.min.js"></script>
+    <script src="/js/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="/js/lib/icheck/icheck.js"></script>
+    <script src="/js/lib/sidebar.js"></script>
+    <script src="/js/lib/ckeditor/ckeditor.js"></script>
+
+    <script src="/js/util.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/admin/Topic.js"></script>
+    <script src="/js/admin/Question.js"></script>
+    <script src="/js/admin/questions.js"></script>
+
+    <style type="text/css">
+    #toolbar {
+        position: fixed;
+        top: 30px;
+        right: -2px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    #toolbar button {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .panel-heading {
+        background-color: white !important;
+    }
+
+    #edit-topic-dialog .modal-body textarea {
+        width: 100%;
+        height: 350px;
+        margin-bottom: 10px;
+    }
+
+    #topic-content-container {
+        margin-bottom: 10px;
+    }
+
+    .question-content {
+        font-weight: bold;
+    }
+
+    .question-item {
+        margin-top: 10px;
+    }
+
+    .question-item .checkbox span {
+        margin-left: 5px;
+        margin-top: 5px;
+        font-weight: normal;
+    }
+
+    .question-item .extra-input {
+        display: inline-block;
+        width: 250px;
+        margin-left: 10px;
+    }
+
+    .question-item.suggestion textarea {
+        height: 100px;
+        margin-top: 5px;
+    }
+
+    .template {
+        display: none;
+    }
+    </style>
+</head>
+
+<body data-uuid="08C8BFE2-06CF-47F1-ABF4-52D2A9F1A690">
+<!-- 侧边栏 -->
+<#include "nav.htm">
+
+<!-- 内容 -->
+<div class="main">
+    <div class="container">
+        <!-- 添加问题按钮 -->
+        <div id="toolbar">
+            <button id="insert-question-button" class="btn btn-default" type="button" data-toggle="tooltip" data-placement="left" title="添加问题">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
+
+        <!-- 问卷: 包含主题描述, 问题及问题的选项 -->
+        <div class="panel panel-default">
+            <!-- 主题 -->
+            <div class="panel-heading" id="topic" data-topic-id="0" data-topic-url="">
+                <a href="#" class="edit-topic-button pull-right" data-toggle="tooltip" data-placement="top" title="编辑">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+
+                <div class="topic-content"></div>
+            </div>
+
+            <!-- 问题列表 -->
+            <ul class="list-group list-group-lg question-list" id="question-list">
+                <!-- 问题模版 -->
+                <li class="list-group-item question template" data-question-id="0" data-question-type="1">
+                    <!-- 问题的描述 -->
+                    <div>
+                        <!-- Edit and Remove button -->
+                        <a href="#" class="edit-question-button pull-right" data-toggle="tooltip" data-placement="top" title="编辑">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a href="#" class="remove-question-button pull-right" data-toggle="tooltip" data-placement="top" title="删除">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+
+                        <span class="question-content">Template Question Content</span>
+                    </div>
+
+                    <!-- 问题的选项，共有 5 种选项, 描述性的问题没有选项 -->
+                    <div class="question-items">
+                        <!-- 1. 单选 -->
+                        <div class="question-item single" data-question-item-id="0" data-question-item-type="0">
+                            <label class="checkbox">
+                                <input type="radio" name="question_id"><span>单选问题选项</span>
+                            </label>
+                        </div>
+                        <!-- 2. 单选带输入 -->
+                        <div class="question-item single-with-input" data-question-item-id="0" data-question-item-type="1">
+                            <label class="checkbox">
+                                <input type="radio" name="question_id"><span>单选问题选项</span>
+                                <input type="text" class="form-control extra-input">
+                            </label>
+                        </div>
+
+                        <!-- 3. 多选 -->
+                        <div class="question-item multiple" data-question-item-id="0" data-question-item-type="0">
+                            <label class="checkbox">
+                                <input type="checkbox"><span>多选问题选项</span>
+                            </label>
+                        </div>
+
+                        <!-- 4. 多选带输入 -->
+                        <div class="question-item multiple-with-input" data-question-item-id="0" data-question-item-type="1">
+                            <label class="checkbox">
+                                <input type="checkbox"><span>多选问题选项</span>
+                                <input type="text" class="form-control extra-input">
+                            </label>
+                        </div>
+
+                        <!-- 5. 建议 -->
+                        <div class="question-item suggestion" data-question-item-id="0" data-question-item-type="0">
+                            <textarea class="form-control"></textarea>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+<!-- /////////////////////////////////////////////  隐藏的对话框 ////////////////////////////////////////////////////////// -->
+        <!-- Topic 编辑对话框 -->
+        <div class="modal fade" id="edit-topic-dialog" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- Close button must with &times; -->
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">调查问卷</h4>
+                    </div>
+                    <!-- End of modal header -->
+
+                    <div class="modal-body" data-topic-id="">
+                        <div id="topic-content-container">
+                            <textarea class="form-control" id="topicContentEditor" rows="50"></textarea>
+                            <script>
+                                // Replace the <textarea id="topicContentEditor"> with a CKEditor
+                                // instance, using default configuration.
+                                CKEDITOR.replace('topicContentEditor', {
+                                    language: 'zh-cn',
+                                    allowedContent: true,
+                                    // contentsCss: '/css/editor.css'
+                                    contentsCss: 'body {background-image: none !important}',
+                                    removePlugins: 'elementspath',
+                                    resize_enabled: false,
+                                    height: '300px'
+                                });
+                            </script>
+                        </div>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon">URL</span>
+                            <input type="text" class="form-control" placeholder="提交问卷后要访问的页面的链接，可以为空">
+                        </div><!-- /input-group -->
+                    </div>
+                    <!-- End of modal body -->
+
+                    <div class="alert alert-danger fade in">
+                        <button type="button" class="close" onclick="$('.alert').slideUp()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <p>调查问卷的标题内容不能为空</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary save-topic-button">保存</button>
+                    </div>
+                    <!-- End of modal footer -->
+                </div>
+            </div>
+        </div>
+        <!-- End of modal -->
+
+        <!-- 问题编辑对话框 -->
+        <div class="modal fade" id="edit-question-dialog" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- Close button must with &times; -->
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">编辑问题</h4>
+                    </div>
+                    <!-- End of modal header -->
+
+                    <div class="modal-body" data-question-id="0">
+                        <!-- 问题标题 -->
+                        <div class="input-group input-group-lg question">
+                            <span class="input-group-addon">问题</span>
+                            <input type="text" class="form-control" placeholder="请输入问题">
+
+                            <div class="input-group-btn">
+                                <button class="btn btn-default dropdown-toggle question-type"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-question-type="1">单选 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="#" class="single">单选</a></li>
+                                    <li><a href="#" class="multiple">多选</a></li>
+                                    <li><a href="#" class="suggestion">问答</a></li>
+                                    <li><a href="#" class="description">描述</a></li>
+                                </ul>
+                                <button class="btn btn-default insert-question-item-button"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div><!-- /btn-group -->
+                        </div><!-- /input-group -->
+
+                        <div class="question-items">
+                            <!-- 问题选项模版 -->
+                            <div class="question-item template hide input-group input-group-lg" data-question-item-type="0">
+                                <span class="input-group-addon">选项</span>
+                                <input type="text" class="form-control content" placeholder="请输入选项">
+
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default dropdown-toggle question-item-type-button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">普通 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="#" class="normal">普通</a></li>
+                                        <li><a href="#" class="with-input">输入</a></li>
+                                    </ul>
+                                    <button class="btn btn-default remove-question-item-button"><span class="glyphicon glyphicon-remove"></span></button>
+                                </div><!-- /btn-group -->
+                            </div><!-- /input-group -->
+                        </div>
+                    </div>
+                    <!-- End of modal body -->
+
+                    <!-- 错误信息 -->
+                    <div class="alert alert-danger fade in">
+                        <button type="button" class="close" onclick="$('.alert').slideUp()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <p>问题或者选项的内容不能为空</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary save-question-button">保存</button>
+                    </div>
+                    <!-- End of modal footer -->
+                </div>
+            </div>
+        </div>
+        <!-- End of modal -->
+    </div>
+</div>
+</body>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.ParticipantMapper">
+    <select id="countOfTelephone" parameterType="string" resultType="int">
+        SELECT count(1) FROM participant WHERE telephone=#{telephone}
+    </select>
+
+    <select id="selectParticipants" resultType="Participant">
+        SELECT id, name, gender, telephone, mail FROM participant LIMIT #{offset}, #{count}
+    </select>
+
+    <select id="countOfAllParticipants" resultType="int">
+        SELECT count(1) FROM participant
+    </select>
+
+    <insert id="insertParticipant" parameterType="Participant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO participant (name, gender, telephone, mail)
+        VALUES(#{name}, #{gender}, #{telephone}, #{mail})
+    </insert>
+</mapper>

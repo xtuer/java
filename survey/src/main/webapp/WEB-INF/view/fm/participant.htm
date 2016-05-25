@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>信息填写</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/js/icheck/skins/square/blue.css" rel="stylesheet">
+    <link href="/js/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" >
+
+    <script src="/js/jquery.js"></script>
+    <script src="/js/jquery.validate.js"></script>
+    <script src="/js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/icheck/icheck.js"></script>
+    <script src="/js/constants.js"></script>
+
+    <style type="text/css">
+    .input-group {
+        margin-bottom: 10px;
+    }
+
+    .button-row {
+        margin-top: 10px;
+    }
+
+    .alert {
+        margin-top: 10px;
+    }
+
+    .jumbotron {
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="jumbotron">
+                    <p>小主，您受累了！<br>
+快来抽取礼品吧100%有奖，大奖是水果手机哦。</p>
+                </div>
+
+                <form id="participant">
+                    <div class="input-group">
+                        <span class="input-group-addon">姓名</span>
+                        <input name="name" type="text" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <label class="checkbox">
+                            <input type="radio" name="gender" value="true" checked> <span>男</span>
+                            <input type="radio" name="gender" value="false"> <span>女</span>
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">电话</span>
+                        <input name="telephone" type="text" class="form-control" placeholder="如: 0591-6487256, 15005059587">
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">邮件</span>
+                        <input name="mail" type="text" class="form-control" placeholder="如: xxxx@edu-edu.com.cn">
+                    </div>
+
+                    <div class="button-row">
+                        <button id="submit-participant" class="btn btn-default btn-block">参与抽奖</button>
+                    </div>
+
+                    <div id="error-info" class="alert alert-danger fade in">
+                        <button type="button" class="close" onclick="$('.alert').slideUp()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <div class="errors"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#error-info').hide();
+
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+        });
+
+        // 不能为空字符串
+        $.validator.addMethod('notBlank', function(value, element) {
+            return $.trim(value);
+        });
+
+        // 验证电话号码是否合格
+        $.validator.addMethod('telephone', function(value, element) {
+            return RegExs.telephone.test(value);
+        });
+
+        // 输入校验:
+        // 1. 姓名不能为空或者空字符串
+        // 2. 邮件地址不能为空，必须是合法的邮件地址
+        // 3. 电话号码不能为空，必须是合法的电话号码，且没有被使用过
+        $('#participant').validate({
+            debug: true,
+            rules: {
+                name: {
+                    required: true,
+                    notBlank: true
+                },
+                mail: {
+                    required: true,
+                    email: true
+                },
+                telephone: {
+                    required: true,
+                    telephone: true,
+                    remote: {
+                        url: Urls.participantTelephoneUnused,
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            telephone: function() {
+                                return $('#participant input[name="telephone"]').val();
+                            }
+                        }
+                    }
+                }
+            },
+            messages: {
+                name: {
+                    required: '姓名不能为空',
+                    notBlank: '姓名不能为空格'
+                },
+                mail: {
+                    required: '邮件不能为空',
+                    email: '请输入合格的邮件地址'
+                },
+                telephone: {
+                    required: '电话号码不能为空',
+                    telephone: '请输入合格的电话号码',
+                    remote: '电话号码已经使用过'
+                }
+            },
+            errorContainer: 'div.errors',
+            errorLabelContainer: $('#error-info div.errors'),
+            wrapper: 'li',
+            showErrors: function(errorMap, errorList) {
+                if (this.numberOfInvalids() > 0) {
+                    $('#error-info').show();
+                } else {
+                    $('#error-info').hide();
+                }
+
+                this.defaultShowErrors();
+            },
+            submitHandler: function(form) {
+                Participant.extract($(form)).save();
+            }
+        });
+    });
+
+    function Participant(id, name, gender, telephone, mail) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.telephone = telephone;
+        this.mail = mail;
+    }
+
+    Participant.prototype.save = function() {
+        $.ajax({
+            url: Urls.participant,
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json', // 1. 少了就会报错
+            data: JSON.stringify(this) // 2. data 需要序列化一下
+        })
+        .done(function(result) {
+            if (result.success) {
+                window.location.href = Urls.fortuneWheel;
+            } else {
+                alert(result.message);
+            }
+        })
+        .fail(function(error) {
+            console.log(error.responseText);
+            alert(error.responseText);
+        });
+    }
+
+    Participant.extract = function($form) {
+        var name = $.trim($('input[name="name"]', $form).val());
+        var gender = $('input[name="gender"]:checked', $form).val();
+        var telephone = $('input[name="telephone"]', $form).val();
+        var mail = $('input[name="mail"]', $form).val();
+
+        return new Participant(0, name, gender, telephone, mail);
+    }
+</script>
+</html>

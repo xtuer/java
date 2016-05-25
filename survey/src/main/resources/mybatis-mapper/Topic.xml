@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.TopicMapper">
+    <select id="selectAllTopics" resultType="Topic">
+        SELECT id, content, url FROM topic ORDER BY _order ASC
+    </select>
+
+    <select id="selectTopicById" parameterType="int" resultType="Topic">
+        SELECT id, content, url FROM topic WHERE id=#{id}
+    </select>
+
+    <insert id="insertTopic" parameterType="Topic" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO topic (content, url, _order) VALUES(#{content}, #{url}, 100000)
+    </insert>
+
+    <update id="updateTopic" parameterType="Topic">
+        UPDATE topic SET content=#{content}, url=#{url} WHERE id=#{id}
+    </update>
+
+    <update id="updateOrder">
+        UPDATE topic SET _order=#{order} WHERE id=#{id}
+    </update>
+
+    <delete id="deleteTopic" parameterType="int">
+        DELETE FROM topic WHERE id=#{id}
+    </delete>
+</mapper>

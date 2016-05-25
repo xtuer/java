@@ -1,22 +1,17 @@
-import java.util.Random;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.Serializable;
 
 public class Test {
-    public static void main(String[] args) {
-//        for (int i = 1; i < 29; ++i) {
-//            if (i < 10) {
-//                System.out.print("'2016-02-0" + i + "', ");
-//            } else {
-//                System.out.print("'2016-02-" + i + "', ");
-//            }
-//        }
+    public static void main(String[] args) throws Exception {
+        System.out.println(StringUtils.capitalize("hello world"));
+        System.out.println(StringUtils.join("1", "2"));
 
-        Random random = new Random();
-        for (int i = 1; i < 10; ++i) {
-            System.out.print(random.nextInt(200) + ", ");
-        }
+        String[] tokens = {"1", "2"};
+        System.out.println(StringUtils.join(tokens, ','));
 
-//        for (int i = 1; i < 17; ++i) {
-//            System.out.print("'高三 " + i + " 班', ");
-//        }
+        // Checks if a CharSequence is whitespace, empty ("") or null
+        System.out.println(StringUtils.isBlank("    ")); // true
     }
 }

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>管理调查问卷</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+    <link href="/css/lib/sidebar.css" rel="stylesheet">
+    <link href="/css/admin-common.css" rel="stylesheet">
+
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/js/lib/jquery-ui.min.js"></script>
+    <script src="/js/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="/js/lib/sidebar.js"></script>
+
+    <script src="/js/util.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/admin/Topic.js"></script>
+    <script src="/js/admin/topics.js"></script>
+
+    <style type="text/css">
+    body {
+        background-image: none !important;
+    }
+
+    #create-topic-button {
+        position: fixed;
+        top: 30px;
+        right: -2px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    #edit-topic-dialog .modal-body textarea {
+        width: 100%;
+        height: 300px;
+        margin-bottom: 10px;
+    }
+
+    .panel-heading {
+        font-weight: bold;
+        font-size: 18px;
+        background-color: white !important;
+        text-align: center;
+    }
+
+    #topic-list a {
+        max-height: 200px;
+        display: block;
+        /*padding-bottom: 20px;*/
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .badge {
+        color: gray;
+        background-color: #EEE;
+        font-weight: normal;
+        margin-top: 10px;
+    }
+
+    .badge:hover {
+        background-color: #DDD;
+    }
+
+    a.topic-content:hover {
+        /*text-shadow: 1px 1px 2px lightgray;*/
+    }
+
+    .template {
+        display: none;
+    }
+    </style>
+</head>
+<body data-uuid="D82B9451-17B5-4BB0-8CE0-99E532D17818">
+<!-- 侧边栏 -->
+<#include "nav.htm">
+
+<!-- 内容 -->
+<div class="main">
+    <!-- Content Here -->
+    <div class="container">
+        <!-- 添加投票主题 -->
+        <a id="create-topic-button" class="btn btn-default" type="button" data-toggle="tooltip" data-placement="left" title="新建调查问卷">
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+
+        <!-- 列出所有投票主题 -->
+        <div class="panel panel-default">
+            <div class="panel-heading">调查问卷</div>
+
+            <!-- List group -->
+            <ul id="topic-list" class="list-group list-group-lg">
+                <!-- 主题模版 -->
+                <li class="list-group-item topic template" data-topic-id="" data-topic-url="">
+                    <!-- 删除按钮 -->
+                    <a href="#" class="remove-topic-button pull-right" data-toggle="tooltip" data-placement="top" title="删除">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+
+                    <!-- Topic 的 content -->
+                    <a href="#" class="topic-content" data-toggle="tooltip" data-placement="right" title="点击进行编辑"></a>
+
+                    <!-- 调查问卷的发布地址 -->
+                    <div>
+                        <span class="badge"><a class="survey-address" data-toggle="tooltip" data-placement="right" title="点击进入调查问卷页面">发布地址</a></span>
+                    </div>
+
+                    <!-- 调查问卷的结果 -->
+                    <div>
+                        <span class="badge"><a class="survey-result" data-toggle="tooltip" data-placement="right" title="点击进入调查问卷统计页面">问卷统计</a></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 问卷描述模版 -->
+        <div id="topic-content" class="template"><b>请编辑问卷……</b><br><br>操作说明:<br>
+            1. 点击右上角编辑按钮编辑问卷描述<br>
+            2. 点击添加问题按钮向问卷里添加问题<br>
+            3. 拖拽问题进行改变顺序<br>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+a {
+    color: #444;
+    text-decoration: none !important;
+}
+
+a:hover {
+    color: black;
+}
+
+.alert {
+    border-radius: 0px !important;
+}
+
+.list-group-item .glyphicon,
+.edit-topic-button .glyphicon {
+    padding-left: 8px;
+    color: rgb(175, 175, 175);
+}
+
+.list-group-item .glyphicon:hover,
+.edit-topic-button .glyphicon:hover {
+    color: #444;
+}
+
+.modal-footer button {
+    min-width: 100px;
+}
+
+.dropdown-toggle {
+    border-radius: 0px !important;
+}
+
+.container {
+    padding-top: 20px;
+}

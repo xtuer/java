@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.ParticipantGiftMapper">
+    <insert id="insertParticipantGift">
+        INSERT INTO participant_gift (participant_id, gift_code)
+        VALUES(#{participantId}, #{giftCode})
+    </insert>
+
+    <select id="countOfAllParticipantGifts" resultType="int">
+        SELECT count(1) FROM participant_gift
+    </select>
+
+    <select id="selectParticipantGifts" resultMap="participantGiftMap">
+        SELECT
+            pg.id           as participant_gift_id,
+            pg.message  as participant_gift_description,
+            p.id            as participant_id,
+            p.name          as participant_name,
+            p.gender        as participant_gender,
+            p.telephone     as participant_telephone,
+            p.mail          as participant_mail,
+            g.id            as gift_id,
+            g.name          as gift_name,
+            g.info          as gift_info,
+            g.code          as gift_code
+        FROM participant p, gift g, participant_gift pg
+        WHERE pg.participant_id=p.id AND pg.gift_code=g.code
+        ORDER BY pg.id
+        LIMIT #{offset}, #{count}
+    </select>
+
+    <update id="updateGiftDescription">
+        UPDATE participant_gift SET message = #{message} WHERE id = #{id}
+    </update>
+
+    <resultMap id="participantGiftMap" type="ParticipantGift">
+        <id property="id" column="participant_gift_id"/>
+        <result property="message" column="participant_gift_description"/>
+
+        <association property="participant" column="participant_id" columnPrefix="participant_" resultMap="participantMap"/>
+        <association property="gift" column="gift_id" columnPrefix="gift_" resultMap="GiftMap"/>
+    </resultMap>
+    <resultMap id="participantMap" type="Participant">
+        <id property="id" column="id"/>
+        <result property="name"      column="name"/>
+        <result property="gender"    column="gender"/>
+        <result property="telephone" column="telephone"/>
+        <result property="mail"      column="mail"/>
+    </resultMap>
+    <resultMap id="GiftMap" type="Gift">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="info" column="info"/>
+        <result property="code" column="code"/>
+    </resultMap>
+</mapper>

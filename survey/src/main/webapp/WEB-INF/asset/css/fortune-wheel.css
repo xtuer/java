@@ -1,0 +1,79 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    font-size: 16px;
+    font-family: "Microsoft YaHei";
+}
+
+.fortune-wheel-box {
+    width: 300px;
+    height: 300px;
+    margin: 100px auto;
+    position: relative;
+}
+
+.fortune-wheel-box canvas {
+    position: absolute;
+}
+
+#startButton {
+    width: 60px;
+    height: 60px;
+    left: 120px;
+    top: 120px;
+    border-radius: 100%;
+    position: absolute;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    outline: none;
+    z-index: 50;
+}
+
+#myCanvas00 {
+    background-color: gray;
+    border-radius: 200px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+#myCanvas01, #myCanvas02, #myCanvas03 {
+    left: 50px;
+    top: 50px;
+}
+
+#myCanvas01 {
+    z-index: 10;
+}
+
+#myCanvas02 {
+    z-index: 20;
+}
+
+#myCanvas03 {
+    z-index: 30;
+}
+
+/*#myCanvas00, #myCanvas01, #myCanvas02, #myCanvas03 {
+    -o-transform: transform 6s;
+    -ms-transform: transform 6s;
+    -moz-transform: transform 6s;
+    -webkit-transform: transform 6s;
+    transition: transform 6s;
+    -o-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+}*/
+
+button {
+    border-radius: 20px;
+    padding: 10px;
+}
+
+#myCanvas04 {
+    background-color: gray;
+    border-radius: 200px;
+    box-shadow: 0 0 4px gray;
+    overflow: hidden;
+}

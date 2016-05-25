@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.QuestionMapper">
+    <sql id="columns">
+        question.id               as id,
+        question.topic_id         as topic_id,
+        question.content          as content,
+        question.type             as type,
+        question._order           as _order,
+        question_item.id          as question_item_id,
+        question_item.question_id as question_item_question_id,
+        question_item.content     as question_item_content,
+        question_item.type        as question_item_type
+    </sql>
+
+    <select id="selectQuestionsByTopicId" parameterType="int" resultMap="questionResultMap">
+        SELECT <include refid="columns"/>
+        FROM question
+        LEFT JOIN question_item ON question.id = question_item.question_id
+        WHERE topic_id = #{topicId}
+        ORDER BY _order, question_item.id
+    </select>
+
+    <select id="selectQuestion" parameterType="int" resultMap="questionResultMap">
+        SELECT <include refid="columns"/>
+        FROM question
+        LEFT JOIN question_item ON question.id = question_item.question_id
+        WHERE question.id = #{id}
+    </select>
+
+    <select id="selectQuestionIdsByTopicId" parameterType="int" resultType="int">
+        SELECT id FROM question WHERE topic_id = #{topicId}
+    </select>
+
+    <insert id="insertQuestion" parameterType="com.xtuer.bean.Question" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (topic_id, content, type, _order) VALUES(#{topicId}, #{content}, #{type}, 100000)
+    </insert>
+
+    <update id="updateQuestion" parameterType="com.xtuer.bean.Question">
+        UPDATE question SET topic_id = #{topicId}, content = #{content}, type = #{type} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteQuestion" parameterType="int">
+        DELETE FROM question WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteQuestionsByTopicId" parameterType="int">
+        DELETE FROM question WHERE topic_id = #{topicId}
+    </delete>
+
+    <update id="updateOrder">
+        UPDATE question SET _order = #{order} WHERE id = #{questionId}
+    </update>
+
+    <!--Result map-->
+    <resultMap id="questionResultMap" type="Question">
+        <id property="id"          column="id"/>
+        <result property="topicId" column="topic_id"/>
+        <result property="content" column="content"/>
+        <result property="type"    column="type"/>
+        <result property="order"   column="_order"/>
+
+        <association property="items" column="question_item_id" columnPrefix="question_item_" resultMap="questionItemResultMap"/>
+    </resultMap>
+    <resultMap id="questionItemResultMap" type="QuestionItem">
+        <id property="id"             column="id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="content"    column="content"/>
+        <result property="type"       column="type"/>
+    </resultMap>
+</mapper>

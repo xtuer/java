@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>调查问卷</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+    <link href="/js/lib/icheck/skins/square/blue.css" rel="stylesheet">
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/js/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="/js/lib/icheck/icheck.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/survey.js"></script>
+
+    <style>
+    .panel-heading {
+        background-color: white !important;
+    }
+
+    .container {
+        padding-top: 30px;
+    }
+
+    .question-content {
+        font-weight: bold;
+    }
+
+    .question-item .checkbox span {
+        margin-left: 5px;
+        font-weight: normal;
+    }
+
+    .question-item .extra-input {
+        display: inline-block;
+        width: 200px;
+        margin-left: 10px;
+    }
+
+    .question-item.suggestion textarea {
+        height: 100px;
+        margin-top: 5px;
+    }
+    </style>
+</head>
+
+<body data-topic-id="${topic.id}" data-uuid="454BDFD2-FD4F-4A40-BD4A-BF20F21F4B62">
+<!-- 内容 -->
+<div class="main">
+    <!-- Content Here -->
+    <div class="container">
+        <!-- 列出所有投票问题 -->
+        <div class="panel panel-default">
+            <!-- 主题 -->
+            <div class="panel-heading" id="topic" data-topic-id="${topic.id}" data-topic-url="${topic.url!""}">
+                <div class="topic-content">${topic.content}</div>
+            </div>
+
+            <!-- 问题列表 -->
+            <ul class="list-group list-group-lg question-list" id="question-list">
+                <#list questions as question>
+                    <li class="list-group-item question" data-question-id="${question.id}" data-question-type="${question.type}">
+                        <!-- 问题的内容 -->
+                        <div><span class="question-content">${question.content}</span></div>
+
+                        <div class="question-items">
+                            <#list question.items as item>
+                                <#if question.type == 1 && item.type == 0> <!-- 单选题无输入 -->
+                                    <div class="question-item single" data-question-item-id="${item.id}" data-question-item-type="0">
+                                        <label class="checkbox">
+                                            <input type="radio" name="${question.id}"><span>${item.content?html}</span>
+                                        </label>
+                                    </div>
+                                <#elseif question.type == 1 && item.type == 1> <!-- 单选题有输入 -->
+                                    <div class="question-item single-with-input" data-question-item-id="${item.id}" data-question-item-type="1">
+                                        <label class="checkbox">
+                                            <input type="radio" name="${question.id}"><span>${item.content?html}</span>
+                                            <input type="text" class="form-control extra-input">
+                                        </label>
+                                    </div>
+                                <#elseif question.type == 2 && item.type == 0> <!-- 多选题无输入 -->
+                                    <div class="question-item multiple" data-question-item-id="${item.id}" data-question-item-type="0">
+                                        <label class="checkbox">
+                                            <input type="checkbox"><span>${item.content?html}</span>
+                                        </label>
+                                    </div>
+                                <#elseif question.type == 2 && item.type == 1> <!-- 多选题有输入 -->
+                                    <div class="question-item multiple-with-input" data-question-item-id="${item.id}" data-question-item-type="1">
+                                        <label class="checkbox">
+                                            <input type="checkbox"><span>${item.content?html}</span>
+                                            <input type="text" class="form-control extra-input">
+                                        </label>
+                                    </div>
+                                </#if>
+                            </#list>
+                            <#if question.type == 3> <!-- 建议题 -->
+                                <div class="question-item suggestion" data-question-item-type="0">
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </#if>
+                        </div>
+                    </li>
+                </#list>
+
+                <li class="list-group-item">
+                    <form id="survey-submit-form" action="/surveys/${topic.id}/submit" method="POST">
+                        <input name="answers" type="hidden">
+                        <button id="submit-button" class="btn btn btn-default btn-block" type="submit">提交</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <script src="/js/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        console.log('b.html: 道格拉斯 Peter');
+
+        $('#holder').load('/a.html');
+
+        /*$.get('/a.html', function(data) {
+            $('#holder').append(data);
+        });*/
+    });
+    </script>
+</head>
+<body>
+    道格拉斯 Peter
+    <div id="holder"></div>
+</body>
+</html>
