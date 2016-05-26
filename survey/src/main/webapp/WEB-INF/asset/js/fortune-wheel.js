@@ -22,43 +22,27 @@ $(document).ready(function() {
 
 // 从服务器获取 gift code: 为奖品数组的下标
 function getGift() {
-    $.ajax({
-        url: Urls.gift,
-        type: 'GET',
-        dataType: 'json',
-        contentType: 'application/json' // 1. 少了就会报错
-    })
-    .done(function(result) {
+    Utils.restGet(Urls.REST_GIFTS, {}, function(result) {
         if (result.success) {
             var giftCode = result.data;
             rotateWheel(giftCode);
         } else {
-            alert(result.description);
+            alert(result.message);
         }
-    })
-    .fail(function(error) {
-        console.log(error.responseText);
+    }, function(error) {
         alert(error.responseText);
     });
 }
 
 function saveGift(giftCode) {
-    $.ajax({
-        url: Urls.gift,
-        type: 'PUT',
-        dataType: 'json',
-        contentType: 'application/json' // 1. 少了就会报错
-    })
-    .done(function(result) {
+    Utils.restCreate(Urls.REST_GIFTS, {}, function(result) {
         if (result.success) {
             alert("您的奖品是: " + awards[giftCode].name + awards[giftCode].info);
-            window.location.href = Urls.submitSuccess;
+            window.location.href = Urls.SUBMIT_SUCCESS;
         } else {
-            alert(result.description);
+            alert(result.message);
         }
-    })
-    .fail(function(error) {
-        console.log(error.responseText);
+    }, function(error) {
         alert(error.responseText);
     });
 }

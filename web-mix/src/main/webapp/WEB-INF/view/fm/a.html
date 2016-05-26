@@ -6,9 +6,20 @@
     <script src="/js/jquery.min.js"></script>
     <script>
     $(document).ready(function() {
-        console.log('a.html: 你好，欢迎光临');
-        $('button').click(function() {
-            console.log('pressed');
+        $.ajax({
+            url:  'ajax-test',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({age: 10})
+        })
+        .done(function(result) {
+            console.log("success");
+            console.log(result);
+        })
+        .fail(function(error) {
+            console.log("error");
+            console.log(error);
         });
     });
     </script>

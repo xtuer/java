@@ -106,4 +106,27 @@ public class SurveyController {
             return UriViewConstants.REDIRECT + UriViewConstants.SUBMIT_SUCCESS;
         }
     }
+
+    @RequestMapping(UriViewConstants.URI_ADMIN_SURVEYS_RESULT)
+    public String surveyResultPage(@PathVariable int surveyId, ModelMap modal) {
+        Topic topic = topicService.selectTopicById(surveyId);
+
+        // 找不到 topic 则访问 404 页面
+        if (topic == null) {
+            logger.info("问卷 {} 不存在", surveyId);
+            return UriViewConstants.VIEW_404;
+        }
+
+        List<Question> questions = questionService.selectQuestionsByTopicId(surveyId);
+
+        if (questions == null || questions.size() == 0) {
+            logger.info("问卷 {} 没有问题", surveyId);
+            return UriViewConstants.VIEW_404;
+        }
+
+        modal.put("topic", topic);
+        modal.put("questions", questions);
+
+        return UriViewConstants.VIEW_ADMIN_SURVEYS_RESULT;
+    }
 }

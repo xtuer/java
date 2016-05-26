@@ -10,7 +10,7 @@ $(document).ready(function() {
         var $td = $(this);
         var desc = $td.text();
         var $input = $('<input type="text" class="form-control">');
-        $td.html($input).addClass('editing');
+        $td.html($input).addClass('editing'); // 显示 <input>
         $input.val(desc).focus();
     });
 
@@ -22,13 +22,17 @@ $(document).ready(function() {
     // input 失去焦点时保存 gift code 并删除 input
     $(document).on('blur', 'table input', function(e) {
         e.stopPropagation();
-        var $input = $(this);
-        var $tr = $input.closest('tr');
-        var $td = $input.closest('td');
-        var participantGiftId = $tr.attr('data-participant-gift-id');
-        var giftDescription = $.trim($input.val());
-        $td.html(giftDescription).removeClass('editing');
-        ParticipantGifts.saveParticipantGiftDescription(participantGiftId, giftDescription);
+        ParticipantGifts.saveParticipantGiftDescriptionWithInput($(this));
+    });
+
+    // input 失去焦点时保存 gift code 并删除 input
+    $(document).on('keypress', 'table input', function(e) {
+        e.stopPropagation();
+        if('13' == e.keyCode) {
+            ParticipantGifts.saveParticipantGiftDescriptionWithInput($(this));
+        } else if ('27' == e.keyCode) {
+            $(this).blur();
+        }
     });
 });
 
@@ -42,13 +46,7 @@ ParticipantGifts.prepareTemplates = function() {
 }
 
 ParticipantGifts.queryParticipantGiftsPagesCount = function(page) {
-    $.ajax({
-        url: Urls.participantGiftsPagesCount,
-        type: 'GET',
-        dataType: 'json',
-        contentType: 'application/json' // 1. 少了就会报错
-    })
-    .done(function(pagesCount) {
+    Utils.restGet(Urls.REST_PARTICIPANT_GIFTS_PAGES_COUNT, {}, function(pagesCount) {
         $('#page-section').pagination({
             pages: pagesCount,
             currentPage: 1,
@@ -61,30 +59,20 @@ ParticipantGifts.queryParticipantGiftsPagesCount = function(page) {
                 ParticipantGifts.queryParticipantGifts(page);
             }
         });
-    })
-    .fail(function(error) {
-        console.log(error.responseText);
-        alert(error.responseText);
+    }, function(error) {
+        Utils.showError(error.responseText);
     });
 }
 
 ParticipantGifts.queryParticipantGifts = function(page) {
-    $.ajax({
-        url: Urls.participantGifts.replace('{page}', page),
-        type: 'GET',
-        dataType: 'json',
-        contentType: 'application/json' // 1. 少了就会报错
-    })
-    .done(function(participantGifts) {
+    Utils.restGet(Urls.REST_PARTICIPANT_GIFTS, {page: page}, function(participantGifts) {
         $('table tr:gt(0)').remove();
 
         for (var i = 0; i < participantGifts.length; ++i) {
             ParticipantGifts.showParticipantGifts(participantGifts[i]);
         }
-    })
-    .fail(function(error) {
-        console.log(error.responseText);
-        alert(error.responseText);
+    }, function(error) {
+        Utils.showError(error.responseText);
     });
 }
 
@@ -105,23 +93,23 @@ ParticipantGifts.showParticipantGifts = function(participantGift) {
     $('table').append($tr);
 }
 
-ParticipantGifts.saveParticipantGiftDescription = function(participantGiftId, giftDescription) {
-    var data = {id: participantGiftId, description: giftDescription};
-    console.log(data);
+ParticipantGifts.saveParticipantGiftDescriptionWithInput = function($input) {
+    var $tr = $input.closest('tr');
+    var $td = $input.closest('td');
+    var participantGiftId = $tr.attr('data-participant-gift-id');
+    var giftDescription = $.trim($input.val());
+    $td.html(giftDescription).removeClass('editing'); // 会删除 <input>
+    ParticipantGifts.saveParticipantGiftDescription(participantGiftId, giftDescription);
+}
 
-    $.ajax({
-        url: Urls.participantGiftDescription,
-        type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json', // 1. 少了就会报错
-        data: JSON.stringify(data) // 2. data 需要序列化一下
-    })
-    .done(function(result) {
+ParticipantGifts.saveParticipantGiftDescription = function(participantGiftId, description) {
+    var url = Urls.REST_PARTICIPANT_GIFTS_DESCRIPTION.format({participantGiftId: participantGiftId});
+
+    Utils.restUpdate(url, {description: description}, function(result) {
         if (!result.success) {
-            alert(result.description);
+            Utils.showError(result.message);
         }
-    })
-    .fail(function(error) {
-        alert(result.responseText);
+    }, function(error) {
+        Utils.showError(error.responseText);
     });
 }

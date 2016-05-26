@@ -218,7 +218,7 @@ Question.prototype.insert = function() {
     }
 
     var self = this;
-    Utils.restCreate(Urls.QUESTIONS.format({topicId: Topic.getTopicId()}), self.jsonData(), function(result) {
+    Utils.restCreate(Urls.REST_QUESTIONS.format({topicId: Topic.getTopicId()}), self.jsonData(), function(result) {
         if (result.success) {
             self.id = result.data;
             self.showInQuestionList();
@@ -237,7 +237,7 @@ Question.prototype.update = function() {
     }
 
     var self = this;
-    var url = Urls.QUESTIONS_WITH_ID.format({topicId: Topic.getTopicId(), questionId: self.id});
+    var url = Urls.REST_QUESTIONS_WITH_ID.format({topicId: Topic.getTopicId(), questionId: self.id});
     Utils.restUpdate(url, self.jsonData(), function(result) {
         if (result.success) {
             self.showInQuestionList();
@@ -251,7 +251,7 @@ Question.prototype.update = function() {
 }
 
 Question.updateOrders = function(topicId, orders) {
-    Utils.restUpdate(Urls.QUESTIONS_ORDERS.format({topicId: topicId}), orders, function(result) {
+    Utils.restUpdate(Urls.REST_QUESTIONS_ORDERS.format({topicId: topicId}), orders, function(result) {
         if (!result.success) {
             Utils.showError(result.message);
         }
@@ -262,7 +262,7 @@ Question.updateOrders = function(topicId, orders) {
 
 Question.prototype.remove = function() {
     var self = this;
-    var url = Urls.QUESTIONS_WITH_ID.format({topicId: Topic.getTopicId(), questionId: self.id});
+    var url = Urls.REST_QUESTIONS_WITH_ID.format({topicId: Topic.getTopicId(), questionId: self.id});
 
     Utils.restDelete(url, {}, function(result) {
         if (result.success) {
@@ -443,7 +443,7 @@ Question.extractQuestionFromQuestionList = function($question) {
 
 Question.queryTopicAndQuestionsByTopicId = function(topicId) {
     // 请求 topic
-    Utils.restGet(Urls.TOPICS_WITH_ID.format({topicId: topicId}), {}, function(topic) {
+    Utils.restGet(Urls.REST_TOPICS_WITH_ID.format({topicId: topicId}), {}, function(topic) {
         new Topic(topic.id, topic.content, topic.url).showInPanelHeading();
     }, function(error) {
         if (200 == error.status) {
@@ -455,7 +455,7 @@ Question.queryTopicAndQuestionsByTopicId = function(topicId) {
     });
 
     // 请求 topic's questions
-    Utils.restGet(Urls.QUESTIONS.format({topicId: topicId}), {}, function(questions) {
+    Utils.restGet(Urls.REST_QUESTIONS.format({topicId: topicId}), {}, function(questions) {
         for (var i = 0; i < questions.length; ++i) {
             var q = questions[i];
             var items = [];

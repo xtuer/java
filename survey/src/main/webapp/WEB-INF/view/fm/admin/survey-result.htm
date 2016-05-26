@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>调查问卷</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+    <link href="/js/lib/icheck/skins/square/blue.css" rel="stylesheet">
+    <link href="/css/lib/sidebar.css" rel="stylesheet">
+
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/js/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="/js/lib/icheck/icheck.js"></script>
+    <script src="/js/lib/sidebar.js"></script>
+
+    <script src="/js/util.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/admin/survey-result.js"></script>
+
+    <style>
+    .panel-heading {
+        background-color: white !important;
+    }
+
+    .container {
+        padding-top: 30px;
+    }
+
+    .question-content {
+        font-weight: bold;
+    }
+
+    .question-items {
+        padding-top: 10px;
+    }
+
+    .question-item .checkbox {
+        margin-top: 0;
+    }
+
+    .question-item .checkbox span {
+        margin-left: 5px;
+        font-weight: normal;
+    }
+
+    .question-item .extra-input {
+        display: inline-block;
+        width: 200px;
+        margin-left: 10px;
+    }
+
+    .question-item.suggestion textarea {
+        height: 100px;
+        margin-top: 5px;
+    }
+
+    .progress-bar {
+        color: black;
+        text-align: left;
+    }
+
+    .progress-holder {
+        padding-top: 0;
+        padding-bottom: 10px;
+    }
+
+    .progress {
+        margin-bottom: 0;
+    }
+
+    .progress {
+        position: relative;
+    }
+
+    .progress span {
+        position: absolute;
+        display: block;
+        width: 100%;
+        color: black;
+        padding-left: 10px;
+     }
+
+    .suggestions {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .suggestions .badge {
+        margin: 5px;
+    }
+    </style>
+</head>
+
+<body data-topic-id="${topic.id}" data-uuid="7CE8600C-200E-40D2-97BD-0640D90DCBD3">
+<!-- 侧边栏 -->
+<#include "nav.htm">
+
+<!-- 内容 -->
+<div class="main">
+    <!-- Content Here -->
+    <div class="container">
+        <!-- 列出所有投票问题 -->
+        <div class="panel panel-default">
+            <!-- 主题 -->
+            <div class="panel-heading" id="topic" data-topic-id="${topic.id}" data-topic-url="${topic.url!""}">
+            <div class="topic-content">${topic.content}</div>
+        </div>
+
+        <!-- 问题列表 -->
+        <ul class="list-group list-group-lg question-list" id="question-list">
+            <#list questions as question>
+                <li class="list-group-item question" data-question-id="${question.id}" data-question-type="${question.type}">
+                    <!-- 问题的内容 -->
+                    <div><span class="question-content">${question.content}</span></div>
+
+                    <div class="question-items">
+                        <#list question.items as item>
+                            <#if question.type == 1 && item.type == 0> <!-- 单选题无输入 -->
+                                <div class="question-item single row" data-question-item-id="${item.id}" data-question-item-type="0">
+                                    <label class="checkbox col-md-8">
+                                        <div class="icheckbox" disabled>
+                                            <input type="radio" name="${question.id}" disabled><span>${item.content?html}</span>
+                                        </div>
+                                    </label>
+
+                                    <div class="col-md-4 progress-holder">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <#elseif question.type == 1 && item.type == 1> <!-- 单选题有输入 -->
+                                <div class="question-item single-with-input row" data-question-item-id="${item.id}" data-question-item-type="1">
+                                    <label class="checkbox col-md-8">
+                                        <div class="icheckbox disabled">
+                                            <input type="radio" name="${question.id}" disabled><span>${item.content?html}</span>
+                                            <button type="button" class="btn btn-default btn-sm load-button" data-offset="0">
+                                                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 加载
+                                            </button>
+                                        </div>
+                                    </label>
+
+                                    <div class="col-md-4 progress-holder">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="suggestions" style="clear: both"></div>
+                                </div>
+                            <#elseif question.type == 2 && item.type == 0> <!-- 多选题无输入 -->
+                                <div class="question-item multiple row" data-question-item-id="${item.id}" data-question-item-type="0">
+                                    <label class="checkbox col-md-8">
+                                        <div class="icheckbox" disabled>
+                                            <input type="checkbox" disabled><span>${item.content?html}</span>
+                                        </div>
+                                    </label>
+
+                                    <div class="col-md-4 progress-holder">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <#elseif question.type == 2 && item.type == 1> <!-- 多选题有输入 -->
+                                <div class="question-item multiple-with-input row" data-question-item-id="${item.id}" data-question-item-type="1">
+                                    <label class="checkbox col-md-8">
+                                        <div class="icheckbox" disabled>
+                                            <input type="checkbox" disabled><span>${item.content?html}</span>
+                                            <button type="button" class="btn btn-default btn-sm load-button" data-offset="0">
+                                                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 加载
+                                            </button>
+                                        </div>
+                                    </label>
+
+                                    <div class="col-md-4 progress-holder">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="suggestions" style="clear: both"></div>
+                                </div>
+                            </#if>
+                        </#list>
+
+
+                        <#if question.type == 3> <!-- 建议题 -->
+                            <div class="question-item suggestion row" data-question-item-id="0" data-question-item-type="0">
+                                <div class="col-md-8">
+                                    <button type="button" class="btn btn-default btn-sm load-button" data-offset="0">
+                                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 加载
+                                    </button>
+                                </div>
+
+                                <div class="col-md-4 progress-holder">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-info progress-bar-striped" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="suggestions" style="clear: both"></div>
+                            </div>
+                        </#if>
+                    </div>
+                </li>
+            </#list>
+        </ul>
+    </div>
+</div>
+</div>
+</body>

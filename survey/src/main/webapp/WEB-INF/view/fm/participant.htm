@@ -5,15 +5,19 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/js/icheck/skins/square/blue.css" rel="stylesheet">
-    <link href="/js/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" >
+    <link href="/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+    <link href="/js/lib/icheck/skins/square/blue.css" rel="stylesheet">
+    <link href="/js/lib/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" >
 
-    <script src="/js/jquery.js"></script>
-    <script src="/js/jquery.validate.js"></script>
-    <script src="/js/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/js/icheck/icheck.js"></script>
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/js/lib/jquery.validate.js"></script>
+    <script src="/js/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="/js/lib/icheck/icheck.js"></script>
+
     <script src="/js/constants.js"></script>
+    <script src="/js/util.js"></script>
 
     <style type="text/css">
     .input-group {
@@ -101,7 +105,7 @@
 
         // 验证电话号码是否合格
         $.validator.addMethod('telephone', function(value, element) {
-            return RegExs.telephone.test(value);
+            return RegExs.TELEPHONE.test(value);
         });
 
         // 输入校验:
@@ -123,11 +127,11 @@
                     required: true,
                     telephone: true,
                     remote: {
-                        url: Urls.participantTelephoneUnused,
-                        type: 'post',
+                        url: Urls.REST_PARTICIPANTS_TELEPHONE_NUMBER_UNUSED,
+                        type: 'get',
                         dataType: 'json',
                         data: {
-                            telephone: function() {
+                            telephoneNumber: function() {
                                 return $('#participant input[name="telephone"]').val();
                             }
                         }
@@ -176,23 +180,14 @@
     }
 
     Participant.prototype.save = function() {
-        $.ajax({
-            url: Urls.participant,
-            type: 'PUT',
-            dataType: 'json',
-            contentType: 'application/json', // 1. 少了就会报错
-            data: JSON.stringify(this) // 2. data 需要序列化一下
-        })
-        .done(function(result) {
+        Utils.restCreate(Urls.REST_PARTICIPANTS, this, function(result) {
             if (result.success) {
-                window.location.href = Urls.fortuneWheel;
+                window.location.href = Urls.FORTUNE_WHEEL;
             } else {
-                alert(result.message);
+                Utils.showError(error.message);
             }
-        })
-        .fail(function(error) {
-            console.log(error.responseText);
-            alert(error.responseText);
+        }, function(error) {
+            Utils.showError(error.responseText);
         });
     }
 

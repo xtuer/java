@@ -12,13 +12,15 @@
     </insert>
 
     <select id="countOfAllParticipantGifts" resultType="int">
-        SELECT count(1) FROM participant_gift
+        SELECT count(1)
+        FROM participant p, gift g, participant_gift pg
+        WHERE pg.participant_id=p.id AND pg.gift_code=g.code
     </select>
 
     <select id="selectParticipantGifts" resultMap="participantGiftMap">
         SELECT
             pg.id           as participant_gift_id,
-            pg.message  as participant_gift_description,
+            pg.description  as participant_gift_description,
             p.id            as participant_id,
             p.name          as participant_name,
             p.gender        as participant_gender,
@@ -35,12 +37,12 @@
     </select>
 
     <update id="updateGiftDescription">
-        UPDATE participant_gift SET message = #{message} WHERE id = #{id}
+        UPDATE participant_gift SET description = #{description} WHERE id = #{id}
     </update>
 
     <resultMap id="participantGiftMap" type="ParticipantGift">
         <id property="id" column="participant_gift_id"/>
-        <result property="message" column="participant_gift_description"/>
+        <result property="description" column="participant_gift_description"/>
 
         <association property="participant" column="participant_id" columnPrefix="participant_" resultMap="participantMap"/>
         <association property="gift" column="gift_id" columnPrefix="gift_" resultMap="GiftMap"/>

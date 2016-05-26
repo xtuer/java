@@ -131,7 +131,7 @@ Topic.prototype.update = function() {
 
     var self = this;
 
-    Utils.restUpdate(Urls.TOPICS_WITH_ID.format({topicId: self.id}),
+    Utils.restUpdate(Urls.REST_TOPICS_WITH_ID.format({topicId: self.id}),
         {id: self.id, content: self.content, url: self.url},
         function(result) {
             if (result.success) {
@@ -171,7 +171,7 @@ Topic.prototype.update = function() {
 Topic.prototype.remove = function() {
     var topicId = this.id;
 
-    Utils.restDelete(Urls.TOPICS_WITH_ID.format({topicId: topicId}), {}, function(result) {
+    Utils.restDelete(Urls.REST_TOPICS_WITH_ID.format({topicId: topicId}), {}, function(result) {
         if (result.success) {
             Topic.findTopicFromTopicList(topicId).remove();
         } else {
@@ -186,7 +186,7 @@ Topic.prototype.remove = function() {
  * 更新 topic 的顺序
  */
 Topic.updateOrders = function(orders) {
-    Utils.restUpdate(Urls.TOPICS_ORDERS, orders, function(result) {
+    Utils.restUpdate(Urls.REST_TOPICS_ORDERS, orders, function(result) {
         if (!result.success) {
             Utils.showError(result.message);
         }

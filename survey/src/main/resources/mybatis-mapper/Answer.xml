@@ -6,6 +6,21 @@
 
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.AnswerMapper">
+    <!-- 取得 topic 下每个问题回答的个数 -->
+    <select id="topicAnswersStatistic" parameterType="int" resultType="map">
+        SELECT  question_id as questionId,
+                question_item_id as questionItemId,
+                COUNT(question_item_id) as questionItemAnswersCount
+        FROM answer WHERE topic_id=#{topicId} GROUP BY question_item_id
+    </select>
+
+    <!-- 查询用户对某个选项的输入 -->
+    <select id="selectQuestionAnswerInputs" resultType="string">
+        SELECT DISTINCT content FROM answer
+        WHERE question_id=#{questionId} AND question_item_id=#{questionItemId}
+        LIMIT #{offset}, 50
+    </select>
+
     <insert id="insertAnswer" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO answer (topic_id, question_id, question_item_id, content)
         VALUES(#{topicId}, #{questionId}, #{questionItemId}, #{content})

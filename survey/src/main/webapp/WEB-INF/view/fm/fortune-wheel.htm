@@ -5,10 +5,12 @@
 	<title>幸运转盘</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<link rel="stylesheet" type="text/css" href="/css/fortune-wheel.css">
-	<script type="text/javascript" src="/js/jquery.js"></script>
-	<script type="text/javascript" src="/js/jquery.rotate.js"></script>
+
+	<script src="/js/lib/jquery.js"></script>
+	<script src="/js/lib/jquery.rotate.js"></script>
 	<script src="/js/constants.js"></script>
-	<script type="text/javascript" src="/js/fortune-wheel.js"></script>
+	<script src="/js/fortune-wheel.js"></script>
+	<script src="/js/util.js"></script>
 
 	<style>
 	#fortune-wheel-box {
@@ -22,7 +24,7 @@
 	#wheel {
 		width: 360px;
 		height: 360px;
-		background-image: url(/image/wheel.png);
+		background-image: url(/img/wheel.png);
 		transform: rotate(0deg);
 	}
 
@@ -32,7 +34,7 @@
 		height: 150px;
 		left: 103px;
 		top: 104px;
-		background-image: url(/image/arrow.png);
+		background-image: url(/img/arrow.png);
 	}
 	</style>
 </head>

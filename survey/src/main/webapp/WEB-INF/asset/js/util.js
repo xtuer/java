@@ -21,15 +21,15 @@ Utils.restGet = function(url, data, successCallback, failCallback, completeCallb
 }
 
 Utils.restCreate = function(url, data, successCallback, failCallback, completeCallback) {
-    Utils.ajax(url, data, 'POST', successCallback, failCallback, completeCallback);
+    Utils.ajax(url, JSON.stringify(data), 'POST', successCallback, failCallback, completeCallback);
 }
 
 Utils.restUpdate = function(url, data, successCallback, failCallback, completeCallback) {
-    Utils.ajax(url, data, 'PUT', successCallback, failCallback, completeCallback);
+    Utils.ajax(url, JSON.stringify(data), 'PUT', successCallback, failCallback, completeCallback);
 }
 
 Utils.restDelete = function(url, data, successCallback, failCallback, completeCallback) {
-    Utils.ajax(url, data, 'DELETE', successCallback, failCallback, completeCallback);
+    Utils.ajax(url, JSON.stringify(data), 'DELETE', successCallback, failCallback, completeCallback);
 }
 
 /**
@@ -53,7 +53,7 @@ Utils.ajax = function(url, data, httpMethod, successCallback, failCallback, comp
         type: httpMethod,
         dataType: 'json',
         contentType: 'application/json',
-        data: JSON.stringify(data)
+        data: data
     })
     .done(function(result) {
         if (Utils.isFunctionExist(successCallback)) {

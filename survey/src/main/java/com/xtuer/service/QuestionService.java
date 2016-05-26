@@ -1,5 +1,6 @@
 package com.xtuer.service;
 
+import com.xtuer.mapper.AnswerMapper;
 import com.xtuer.mapper.QuestionItemMapper;
 import com.xtuer.mapper.QuestionMapper;
 import com.xtuer.bean.Question;
@@ -27,6 +28,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionItemMapper questionItemMapper;
+
+    @Autowired
+    private AnswerMapper answerMapper;
 
     public List<Question> selectQuestionsByTopicId(int topicId) {
         return questionMapper.selectQuestionsByTopicId(topicId);
@@ -105,6 +109,10 @@ public class QuestionService {
         }
 
         return new Result(true, "顺序保存成功");
+    }
+
+    public List<String> selectQuestionAnswerInputs(int questionId, int questionItemId, int offset) {
+        return answerMapper.selectQuestionAnswerInputs(questionId, questionItemId, offset);
     }
 
     /**

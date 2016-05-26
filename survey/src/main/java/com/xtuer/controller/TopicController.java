@@ -32,7 +32,7 @@ public class TopicController {
      * 获取所有 topics 的 JSON 表示字符串
      * @return 所有 topics 的 JSON 字符串
      */
-    @RequestMapping(UriViewConstants.URI_TOPICS)
+    @RequestMapping(UriViewConstants.REST_TOPICS)
     @ResponseBody
     public List<Topic> selectAllTopics() {
         return topicService.selectAllTopics();
@@ -43,7 +43,7 @@ public class TopicController {
      * @param topicId topic 的 id
      * @return topic 的 JSON 字符串
      */
-    @RequestMapping(value = UriViewConstants.URI_TOPICS_WITH_ID, method = RequestMethod.GET)
+    @RequestMapping(value = UriViewConstants.REST_TOPICS_WITH_ID, method = RequestMethod.GET)
     @ResponseBody
     public Topic selectTopic(@PathVariable int topicId) {
         return topicService.selectTopicById(topicId);
@@ -54,7 +54,7 @@ public class TopicController {
      * @param topic 要创建的 topic 对象
      * @return 创建结果的 Result 的表示, 自动的转换为 JSON
      */
-    @RequestMapping(value = UriViewConstants.URI_TOPICS, method = RequestMethod.POST)
+    @RequestMapping(value = UriViewConstants.REST_TOPICS, method = RequestMethod.POST)
     @ResponseBody
     public Result insertTopic(@RequestBody Topic topic) {
         return topicService.insertTopic(topic);
@@ -65,7 +65,7 @@ public class TopicController {
      * @param topic 要更新的 topic 对象
      * @return 更新结果的 Result 的表示, 自动的转换为 JSON
      */
-    @RequestMapping(value = UriViewConstants.URI_TOPICS_WITH_ID, method = RequestMethod.PUT)
+    @RequestMapping(value = UriViewConstants.REST_TOPICS_WITH_ID, method = RequestMethod.PUT)
     @ResponseBody
     public Result updateTopic(@RequestBody Topic topic) {
         return topicService.updateTopic(topic);
@@ -76,21 +76,25 @@ public class TopicController {
      * @param topicId topic 的 id
      * @return 删除结果的 Result 的表示, 自动的转换为 JSON
      */
-    @RequestMapping(value = UriViewConstants.URI_TOPICS_WITH_ID, method = RequestMethod.DELETE)
+    @RequestMapping(value = UriViewConstants.REST_TOPICS_WITH_ID, method = RequestMethod.DELETE)
     @ResponseBody
     public Result deleteTopic(@PathVariable int topicId) {
         return topicService.deleteTopic(topicId);
     }
 
+    @RequestMapping(value = UriViewConstants.REST_TOPICS_ORDERS, method = RequestMethod.PUT)
+    @ResponseBody
+    public Result updateTopicsOrders(@RequestBody List<Map<String, Integer>> ordersMap) {
+        return topicService.updateTopicOrders(ordersMap);
+    }
+
     /**
-     * 修改 topic 的顺序
-     *
-     * @param ordersMap topic 的 id 与 order 的 key/value 的数组, Http 请求的格式为 [{topicId: 10, order: 1}, {topicId: 11, order: 2}]
+     * 取得 topic 下每个问题回答的个数
      * @return
      */
-    @RequestMapping(value = UriViewConstants.URI_TOPICS_ORDERS, method = RequestMethod.PUT)
+    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_ANSWERS_STATISTICS, method = RequestMethod.GET)
     @ResponseBody
-    public Result updateQuestionOrders(@RequestBody List<Map<String, Integer>> ordersMap) {
-        return topicService.updateTopicOrders(ordersMap);
+    public List<Map<String, String>> topicAnswersStatistic(@PathVariable int topicId) {
+        return topicService.topicAnswersStatistic(topicId);
     }
 }
