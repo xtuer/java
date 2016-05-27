@@ -2,6 +2,13 @@ package com.xtuer.controller;
 
 /**
  * 前缀: URI, REST, VIEW
+ *
+ * URI:  普通 URL 的 URI
+ * VIEW: 页面的路径
+ * REST: RESTful 资源的 URI
+ *
+ * 如果 URI 中以 resources 开头, 则说明访问的是 RESTful 的资源, 这样利于和页面的 URI 等区分开
+ * 而且 RESTful 资源的访问，响应的数据格式也应该是 JSON 格式，有利于规范编码
  */
 public interface UriViewConstants {
     // 通用 URI 和 VIEW

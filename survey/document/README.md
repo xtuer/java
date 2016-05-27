@@ -9,10 +9,11 @@
 | main/resources/config | 配置文件，例如 Spring MVC, Spring Security 等的配置文件 |
 | main/resources/mybatis-mapper | MyBatis 的映射文件 |
 | /WEB-INF/view/jsp    | JSP 模版              |
-| /WEB-INF/view/freemarker | Freemarker 模版       |
+| /WEB-INF/view/fm     | Freemarker 模版       |
 | /WEB-INF/asset/js    | JavaScript 文件       |
 | /WEB-INF/asset/css   | CSS 文件              |
-| /WEB-INF/asset/image | image                |
+| /WEB-INF/asset/img   | img                  |
+| /WEB-INF/asset/lib   | 第三方的 js, css 等，例如 bootstrap, jquery |
 
 ## 文件说明
 | 文件                  | 说明                  |
@@ -23,71 +24,50 @@
 | spring-mvc.xml       | Spring MVC 配置文件    |
 | web.xml              | Web 项目的配置文件      |
 
-## 如何创建 Dao 访问数据库
-以 Domain 对象 `Demo` (其实就是一个 POJO) 和其 Dao 为例:
-
-1. 创建 Domain 对象的类到包 `com.xtuer.domain` 中
-
-    ```
-    Demo
-    ```
-2. 创建 Dao 的接口到包 `com.xtuer.dao` 中
-
-    ```
-    DemoDao
-    ```
-3. 创建 Dao 的实现在包 `com.xtuer.dao.mybatis` 中
-
-    ```
-    DemoDaoImpl
-    ```
-4. 由于是使用 MyBatis，需要创建 Mapper 接口到包 `com.xtuer.dao.mybatis.mapper` 中
-
-    ```
-    DemoMapper
-    ```
-5. 创建 Domain 对象需要使用的 MyBatis 的映射文件到目录 `main/resources/mybatis-mapper` 里
-
-    ```
-    Demo.xml
-    ```
-6. 在 dao.xml 里配置生成 Dao 对象
-
-通过上面 6 步创建好 Dao，就可以在 Controller 和 Service 层使用 Dao 访问数据库了。抽象出 Dao 层为接口是为了以后例如数据库读写分离，历史数据分库等需要使用多个数据源时业务逻辑层的代码不受影响。如果直接在业务逻辑层使用 MyBatis 的 Mapper，目前是简单，但是以后如有变动，需要改的地方就很多，甚至给 Dao 添加缓存功能(从缓存服务器读取数据)都需要动很多代码。
-
 ## 如何创建 Controller
-参考 `DemoController` 的实现
+1. 在 `com.xtuer.controller.UriViewConstants` 里定义 URI 和 View Name 为常量字符串变量
 
-1. 在 `com.xtuer.controller.UriConstants` 里定义 URI 和 View Name 为常量字符串变量
-
-    > URI 和 View Name 不要直接写在 Controller 里，而是使用常量定义在 UriConstants 中，这样便于集中管理和查看，否则项目里提供了多少 URL 都不知道
+    > URI 和 View Name 不要直接写在 Controller 里，而是使用常量定义在 UriViewConstants 中，这样便于集中管理和查看，否则项目里提供了多少 URL 都不知道
 2. Controller 定义在包 `com.xtuer.controller` 里
 3. 如果 Controller 需要模版文件来渲染结果
-
-    * Freemarker 模版文件放在 `/WEB-INF/view/freemarker`
+    * Freemarker 模版文件放在 `/WEB-INF/view/fm`
     * JSP 文件放在 `/WEB-INF/view/jsp`
-4. 页面需要的静态文件: js, css, image 放在 `/WEB-INF/asset/[js|css|image]` 下面
+4. Controller 是用 Service，Service 直接使用 MyBatis 的 Mapper 访问数据库 (相当于 Dao)，
 
-## 测试数据
-数据库表 `demo` 只有 2 个字段: id 和 message
 
-```sql
-CREATE TABLE `demo` (
-  `id` int(11) NOT NULL,
-  `message` text COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-```
+## URL 设计
+* 普通 URL 没啥太多要求，但是不要以 `resources` 开头
+* RESTful: 如果 URL 中以 `resources` 开头, 则说明访问的是 RESTful 的资源, 这样利于和页面的 URL 等区分开
+而且 RESTful 资源的访问，响应的数据格式也应该是 JSON 格式，有利于规范编码，例如 `http://survey.edu-edu.com.cn/resources/topics`，更多例子参考 `UriViewConstants.java` 和 `constants.js`
 
-向表里插入一条记录
+    > 所有 URL 放在 3 个文件里: 
+    > 
+    > * UriViewConstants.java (服务器端: Controller 里引用, Controller 中不会直接写 URL 和 View Name)
+    > * spring-view-controller.xml (服务器端: 静态页面)
+    > * constants.js (html, js 中使用)
 
-```sql
-INSERT INTO `demo` (`id`, `message`) VALUES (1, 'This is used only for demonstration!');
-```
 
-> 数据库的名字，用户名，密码等参考 datasource.xml 中的配置，可自行修改
 
-## 测试
-1. 访问 <http://localhost:8080/demo>
-2. 访问 <http://localhost:8080/demo/1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

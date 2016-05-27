@@ -1,5 +1,7 @@
 
 // 如果 URL 中以 resources 开头, 则说明访问的是 RESTful 的资源, 这样利于和页面的 URL 等区分开
+// 而且 RESTful 资源的访问，响应的数据格式也应该是 JSON 格式，有利于规范编码
+
 var HOST = 'http://survey.edu-edu.com.cn';
 
 var Urls = {

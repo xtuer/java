@@ -71,4 +71,5 @@
     <mvc:resources mapping="/js/**"  location="/WEB-INF/asset/js/"  cache-period="31556926"/>
     <mvc:resources mapping="/css/**" location="/WEB-INF/asset/css/" cache-period="31556926"/>
     <mvc:resources mapping="/img/**" location="/WEB-INF/asset/img/" cache-period="31556926"/>
+    <mvc:resources mapping="/lib/**" location="/WEB-INF/asset/lib/" cache-period="31556926"/>
 </beans>

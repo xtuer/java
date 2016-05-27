@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="utf-8">
-<title>README</title>
+<title>开发环境和打包发布</title>
 
 
 <style type="text/css">
@@ -547,131 +547,40 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_0">目录结构</h2>
+<h1 id="toc_0">开发环境和打包发布</h1>
 
-<p><img src="image/Project-Structure.png" alt=""></p>
-
-<table>
-<thead>
-<tr>
-<th>目录</th>
-<th>说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>main/java</td>
-<td>存放类文件</td>
-</tr>
-<tr>
-<td>main/resources</td>
-<td>其他需要放到 classpath 下的配置文件, 如 logback 的配置</td>
-</tr>
-<tr>
-<td>main/resources/config</td>
-<td>配置文件，例如 Spring MVC, Spring Security 等的配置文件</td>
-</tr>
-<tr>
-<td>main/resources/mybatis-mapper</td>
-<td>MyBatis 的映射文件</td>
-</tr>
-<tr>
-<td>/WEB-INF/view/jsp</td>
-<td>JSP 模版</td>
-</tr>
-<tr>
-<td>/WEB-INF/view/fm</td>
-<td>Freemarker 模版</td>
-</tr>
-<tr>
-<td>/WEB-INF/asset/js</td>
-<td>JavaScript 文件</td>
-</tr>
-<tr>
-<td>/WEB-INF/asset/css</td>
-<td>CSS 文件</td>
-</tr>
-<tr>
-<td>/WEB-INF/asset/img</td>
-<td>img</td>
-</tr>
-<tr>
-<td>/WEB-INF/asset/lib</td>
-<td>第三方的 js, css 等，例如 bootstrap, jquery</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_1">文件说明</h2>
-
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>dao.xml</td>
-<td>数据库访问的 Bean 的配置文件</td>
-</tr>
-<tr>
-<td>datasource.xml</td>
-<td>数据源配置文件</td>
-</tr>
-<tr>
-<td>mybatis.xml</td>
-<td>MyBatis 配置文件</td>
-</tr>
-<tr>
-<td>spring-mvc.xml</td>
-<td>Spring MVC 配置文件</td>
-</tr>
-<tr>
-<td>web.xml</td>
-<td>Web 项目的配置文件</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_2">如何创建 Controller</h2>
+<h2 id="toc_1">开发环境搭建</h2>
 
 <ol>
-<li><p>在 <code>com.xtuer.controller.UriViewConstants</code> 里定义 URI 和 View Name 为常量字符串变量</p>
-
-<blockquote>
-<p>URI 和 View Name 不要直接写在 Controller 里，而是使用常量定义在 UriViewConstants 中，这样便于集中管理和查看，否则项目里提供了多少 URL 都不知道</p>
-</blockquote></li>
-<li><p>Controller 定义在包 <code>com.xtuer.controller</code> 里</p></li>
-<li><p>如果 Controller 需要模版文件来渲染结果</p>
+<li>系统 hosts 里添加 <code>127.0.0.1 survey.edu-edu.com.cn</code>，方便和线上环境一样</li>
+<li>安装 Gradle</li>
+<li>运行工程: <code>gradle clean tomcatStartDebug</code></li>
+<li><p>访问 <code>http://survey.edu-edu.com.cn</code></p>
 
 <ul>
-<li>Freemarker 模版文件放在 <code>/WEB-INF/view/fm</code></li>
-<li>JSP 文件放在 <code>/WEB-INF/view/jsp</code></li>
-</ul></li>
-<li><p>Controller 是用 Service，Service 直接使用 MyBatis 的 Mapper 访问数据库 (相当于 Dao)，</p></li>
+<li>要求登陆: admin/Passw0rd</li>
+<li>登陆成功后自动重定向到 <code>http://survey.edu-edu.com.cn/admin/topics</code></li>
+</ul>
+
+<blockquote>
+<p>注意: 项目默认运行于 8080 端口，为了使用 80 端口访问，</p>
+
+<ul>
+<li>可以使用端口映射工具把 8080 端口映射到 80 端口 (Linux 可以使用 Shell 脚本实现)</li>
+<li>可以修改 build.gradle 中 port = 80 (Linux 和 Mac 需要 Root 用户才能启动 80 端口)</li>
+<li>可以使用 Nginx 等做负载均衡，把 <code>http://survey.edu-edu.com.cn</code> 的访问负债到 <code>http://127.0.0.1:8080</code> (推荐使用 Nginx，这样还可以做集群)</li>
+</ul>
+</blockquote></li>
 </ol>
 
-<h2 id="toc_3">URL 设计</h2>
+<h2 id="toc_2">打包发布</h2>
 
-<ul>
-<li>普通 URL 没啥太多要求，但是不要以 <code>resources</code> 开头</li>
-<li><p>RESTful: 如果 URL 中以 <code>resources</code> 开头, 则说明访问的是 RESTful 的资源, 这样利于和页面的 URL 等区分开
-而且 RESTful 资源的访问，响应的数据格式也应该是 JSON 格式，有利于规范编码，例如 <code>http://survey.edu-edu.com.cn/resources/topics</code>，更多例子参考 <code>UriViewConstants.java</code> 和 <code>constants.js</code></p>
-
-<blockquote>
-<p>所有 URL 放在 3 个文件里: </p>
-
-<ul>
-<li>UriViewConstants.java (服务器端: Controller 里引用, Controller 中不会直接写 URL 和 View Name)</li>
-<li>spring-view-controller.xml (服务器端: 静态页面)</li>
-<li>constants.js (html, js 中使用)</li>
-</ul>
-</blockquote></li>
-</ul>
+<ol>
+<li>运行命令 <code>gradle -Denv=production clean build</code> 得到 <code>build/libs/ROOT.zip</code></li>
+<li>上传到服务器 <code>eplatform.edu-edu.com.cn</code> 的目录 <code>/usr/local/edu/apache-tomcat-6.0.37/webapps</code> 下</li>
+<li>运行命令 <code>../bin/catalina.sh stop; rm -rf ROOT; unzip ROOT.zip -d ROOT; rm -rf ROOT.zip; ../bin/catalina.sh start</code> 部署成功 (为了简单，直接放在 ROOT 目录下了)</li>
+<li>访问 <code>http://survey.edu-edu.com.cn</code></li>
+</ol>
 
 
 

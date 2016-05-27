@@ -28,8 +28,8 @@ gretty {
 }
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
@@ -43,23 +43,24 @@ repositories {
 }
 
 ext {
-    // 获取 gradle 参数中 -Dprofile 的值: gradle -Dprofile=production clean build
-    environment = System.getProperty("profile", "development")
+    // 运行和打包的环境选择, 默认是开发环境
+    // 获取 gradle 参数中 -Dprofile 的值: gradle -Denv=production clean build
+    environment = System.getProperty("env", "development")
 }
 
 ext.versions = [
-    spring: '4.2.5.RELEASE',
-    springSecurity: '4.0.4.RELEASE',
-    jstl: '1.2',
-    servlet: '3.1.0',
-    jackson: '2.5.3',
-    freemarker: '2.3.20',
-    logback: '1.1.2',
-    jclOverSlf: '1.7.7',
-    mysql: '5.1.21',
-    mybatis: '3.2.1',
-    mybatisSpring: '1.2.2',
-    dbcp: '1.4'
+    spring:         '4.2.6.RELEASE',
+    springSecurity: '4.1.0.RELEASE',
+    jstl:           '1.2',
+    servlet:        '3.1.0',
+    jackson:        '2.5.3',
+    freemarker:     '2.3.20',
+    logback:        '1.1.2',
+    jclOverSlf:     '1.7.7',
+    mysql:          '5.1.21',
+    mybatis:        '3.2.1',
+    mybatisSpring:  '1.2.2',
+    dbcp:           '1.4'
 ]
 
 dependencies {
