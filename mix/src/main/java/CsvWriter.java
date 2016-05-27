@@ -4,7 +4,6 @@ import org.apache.commons.csv.CSVPrinter;
 import java.io.IOException;
 
 public class CsvWriter {
-
     public static void main(String[] args) throws IOException {
         //Create the CSVFormat object with "\n" as a record delimiter
         StringBuilder result = new StringBuilder();
