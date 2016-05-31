@@ -21,20 +21,20 @@
     <select id="selectQuestionsByTopicId" parameterType="int" resultMap="questionResultMap">
         SELECT <include refid="columns"/>
         FROM question
-        LEFT JOIN question_item ON question.id = question_item.question_id
-        WHERE topic_id = #{topicId}
+        LEFT JOIN question_item ON question.id=question_item.question_id
+        WHERE topic_id=#{topicId} AND question.mark_as_delete!=1
         ORDER BY _order, question_item.id
     </select>
 
     <select id="selectQuestion" parameterType="int" resultMap="questionResultMap">
         SELECT <include refid="columns"/>
         FROM question
-        LEFT JOIN question_item ON question.id = question_item.question_id
-        WHERE question.id = #{id}
+        LEFT JOIN question_item ON question.id=question_item.question_id
+        WHERE question.id=#{id} AND question.mark_as_delete!=1
     </select>
 
     <select id="selectQuestionIdsByTopicId" parameterType="int" resultType="int">
-        SELECT id FROM question WHERE topic_id = #{topicId}
+        SELECT id FROM question WHERE topic_id=#{topicId} AND mark_as_delete!=1
     </select>
 
     <insert id="insertQuestion" parameterType="com.xtuer.bean.Question" useGeneratedKeys="true" keyProperty="id">
@@ -42,19 +42,19 @@
     </insert>
 
     <update id="updateQuestion" parameterType="com.xtuer.bean.Question">
-        UPDATE question SET topic_id = #{topicId}, content = #{content}, type = #{type} WHERE id = #{id}
+        UPDATE question SET topic_id=#{topicId}, content=#{content}, type=#{type} WHERE id=#{id}
     </update>
 
     <delete id="deleteQuestion" parameterType="int">
-        DELETE FROM question WHERE id = #{id}
+        UPDATE question SET mark_as_delete=1 WHERE id=#{id}
     </delete>
 
     <delete id="deleteQuestionsByTopicId" parameterType="int">
-        DELETE FROM question WHERE topic_id = #{topicId}
+        UPDATE question SET mark_as_delete=1 WHERE topic_id=#{topicId}
     </delete>
 
     <update id="updateOrder">
-        UPDATE question SET _order = #{order} WHERE id = #{questionId}
+        UPDATE question SET _order = #{order} WHERE id=#{questionId}
     </update>
 
     <!--Result map-->

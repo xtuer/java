@@ -8,13 +8,14 @@ function Utils() {
 }
 
 /**
- * 是用 Ajax 的方式执行 REST 的 GET 操作，并且表明服务器响应的数据格式是 JSON 格式.
+ * 使用 Ajax 的方式执行 REST 的 GET 操作，并且表明服务器响应的数据格式是 JSON 格式.
  * [一下几个 REST 的函数 restCreate, restUpdate, restDelete 只是请求的 HTTP 方法不一样，其他的都是相同的]
  *
  * @param url 请求的 URL
- * @param data 请求的参数
+ * @param data 请求的参数: Json 对象
  * @param successCallback 请求成功时的回调函数
  * @param failCallback 请求失败时的回调函数
+ * @param completeCallback 不管请求是否成功，最后都会被调用
  */
 Utils.restGet = function(url, data, successCallback, failCallback, completeCallback) {
     Utils.ajax(url, data, 'GET', successCallback, failCallback, completeCallback);
@@ -41,7 +42,7 @@ Utils.restDelete = function(url, data, successCallback, failCallback, completeCa
  * 所以把执行 Ajax 请求的函数提取出来作为一个函数，以免不小心出错.
  *
  * @param url 请求的 URL
- * @param data 请求的参数
+ * @param data 请求的参数: Json 对象
  * @param httpMethod 请求的方法，为 'GET', 'PUT'(更新), 'POST'(创建), 'DELETE'
  * @param successCallback 请求成功时的回调函数
  * @param failCallback 请求失败时的回调函数

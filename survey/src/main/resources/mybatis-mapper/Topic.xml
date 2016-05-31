@@ -7,11 +7,11 @@
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.TopicMapper">
     <select id="selectAllTopics" resultType="Topic">
-        SELECT id, content, url FROM topic ORDER BY _order ASC
+        SELECT id, content, url FROM topic WHERE mark_as_delete!=1 ORDER BY _order ASC
     </select>
 
     <select id="selectTopicById" parameterType="int" resultType="Topic">
-        SELECT id, content, url FROM topic WHERE id=#{id}
+        SELECT id, content, url FROM topic WHERE id=#{id} AND mark_as_delete!=1
     </select>
 
     <insert id="insertTopic" parameterType="Topic" useGeneratedKeys="true" keyProperty="id">
@@ -27,6 +27,6 @@
     </update>
 
     <delete id="deleteTopic" parameterType="int">
-        DELETE FROM topic WHERE id=#{id}
+        UPDATE topic SET mark_as_delete=1 WHERE id=#{id}
     </delete>
 </mapper>

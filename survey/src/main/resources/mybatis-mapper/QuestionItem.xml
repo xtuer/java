@@ -11,11 +11,11 @@
     </insert>
 
     <delete id="deleteQuestionItemsByQuestionId" parameterType="int">
-        DELETE FROM question_item WHERE question_id = #{questionId}
+        UPDATE question_item SET mark_as_delete=1 WHERE question_id=#{questionId}
     </delete>
 
     <delete id="deleteQuestionItemsByQuestionIds" parameterType="list">
-        DELETE FROM question_item WHERE question_id IN
+        UPDATE question_item SET mark_as_delete=1 WHERE question_id IN
         <foreach collection="list" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
