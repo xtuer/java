@@ -73,6 +73,11 @@ $(document).ready(function() {
         increaseArea: '20%' // optional
     });
 
+    // 防止点击 input 输入的时候事件传播到上面的 checkbox
+    $('input').click(function(e) {
+        e.stopPropagation();
+    });
+
     $('#survey-submit-form').submit(function() {
         var result = Answer.extractAllQuestionsAnswers();
 
