@@ -183,11 +183,11 @@ File.findFileFromUi = function(fileId) {
  * @param fileId 文件的 id
  * @param displayName 文件显示的名字
  * @param uniqueName 文件唯一的名字
+ * @param type 为 true 时表示是普通文件，为 false 时表示文件为文件夹
  * @param shared 为 true 时表示文件是共享的，为 false 时文件为非共享状态
- * @param isFile 为 true 时表示是普通文件，为 false 时表示文件为文件夹
  * @return 表示文件的 li 元素
  */
-File.createFileRowUi = function(fileId, displayName, uniqueName, shared, isFile) {
+File.createFileRowUi = function(fileId, displayName, uniqueName, type, shared) {
     var $fileRow = File.fileRowTemplate.clone().removeClass('template');
     var $file = $fileRow.find('.file');
 
@@ -199,7 +199,7 @@ File.createFileRowUi = function(fileId, displayName, uniqueName, shared, isFile)
 
     // 根据文件的类型添加样式
     $file.addClass(shared ? 'shared': '');
-    $file.addClass(isFile ? 'is-file': 'is-directory');
+    $file.addClass((type !== 0) ? 'is-file': 'is-directory');
     $file.addClass(Utils.getFileTypeClassName(uniqueName));
 
     return $fileRow;
@@ -212,7 +212,7 @@ File.createFileRowUi = function(fileId, displayName, uniqueName, shared, isFile)
  */
 File.appendFilesToUi = function(files) {
     $.each(files, function(index, file) {
-        File.createFileRowUi(file.fileId, file.displayName, file.uniqueName, file.shared, !file.isDirectory).appendTo($('#file-flat'));
+        File.createFileRowUi(file.fileId, file.displayName, file.uniqueName, file.type, file.shared).appendTo($('#file-flat'));
     });
 
     FileSystem.enableDragAndDrop();
@@ -280,7 +280,7 @@ FileSystem.requestFiles = function(directoryId) {
         "fileId": 198,
         "displayName": "地理",
         "uniqueName": "",
-        "isFile": false,
+        "type": 0,
         "directoryId": 277,
         "userId": 10,
         "shared": false,
@@ -424,7 +424,7 @@ FileSystem.renameFile = function(fileId, displayName) {
         displayName: displayName
     };
 
-    Utils.restUpdate(FileSystemUrls.REST_FILE_SYSTEM_FILES_WITH_ID.format({fileId}), data, function(result) {
+    Utils.restUpdate(FileSystemUrls.REST_FILE_SYSTEM_FILES_WITH_ID.format({fileId: fileId}), data, function(result) {
         if (result.success) {
             // 修改 displayName 并显示
             var file = File.findFileFromUi(fileId);

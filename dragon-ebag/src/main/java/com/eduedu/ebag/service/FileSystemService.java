@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 public class FileSystemService {
     private static Logger logger = LoggerFactory.getLogger(FileSystemService.class);
 
+    public static final String ACTION_RENAME = "rename";
+
     @Autowired
     private FileMapper fileMapper;
 
@@ -111,7 +113,7 @@ public class FileSystemService {
             return new Result(false, "文件夹的名字不能为空");
         }
 
-        displayName = displayName.trim(); // 去掉空格
+        displayName = StringUtils.trim(displayName); // 去掉空格
 
         if (parentDirectoryId != File.ROOT_DIRECTORY_ID) {
             File parentDirectory = fileMapper.selectFileByFileId(userId, parentDirectoryId);

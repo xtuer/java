@@ -30,7 +30,7 @@
         SELECT  <include refid="file_columns"/>
         FROM    file
         WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND mark_as_deleted!=1
-        ORDER   BY type DESC, display_name ASC
+        ORDER   BY type ASC, display_name ASC
     </select>
 
     <!--列出子文件夹-->
@@ -38,7 +38,7 @@
         SELECT  <include refid="file_columns"/>
         FROM    file
         WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND type=0 AND mark_as_deleted!=1
-        ORDER   BY type DESC, display_name ASC
+        ORDER   BY type ASC, display_name ASC
     </select>
 
     <!--列出文件, 不包含子文件夹-->
@@ -46,7 +46,7 @@
         SELECT  <include refid="file_columns"/>
         FROM    file
         WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND type!=0 AND mark_as_deleted!=1
-        ORDER   BY type DESC, display_name ASC
+        ORDER   BY type ASC, display_name ASC
     </select>
 
     <!--查找文件夹下没有被删除的文件数量-->
