@@ -7,19 +7,19 @@
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.TopicMapper">
     <select id="selectAllTopics" resultType="Topic">
-        SELECT id, content, url FROM topic WHERE mark_as_delete!=1 ORDER BY _order ASC
+        SELECT id, content, url, force_complete as forceComplete FROM topic WHERE mark_as_delete!=1 ORDER BY _order ASC
     </select>
 
     <select id="selectTopicById" parameterType="int" resultType="Topic">
-        SELECT id, content, url FROM topic WHERE id=#{id} AND mark_as_delete!=1
+        SELECT id, content, url, force_complete as forceComplete FROM topic WHERE id=#{id} AND mark_as_delete!=1
     </select>
 
     <insert id="insertTopic" parameterType="Topic" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO topic (content, url, _order) VALUES(#{content}, #{url}, 100000)
+        INSERT INTO topic (content, url, force_complete, _order) VALUES(#{content}, #{url}, #{forceComplete}, 100000)
     </insert>
 
     <update id="updateTopic" parameterType="Topic">
-        UPDATE topic SET content=#{content}, url=#{url} WHERE id=#{id}
+        UPDATE topic SET content=#{content}, url=#{url}, force_complete=#{forceComplete}  WHERE id=#{id}
     </update>
 
     <update id="updateOrder">

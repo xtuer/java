@@ -22,7 +22,7 @@
         SELECT <include refid="columns"/>
         FROM question
         LEFT JOIN question_item ON question.id=question_item.question_id
-        WHERE topic_id=#{topicId} AND question.mark_as_delete!=1
+        WHERE topic_id=#{topicId} AND question.mark_as_delete!=1 AND question_item.mark_as_delete!=1
         ORDER BY _order, question_item.id
     </select>
 
@@ -30,7 +30,7 @@
         SELECT <include refid="columns"/>
         FROM question
         LEFT JOIN question_item ON question.id=question_item.question_id
-        WHERE question.id=#{id} AND question.mark_as_delete!=1
+        WHERE question.id=#{id} AND question.mark_as_delete!=1 AND question_item.mark_as_delete!=1
     </select>
 
     <select id="selectQuestionIdsByTopicId" parameterType="int" resultType="int">

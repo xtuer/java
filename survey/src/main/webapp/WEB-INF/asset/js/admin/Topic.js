@@ -1,7 +1,8 @@
-function Topic(id, content, url) {
+function Topic(id, content, url, forceComplete) {
     this.id = id;
     this.content = content;
     this.url = url;
+    this.forceComplete = forceComplete;
     self = this;
 }
 
@@ -61,6 +62,7 @@ Topic.prototype.showInPanelHeading = function() {
     var $topic = $('#topic');
     $topic.attr('data-topic-id', this.id);
     $topic.attr('data-topic-url', this.url);
+    $topic.attr('data-force-complete', this.forceComplete);
     $topic.find('.topic-content').html(this.content);
 }
 
@@ -68,15 +70,17 @@ Topic.extractTopicFromPanelHeading = function() {
     var $topic = $('#topic');
     var id = $topic.attr('data-topic-id');
     var url = $topic.attr('data-topic-url');
+    var forceComplete = ($topic.attr('data-force-complete').toLowerCase() === 'true');
     var content = $topic.find('.topic-content').html();
 
-    return new Topic(id, content, url);
+    return new Topic(id, content, url, forceComplete);
 }
 
 Topic.prototype.showInEditDialog = function() {
     $('#edit-topic-dialog .modal-body').attr('data-topic-id', this.id);
     CKEDITOR.instances.topicContentEditor.setData(this.content);
-    $('#edit-topic-dialog .modal-body input').val(this.url);
+    $('#edit-topic-dialog .modal-body input.url').val(this.url);
+    $('#edit-topic-dialog .modal-footer input.force-complete').iCheck(this.forceComplete ? 'check' : 'uncheck');
     $('#edit-topic-dialog .alert').hide();
     $('#edit-topic-dialog').modal('show');
 }
@@ -89,10 +93,11 @@ Topic.prototype.showInEditDialog = function() {
 Topic.extractTopicFromEditDialog = function() {
     var $modalBody = $('#edit-topic-dialog .modal-body');
     var id = $modalBody.attr('data-topic-id');
-    var url = $.trim($modalBody.find('input').val());
+    var url = $.trim($modalBody.find('input.url').val());
     var content = CKEDITOR.instances.topicContentEditor.getData();
+    var forceComplete = $('#edit-topic-dialog .modal-footer input.force-complete').is(':checked');
 
-    return new Topic(id, content, url);
+    return new Topic(id, content, url, forceComplete);
 }
 
 Topic.prototype.saveOrUpdate = function() {
@@ -132,7 +137,7 @@ Topic.prototype.update = function() {
     var self = this;
 
     Utils.restUpdate(Urls.REST_TOPICS_WITH_ID.format({topicId: self.id}),
-        {id: self.id, content: self.content, url: self.url},
+        {id: self.id, content: self.content, url: self.url, forceComplete: self.forceComplete},
         function(result) {
             if (result.success) {
                 self.showInPanelHeading();
@@ -271,7 +276,7 @@ Topic.queryTopics = function() {
     })
     .done(function(topics) {
         for (var i = 0; i < topics.length; ++i) {
-            var topic = new Topic(topics[i].id, topics[i].content, topics[i].url);
+            var topic = new Topic(topics[i].id, topics[i].content, topics[i].url, topics[i].forceComplete);
             topic.showInTopicList();
         }
 

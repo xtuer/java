@@ -101,7 +101,7 @@
         <!-- 问卷: 包含主题描述, 问题及问题的选项 -->
         <div class="panel panel-default">
             <!-- 主题 -->
-            <div class="panel-heading" id="topic" data-topic-id="0" data-topic-url="">
+            <div class="panel-heading" id="topic" data-topic-id="0" data-topic-url="" data-force-complete="">
                 <a href="#" class="edit-topic-button pull-right" data-toggle="tooltip" data-placement="top" title="编辑">
                     <span class="glyphicon glyphicon-pencil"></span>
                 </a>
@@ -199,7 +199,7 @@
                         </div>
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon">URL</span>
-                            <input type="text" class="form-control" placeholder="提交问卷后要访问的页面的链接，可以为空">
+                            <input type="text" class="form-control url" placeholder="提交问卷后要访问的页面的链接，可以为空">
                         </div><!-- /input-group -->
                     </div>
                     <!-- End of modal body -->
@@ -212,6 +212,9 @@
                     </div>
 
                     <div class="modal-footer">
+                        <label class="checkbox" style="display: inline-block; float: left">
+                            <input type="checkbox" class="force-complete"><span> 完成所有的选择题才能提交</span>
+                        </label>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                         <button type="button" class="btn btn-primary save-topic-button">保存</button>
                     </div>

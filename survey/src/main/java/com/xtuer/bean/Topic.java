@@ -11,14 +11,16 @@ public class Topic {
     private String content;
     private String url;
     private List<Question> questions;
+    private boolean forceComplete;
 
     public Topic() {
     }
 
-    public Topic(int id, String content, String url) {
+    public Topic(int id, String content, String url, boolean forceComplete) {
         this.id = id;
         this.content = content;
         this.setUrl(url);
+        this.forceComplete = forceComplete;
     }
 
     public int getId() {
@@ -51,5 +53,13 @@ public class Topic {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public boolean isForceComplete() {
+        return forceComplete;
+    }
+
+    public void setForceComplete(boolean forceComplete) {
+        this.forceComplete = forceComplete;
     }
 }

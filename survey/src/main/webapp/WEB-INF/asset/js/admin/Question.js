@@ -444,7 +444,7 @@ Question.extractQuestionFromQuestionList = function($question) {
 Question.queryTopicAndQuestionsByTopicId = function(topicId) {
     // 请求 topic
     Utils.restGet(Urls.REST_TOPICS_WITH_ID.format({topicId: topicId}), {}, function(topic) {
-        new Topic(topic.id, topic.content, topic.url).showInPanelHeading();
+        new Topic(topic.id, topic.content, topic.url, topic.forceComplete).showInPanelHeading();
     }, function(error) {
         if (200 == error.status) {
             $('body').empty();

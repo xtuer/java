@@ -44,6 +44,10 @@
         height: 100px;
         margin-top: 5px;
     }
+
+    .bootstrap-dialog {
+        margin-top: 100px;
+    }
     </style>
 </head>
 
@@ -55,7 +59,7 @@
         <!-- 列出所有投票问题 -->
         <div class="panel panel-default">
             <!-- 主题 -->
-            <div class="panel-heading" id="topic" data-topic-id="${topic.id}" data-topic-url="${topic.url!""}">
+            <div class="panel-heading" id="topic" data-topic-id="${topic.id}" data-topic-url="${topic.url!""}" data-topic-force-complete="${topic.forceComplete?c}">
                 <div class="topic-content">${topic.content}</div>
             </div>
 

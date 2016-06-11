@@ -75,7 +75,7 @@ public class SurveyController {
         answersString = StringUtils.trimWhitespace(answersString);
         if (StringUtils.isEmpty(answersString)) {
             logger.info("答案为空");
-            return UriViewConstants.REDIRECT + UriViewConstants.SUCCESS;
+            return UriViewConstants.REDIRECT + UriViewConstants.SUBMIT_SUCCESS;
         }
 
         // 反序列化 Json 表示的 Answer list
@@ -85,7 +85,7 @@ public class SurveyController {
         // 2. 没有答案, 只是提示保存成功
         if (answers == null || answers.size() == 0) {
             logger.info("没有答案");
-            return UriViewConstants.REDIRECT + UriViewConstants.SUCCESS;
+            return UriViewConstants.REDIRECT + UriViewConstants.SUBMIT_SUCCESS;
         }
 
         // 3. 把答案保存到数据库

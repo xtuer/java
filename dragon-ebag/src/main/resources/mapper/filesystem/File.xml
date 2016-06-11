@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--file_id | display_name | unique_name | extension | type | directory_id | user_id | shared | mark_as_deleted-->
+<mapper namespace="com.eduedu.ebag.mapper.filesystem.FileMapper">
+    <!--列名-->
+    <sql id="file_columns">
+        file_id          as fileId,
+        display_name     as displayName,
+        unique_name      as uniqueName,
+        extension        as extension,
+        type             as type,
+        directory_id     as directoryId,
+        user_id          as userId,
+        shared           as shared,
+        mark_as_deleted  as markAsDeleted
+    </sql>
+
+    <select id="selectFileByFileId" resultType="File">
+        SELECT  <include refid="file_columns"/>
+        FROM    file
+        WHERE   user_id=#{userId} AND file_id=#{fileId}
+    </select>
+
+    <!--列出文件和文件夹-->
+    <select id="listFilesByDirectoryId" resultType="File">
+        SELECT  <include refid="file_columns"/>
+        FROM    file
+        WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND mark_as_deleted!=1
+        ORDER   BY type DESC, display_name ASC
+    </select>
+
+    <!--列出子文件夹-->
+    <select id="listSubdirectoriesByDirectoryId" resultType="File">
+        SELECT  <include refid="file_columns"/>
+        FROM    file
+        WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND type=0 AND mark_as_deleted!=1
+        ORDER   BY type DESC, display_name ASC
+    </select>
+
+    <!--列出文件, 不包含子文件夹-->
+    <select id="listFilesWithoutSubdirectoriesByDirectoryId" resultType="File">
+        SELECT  <include refid="file_columns"/>
+        FROM    file
+        WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND type!=0 AND mark_as_deleted!=1
+        ORDER   BY type DESC, display_name ASC
+    </select>
+
+    <!--查找文件夹下没有被删除的文件数量-->
+    <select id="filesCountOfDirectory" resultType="int">
+        SELECT  count(1)
+        FROM    file
+        WHERE   user_id=#{userId} AND directory_id=#{directoryId} AND mark_as_deleted!=1
+    </select>
+
+    <!--查找文件夹的 id, 有可能有多个同名文件夹-->
+    <select id="selectDirectoryIdsByDirectoryName" resultType="int">
+        SELECT file_id FROM file
+        WHERE user_id=#{userId}
+            AND type=0
+            AND display_name=#{directoryName}
+            AND directory_id=#{parentDirectoryId}
+    </select>
+
+    <!--查找文件的 id(不包含文件夹), 有可能有多个同名文件-->
+    <select id="selectFileIdsByFileName" resultType="int">
+        SELECT file_id FROM file
+        WHERE user_id=#{userId}
+        AND type!=0
+        AND display_name=#{fileName}
+        AND directory_id=#{parentDirectoryId}
+    </select>
+
+    <!--插入文件-->
+    <insert id="insertFile" parameterType="File" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO file (display_name, unique_name, extension, type, directory_id, user_id, shared, mark_as_deleted)
+        VALUES (#{displayName}, #{uniqueName}, #{extension}, #{type}, #{directoryId}, #{userId}, #{shared}, #{markAsDeleted})
+    </insert>
+
+    <!--标记文件为删除-->
+    <update id="markFileAsDeleted">
+        UPDATE  file
+        SET     mark_as_deleted=1
+        WHERE   user_id=#{userId} AND file_id=#{fileId}
+    </update>
+
+    <update id="moveFileToDirectory">
+        UPDATE  file
+        SET     directory_id=#{directoryId}
+        WHERE   user_id=#{userId} AND file_id=#{fileId}
+    </update>
+
+    <update id="renameFile">
+        UPDATE  file
+        SET     display_name=#{displayName}
+        WHERE   user_id=#{userId} AND file_id=#{fileId}
+    </update>
+
+    <update id="shareFile">
+        UPDATE  file
+        SET     shared=#{shared}
+        WHERE   user_id=#{userId} AND file_id=#{fileId}
+    </update>
+</mapper>

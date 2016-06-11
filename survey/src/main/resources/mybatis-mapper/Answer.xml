@@ -11,7 +11,7 @@
         SELECT  question_id as questionId,
                 question_item_id as questionItemId,
                 COUNT(question_item_id) as questionItemAnswersCount
-        FROM answer WHERE topic_id=#{topicId} GROUP BY question_item_id
+        FROM answer WHERE topic_id=#{topicId} GROUP BY question_id, question_item_id
     </select>
 
     <!-- 查询用户对某个选项的输入 -->

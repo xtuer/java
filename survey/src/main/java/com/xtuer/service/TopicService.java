@@ -35,6 +35,7 @@ public class TopicService {
     }
 
     public Topic selectTopicById(int topicId) {
+        Topic t = topicMapper.selectTopicById(topicId);
         return topicMapper.selectTopicById(topicId);
     }
 

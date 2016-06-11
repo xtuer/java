@@ -1,0 +1,96 @@
+a {
+    color: black;
+    text-decoration: none;
+}
+
+#dropdown {
+    display: none;
+}
+
+.fileinput-button {
+    width: 120px;
+}
+
+.template {
+    display: none;
+}
+
+.panel, .breadcrumb {
+    margin-top: 20px;
+}
+
+li.list-group-item:hover {
+    background-color: #FAFAFA;
+}
+
+.file {
+    line-height: 32px;
+    height: 32px;
+    padding-left: 35px;
+    padding-right: 10px;
+    background-image: url(/img/file-type/documents-32.png);
+    background-repeat: no-repeat no-repeat;
+    background-position: center left;
+    display: inline-block;
+    cursor: pointer;
+    border: 1px dashed rgba(0,0,0,0);
+    border-radius: 2px;
+}
+
+.file.is-directory {
+    background-image: url(/img/file-type/folder-blue-32.png);
+}
+
+.file.is-image {
+    background-image: url(/img/file-type/picture-32.png);
+}
+
+.file.is-rar {
+    background-image: url(/img/file-type/envelope-alt-32.png);
+}
+
+.file.is-zip {
+    background-image: url(/img/file-type/envelope-alt-32.png);
+}
+
+
+.file .display-name {
+    color: black;
+}
+
+.file.shared .display-name {
+    /*background-image: url(/img/file-type/shared.png);
+    background-repeat: no-repeat no-repeat;
+    background-position: top right;*/
+
+    line-height: 20px;
+    height: 20px;
+    padding-right: 20px;
+    display: inline-block;
+    color: red;
+}
+
+.file.is-directory.drop-hover {
+    border: 1px dashed gray;
+}
+
+#directories {
+    padding-left: 0;
+    max-height: 500px;
+    overflow: auto;
+}
+
+#directories .is-directory.active {
+    background-color: #2BBBEE;
+    color: white;
+    border-radius: 2px;
+}
+
+#directories ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.modal-footer button {
+    min-width: 100px;
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>电子书包文件管理中心</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/bootstrap-dialog.min.css">
+    <link rel="stylesheet" href="/lib/jquery.fileupload.css">
+    <link rel="stylesheet" href="/css/file.css">
+    <link rel="stylesheet" href="/css/common.css">
+
+    <style>
+    #directory-path {
+        margin-top: 20px;
+    }
+
+    #file-tree {
+        display: none;
+    }
+    </style>
+</head>
+
+<body style="padding: 50px" data-uuid="FB2EC2E1-A320-4388-9B9A-7C40B43356E9">
+    <div class="container">
+        <!-- 上传文件按钮 -->
+        <span class="btn btn-info fileinput-button">
+            <i class="glyphicon glyphicon-circle-arrow-up"></i>
+            <span>上传文件</span>
+            <input id="fileupload" type="file" name="files" multiple>
+        </span>
+
+        <!-- 新建文件夹按钮 -->
+        <span class="btn btn-info fileinput-button" id="create-directory">
+            <i class="glyphicon glyphicon-folder-close"></i>
+            <span>新建文件夹</span>
+        </span>
+
+        <!-- 文件夹路径 -->
+        <div id="directory-path">
+            <ol class="breadcrumb">
+                <li><a href="javascript:void(0);" data-directory-id="0">根目录</a></li>
+            </ol>
+        </div>
+
+        <!-- 文件和文件夹列表 -->
+        <div class="panel panel-default">
+            <ul id="file-flat" class="list-group">
+                <li class="list-group-item template">
+                    <div class="file" data-file-id="0" data-file-display-name="" data-file-unique-name="" data-file-shared="">
+                        <span class="branch"></span>    <!-- 根目录的箭头 -->
+                        <span class="icon"></span>      <!-- 根目录的图标-->
+                        <span class="name">根目录</span> <!-- 根目录的名字 -->
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 下拉菜单-->
+        <div id="dropdown" class="dropdown pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="border-radius: 50px; padding: 3px 6px;">
+                <i class="glyphicon glyphicon-map-marker"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="#" id="move" data-toggle="modal">移动到</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0);" id="share">分享</a></li>
+                <li><a href="javascript:void(0);" id="unshare">取消分享</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0);" id="rename">重命名</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0);" id="delete">删除</a></li>
+            </ul>
+        </div>
+
+        <!-- 重命名编辑器 -->
+        <div id="rename-edit" class="controls form-inline" style="display: none">
+            <input type="text" class="form-control">
+            <a href="javascript:void(0);" class="close-button"><i class="glyphicon glyphicon-remove"></i></a>
+            <a href="javascript:void(0);" class="submit-button"><i class="glyphicon glyphicon-ok"></i></a>
+        </div>
+
+        <!-- 目录中的文件或者子目录放在 <ul> 里, 文件或目录是一个 <li>，文件或目录的名字是 <li> 中的 <div> -->
+        <div id="file-tree">
+            <ul> <!-- 根目录所在目录 -->
+                <li> <!-- 根目录 -->
+                    <div class="file is-directory collapse" data-file-id="0" data-file-display-name="根目录" data-file-unique-name="" data-file-shared="">
+                        <span class="branch"></span>    <!-- 根目录的箭头 -->
+                        <span class="icon"></span>      <!-- 根目录的图标-->
+                        <span class="name">根目录</span> <!-- 根目录的名字 -->
+                    </div>
+                    <ul></ul>
+                </li>
+
+                <li class="template"> <!-- 文件 (文件夹是特殊的文件) -->
+                    <div class="file" data-file-id="" data-file-display-name="" data-file-unique-name="" data-file-shared="">
+                        <span class="branch"></span>    <!-- 文件夹的箭头 -->
+                        <span class="icon"></span>      <!-- 图标-->
+                        <span class="name">根目录</span> <!-- 名字 -->
+                    </div>
+                    <ul></ul> <!-- 文件夹会用到，如果是文件，没啥用，放在这不影响 -->
+                </li>
+            </ul>
+        </div>
+    </div>
+
+   <!--  <div class="container">
+        <hr>
+        <h4>上传进度</h4>
+        <div id="progresses">
+            <div class="progress template">
+                <div class="progress-bar progress-bar-info progress-bar-striped" style="width: 0%">0%</div>
+            </div>
+        </div>
+    </div> -->
+
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/jquery-ui.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/bootstrap-dialog.min.js"></script>
+    <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+    <script src="/lib/jquery.ui.widget.js"></script>
+    <!-- The Iframe Transport is required for browsers without support for XHR filesystem uploads -->
+    <script src="/lib/jquery.iframe-transport.js"></script>
+    <!-- The basic File Upload plugin -->
+    <script src="/lib/jquery.fileupload.js"></script>
+    <!-- 验证文件类型，大小等使用 -->
+    <script src="/lib/jquery.fileupload-process.js"></script>
+    <script src="/lib/jquery.fileupload-validate.js"></script>
+
+    <script src="/js/filesystem/ebag-fileupload.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/filesystem/file-tree.js"></script>
+    <script src="/js/filesystem/filesystem.js"></script>
+</body>
+</html>

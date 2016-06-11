@@ -1,0 +1,143 @@
+.file .branch,
+.file .icon,
+.file .name {
+    height: 32px;
+    line-height: 32px;
+    display: inline-block;
+    vertical-align: middle;
+    border: 0 solid gray;
+}
+
+.file {
+    height: 34px; /* 不知道为什么要比 branch, icon, name 等多 2px 才行 */
+    font-size: 0;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.file.active {
+    border: 1px solid rgb(68, 211, 255);
+}
+
+.file.is-directory {
+    margin-left: -20px;
+}
+
+/* Bruanch */
+.file.is-file .branch {
+    width: 0;
+}
+
+.file.is-directory .branch {
+    width: 20px;
+}
+
+.file.is-directory .branch {
+    cursor: pointer;
+}
+
+.file.is-directory.expand .branch {
+    background: url(/img/arrow.png) no-repeat -63px 8px;
+}
+
+.file.is-directory.collapse .branch {
+    background: url(/img/arrow.png) no-repeat -30px 8px;
+}
+
+/* icon */
+.file .icon {
+    width: 32px;
+    background-image: url(/img/file-type/default.png);
+    background-repeat: no-repeat no-repeat;
+    background-position: center left;
+}
+
+.file.is-directory .icon  {
+    background-image: url(/img/file-type/folder.png);
+}
+
+.file.is-image .icon {
+    background-image: url(/img/file-type/image.png);
+}
+
+.file.is-rar .icon {
+    background-image: url(/img/file-type/rar.png);
+}
+
+.file.is-zip .icon {
+    background-image: url(/img/file-type/zip.png);
+}
+
+/* name */
+.file .name {
+    cursor: default;
+    font-size: 14px;
+    padding: 0 3px;
+}
+
+.file.active .name {
+    background: rgb(68, 211, 255);
+}
+
+/* File Tree */
+#file-tree {
+    max-height: 500px;
+    overflow: scroll;
+}
+
+#file-tree ul {
+    list-style: none;
+    padding-left: 30px;
+}
+
+#file-tree ul:nth-child(1) {
+    padding-left: 20px;
+}
+
+/* File flat */
+#file-flat .file.shared .name {
+    /*background-image: url(/img/file-type/shared.png);*/
+    /*background-repeat: no-repeat no-repeat;*/
+    /*background-position: top right;*/
+
+    /*line-height: 20px;*/
+    /*height: 20px;*/
+    padding-right: 20px;
+    display: inline-block;
+    color: red;
+}
+
+#file-flat .file.is-directory.drop-hover {
+    border: 2px dashed #999;
+}
+
+#file-flat li.list-group-item:hover {
+    background-color: #FBFBFB;
+}
+
+#file-flat .branch {
+    display: none;
+}
+
+#file-flat .file.is-directory {
+    margin-left: 0px;
+}
+
+#file-flat .file.is-directory .icon,
+#file-flat .file.is-directory .name {
+    cursor: pointer;
+}
+
+#rename-edit {
+    display: inline-block;
+}
+
+#rename-edit a {
+    color: darkgray;
+}
+
+#rename-edit a:hover {
+    color: black;
+}

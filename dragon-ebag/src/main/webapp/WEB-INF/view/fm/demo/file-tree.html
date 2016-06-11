@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>电子书包文件管理中心</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/bootstrap-dialog.min.css">
+
+    <link rel="stylesheet" href="/css/file.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <style>
+    #drop-area {
+        width:  200px;
+        height: 400px;
+        border: 1px solid gray;
+        margin-top: 20px;
+    }
+
+    .template {
+        display: none;
+    }
+    </style>
+</head>
+
+<body style="padding: 50px" data-uuid="FB2EC2E1-A320-4388-9B9A-7C40B43356E9">
+<div class="container">
+    <button id="show-dialog-button" class="btn btn-default">显示文件夹窗口</button>
+    <div id="drop-area"></div>
+
+    <!-- 目录中的文件或者子目录放在 <ul> 里, 文件或目录是一个 <li>，文件或目录的名字是 <li> 中的 <div> -->
+    <div id="file-tree">
+        <ul> <!-- 根目录所在目录 -->
+            <li> <!-- 根目录 -->
+                <div class="file is-directory collapse" data-file-id="0" data-file-display-name="根目录" data-file-unique-name="" data-file-shared="">
+                    <span class="branch"></span>    <!-- 根目录的箭头 -->
+                    <span class="icon"></span>      <!-- 根目录的图标-->
+                    <span class="name">根目录</span> <!-- 根目录的名字 -->
+                </div>
+                <ul></ul>
+            </li>
+
+            <li class="template"> <!-- 文件 (文件夹是特殊的文件) -->
+                <div class="file" data-file-id="" data-file-display-name="" data-file-unique-name="" data-file-shared="">
+                    <span class="branch"></span>    <!-- 文件夹的箭头 -->
+                    <span class="icon"></span>      <!-- 图标-->
+                    <span class="name">根目录</span> <!-- 名字 -->
+                </div>
+                <ul></ul> <!-- 文件夹会用到，如果是文件，没啥用，放在这不影响 -->
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script src="/lib/jquery.min.js"></script>
+<script src="/lib/jquery-ui.min.js"></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="/lib/bootstrap-dialog.min.js"></script>
+
+<script src="/js/util.js"></script>
+<script src="/js/constants.js"></script>
+<script src="/js/filesystem/file-tree.js"></script>
+<script>
+$(document).ready(function() {
+    FileTree.init(FileSystemUrls.REST_FILE_SYSTEM_FILES);
+    // FileTree.showInDialog();
+
+    $('#show-dialog-button').click(function() {
+        FileTree.showInDialog();
+    });
+
+    // 接受拖放的数据
+    $('#drop-area').droppable({
+        hoverClass: "drop-hover",
+        drop: function(event, ui) {
+            $('#drop-area').append('<div>{0}</div>'.format(ui.helper.attr('data-file-display-name')));
+        }
+    });
+});
+</script>
+</body>
+</html>

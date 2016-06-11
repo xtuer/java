@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <import resource="classpath:config/mybatis.xml"/>
+    <bean id="fileUploadService" class="com.eduedu.ebag.service.FileUploadService"/>
+    <bean id="fileSystemService" class="com.eduedu.ebag.service.FileSystemService"/>
+
+    <bean id="fileImporter" class="com.eduedu.ebag.tool.FileImporter">
+        <property name="userId" value="10"/>
+        <property name="baseDirectory" value="/Users/Biao/Desktop/中央电教馆资源平台调研报告"/>
+    </bean>
+</beans>

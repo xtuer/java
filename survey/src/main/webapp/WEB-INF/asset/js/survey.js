@@ -80,10 +80,12 @@ $(document).ready(function() {
 
     $('#survey-submit-form').submit(function() {
         var result = Answer.extractAllQuestionsAnswers();
+        var forceComplete = $('#topic').attr('data-topic-force-complete').toLowerCase() === 'true';
 
         // 条件不满足，不能提交
-        if (!result.canSubmit) {
-            Utils.showError('还有选择题没有回答<br>请先回答完所有的选择题后再提交');
+        if (!result.canSubmit && forceComplete) {
+            // Utils.showError('还有选择题没有回答<br>请先回答完所有的选择题后再提交');
+            BootstrapDialog.show({title: '温馨提示', message: '还有选择题没有回答<br>请先回答完所有的选择题后再提交', type: BootstrapDialog.TYPE_DANGER});
             return false;
         }
         // 设置表单数据，提交表单
