@@ -130,11 +130,11 @@ function File(fileId, displayName, uniqueName, shared, ui) {
 
 File.prototype.showDisplayName = function() {
     this.ui.find('.name').show();
-}
+};
 
 File.prototype.hideDisplayName = function() {
     this.ui.find('.name').hide();
-}
+};
 
 /**
  * 当文件的属性(不包含 ui) 如 displayName 变化后需要更新到界面上时调用这个方法。
@@ -151,7 +151,7 @@ File.prototype.updateInUi = function() {
     } else {
         this.ui.removeClass('shared');
     }
-}
+};
 
 /**
  * 从界面上删除文件。
@@ -161,7 +161,7 @@ File.prototype.deleteFromUi = function() {
     FileSystem.hideDropdown();
     FileSystem.hideRenameEdit();
     this.ui.parent().remove();
-}
+};
 
 /**
  * 使用文件的 id 找到它对应的 file
@@ -175,7 +175,7 @@ File.findFileFromUi = function(fileId) {
         $file.attr('data-file-unique-name'),
         $file.attr('data-file-shared') == 'true',
         $file);
-}
+};
 
 /**
  * 创建表示文件的 li 元素。
@@ -203,7 +203,7 @@ File.createFileRowUi = function(fileId, displayName, uniqueName, type, shared) {
     $file.addClass(Utils.getFileTypeClassName(uniqueName));
 
     return $fileRow;
-}
+};
 
 /**
  * 添加文件和文件夹到界面上。
@@ -216,7 +216,7 @@ File.appendFilesToUi = function(files) {
     });
 
     FileSystem.enableDragAndDrop();
-}
+};
 
 /**
  * 清空界面上显示的文件。
@@ -225,7 +225,7 @@ File.deleteAllFilesFromUi = function() {
     FileSystem.hideDropdown();   // 隐藏工具栏
     FileSystem.hideRenameEdit(); // 隐藏重命名编辑器
     $('#file-flat .list-group-item:not(.template)').remove();
-}
+};
 
 /**
  * 文件操作的类，上传文件，创建文件夹，修改文件和文件夹的名字，分享等
@@ -242,7 +242,7 @@ function FileSystem() {
  */
 FileSystem.getCurrentDirectoryId = function() {
     return $('#directory-path .breadcrumb li a:last').attr('data-directory-id');
-}
+};
 
 /**
  * 创建目录，并显示重命名编辑器。
@@ -264,7 +264,7 @@ FileSystem.createDirectory = function(parentDirectoryId, directoryName) {
             console.log('error');
         }
     );
-}
+};
 
 /**
  * 向服务器请求 id 为 directoryId 的文件夹下的文件和文件夹。
@@ -294,7 +294,7 @@ FileSystem.requestFiles = function(directoryId) {
             File.appendFilesToUi(files); // 显示新请求到的文件
         }
     );
-}
+};
 
 /**
  * 启用拖拽文件操作，例如移动文件到其他文件夹时很方便。
@@ -319,7 +319,7 @@ FileSystem.enableDragAndDrop = function() {
             });
         }
     });
-}
+};
 
 /**
  * 删除文件或者文件夹
@@ -336,7 +336,7 @@ FileSystem.deleteFile = function(fileId) {
     }, function(error) {
         Utils.showError(error.responseText);
     });
-}
+};
 
 /**
  * 移动文件到选中的文件夹中(在弹出框里选择移动的目标文件夹)。
@@ -345,7 +345,7 @@ FileSystem.moveFileToSelectedDirectory = function() {
     var fileId = FileSystem.getFileIdWhichHoldsDropdown();
     var directoryId = FileTree.getSelectedFileId();
     FileSystem.moveFileToDirectory(fileId, directoryId);
-}
+};
 
 /**
  * 移动 id 为 fileId 的文件到 id 为 directoryId 的文件夹
@@ -369,7 +369,7 @@ FileSystem.moveFileToDirectory = function(fileId, directoryId) {
     }, function(error) {
         Utils.showError(error.responseText);
     });
-}
+};
 
 /**
  * 共享或者取消文件共享。
@@ -381,7 +381,7 @@ FileSystem.shareFile = function(fileId, shared) {
     var data = {
         action: 'SHARE',
         shared: shared
-    }
+    };
 
     Utils.restUpdate(FileSystemUrls.REST_FILE_SYSTEM_FILES_WITH_ID.format({fileId: fileId}), data, function(result) {
         if (result.success) {
@@ -394,7 +394,7 @@ FileSystem.shareFile = function(fileId, shared) {
     }, function(error) {
         Utils.showError(error.responseText);
     });
-}
+};
 
 /**
  * 提交修改的 displayName，不会修改文件的 uniqueName。
@@ -410,7 +410,7 @@ FileSystem.submitRename = function() {
 
     var fileId = $('#rename-edit').siblings('.file').attr('data-file-id');
     FileSystem.renameFile(fileId, newDisplayName);
-}
+};
 
 /**
  * 修改文件的显示文件名，不会修改文件唯一的文件名
@@ -440,7 +440,7 @@ FileSystem.renameFile = function(fileId, displayName) {
     }, function(error) {
         Utils.showError(error.responseText);
     });
-}
+};
 
 /**
  * 显示下拉菜单到 id 为 fileId 的文件所在行。
@@ -460,14 +460,14 @@ FileSystem.showDropdown = function(fileId) {
             }
         });
     }
-}
+};
 
 /**
  * 隐藏下拉菜单并移到 body。
  */
 FileSystem.hideDropdown = function() {
     $('#dropdown').hide().appendTo($('body'));
-}
+};
 
 /**
  * 取得下拉菜单所在文件行的 fileId。
@@ -476,7 +476,7 @@ FileSystem.hideDropdown = function() {
  */
 FileSystem.getFileIdWhichHoldsDropdown = function() {
     return $('#dropdown').closest('.list-group-item').find('.file').attr('data-file-id');
-}
+};
 
 /**
  * 显示重命名编辑器。
@@ -503,7 +503,7 @@ FileSystem.showRenameEdit = function(fileId) {
     var lastDotIndex = filename.lastIndexOf('.');
     lastDotIndex = (lastDotIndex != -1) ? lastDotIndex : filename.length;
     Utils.selectInputText($renameEdit.find('input')[0], 0, lastDotIndex);
-}
+};
 
 /**
  * 隐藏重命名编辑器。
@@ -513,4 +513,4 @@ FileSystem.hideRenameEdit = function() {
     $renameEdit.hide();
     $renameEdit.siblings('.file').find('.name').show();
     $renameEdit.appendTo($('body'));
-}
+};

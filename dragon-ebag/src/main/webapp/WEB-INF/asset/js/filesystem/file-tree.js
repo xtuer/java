@@ -112,14 +112,14 @@ FileTree.init = function(url, okCallback) {
         $('#file-tree .file.active').removeClass('active');
         $(this).addClass('active');
     });
-}
+};
 
 /**
  * 取得选中文件的 id
  */
 FileTree.getSelectedFileId = function() {
     return $('#file-tree .file.active').attr('data-file-id');
-}
+};
 
 /**
  * 在模态对话框里显示 FileTree，默认显示在 #file-tree 中
@@ -145,7 +145,7 @@ FileTree.showInDialog = function() {
         buttons.push({
             label: '确定',
             cssClass: 'btn-primary',
-            action: function(dialogRef){
+            action: function(dialogRef) {
                 dialogRef.close();
                 FileTree.okCallback();
             }
@@ -169,7 +169,7 @@ FileTree.showInDialog = function() {
     FileTree.dialog.realize();
     FileTree.dialog.getModalHeader().hide();
     FileTree.dialog.open();
-}
+};
 
 /**
  * 向服务器请求指定文件夹下的文件
@@ -181,7 +181,7 @@ FileTree.requestFiles = function(directoryId) {
 
     Utils.restGet(FileTree.url.format({directoryId: directoryId}), {}, function(files) {
         // 没有文件或者子文件夹
-        if (files.length == 0) { return; }
+        if (files.length === 0) { return; }
 
         for (var i = 0; i < files.length; ++i) {
             var file = files[i];
@@ -211,7 +211,7 @@ FileTree.requestFiles = function(directoryId) {
     }, function(error) {
         Utils.showError(error.responseText);
     });
-}
+};
 
 /**
  * 可以对文件进行拖拽，拖拽时隐藏对话框
@@ -229,7 +229,7 @@ FileTree.enableDragFile = function() {
             }
         }
     });
-}
+};
 
 /**
  * 从 #file-tree 下查找 id 为传入的 fileId，表示文件或者目录的 <a> 元素
@@ -238,17 +238,16 @@ FileTree.enableDragFile = function() {
  */
 FileTree.findFileByFileId = function(fileId) {
     return $('#file-tree .file[data-file-id="{fileId}"]'.format({fileId: fileId}));
-}
+};
 
 FileTree.expandDirectory = function(directoryId) {
     var $directory = FileTree.findFileByFileId(directoryId);
     $directory.siblings('ul').stop(true, true).fadeIn({ duration: 300, queue: false }).css('display', 'none').slideDown(300);
     $directory.removeClass('collapse').addClass('expand');
-}
+};
 
 FileTree.collapseDirectory = function(directoryId) {
     var $directory = FileTree.findFileByFileId(directoryId);
     $directory.siblings('ul').stop(true, true).fadeOut({ duration: 300, queue: false }).slideUp(300);
     $directory.removeClass('expand').addClass('collapse');
-}
-
+};

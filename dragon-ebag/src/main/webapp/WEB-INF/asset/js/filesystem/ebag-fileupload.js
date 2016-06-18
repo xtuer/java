@@ -14,14 +14,14 @@ FileUploader.initFileUpload = function(uploadUrl, successCallback) {
         change: function(e, data) {
             // 限制文件选择窗口中只能选择上传一个文件
             if(data.files.length > 1){
-                alert("Max 1 files are allowed")
+                alert("Max 1 files are allowed");
                 return false;
             }
         },
         drop: function(e, data) {
             // 限制只能拖拽上传一个文件
             if(data.files.length > 1){
-                alert("Max 1 files are allowed")
+                alert("Max 1 files are allowed");
                 return false;
             }
         },
@@ -48,7 +48,7 @@ FileUploader.initFileUpload = function(uploadUrl, successCallback) {
 
     FileUploader.enableDragAndDropEffect(); // 可选
 // });
-}
+};
 
 // 添加文件时创建进度条
 FileUploader.createProgressBar = function(filename) {
@@ -57,14 +57,14 @@ FileUploader.createProgressBar = function(filename) {
     $progress.attr('data-file-name', filename);
     $progressBar.text(filename + ' 0%');
     $progress.appendTo($('#progresses'));
-}
+};
 
 // 更新进度条
 FileUploader.updateProgressBar = function(filename, progress) {
     var $progress = $('#progresses .progress[data-file-name="' + filename + '"]');
     var $progressBar = $progress.find('.progress-bar');
     $progressBar.css('width', progress + '%').text(filename + ' ' + progress + '%');
-}
+};
 
 // 当拖拽文件到 dropzone 上时给其添加效果
 FileUploader.enableDragAndDropEffect = function() {
@@ -75,4 +75,4 @@ FileUploader.enableDragAndDropEffect = function() {
     }).on('drop', function() {
         $('#dropzone').removeClass('hover');
     });
-}
+};

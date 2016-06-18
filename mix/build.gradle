@@ -16,7 +16,7 @@ dependencies {
     compile 'org.apache.commons:commons-compress:1.11'
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-csv:1.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.4'
     compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.commons:commons-lang3:3.4'
