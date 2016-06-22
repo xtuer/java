@@ -1,5 +1,7 @@
 .idea/
 .gradle/
+*.log
+log.txt
 build/
 logs/
 @logsDir@/
