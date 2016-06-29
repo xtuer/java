@@ -1,16 +1,11 @@
 package com.xtuer.controller;
 
-import com.github.sd4324530.fastweixin.api.MediaAPI;
 import com.github.sd4324530.fastweixin.api.MenuAPI;
-import com.github.sd4324530.fastweixin.api.MessageAPI;
 import com.github.sd4324530.fastweixin.api.config.ApiConfig;
 import com.github.sd4324530.fastweixin.api.entity.Menu;
 import com.github.sd4324530.fastweixin.api.entity.MenuButton;
-import com.github.sd4324530.fastweixin.api.enums.MediaType;
 import com.github.sd4324530.fastweixin.api.enums.MenuType;
 import com.github.sd4324530.fastweixin.api.enums.ResultType;
-import com.github.sd4324530.fastweixin.api.response.GetSendMessageResponse;
-import com.github.sd4324530.fastweixin.api.response.UploadMediaResponse;
 import com.github.sd4324530.fastweixin.message.*;
 import com.github.sd4324530.fastweixin.message.req.MenuEvent;
 import com.github.sd4324530.fastweixin.message.req.TextReqMsg;
@@ -22,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @RestController
