@@ -1,0 +1,10 @@
+#mysql
+mysql:
+    jdbc:
+        url: jdbc:mysql://localhost:3306
+        dirverClass: com.mysql.jdbc.Driver
+        username: root
+        password: root
+
+#redis
+username: Dr. Alice
