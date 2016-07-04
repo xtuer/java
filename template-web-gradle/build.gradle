@@ -76,7 +76,7 @@ dependencies {
             "org.springframework:spring-jdbc:$versions.spring",
             "org.mybatis:mybatis-spring:$versions.mybatisSpring",
             "org.mybatis:mybatis:$versions.mybatis",
-            "commons-dbcp:commons-dbcp:$versions.dbcp",
+            "org.apache.commons:commons-dbcp2:$versions.dbcp",
             "ch.qos.logback:logback-classic:$versions.logback",               // Logback
             "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf4j"
     )
