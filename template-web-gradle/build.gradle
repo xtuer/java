@@ -56,12 +56,12 @@ ext.versions = [
     jackson:        '2.5.3',
     freemarker:     '2.3.20',
     logback:        '1.1.2',
-    jclOverSlf:     '1.7.7',
     mysql:          '5.1.21',
     mybatis:        '3.2.1',
     mybatisSpring:  '1.2.2',
-    dbcp:           '1.4',
-    junit:          '4.12'
+    dbcp:           '2.1.1',
+    junit:          '4.12',
+    jclOverSlf4j:   '1.7.21'
 ]
 
 dependencies {
@@ -78,7 +78,7 @@ dependencies {
             "org.mybatis:mybatis:$versions.mybatis",
             "commons-dbcp:commons-dbcp:$versions.dbcp",
             "ch.qos.logback:logback-classic:$versions.logback",               // Logback
-            "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf"
+            "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf4j"
     )
 
     compile("javax.servlet:jstl:$versions.jstl") // JSTL
