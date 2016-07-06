@@ -13,8 +13,10 @@ public class BlogSiteMapGenerator {
     private static Map<String, List<BlogMeta>> metas = new TreeMap<String, List<BlogMeta>>();
 
     public static void main(String[] args) throws Exception {
-        File[] blogs = listBlogs(BLOG_DIR_PATH);
+        // [1]. 取得所有的 Blog
+        File[] blogs = getBlogs(BLOG_DIR_PATH);
 
+        // [2]. 生成 tag 和其对应的 BlogMeta 的 map
         for (File blog : blogs) {
             BlogMeta meta = extractBlogMeta(blog);
 
@@ -25,16 +27,17 @@ public class BlogSiteMapGenerator {
             if (meta.tags.size() > 0) {
                 // 有多个 tag
                 for (String tag : meta.tags) {
-                    List<BlogMeta> subMetas = getOrCreateBlogMetas(tag);
+                    List<BlogMeta> subMetas = getBlogMetasByTag(tag);
                     subMetas.add(meta);
                 }
             } else {
                 // 没有 tag, 放到 Default 下
-                List<BlogMeta> subMetas = getOrCreateBlogMetas("Default");
+                List<BlogMeta> subMetas = getBlogMetasByTag("Default");
                 subMetas.add(meta);
             }
         }
 
+        // [3]. 生成 Site Map 的 Blog
         StringBuilder out = new StringBuilder("---\n" +
                 "title: All Documents\n" +
                 "date: 2015-06-06 06:06:06\n" +
@@ -43,8 +46,7 @@ public class BlogSiteMapGenerator {
 
         for (String tag : metas.keySet()) {
             List<BlogMeta> subMetas = metas.get(tag);
-
-            out.append(String.format("\n## %s\n", tag));
+            out.append(String.format("\n## %s\n", tag)); // tag 作为二级标题, 把 Blog 分类排列
 
             for (BlogMeta meta : subMetas) {
                 out.append(String.format("* [%s](%s)\n", meta.title, meta.url));
@@ -53,7 +55,7 @@ public class BlogSiteMapGenerator {
 
         System.out.println(out);
 
-        // 输出到文件
+        // [4]. 输出到文件
         FileUtils.writeStringToFile(new File(BLOG_DIR_PATH + "/site-map.md"), out.toString(), "UTF-8");
     }
 
@@ -63,7 +65,7 @@ public class BlogSiteMapGenerator {
      * @param blogDirPath Blog 所在文件夹的目录
      * @return
      */
-    private static File[] listBlogs(String blogDirPath) {
+    private static File[] getBlogs(String blogDirPath) {
         File[] mds = new File(blogDirPath).listFiles((dir, name) -> {
             return name.toLowerCase().endsWith("md");
         });
@@ -115,7 +117,7 @@ public class BlogSiteMapGenerator {
      * @param tag
      * @return
      */
-    private static List<BlogMeta> getOrCreateBlogMetas(String tag) {
+    private static List<BlogMeta> getBlogMetasByTag(String tag) {
         List<BlogMeta> subMetas = metas.get(tag);
 
         if (subMetas == null) {
