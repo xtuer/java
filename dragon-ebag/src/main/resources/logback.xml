@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <configuration scan="true" scanPeriod="3 seconds">
-    <property name="log.base" value="@logsDir@" />
+    <property name="log.base" value="@logsDir@"/>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5level] [%F-%M:%L] - %msg%n</pattern>
         </encoder>
@@ -20,8 +20,8 @@
     </appender>
 
     <root>
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="file" />
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="file"/>
     </root>
 
     <logger name="org.mybatis" level="info"/>

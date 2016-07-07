@@ -41,12 +41,12 @@ repositories {
 }
 
 ext.versions = [
-    spring:       '4.3.0.RELEASE',
-    jstl:         '1.2',
-    servlet:      '3.1.0',
-    jackson:      '2.7.4',
-    freemarker:   '2.3.23',
-    junit:        '4.12'
+    spring:     '4.3.0.RELEASE',
+    jstl:       '1.2',
+    servlet:    '3.1.0',
+    jackson:    '2.7.4',
+    freemarker: '2.3.23',
+    junit:      '4.12'
 ]
 
 dependencies {

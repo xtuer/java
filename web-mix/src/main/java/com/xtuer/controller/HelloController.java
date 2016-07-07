@@ -2,8 +2,11 @@ package com.xtuer.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,5 +49,15 @@ public class HelloController {
         } catch (Exception ex) {
 
         }
+    }
+
+    // /request?token=11242312341234
+    @GetMapping("request")
+    @ResponseBody
+    public String testRequest() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String token = request.getParameter("token");
+
+        return token;
     }
 }

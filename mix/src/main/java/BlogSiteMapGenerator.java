@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.*;
 
-public class BlogSiteMapGenerator {
+public class BlogSitemapGenerator {
     // Blog 的目录
     private static final String BLOG_DIR_PATH = "/Users/Biao/Documents/workspace/Blog/source/_posts";
 
@@ -56,7 +56,7 @@ public class BlogSiteMapGenerator {
         System.out.println(out);
 
         // [4]. 输出到文件
-        FileUtils.writeStringToFile(new File(BLOG_DIR_PATH + "/site-map.md"), out.toString(), "UTF-8");
+        FileUtils.writeStringToFile(new File(BLOG_DIR_PATH + "/sitemap.md"), out.toString(), "UTF-8");
     }
 
     /**

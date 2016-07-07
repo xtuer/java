@@ -1,4 +1,4 @@
-// gradle clean build -Penv=production
+// gradle clean build -Denv=production
 environments {
     development {
         jdbc {
@@ -9,7 +9,7 @@ environments {
         }
 
         baseUrl = ''
-        logsDir = "/dragon-ebag/temp/logs"
+        logsDir = "/dragon-ebag/logs"
     }
 
     production {
@@ -21,6 +21,6 @@ environments {
         }
 
         baseUrl = ''
-        logsDir = "/dragon-ebag/temp/logs"
+        logsDir = "/dragon-ebag/logs"
     }
 }

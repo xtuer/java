@@ -1,0 +1,36 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+ext.versions = [
+    spring:     '4.3.0.RELEASE',
+    servlet:    '3.1.0',
+    jackson:    '2.7.4',
+    junit:      '4.12'
+]
+
+dependencies {
+    compile(
+            "org.springframework:spring-context-support:$versions.spring",
+            "com.fasterxml.jackson.core:jackson-databind:$versions.jackson"   // JSON
+    )
+
+    compile group: 'org.apache.commons', name: 'commons-email', version: '1.4'
+    compile group: 'javax.mail', name: 'javax.mail-api', version: '1.5.5'
+    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.5.5'
+
+    testCompile("junit:junit:$versions.junit")
+    testCompile("org.springframework:spring-test:$versions.spring")
+}

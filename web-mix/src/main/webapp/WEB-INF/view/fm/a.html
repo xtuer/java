@@ -6,20 +6,22 @@
     <script src="/js/jquery.min.js"></script>
     <script>
     $(document).ready(function() {
-        $.ajax({
-            url:  'ajax-test',
-            type: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({age: 10})
-        })
-        .done(function(result) {
-            console.log("success");
-            console.log(result);
-        })
-        .fail(function(error) {
-            console.log("error");
-            console.log(error);
+        $('button').click(function() {
+            $.ajax({
+                url:  'ajax-test',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({age: 10})
+            })
+            .done(function(result) {
+                alert("success");
+                console.log(result);
+            })
+            .fail(function(error) {
+                alert("error");
+                console.log(error);
+            });
         });
     });
     </script>
