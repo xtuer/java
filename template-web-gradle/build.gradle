@@ -22,6 +22,7 @@ gretty {
     contextPath = '/'
     servletContainer = 'tomcat7'
 
+    inplaceMode  = 'hard'
     debugSuspend = false
     managedClassReload      = true
     recompileOnSourceChange = false
