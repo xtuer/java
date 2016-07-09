@@ -6,22 +6,19 @@
     <script src="/js/jquery.min.js"></script>
     <script>
     $(document).ready(function() {
-        $('button').click(function() {
-            $.ajax({
-                url:  'ajax-test',
-                type: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify({age: 10})
-            })
-            .done(function(result) {
-                alert("success");
-                console.log(result);
-            })
-            .fail(function(error) {
-                alert("error");
-                console.log(error);
-            });
+        $.ajax({
+            url: '/inner',
+            type: 'POST',
+            dataType: 'json'
+        })
+        .done(function(result) {
+            $('#info').text(result.message);
+        })
+        .fail(function(error) {
+            console.log(error);
+        })
+        .always(function() {
+            console.log("complete");
         });
     });
     </script>
@@ -30,5 +27,8 @@
     你好，欢迎光临
 
     <button>按钮</button>
+    <div id="info">
+        欢迎
+    </div>
 </body>
 </html>

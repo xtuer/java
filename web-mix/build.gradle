@@ -20,6 +20,7 @@ gretty {
     contextPath = '/'
     servletContainer = 'tomcat7'
 
+    inplaceMode = 'hard'
     debugSuspend = false
     managedClassReload      = true
     recompileOnSourceChange = false
@@ -42,6 +43,7 @@ repositories {
 
 ext.versions = [
     spring: '4.3.0.RELEASE',
+    springMobile: '1.1.5.RELEASE',
     jstl: '1.2',
     servlet: '3.1.0',
     jackson: '2.7.4',
@@ -52,6 +54,7 @@ dependencies {
     compile(
             "org.springframework:spring-webmvc:$versions.spring",             // Spring MVC
             "org.springframework:spring-context-support:$versions.spring",
+            "org.springframework.mobile:spring-mobile-device:$versions.springMobile",
             "com.fasterxml.jackson.core:jackson-databind:$versions.jackson",  // JSON
             "org.freemarker:freemarker:$versions.freemarker",                 // Freemarker
             "commons-fileupload:commons-fileupload:1.3.1"

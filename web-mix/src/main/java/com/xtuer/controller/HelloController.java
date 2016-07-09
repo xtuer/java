@@ -1,5 +1,6 @@
 package com.xtuer.controller;
 
+import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +26,34 @@ public class HelloController {
     }
 
     @RequestMapping("/hello")
-    public String helloPage(HttpServletRequest request) {
-        String referer = request.getHeader("referer");
-        System.out.println("=========> " + referer);
+    public String helloPage(Device device) {
+        if (device.isMobile()) {
+            System.out.println("Hello mobile user!");
+        } else if (device.isTablet()) {
+            System.out.println("Hello tablet user!");
+        } else {
+            System.out.println("Hello desktop user!");
+        }
 
-        return "hello.htm";
+        return "a.html";
+    }
+
+    @GetMapping("/device")
+    @ResponseBody
+    public String detectDevice(Device device) {
+        if (device.isMobile()) {
+            return "Mobile";
+        } else if (device.isTablet()) {
+            return "Tablet";
+        } else {
+            return "Desktop";
+        }
     }
 
     @RequestMapping("/inner")
+    @ResponseBody
     public String innerPage() {
-        return "inner.htm";
+        return "{\"success\": true, \"message\": \"No message\"}";
     }
 
     @RequestMapping("/continue-response")

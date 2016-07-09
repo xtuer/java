@@ -1,5 +1,7 @@
 package com.xtuer.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HandleService {
+    private static Logger logger = LoggerFactory.getLogger(HandleService.class);
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -15,6 +18,8 @@ public class HandleService {
      */
     @Async
     public void handle(String path) {
+        System.out.println(Thread.currentThread().toString());
+
         try {
             for (int i = 0; i < 10; ++i) {
                 // 插入 DB

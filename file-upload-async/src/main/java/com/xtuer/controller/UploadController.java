@@ -2,6 +2,8 @@ package com.xtuer.controller;
 
 import com.xtuer.bean.Result;
 import com.xtuer.service.HandleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import java.util.UUID;
 
 @Controller
 public class UploadController {
+    private static Logger logger = LoggerFactory.getLogger(UploadController.class);
     @Autowired
     private HandleService handleService;
 
@@ -50,6 +53,7 @@ public class UploadController {
 
             if (path != null) {
                 results.add(new Result(true, ""));
+                System.out.println(Thread.currentThread().toString());
                 handleService.handle(path); // 使用异步的方式处理文件
             } else {
                 results.add(new Result(false, "上传失败"));
@@ -78,7 +82,7 @@ public class UploadController {
         if (!file.isEmpty()) {
             try {
                 String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");
-                path = "/Users/Biao/Desktop/" + uuid + "-" + file.getOriginalFilename(); // 保存文件的路径
+                path = "/Users/Biao/Desktop/" + file.getOriginalFilename() + "-" + uuid; // 保存文件的路径
                 FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(path));
 
                 return path;
