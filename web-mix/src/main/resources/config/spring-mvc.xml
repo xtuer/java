@@ -18,8 +18,8 @@
          在包名 com.xtuer.controller 下的标记为 @Controller, @Service, @Component 的类
          都会⾃动的生成一个对象存储到 Spring Container ⾥
     -->
-    <context:component-scan base-package="com.xtuer.controller"></context:component-scan>
-    <context:component-scan base-package="com.xtuer.service"></context:component-scan>
+    <context:component-scan base-package="com.xtuer.controller"/>
+    <context:component-scan base-package="com.xtuer.service"/>
 
     <!-- 默认的注解映射支持 -->
     <!--<mvc:annotation-driven/>-->
@@ -70,7 +70,7 @@
 
     <mvc:interceptors>
         <!-- On pre-handle, resolve the device that originated the web request -->
-        <bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor" />
+        <bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor"/>
     </mvc:interceptors>
 
     <!-- 对静态资源的访问，如 js, css, jpg, png -->

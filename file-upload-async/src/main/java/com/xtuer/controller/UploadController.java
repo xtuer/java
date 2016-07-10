@@ -82,7 +82,7 @@ public class UploadController {
         if (!file.isEmpty()) {
             try {
                 String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");
-                path = "/Users/Biao/Desktop/" + file.getOriginalFilename() + "-" + uuid; // 保存文件的路径
+                path = "/Users/Biao/Desktop/" + uuid + "-" + file.getOriginalFilename(); // 保存文件的路径
                 FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(path));
 
                 return path;
