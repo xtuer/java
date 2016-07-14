@@ -43,7 +43,7 @@ repositories {
 ext.versions = [
     spring: '4.2.5.RELEASE',
     springSecurity: '4.0.4.RELEASE',
-    springSessionDataRedis: '1.1.1.RELEASE',
+    springSessionDataRedis: '1.2.1.RELEASE',
     jstl: '1.2',
     servlet: '3.1.0',
     jackson: '2.5.3',

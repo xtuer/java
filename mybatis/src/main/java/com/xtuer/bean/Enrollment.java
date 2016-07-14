@@ -1,3 +1,5 @@
+package com.xtuer.bean;
+
 public class Enrollment {
     private int enrollmentId;
     private String examUId;
