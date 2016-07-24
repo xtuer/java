@@ -1,0 +1,42 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+buildscript {
+    repositories { jcenter() }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3' }
+}
+
+mainClassName = 'Foo' // TODO: 如果不是可执行 jar 包，不需要
+
+jar {
+    manifest { attributes 'Main-Class': mainClassName }
+}
+
+// 打包命令: gradle clean shadowJar
+shadowJar {
+    mergeServiceFiles('META-INF/spring.*')
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.commons:commons-csv:1.2'
+    compile 'commons-io:commons-io:2.5'
+    testCompile("junit:junit:4.12")
+}

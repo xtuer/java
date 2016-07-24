@@ -26,7 +26,7 @@ public class DemoController {
         return "b.html";
     }
 
-    @RequestMapping(value="ajax-test", method= RequestMethod.POST)
+    @PostMapping("ajax-test")
     @ResponseBody
     public String ajaxGet(@RequestBody Map map) {
         System.out.println("==> age: " + map);

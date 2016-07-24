@@ -3,18 +3,23 @@
 <head>
     <title></title>
     <meta charset="UTF-8">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
+
     <script src="/js/jquery.min.js"></script>
     <script>
     $(document).ready(function() {
         $.ajax({
-            url: '/inner',
+            url: '/ajax-test',
             type: 'POST',
-            dataType: 'json'
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({name: 'Biao'})
         })
         .done(function(result) {
-            $('#info').text(result.message);
+            $('#info').text(JSON.stringify(result));
         })
         .fail(function(error) {
+            console.log('Error');
             console.log(error);
         })
         .always(function() {

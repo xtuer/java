@@ -16,7 +16,7 @@ buildscript {
 }
 
 gretty {
-    port = 8080
+    port = 8081
     contextPath = '/'
     servletContainer = 'tomcat7'
 
