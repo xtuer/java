@@ -1,5 +1,8 @@
 package com.xtuer.controller;
 
+import com.xtuer.bean.Foo;
+import com.xtuer.mapper.FooMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,8 +18,17 @@ import java.io.Writer;
 
 @Controller
 public class HelloController {
+    @Autowired
+    private FooMapper fooMapper;
+
     public HelloController() {
         System.out.println("=====> HelloController");
+    }
+
+    @GetMapping("/foo")
+    @ResponseBody
+    public Foo findFoo() {
+        return fooMapper.findFooByNameAndCity("Biao", "Beijin");
     }
 
     @RequestMapping("/")

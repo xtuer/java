@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class DownloadUtil {
     /**
@@ -20,7 +21,13 @@ public class DownloadUtil {
         out.close();
     }
 
+    public static void loadProductDetails(String url) throws IOException {
+        String content = Request.Get(url).connectTimeout(5000).socketTimeout(5000).execute().returnContent().asString(Charset.forName("UTF-8"));
+        System.out.println(content);
+    }
+
     public static void main(String[] args) throws IOException {
-        downloadFile("http://xtuer.github.io/img/dog.png", "/Users/Biao/Desktop/a.png"); // 下载图片
+//        downloadFile("http://xtuer.github.io/img/dog.png", "/Users/Biao/Desktop/a.png"); // 下载图片
+        loadProductDetails("http://www.qtdebug.com");
     }
 }

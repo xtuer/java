@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+CREATE TABLE `foo` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `name` text,
+    `city` text,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-->
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.FooMapper">
+    <select id="findFooById" parameterType="int" resultType="Foo">
+        SELECT id, name, city
+        FROM foo
+        WHERE id=#{id}
+    </select>
+    <select id="findFooByNameAndCity" resultType="Foo">
+        SELECT id, name, city
+        FROM foo
+        WHERE name=#{name} AND city=#{city}
+    </select>
+</mapper>

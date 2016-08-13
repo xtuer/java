@@ -56,6 +56,11 @@ dependencies {
     compile(
             "org.springframework:spring-webmvc:$versions.spring",             // Spring MVC
             "org.springframework:spring-context-support:$versions.spring",
+            "org.springframework:spring-jdbc:$versions.spring",
+            "org.apache.commons:commons-dbcp2:2.1.1",
+            "mysql:mysql-connector-java:5.1.21",
+            "org.mybatis:mybatis:3.2.1",
+            "org.mybatis:mybatis-spring:1.2.2",
             "org.springframework.mobile:spring-mobile-device:$versions.springMobile",
             "com.fasterxml.jackson.core:jackson-databind:$versions.jackson",  // JSON
             "org.freemarker:freemarker:$versions.freemarker",                 // Freemarker
