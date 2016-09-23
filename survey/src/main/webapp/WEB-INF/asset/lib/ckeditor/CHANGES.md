@@ -65,7 +65,7 @@ Fixed Issues:
 
 Other Changes:
 
-* [#13859](http://dev.ckeditor.com/ticket/13859): Test cases created with `bender.tools.createTestsForEditors` will also receive editor bot as a second parameter.
+* [#13859](http://dev.ckeditor.com/ticket/13859): com.xtuer.Test cases created with `bender.tools.createTestsForEditors` will also receive editor bot as a second parameter.
 
 ## CKEditor 4.5.4
 

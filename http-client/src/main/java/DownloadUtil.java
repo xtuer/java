@@ -1,10 +1,10 @@
+import org.apache.http.Consts;
 import org.apache.http.client.fluent.Request;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class DownloadUtil {
     /**
@@ -22,7 +22,7 @@ public class DownloadUtil {
     }
 
     public static void loadProductDetails(String url) throws IOException {
-        String content = Request.Get(url).connectTimeout(5000).socketTimeout(5000).execute().returnContent().asString(Charset.forName("UTF-8"));
+        String content = Request.Get(url).connectTimeout(5000).socketTimeout(5000).execute().returnContent().asString(Consts.UTF_8);
         System.out.println(content);
     }
 

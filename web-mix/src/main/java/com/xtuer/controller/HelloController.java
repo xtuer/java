@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 @Controller
@@ -24,6 +23,7 @@ public class HelloController {
     public HelloController() {
         System.out.println("=====> HelloController");
     }
+    static int count = 0;
 
     @GetMapping("/foo")
     @ResponseBody
@@ -53,6 +53,8 @@ public class HelloController {
     @GetMapping("/device")
     @ResponseBody
     public String detectDevice(Device device) {
+        ++count;
+        System.out.println(count);
         if (device.isMobile()) {
             return "Mobile";
         } else if (device.isTablet()) {
@@ -82,13 +84,32 @@ public class HelloController {
         }
     }
 
-    // /request?token=11242312341234
-    @GetMapping("request")
+    // URL: /request?token=11242312341234
+    @GetMapping("/request")
     @ResponseBody
     public String testRequest() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String token = request.getParameter("token");
 
         return token;
+    }
+
+    // URL: /signIn?id=1&name=xxx
+    @GetMapping("/signIn")
+    @ResponseBody
+    public String singInGet(@RequestParam String id,
+                         @RequestParam String name,
+                         @RequestHeader(value="token", required=false) String token) throws Exception {
+        name = new String(name.getBytes("iso8859-1"), "UTF-8");
+        return String.format("GET: id: %s, name: %s, token: %s", id, name, token);
+    }
+
+    // URL: /signIn
+    @PostMapping("/signIn")
+    @ResponseBody
+    public String singInPost(@RequestParam String id,
+                         @RequestParam String name,
+                         @RequestHeader(value="token", required=false) String token) throws Exception {
+        return String.format("POST: id: %s, name: %s, token: %s", id, name, token);
     }
 }
