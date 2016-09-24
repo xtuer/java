@@ -100,7 +100,8 @@ public class HelloController {
     public String singInGet(@RequestParam String id,
                          @RequestParam String name,
                          @RequestHeader(value="token", required=false) String token) throws Exception {
-        name = new String(name.getBytes("iso8859-1"), "UTF-8");
+        System.out.println("Original name: " + name);
+//        name = new String(name.getBytes("iso8859-1"), "UTF-8");
         return String.format("GET: id: %s, name: %s, token: %s", id, name, token);
     }
 

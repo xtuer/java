@@ -2,6 +2,7 @@
 .gradle/
 *.log
 log.txt
+out/
 build/
 logs/
 @logsDir@/
