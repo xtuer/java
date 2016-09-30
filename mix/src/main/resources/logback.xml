@@ -26,4 +26,5 @@
     <logger name="org.mybatis" level="info"/>
     <logger name="org.springframework" level="info"/>
     <logger name="com.eduedu.ebag.mapper" level="debug"/>
+    <logger name="com.github.sd4324530.fastexcel" level="off"/>
 </configuration>

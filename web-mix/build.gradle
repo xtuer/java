@@ -16,10 +16,10 @@ buildscript {
 }
 
 gretty {
-//    httpPort = 8080
-    httpPort    = project.hasProperty("httpPort") ? project.httpPort as int : 8081
-    servicePort = httpPort + 1
-    statusPort  = httpPort + 2
+   httpPort = 8080
+    // httpPort    = project.hasProperty("httpPort") ? project.httpPort as int : 8080
+    // servicePort = httpPort + 1
+    // statusPort  = httpPort + 2
 
     contextPath = ''
     servletContainer = 'tomcat7'
