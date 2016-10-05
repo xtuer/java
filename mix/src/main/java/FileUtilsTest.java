@@ -11,6 +11,6 @@ public class FileUtilsTest {
         System.out.println(FilenameUtils.getBaseName(path));  // 文件名去掉后缀
         System.out.println(FilenameUtils.getFullPath(path));  // 去掉文件名的路径部分
 
-        FileUtils.forceMkdir(new File("/Users/Biao/Desktop/a/b/c"));
+        FileUtils.forceMkdir(new File("/Users/Biao/Desktop/a/b/c")); // 递归创建目录
     }
 }
