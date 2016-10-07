@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/security
-            http://www.springframework.org/schema/security/spring-security.xsd">
+            http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
     <http auto-config="true">
         <intercept-url pattern="/admin" access="hasRole('ADMIN')"/>
@@ -26,9 +26,11 @@
     </http>
 
     <beans:bean id="userDetailsService" class="com.xtuer.service.MyUserDetailsService"/>
-    <authentication-manager>
-        <authentication-provider user-service-ref="userDetailsService">
-            <password-encoder hash="bcrypt"/>
-        </authentication-provider>
+    <beans:bean id="authenticationProvider" class="com.xtuer.service.MyAuthenticationProvider"/>
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="authenticationProvider"/>
+        <!--<authentication-provider user-service-ref="userDetailsService">-->
+            <!--<password-encoder hash="bcrypt"/>-->
+        <!--</authentication-provider>-->
     </authentication-manager>
 </beans:beans>

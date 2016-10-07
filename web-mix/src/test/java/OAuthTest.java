@@ -1,3 +1,4 @@
+import com.github.scribejava.apis.QQApi;
 import com.github.scribejava.apis.WeiXinApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
@@ -11,9 +12,9 @@ public class OAuthTest {
         final String apiKey = "101292272";
         final String apiSecret = "5bdbe9403fcc3abe8eba172337904b5a";
         final OAuth20Service service = new ServiceBuilder().apiKey(apiKey).apiSecret(apiSecret)
-                .callback("http://qbclsh.ngrok.cc/weixin/callback/qq")
-                .scope("get_user_info").build(WeiXinApi.instance());
-        System.out.println(service.getAuthorizationUrl());
+//                .callback("http://qbclsh.ngrok.cc/weixin/callback/qq")
+                .scope("get_user_info").build(QQApi.instance());
+//        System.out.println(service.);
     }
 
     @Test
