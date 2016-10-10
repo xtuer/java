@@ -5,27 +5,27 @@
     <meta charset="utf-8">
     <title>SpringMVC REST</title>
     <script src="/lib/jquery.min.js" charset="utf-8"></script>
-    <script src="/js/rest.js" charset="utf-8"></script>
+    <script src="/js/jquery.rest.js" charset="utf-8"></script>
 </head>
 
 <body>
     <script>
         $(document).ready(function() {
-            Rest.get('/rest', {name: 'Alice'}, function(result) {
+            $.restGet({url: '/rest', data: {name: 'Alice'}, done: function(result) {
                 console.log(result);
-            });
+            }});
 
-            Rest.update('/rest', {name: 'Bob', age: 22}, function(result) {
+            $.restCreate({url: '/rest', done: function(result) {
                 console.log(result);
-            });
+            }});
 
-            Rest.create('/rest', {}, function(result) {
+            $.restUpdate({url: '/rest', data: {name: 'Bob', age: 22}, done: function(result) {
                 console.log(result);
-            });
+            }});
 
-            Rest.delete('/rest', {}, function(result) {
+            $.restDelete({url: '/rest', done: function(result) {
                 console.log(result);
-            });
+            }});
         });
     </script>
 </body>
