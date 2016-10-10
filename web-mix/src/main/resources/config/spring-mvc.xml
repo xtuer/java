@@ -14,6 +14,8 @@
        http://www.springframework.org/schema/task
        http://www.springframework.org/schema/task/spring-task.xsd">
 
+    <import resource="classpath:config/spring-view-controller.xml"/>
+
     <!-- ⾃自动扫描的包名:
          在包名 com.xtuer.controller 下的标记为 @Controller, @Service, @Component 的类
          都会⾃动的生成一个对象存储到 Spring Container ⾥
@@ -78,6 +80,7 @@
     <mvc:resources mapping="/js/**"  location="/WEB-INF/asset/js/"  cache-period="31556926"/>
     <mvc:resources mapping="/css/**" location="/WEB-INF/asset/css/" cache-period="31556926"/>
     <mvc:resources mapping="/img/**" location="/WEB-INF/asset/img/" cache-period="31556926"/>
+    <mvc:resources mapping="/lib/**" location="/WEB-INF/asset/lib/" cache-period="31556926"/>
     <mvc:resources mapping="/favicon.ico" location="/WEB-INF/asset/img/favicon.ico" cache-period="31556926"/>
 
     <mvc:view-controller path="/404" view-name="404.html"/>

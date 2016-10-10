@@ -11,7 +11,7 @@ import java.util.List;
 public class ReadAndOutputExamScores {
     public static void main(String[] args) throws Exception {
         // [[1]] 从 Excel 中导入成绩
-        InputStream in = new FileInputStream("/Users/Biao/Desktop/期中考试.xlsx"); // InputStream 可以从上传文件流中得到
+        InputStream in = ReadAndOutputExamScores.class.getClassLoader().getResourceAsStream("期中考试.xlsx"); // InputStream 可以从上传文件流中得到
         String examName = "期中考试"; // 上传的文件名去掉后缀，规定文件名代表考试的名字，例如期中考试，期末考试
         List<ExamScore> importedExamScores = ExamScoreUtils.readExamsScoresFromExcel(in, examName);
         in.close();
