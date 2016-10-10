@@ -11,19 +11,19 @@
 <body>
     <script>
         $(document).ready(function() {
-            $.restGet({url: '/rest', data: {name: 'Alice'}, done: function(result) {
+            $.rest.get({url: '/rest', data: {name: 'Alice'}, done: function(result) {
                 console.log(result);
             }});
 
-            $.restCreate({url: '/rest', done: function(result) {
+            $.rest.create({url: '/rest', done: function(result) {
                 console.log(result);
             }});
 
-            $.restUpdate({url: '/rest', data: {name: 'Bob', age: 22}, done: function(result) {
+            $.rest.update({url: '/rest', data: {name: 'Bob', age: 22}, done: function(result) {
                 console.log(result);
             }});
 
-            $.restDelete({url: '/rest', done: function(result) {
+            $.rest.delete({url: '/rest', done: function(result) {
                 console.log(result);
             }});
         });
