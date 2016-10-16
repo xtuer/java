@@ -1,16 +1,15 @@
 package com.xtuer.controller;
 
 import com.xtuer.bean.FileMeta;
+import com.xtuer.bean.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -117,5 +116,25 @@ public class UploadController {
         }
 
         return false;
+    }
+
+    @GetMapping("/crossDomain")
+    public String crossDomainPage() {
+        return "crossDomain.html";
+    }
+
+    @PostMapping("/crossDomain")
+    @ResponseBody
+    public Result crossDomainHandler(@RequestParam String username, @RequestParam String email, MultipartFile file,
+                                     HttpServletResponse response) throws IOException {
+        System.out.println(file.getOriginalFilename());
+        file.transferTo(new File("/Users/Biao/Desktop/x.html"));
+
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+        String message = String.format("Username: %s, Email: %s", username, email);
+        System.out.println(message);
+
+        return new Result(true, message);
     }
 }

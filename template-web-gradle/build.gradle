@@ -55,7 +55,7 @@ ext.versions = [
     jstl:           '1.2',
     servlet:        '3.1.0',
     jackson:        '2.5.3',
-    freemarker:     '2.3.20',
+    freemarker:     '2.3.23',
     logback:        '1.1.2',
     mysql:          '5.1.21',
     mybatis:        '3.2.1',
