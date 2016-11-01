@@ -16,14 +16,16 @@ public class DemoController {
         return "Welcome---Demo";
     }
 
-    @RequestMapping("/a")
+    @GetMapping("/a")
     public String pageA() {
         return "a.html";
     }
 
-    @RequestMapping("/b")
-    public String pageB() {
-        return "b.html";
+    @PostMapping("/a")
+    @ResponseBody
+    public String postA(@RequestParam String name) {
+        System.out.println(name);
+        return name;
     }
 
     @PostMapping("ajax-test")
