@@ -2,7 +2,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CommentGenerator {
     public static void main(String[] args) {
-        String[] texts = {"What's this", "Wohin gehen Sie?"};
+        String[] texts = {"XJson"};
         System.out.println(generateComment(texts));
     }
 

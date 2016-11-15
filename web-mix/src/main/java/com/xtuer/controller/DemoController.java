@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Controller
@@ -23,7 +24,7 @@ public class DemoController {
 
     @PostMapping("/a")
     @ResponseBody
-    public String postA(@RequestParam String name) {
+    public String postA(@RequestParam String name, HttpServletRequest request) {
         System.out.println(name);
         return name;
     }
