@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Demo;
 import com.xtuer.mapper.DemoMapper;
 import org.junit.Test;
@@ -16,14 +17,23 @@ public class TestDemo {
     @Test
     public void insertDemo() {
         Demo demo = new Demo();
-        demo.setDescription("你要去哪里");
+        demo.setInfo("你要去哪里");
         System.out.println(mapper.insertDemo(demo));
         System.out.println(demo.getId());
     }
 
     @Test
     public void findDemo() {
-        Demo demo = mapper.findDemoById(1);
-        System.out.println(demo.getDescription());
+        for (int i = 0; i < 10000; ++i) {
+            System.out.println("================== " + i);
+            try {
+                Demo demo = mapper.findDemoById(1);
+                System.out.println(JSON.toJSONString(demo));
+
+                Thread.sleep(1000);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
     }
 }

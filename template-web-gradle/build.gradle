@@ -60,7 +60,7 @@ ext.versions = [
     mysql:          '5.1.21',
     mybatis:        '3.2.1',
     mybatisSpring:  '1.2.2',
-    dbcp:           '2.1.1',
+    druid:          '1.0.26',
     junit:          '4.12',
     jclOverSlf4j:   '1.7.21'
 ]
@@ -77,7 +77,7 @@ dependencies {
             "org.springframework:spring-jdbc:$versions.spring",
             "org.mybatis:mybatis-spring:$versions.mybatisSpring",
             "org.mybatis:mybatis:$versions.mybatis",
-            "org.apache.commons:commons-dbcp2:$versions.dbcp",
+            "com.alibaba:druid:$versions.druid",
             "ch.qos.logback:logback-classic:$versions.logback",               // Logback
             "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf4j"
     )

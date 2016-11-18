@@ -15,12 +15,12 @@ CREATE TABLE `demo` (
 <mapper namespace="com.xtuer.mapper.DemoMapper">
     <!--列出文件和文件夹-->
     <select id="findDemoById" parameterType="int" resultType="Demo">
-        SELECT id, description
+        SELECT id, info
         FROM demo
         WHERE id=#{id}
     </select>
 
     <insert id="insertDemo" parameterType="Demo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO demo (description) VALUES (#{description})
+        INSERT INTO demo (info) VALUES (#{info})
     </insert>
 </mapper>

@@ -1,6 +1,6 @@
 package com.xtuer.editor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Enrollment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,6 @@ public class EnrollmentEditor extends PropertyEditorSupport {
     }
 
     public static void importEnrollment() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
         Scanner scanner = new Scanner(new File("/Users/Biao/Desktop/201607-1.txt"));
 
         while (scanner.hasNextLine()) {
@@ -58,7 +57,7 @@ public class EnrollmentEditor extends PropertyEditorSupport {
             editor.setAsText(enrollmentString);
 
             Enrollment enrollment = (Enrollment) editor.getValue();
-            System.out.println(mapper.writeValueAsString(enrollment));
+            System.out.println(JSON.toJSONString(enrollment));
         }
     }
 }

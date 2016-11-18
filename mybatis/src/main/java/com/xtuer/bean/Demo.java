@@ -2,7 +2,7 @@ package com.xtuer.bean;
 
 public class Demo {
     private int id;
-    private String description;
+    private String info;
 
     public int getId() {
         return id;
@@ -12,11 +12,11 @@ public class Demo {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getInfo() {
+        return info;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

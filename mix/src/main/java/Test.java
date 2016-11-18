@@ -1,21 +1,32 @@
 public class Test {
-    // 实现选择排序
-    public static void selectionSort(int[] numbers) {
+    public static void main(String[] args) {
+        Test t = new Test();
 
+        A a1 = new A<String>() {
+            @Override
+            public void set(String s) {
+                System.out.println("A<String>: " + s);
+            }
+        };
+
+        A a2 = (A<Integer>) n -> {
+            System.out.println("A<Integer>: " + n);
+        };
+
+        t.m1(a1);
+        t.m2(a2);
+        t.m2(a1);
     }
 
-    public static void main(String[] args) {
+    public void m1(A<String> a) {
+        a.set("ABC");
+    }
 
+    public void m2(A<Integer> a) {
+        a.set(12345);
     }
 }
 
-// 定义员工类，有属性 name, age, salary
-// 使用字符串的方式创建 Employee 对象，例如: Alice:22:15000
-class Employee {
-    // [1] 属性定义
-
-    public static Employee fromString(String text) {
-        // [2] 实现代码
-        return null;
-    }
+interface A<T>{
+    void set(T t);
 }
