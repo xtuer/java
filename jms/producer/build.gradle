@@ -1,8 +1,6 @@
 group 'com.xtuer'
 version '1.0'
 
-apply plugin: 'java'
-apply plugin: 'maven'
 apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
 
@@ -24,39 +22,4 @@ gretty {
     debugSuspend = false
     managedClassReload      = true
     recompileOnSourceChange = false
-}
-
-tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
-////////////////////////////////////////////////////////////////////////////////
-//                                   Maven 依赖                               //
-////////////////////////////////////////////////////////////////////////////////
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-ext.versions = [
-    spring:     '4.3.0.RELEASE',
-    servlet:    '3.1.0',
-    fastjson:   '1.2.17',
-    freemarker: '2.3.23',
-    junit:      '4.12'
-]
-
-dependencies {
-    compile(
-            "org.springframework:spring-webmvc:$versions.spring",             // Spring MVC
-            "org.springframework:spring-context-support:$versions.spring",
-            "com.alibaba:fastjson:$versions.fastjson",  // JSON
-            "org.freemarker:freemarker:$versions.freemarker"                  // Freemarker
-    )
-
-    compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
-    testCompile("junit:junit:$versions.junit")
 }

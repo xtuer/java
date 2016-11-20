@@ -1,0 +1,41 @@
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    ext.versions = [
+            spring:       '4.3.0.RELEASE',
+            servlet:      '3.1.0',
+            fastjson:     '1.2.17',
+            freemarker:   '2.3.23',
+            junit:        '4.12',
+            activemq:     '5.7.0',
+            activemqPool: '5.14.1'
+    ]
+
+    dependencies {
+        compile(
+                "org.springframework:spring-webmvc:$versions.spring",          // Spring MVC
+                "org.springframework:spring-context-support:$versions.spring",
+                "org.springframework:spring-jms:$versions.spring",
+                "org.apache.activemq:activemq-core:$versions.activemq",
+                "org.apache.activemq:activemq-pool:$versions.activemqPool",
+                "com.alibaba:fastjson:$versions.fastjson",                     // JSON
+                "org.freemarker:freemarker:$versions.freemarker"               // Freemarker
+        )
+
+        compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
+        testCompile("junit:junit:$versions.junit")
+    }
+}
