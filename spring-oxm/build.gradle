@@ -35,28 +35,14 @@ repositories {
 }
 
 dependencies {
-    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.springframework:spring-webmvc:4.3.0.RELEASE'
+    compile 'org.springframework:spring-oxm:4.3.0.RELEASE'
+    compile 'org.codehaus.castor:castor-xml:1.4.1'
+
+    compile 'commons-io:commons-io:2.4'
     compile 'org.projectlombok:lombok:1.16.10'
     compile 'com.alibaba:fastjson:1.2.17'
 
     testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
     testCompile 'junit:junit:4.12'
 }
-
-// 创建目录结构的任务，执行后可删除
-task "create-structure" << {
-   sourceSets*.java.srcDirs*.each { it.mkdirs() }
-   sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-}
-
-/*
-生成的目录结构
-├── build.gradle
-└── src
-    ├── main
-    │   ├── java
-    │   └── resources
-    └── test
-        ├── java
-        └── resources
-*/

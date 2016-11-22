@@ -58,5 +58,6 @@ dependencies {
     )
 
     compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
+    testCompile("org.springframework:spring-test:$versions.spring")
     testCompile("junit:junit:$versions.junit")
 }
