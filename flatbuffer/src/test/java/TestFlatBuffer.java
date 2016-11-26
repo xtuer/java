@@ -13,8 +13,8 @@ public class TestFlatBuffer {
     public void testWrite() throws Exception {
         // [1] 创建 Person 对象
         FlatBufferBuilder builder = new FlatBufferBuilder();
-        int orc = Person.createPerson(builder, builder.createString("道格拉斯·狗"), 30);
-        builder.finish(orc);
+        int root = Person.createPerson(builder, builder.createString("道格拉斯·狗"), 30);
+        builder.finish(root);
 
         // [2] 序列化 Person 对象为字节码
         byte[] buffer = builder.sizedByteArray();

@@ -1,9 +1,7 @@
-public class Test {
-    public static void foo(int x, int y) {
-        System.out.println("foo()");
-    }
+import java.util.Objects;
 
+public class Test {
     public static void main(String[] args) {
-        foo(2, 3);
+        Objects.hash("a", "b");
     }
 }
