@@ -1,0 +1,20 @@
+<ehcache updateCheck="false" name="fooCache">
+    <!--默认的缓存配置-->
+    <defaultCache maxElementsInMemory="10000"
+                  eternal="false"
+                  timeToIdleSeconds="120"
+                  timeToLiveSeconds="120"
+                  overflowToDisk="false"
+                  diskPersistent="false"
+                  diskExpiryThreadIntervalSeconds="120"/>
+
+    <cache name="fox"
+           maxElementsInMemory="100"
+           eternal="false"
+           timeToIdleSeconds="3"
+           timeToLiveSeconds="120"
+           overflowToDisk="false"
+           diskPersistent="false">
+        <cacheEventListenerFactory class="MyCacheEventListenerFactory"/>
+    </cache>
+</ehcache>
