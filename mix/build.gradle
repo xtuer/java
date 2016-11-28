@@ -31,6 +31,9 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.10'
     compile 'org.springframework:spring-context:4.3.0.RELEASE'
     compile 'org.yaml:snakeyaml:1.17'
+    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+
+
 
     testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
     testCompile 'junit:junit:4.12'
