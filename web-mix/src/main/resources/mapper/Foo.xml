@@ -20,8 +20,8 @@ CREATE TABLE `foo` (
         WHERE id=#{id}
     </select>
     <select id="findFooByNameAndCity" resultType="Foo">
-        SELECT id, name, cityId
+        SELECT id, name, city
         FROM foo
-        WHERE name=#{name} AND cityId=#{cityId}
+        WHERE name=#{name} AND city=#{city}
     </select>
 </mapper>
