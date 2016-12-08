@@ -1,0 +1,67 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:1.4.0'
+    }
+}
+
+gretty {
+    port = 8081
+    contextPath = ''
+    servletContainer = 'tomcat7'
+
+    inplaceMode  = 'hard'
+    debugSuspend = false
+    managedClassReload      = true
+    recompileOnSourceChange = false
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+////////////////////////////////////////////////////////////////////////////////
+//                                   Maven 依赖                               //
+////////////////////////////////////////////////////////////////////////////////
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+ext.versions = [
+    spring:     '4.3.0.RELEASE',
+    springSecurity: '4.0.4.RELEASE',
+    servlet:    '3.1.0',
+    fastjson:   '1.2.17',
+    freemarker: '2.3.23',
+    junit:      '4.12'
+]
+
+dependencies {
+    compile(
+            "org.springframework:spring-webmvc:$versions.spring",             // Spring MVC
+            "org.springframework:spring-context-support:$versions.spring",
+            "org.springframework.security:spring-security-web:$versions.springSecurity", // Spring Security
+            "org.springframework.security:spring-security-config:$versions.springSecurity",
+            "org.springframework.security:spring-security-cas:$versions.springSecurity",
+            "com.alibaba:fastjson:$versions.fastjson",  // JSON
+            "org.freemarker:freemarker:$versions.freemarker" // Freemarker
+    )
+
+    compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
+    testCompile("org.springframework:spring-test:$versions.spring")
+    testCompile("junit:junit:$versions.junit")
+}

