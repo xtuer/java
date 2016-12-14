@@ -2,6 +2,8 @@ package com.xtuer.controller;
 
 import com.xtuer.bean.Foo;
 import com.xtuer.mapper.FooMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ import java.io.Writer;
 
 @Controller
 public class HelloController {
+    private static Logger logger = LoggerFactory.getLogger(HelloController.class);
+
     @Autowired
     private FooMapper fooMapper;
 
@@ -28,6 +32,8 @@ public class HelloController {
     @GetMapping("/foo")
     @ResponseBody
     public Foo findFoo() {
+        logger.debug("findFoo()");
+
         return fooMapper.findFooByNameAndCity("Biao", "Beijin");
     }
 
