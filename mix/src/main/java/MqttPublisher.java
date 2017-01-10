@@ -7,13 +7,14 @@ import java.util.concurrent.TimeUnit;
 public class MqttPublisher {
     private static final String TOPIC_NAME = "foo";
     private static final String WILL_TOPIC_NAME = "foo-will";
-    private static final String HOST = "tcp://127.0.0.1:1883";
+    private static final String HOST = "tcp://ebag.qderzhong.net:1883";
+//    private static final String HOST = "tcp://127.0.0.1:1883";
     private static int messageNumber = 0;
 
     public static void main(String[] args) throws URISyntaxException {
         MQTT mqtt = new MQTT();
         mqtt.setHost(HOST);
-        mqtt.setKeepAlive((short)3); // 默认是 30 秒
+        mqtt.setKeepAlive((short)10); // 默认是 30 秒
         mqtt.setReconnectDelay(500); // 500 毫秒重连一次, 默认是 10 毫秒
         mqtt.setReconnectDelayMax(500);
         mqtt.setWillTopic(WILL_TOPIC_NAME);
@@ -49,6 +50,6 @@ public class MqttPublisher {
                     System.out.println("Non-connected");
                 }
             }
-        }, 100, 1, TimeUnit.MILLISECONDS);
+        }, 1000, 100, TimeUnit.MILLISECONDS);
     }
 }

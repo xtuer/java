@@ -12,6 +12,7 @@
         <!--<property name="timeout" value="${redis.timeout}" />-->
         <property name="poolConfig" ref="jedisPoolConfig" />
         <property name="usePool" value="true" />
+        <property name="database" value="0"></property>
     </bean>
 
     <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">

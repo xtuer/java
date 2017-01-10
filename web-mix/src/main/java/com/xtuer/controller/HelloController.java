@@ -104,8 +104,8 @@ public class HelloController {
     @GetMapping("/signIn")
     @ResponseBody
     public String singInGet(@RequestParam String id,
-                         @RequestParam String name,
-                         @RequestHeader(value="token", required=false) String token) throws Exception {
+                            @RequestParam String name,
+                            @RequestHeader(value="token", required=false) String token) throws Exception {
         System.out.println("Original name: " + name);
 //        name = new String(name.getBytes("iso8859-1"), "UTF-8");
         return String.format("GET: id: %s, name: %s, token: %s", id, name, token);
@@ -115,8 +115,8 @@ public class HelloController {
     @PostMapping("/signIn")
     @ResponseBody
     public String singInPost(@RequestParam String id,
-                         @RequestParam String name,
-                         @RequestHeader(value="token", required=false) String token) throws Exception {
+                             @RequestParam String name,
+                             @RequestHeader(value="token", required=false) String token) throws Exception {
         return String.format("POST: id: %s, name: %s, token: %s", id, name, token);
     }
 }
