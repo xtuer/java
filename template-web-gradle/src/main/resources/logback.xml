@@ -24,7 +24,8 @@
         <appender-ref ref="file"/>
     </root>
 
-    <logger name="org.mybatis" level="info"/>
+    <logger name="org.apache.ibatis.io" level="off"/>
     <logger name="org.springframework" level="info"/>
-    <logger name="com.eduedu.ebag.mapper" level="debug"/>
+    <logger name="org.mybatis" level="off"/>
+    <logger name="com.xtuer.mapper" level="true"/>
 </configuration>

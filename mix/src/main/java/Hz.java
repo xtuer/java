@@ -26,7 +26,7 @@ public class Hz {
      *
      * @param name 学员名字
      * @param examId 试题库的 id
-     * @return
+     * @return 弘智题库的 url
      */
     public static String urlForHz(RedisTemplate redisTemplate, String name, String examId) {
         String md5  = keyForHz(name);
