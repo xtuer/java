@@ -1,5 +1,7 @@
-package com.xtuer.bean;
+package com.xtuer.security;
 
+import com.xtuer.bean.User;
+import com.xtuer.bean.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 自定义的 UserDetails 可以保存用户的其他信息到 session 里, 例如 id 等.
+ * 自定义的 UserDetails 可以保存用户的其他信息到 session 里, 例如 user id 等.
  */
 public class MyUserDetails extends org.springframework.security.core.userdetails.User {
     private int userId;

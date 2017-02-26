@@ -20,7 +20,7 @@ public class AutoLoginController {
         // [[1]] 绑定已有用户
         // [[2]] 绑定好后进行自动登陆
         String username = "QQ_admin";
-        String password = "wrong";
+        String password = "wrong"; // OAuth 授权的用户登陆不需要密码，因为不是在我们平台登陆的
 
         return "redirect:" + securityHelper.login(username, password);
     }

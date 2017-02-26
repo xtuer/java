@@ -5,12 +5,13 @@
 <body>
     ${error!}${logout!}
     <form name="loginForm" action="/login" method="POST">
-        Username: <input type="text" name="username" /><br>
-        Password: <input type="password" name="password" /><br>
+        Username: <input type="text" name="username"/><br>
+        Password: <input type="password" name="password"/><br>
         <input type="checkbox" name="remember-me"/> Remember Me<br>
-        <input name="submit" type="submit" value="登陆" />
+        <input name="submit" type="submit" value="登陆"/>
     </form>
-    <a href="/bindingUser">绑定用户自动登陆</a><br>
+
+    <a href="/bindingUser">QQ 绑定用户自动登陆</a><br>
     <a href="/adminLogin">Admin 登陆</a><br>
     <a href="/nonExistingUserLogin">不存在用户登陆</a>
 </body>

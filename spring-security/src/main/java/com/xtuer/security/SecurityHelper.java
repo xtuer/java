@@ -1,11 +1,12 @@
 package com.xtuer.security;
 
-import com.xtuer.bean.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -17,11 +18,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class SecurityHelper {
-    @Resource(name="authenticationManager")
+    @Autowired
+    @Qualifier("authenticationManager")
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private TokenBasedRememberMeServices tokenBasedRememberMeServices;
+
+    @Resource(name="passwordEncoder")
+    private BCryptPasswordEncoder passwordEncoder;
 
     /**
      * 判断当前用户是否已经登陆
