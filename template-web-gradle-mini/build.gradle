@@ -11,12 +11,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.akhikhl.gretty:gretty:1.4.0'
+        classpath 'org.akhikhl.gretty:gretty:1.4.1'
     }
 }
 
 gretty {
-    port = 8080
+    httpPort = 8080
     contextPath = ''
     servletContainer = 'tomcat7'
 
@@ -42,9 +42,9 @@ repositories {
 }
 
 ext.versions = [
-    spring:     '4.3.0.RELEASE',
+    spring:     '4.3.6.RELEASE',
     servlet:    '3.1.0',
-    fastjson:   '1.2.17',
+    fastjson:   '1.2.24',
     freemarker: '2.3.23',
     junit:      '4.12'
 ]
