@@ -29,7 +29,7 @@
         <remember-me key="uniqueAndSecret" token-validity-seconds="2592000"/>
     </http>
 
-    <beans:bean id="securityHelper" class="com.xtuer.security.SecurityHelper"/>
+    <beans:bean id="securityUtils" class="com.xtuer.security.SecurityUtils"/>
     <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
     <beans:bean id="userDetailsService" class="com.xtuer.security.MyUserDetailsService"/>
     <beans:bean id="authenticationProvider" class="com.xtuer.security.MyAuthenticationProvider"/>

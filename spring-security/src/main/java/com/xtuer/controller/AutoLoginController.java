@@ -1,6 +1,6 @@
 package com.xtuer.controller;
 
-import com.xtuer.security.SecurityHelper;
+import com.xtuer.security.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 
 @Controller
 public class AutoLoginController {
-    @Resource(name="securityHelper")
-    private SecurityHelper securityHelper;
+    @Resource(name="securityUtils")
+    private SecurityUtils securityUtils;
 
     /**
      * OAuth 用户绑定本地用户
@@ -22,7 +22,7 @@ public class AutoLoginController {
         String username = "QQ_admin";
         String password = "wrong"; // OAuth 授权的用户登陆不需要密码，因为不是在我们平台登陆的
 
-        return "redirect:" + securityHelper.login(username, password);
+        return "redirect:" + securityUtils.login(username, password);
     }
 
     /**
@@ -33,7 +33,7 @@ public class AutoLoginController {
         String username = "nonExistingUser";
         String password = "flash";
 
-        return "redirect:" + securityHelper.login(username, password);
+        return "redirect:" + securityUtils.login(username, password);
     }
 
     /**
@@ -44,6 +44,6 @@ public class AutoLoginController {
         String username = "admin";
         String password = "Passw0rd";
 
-        return "redirect:" + securityHelper.login(username, password);
+        return "redirect:" + securityUtils.login(username, password);
     }
 }
