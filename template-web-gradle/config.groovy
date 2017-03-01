@@ -9,7 +9,7 @@ environments {
         }
 
         baseUrl = ''
-        logsDir = "/temp/logs"
+        logDir = "/temp/logs"
     }
 
     production {
@@ -21,6 +21,6 @@ environments {
         }
 
         baseUrl = ''
-        logsDir = "/temp/logs"
+        logDir = "/temp/logs"
     }
 }

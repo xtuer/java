@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SpringMVC REST</title>
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/js/jquery.rest.js"></script>
+    <script src="/js/urls.js"></script>
+</head>
+
+<body>
+    Welcome to ${action}
+    <img src="${baseUrl}/img/sativa.png">
+
+    <script>
+            $(document).ready(function() {
+                // 服务器端的 GET 需要启用 UTF-8 才不会乱吗
+                $.rest.get({url: URLs.REST_ONE, data: {name: 'Alice'}, success: function(result) {
+                    console.log(result);
+                }});
+
+                $.rest.create({url: '/rest', success: function(result) {
+                    console.log(result);
+                }});
+
+                $.rest.update({url: '/rest', data: {name: '黄飞鸿', age: 22}, success: function(result) {
+                    console.log(result);
+                }});
+
+                $.rest.remove({url: '/rest', success: function(result) {
+                    console.log(result);
+                }});
+
+                $.rest.get({url: '/rest/{id}', urlParams: {id: 121}, data: {name: '黄彪'}, success: function(result) {
+                    console.log(result);
+                }, error: function(e) {
+                    console.log(e);
+                }});
+            });
+        </script>
+</body>
+</html>

@@ -44,12 +44,12 @@ public interface UriViewConstants {
     String REST_QUESTIONS_ANSWERS_SUGGESTIONS = "/resources/topics/{topicId}/questions/{questionId}/question-items/{questionItemId}/suggestions";
 
     // 客户访问调查问卷的 URL
-    String  URI_SURVEYS        = "/surveys/{surveyId}";
-    String VIEW_SURVEYS        = "survey.htm";
-    String  URI_SURVEYS_SUBMIT = "/surveys/{surveyId}/submit"; // 提交问卷
+    String URI_SURVEYS        = "/surveys/{surveyId}";
+    String VIEW_SURVEYS       = "survey.htm";
+    String URI_SURVEYS_SUBMIT = "/surveys/{surveyId}/submit"; // 提交问卷
 
     // 客户资源的 URL
-    String  URI_PARTICIPANT             = "/participant";
+    String URI_PARTICIPANT              = "/participant";
     String VIEW_PARTICIPANT             = "participant.htm";
     String REST_PARTICIPANTS            = "/resources/participants";
     String REST_PARTICIPANTS_WITH_ID    = "/resources/participants/{participantId}";

@@ -16,7 +16,7 @@
 <div class="container">
 	<div class="login-container">
         <!-- status: login-error, login-success, logout-success -->
-        <div id="status" style="display: none">${status!''}</div>
+        <div id="status">${status!''}</div>
         <div id="output"></div>
         <div class="avatar"></div>
 
@@ -24,7 +24,9 @@
             <form action="/login" method="POST">
                 <input name="username" type="text"     placeholder="名字">
                 <input name="password" type="password" placeholder="密码">
-                <input type="checkbox" name="remember-me"/> Remember Me
+                <label style="padding: 5px; margin: 10px; margin-bottom: 0;">
+                    <input type="checkbox" name="remember-me" style="width: auto; height: auto;"/> Remember Me
+                </label>
                 <button id="login" class="btn btn-info btn-block login" type="submit">登录</button>
             </form>
         </div>

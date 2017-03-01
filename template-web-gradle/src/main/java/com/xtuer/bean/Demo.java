@@ -1,38 +1,20 @@
 package com.xtuer.bean;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
+@Getter
+@Setter
 public class Demo {
     private int id;
-    private String description;
+    private String info;
 
     public Demo() {
     }
 
-    public Demo(int id, String description) {
+    public Demo(int id, String info) {
         this.id = id;
-        this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "Demo{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                '}';
+        this.info = info;
     }
 }

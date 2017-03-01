@@ -1,7 +1,8 @@
 package com.xtuer.controller;
 
-import com.xtuer.dao.DemoDao;
 import com.xtuer.bean.Demo;
+import com.xtuer.bean.Result;
+import com.xtuer.mapper.DemoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,30 +10,72 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 public class DemoController {
     private static Logger logger = LoggerFactory.getLogger(DemoController.class.getName());
 
     @Autowired
-    private DemoDao demoDao; // 在 dao.xml 里配置
+    private DemoMapper demoMapper;
 
-    @RequestMapping(UriConstants.URI_DEMO)
-    public String toHello(ModelMap map) {
+    @RequestMapping(UriView.URI_DEMO)
+    public String toHelloPage(ModelMap map) {
         map.put("action", "Access demo page");
 
-        return UriConstants.VIEW_DEMO;
+        return UriView.VIEW_DEMO;
     }
 
-    @RequestMapping(UriConstants.URI_DEMO_MYBATIS)
+    /**
+     * 访问数据库
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(UriView.URI_DEMO_MYBATIS)
     @ResponseBody
-    public Demo queryDemoFromDatabase(@PathVariable int id) {
-        Demo demo = demoDao.findDemoById(id);
-        return demo;
+    public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
+        return Result.ok("", demoMapper.findDemoById(id));
     }
 
     @RequestMapping("/")
     @ResponseBody
     public String index() {
         return "Index page";
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    //                                         REST 用法                                //
+    //////////////////////////////////////////////////////////////////////////////////////
+    @GetMapping("/rest/{id}")
+    @ResponseBody
+    public Result handleGet(@PathVariable int id, @RequestParam String name, ModelMap map) {
+        map.addAttribute("id", id);
+        map.addAttribute("name", name);
+        return Result.ok("GET handled", map);
+    }
+
+    @GetMapping("/rest")
+    @ResponseBody
+    public Result handleGet(@RequestParam String name) {
+        return Result.ok("GET handled", name);
+    }
+
+    @PutMapping("/rest")
+    @ResponseBody
+    public Result handlePut(@RequestBody Map map) {
+        return new Result(true, "UPDATE handled", map);
+    }
+
+    @PostMapping("/rest")
+    @ResponseBody
+    public Result handlePost() {
+        return new Result(true, "CREATE handled");
+    }
+
+    @DeleteMapping("/rest")
+    @ResponseBody
+    public Result handleDelete() {
+        return new Result(true, "DELETE handled");
     }
 }

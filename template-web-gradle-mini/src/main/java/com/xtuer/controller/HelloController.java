@@ -17,6 +17,6 @@ public class HelloController {
     public String hello(ModelMap model) {
         model.put("name", "Biao");
 
-        return "hello.htm";
+        return "hello.fm";
     }
 }

@@ -1,11 +1,8 @@
 package com.xtuer.controller;
 
-import com.xtuer.util.SecurityUtil;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -22,22 +19,21 @@ public class LoginController {
      * @param model
      * @return
      */
-    @RequestMapping(value = UriConstants.URI_LOGIN, method = RequestMethod.GET)
-    public String loginPage(@RequestParam(required = false) String error,
-                            @RequestParam(required = false) String logout,
+    @GetMapping(value=UriView.URI_LOGIN)
+    public String loginPage(@RequestParam(value="error", required=false) String error,
+                            @RequestParam(value="logout", required=false) String logout,
                             ModelMap model) {
         String status = "";
-        status = (error == null)  ? status : "login-error";         // 登录错误
-        status = (logout == null) ? status : "logout-success";      // 注销成功
-        status = SecurityUtil.isLogin() ? "login-success" : status; // 登陆状态
-        model.addAttribute("status", status);
+        status = (error != null)  ? "Username or password is not correct" : status; // 登录错误
+        status = (logout != null) ? "Logout successful" : status; // 注销成功
+        model.put("status", status);
 
-        return UriConstants.VIEW_LOGIN;
+        return UriView.VIEW_LOGIN;
     }
 
-    @RequestMapping(UriConstants.URI_DENY)
+    @GetMapping(UriView.URI_DENY)
     @ResponseBody
-    public String denyPage() {
+    public String toDenyPage() {
         return "权限不够!";
     }
 
