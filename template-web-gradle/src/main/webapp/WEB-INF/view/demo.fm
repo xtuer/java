@@ -10,7 +10,7 @@
 
 <body>
     Welcome to ${action}
-    <img src="${baseUrl}/img/sativa.png">
+    <pre id="error">...</pre>
 
     <script>
             $(document).ready(function() {
@@ -35,6 +35,13 @@
                     console.log(result);
                 }, error: function(e) {
                     console.log(e);
+                }});
+
+                // AJAX 请求时后端发生异常
+                $.rest.get({url: '/exception-ajax', success: function(result) {
+                    if (!result.success) {
+                        $('#error').html(result.message + '<br>' + result.data);
+                    }
                 }});
             });
         </script>

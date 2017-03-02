@@ -61,6 +61,7 @@ ext.versions = [
     mybatis:        '3.2.1',
     mybatisSpring:  '1.2.2',
     druid:          '1.0.26',
+    commonsLang:    '3.5',
     logback:        '1.1.2',
     junit:          '4.12',
     jclOverSlf4j:   '1.7.21'
@@ -81,6 +82,7 @@ dependencies {
             "org.mybatis:mybatis-spring:$versions.mybatisSpring",
             "org.mybatis:mybatis:$versions.mybatis",
             "com.alibaba:druid:$versions.druid",
+            "org.apache.commons:commons-lang3:$versions.commonsLang",
             "ch.qos.logback:logback-classic:$versions.logback",               // Logback
             "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf4j"
     )

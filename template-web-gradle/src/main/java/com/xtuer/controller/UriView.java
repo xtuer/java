@@ -5,10 +5,11 @@ package com.xtuer.controller;
  */
 public interface UriView {
     // 通用 URI 和 VIEW
-    String FORWARD  = "forward:";
-    String REDIRECT = "redirect:";
-    String URI_404  = "/404";
-    String VIEW_404 = "404.fm";
+    String FORWARD    = "forward:";
+    String REDIRECT   = "redirect:";
+    String URI_404    = "/404";
+    String VIEW_404   = "404.fm";
+    String VIEW_ERROR = "error.fm";
 
     // 登录注销
     String URI_LOGIN  = "/login";    // 登陆 URL

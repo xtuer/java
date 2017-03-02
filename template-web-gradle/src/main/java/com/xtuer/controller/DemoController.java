@@ -19,10 +19,14 @@ public class DemoController {
     @Autowired
     private DemoMapper demoMapper;
 
+    @RequestMapping("/")
+    public String index() {
+        return "首页";
+    }
+
     @RequestMapping(UriView.URI_DEMO)
     public String toHelloPage(ModelMap map) {
-        map.put("action", "Access demo page");
-
+        map.put("action", "access demo page");
         return UriView.VIEW_DEMO;
     }
 
@@ -36,12 +40,6 @@ public class DemoController {
     @ResponseBody
     public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
         return Result.ok("", demoMapper.findDemoById(id));
-    }
-
-    @RequestMapping("/")
-    @ResponseBody
-    public String index() {
-        return "Index page";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -77,5 +75,19 @@ public class DemoController {
     @ResponseBody
     public Result handleDelete() {
         return new Result(true, "DELETE handled");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    //                                      访问时发生异常                                //
+    //////////////////////////////////////////////////////////////////////////////////////
+    @GetMapping("/exception")
+    public String exception() {
+        throw new RuntimeException("普通访问发生异常");
+    }
+
+    @GetMapping("/exception-ajax")
+    @ResponseBody
+    public Result exceptionWhenAjax() {
+        throw new RuntimeException("AJAX 访问发生异常");
     }
 }
