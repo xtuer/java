@@ -46,7 +46,7 @@ public class XHandlerExceptionResolver implements HandlerExceptionResolver {
      * @return 返回 null，这时 SpringMvc 不会去查找 view，会根据 response 中的信息进行响应。
      */
     public ModelAndView handleAjaxException(HttpServletResponse response, String error, String stack) {
-        Result result = Result.fail(error, stack);
+        Result result = Result.error(error, stack);
         NetUtils.ajaxResponse(response, JSON.toJSONString(result));
         return null;
     }
