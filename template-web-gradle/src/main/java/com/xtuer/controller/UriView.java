@@ -21,7 +21,7 @@ public interface UriView {
     String URI_DEMO_MYBATIS = "/demo/{id}";
 
     // RESTful 风格获取资源的 URI 格式，变量名以 REST_ 开头，URI 放在 rest 下
-    // 获取或修改 topic, question 资源的 RESTful 风格的 URL, 资源都用复数形方便式统一管理 URL
+    // 获取或修改 topic, question 资源的 RESTful 风格的 URL, 资源都用复数形式方便式统一管理 URL
     String REST_TOPICS         = "/rest/topics";
     String REST_TOPICS_WITH_ID = "/rest/topics/{topicId}";
     String REST_QUESTIONS      = "/rest/topics/{topicId}/questions";
