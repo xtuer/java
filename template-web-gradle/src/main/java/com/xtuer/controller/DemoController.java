@@ -47,8 +47,12 @@ public class DemoController {
 
     //////////////////////////////////////////////////////////////////////////////////////
     //                                         REST 用法                                //
+    //                                                                                 //
+    // 读取: GET                                                                        //
+    // 创建: POST                                                                       //
+    // 更新: PUT                                                                        //
+    // 删除: DELETE                                                                     //
     //////////////////////////////////////////////////////////////////////////////////////
-    //
 
     /**
      * REST 读取
@@ -61,7 +65,7 @@ public class DemoController {
      */
     @GetMapping("/rest/{id}")
     @ResponseBody
-    public Result handleGet(@PathVariable int id, @RequestParam String name, ModelMap map) {
+    public Result restGet(@PathVariable int id, @RequestParam String name, ModelMap map) {
         map.addAttribute("id", id);
         map.addAttribute("name", name);
         return Result.ok("GET handled", map);
@@ -76,7 +80,7 @@ public class DemoController {
      */
     @GetMapping("/rest")
     @ResponseBody
-    public Result handleGet(@RequestParam String name) {
+    public Result restGet(@RequestParam String name) {
         return Result.ok("GET handled", name);
     }
 
@@ -89,7 +93,7 @@ public class DemoController {
      */
     @PutMapping("/rest")
     @ResponseBody
-    public Result handlePut(@RequestBody Map map) {
+    public Result restPut(@RequestBody Map map) {
         return new Result(true, "UPDATE handled", map);
     }
 
@@ -101,7 +105,7 @@ public class DemoController {
      */
     @PostMapping("/rest")
     @ResponseBody
-    public Result handlePost() {
+    public Result restPost() {
         return new Result(true, "CREATE handled");
     }
 
@@ -113,20 +117,20 @@ public class DemoController {
      */
     @DeleteMapping("/rest")
     @ResponseBody
-    public Result handleDelete() {
+    public Result restDelete() {
         return new Result(true, "DELETE handled");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
     //                                      访问时发生异常                                //
     //////////////////////////////////////////////////////////////////////////////////////
-    // http://localhost:8080/
+    // http://localhost:8080/exception
     @GetMapping("/exception")
     public String exception() {
         throw new RuntimeException("普通访问发生异常");
     }
 
-    // http://localhost:8080/
+    // http://localhost:8080/exception-ajax
     @GetMapping("/exception-ajax")
     @ResponseBody
     public Result exceptionWhenAjax() {
@@ -135,14 +139,14 @@ public class DemoController {
 
     /**
      * 字符串日期转换为日期 Date 对象
-     * URL: http://localhost:8080/to-date?date=2017-03-12
-     *      http://localhost:8080/to-date?date=2017-03-12%2012:10:15
+     * URL: http://localhost:8080/string-to-date?date=2017-03-12
+     *      http://localhost:8080/string-to-date?date=2017-03-12%2012:10:15
      * @param date
      * @return
      */
     @GetMapping("/to-date")
     @ResponseBody
-    public Result<Date> toDate(@RequestParam("date") Date date) {
+    public Result<Date> stringToDate(@RequestParam("date") Date date) {
         return Result.ok("日期转换", date);
     }
 }

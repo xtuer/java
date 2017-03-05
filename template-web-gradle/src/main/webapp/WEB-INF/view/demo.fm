@@ -13,37 +13,37 @@
     <pre id="error">...</pre>
 
     <script>
-            $(document).ready(function() {
-                // 服务器端的 GET 需要启用 UTF-8 才不会乱吗
-                $.rest.get({url: URLs.REST_ONE, data: {name: 'Alice'}, success: function(result) {
-                    console.log(result);
-                }});
+        $(document).ready(function() {
+            // 服务器端的 GET 需要启用 UTF-8 才不会乱吗
+            $.rest.get({url: URLs.REST_ONE, data: {name: 'Alice'}, success: function(result) {
+                console.log(result);
+            }});
 
-                $.rest.create({url: '/rest', success: function(result) {
-                    console.log(result);
-                }});
+            $.rest.create({url: '/rest', success: function(result) {
+                console.log(result);
+            }});
 
-                $.rest.update({url: '/rest', data: {name: '黄飞鸿', age: 22}, success: function(result) {
-                    console.log(result);
-                }});
+            $.rest.update({url: '/rest', data: {name: '黄飞鸿', age: 22}, success: function(result) {
+                console.log(result);
+            }});
 
-                $.rest.remove({url: '/rest', success: function(result) {
-                    console.log(result);
-                }});
+            $.rest.remove({url: '/rest', success: function(result) {
+                console.log(result);
+            }});
 
-                $.rest.get({url: '/rest/{id}', urlParams: {id: 121}, data: {name: '黄彪'}, success: function(result) {
-                    console.log(result);
-                }, error: function(e) {
-                    console.log(e);
-                }});
+            $.rest.get({url: '/rest/{id}', urlParams: {id: 121}, data: {name: '黄彪'}, success: function(result) {
+                console.log(result);
+            }, error: function(e) {
+                console.log(e);
+            }});
 
-                // AJAX 请求时后端发生异常
-                $.rest.get({url: '/exception-ajax', success: function(result) {
-                    if (!result.success) {
-                        $('#error').html(result.message + '<br>' + result.data);
-                    }
-                }});
-            });
-        </script>
+            // AJAX 请求时后端发生异常
+            $.rest.get({url: '/exception-ajax', success: function(result) {
+                if (!result.success) {
+                    $('#error').html(result.message + '<br>' + result.data);
+                }
+            }});
+        });
+    </script>
 </body>
 </html>
