@@ -25,6 +25,7 @@ public class DemoController {
         return "首页";
     }
 
+    // URL: http://localhost:8080/demo
     @RequestMapping(UriView.URI_DEMO)
     public String toHelloPage(ModelMap map) {
         map.put("action", "access demo page");
@@ -33,6 +34,7 @@ public class DemoController {
 
     /**
      * 访问数据库
+     * URL: http://localhost:8080/demo/{id}
      *
      * @param id
      * @return
@@ -46,6 +48,17 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                         REST 用法                                //
     //////////////////////////////////////////////////////////////////////////////////////
+    //
+
+    /**
+     * REST 读取
+     * URL: http://localhost:8080/rest/{id}
+     *
+     * @param id
+     * @param name
+     * @param map
+     * @return
+     */
     @GetMapping("/rest/{id}")
     @ResponseBody
     public Result handleGet(@PathVariable int id, @RequestParam String name, ModelMap map) {
@@ -54,24 +67,50 @@ public class DemoController {
         return Result.ok("GET handled", map);
     }
 
+    /**
+     * REST 的读取
+     * URL: http://localhost:8080/rest
+     *
+     * @param name
+     * @return
+     */
     @GetMapping("/rest")
     @ResponseBody
     public Result handleGet(@RequestParam String name) {
         return Result.ok("GET handled", name);
     }
 
+    /**
+     * REST 的更新
+     * URL: http://localhost:8080/rest
+     *
+     * @param map
+     * @return
+     */
     @PutMapping("/rest")
     @ResponseBody
     public Result handlePut(@RequestBody Map map) {
         return new Result(true, "UPDATE handled", map);
     }
 
+    /**
+     * REST 创建
+     * URL: http://localhost:8080/rest
+     *
+     * @return
+     */
     @PostMapping("/rest")
     @ResponseBody
     public Result handlePost() {
         return new Result(true, "CREATE handled");
     }
 
+    /**
+     * REST 删除
+     * URL: http://localhost:8080/rest
+     *
+     * @return
+     */
     @DeleteMapping("/rest")
     @ResponseBody
     public Result handleDelete() {
@@ -81,19 +120,26 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                      访问时发生异常                                //
     //////////////////////////////////////////////////////////////////////////////////////
+    // http://localhost:8080/
     @GetMapping("/exception")
     public String exception() {
         throw new RuntimeException("普通访问发生异常");
     }
 
+    // http://localhost:8080/
     @GetMapping("/exception-ajax")
     @ResponseBody
     public Result exceptionWhenAjax() {
         throw new RuntimeException("AJAX 访问发生异常");
     }
 
-    // http://localhost:8080/to-date?date=2017-03-12
-    // http://localhost:8080/to-date?date=2017-03-12%2012:10:15
+    /**
+     * 字符串日期转换为日期 Date 对象
+     * URL: http://localhost:8080/to-date?date=2017-03-12
+     *      http://localhost:8080/to-date?date=2017-03-12%2012:10:15
+     * @param date
+     * @return
+     */
     @GetMapping("/to-date")
     @ResponseBody
     public Result<Date> toDate(@RequestParam("date") Date date) {
