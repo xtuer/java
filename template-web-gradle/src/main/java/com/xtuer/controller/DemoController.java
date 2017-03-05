@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Map;
 
 @Controller
@@ -89,5 +90,13 @@ public class DemoController {
     @ResponseBody
     public Result exceptionWhenAjax() {
         throw new RuntimeException("AJAX 访问发生异常");
+    }
+
+    // http://localhost:8080/to-date?date=2017-03-12
+    // http://localhost:8080/to-date?date=2017-03-12%2012:10:15
+    @GetMapping("/to-date")
+    @ResponseBody
+    public Result<Date> toDate(@RequestParam("date") Date date) {
+        return Result.ok("日期转换", date);
     }
 }

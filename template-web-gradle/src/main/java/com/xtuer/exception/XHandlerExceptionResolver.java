@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * 1. 当 AJAX 请求时发生异常，返回 JSON 格式的错误信息
  * 2. 非 AJAX 请求时发生异常，错误信息显示到 HTML 网页
  */
-public class XHandlerExceptionResolver implements HandlerExceptionResolver {
+public final class XHandlerExceptionResolver implements HandlerExceptionResolver {
     private static Logger logger = LoggerFactory.getLogger(XHandlerExceptionResolver.class);
 
     @Override
@@ -45,8 +45,8 @@ public class XHandlerExceptionResolver implements HandlerExceptionResolver {
      * @param stack 异常的堆栈信息
      * @return 返回 null，这时 SpringMvc 不会去查找 view，会根据 response 中的信息进行响应。
      */
-    public ModelAndView handleAjaxException(HttpServletResponse response, String error, String stack) {
-        Result result = Result.error(error, stack);
+    private ModelAndView handleAjaxException(HttpServletResponse response, String error, String stack) {
+        Result<String> result = Result.error(error, stack);
         NetUtils.ajaxResponse(response, JSON.toJSONString(result));
         return null;
     }
@@ -63,7 +63,7 @@ public class XHandlerExceptionResolver implements HandlerExceptionResolver {
      * @param stack 异常的堆栈信息
      * @return ModelAndView 对象，给定了 view 和异常信息
      */
-    public ModelAndView handleNonAjaxException(Exception ex, String error, String stack) {
+    private ModelAndView handleNonAjaxException(Exception ex, String error, String stack) {
         String errorViewName = UriView.VIEW_ERROR; // 显示错误的默认页面
 
         // 如果是我们定义的异常 ApplicationException，则取得它的异常显示页面的 view name

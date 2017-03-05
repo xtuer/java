@@ -23,7 +23,7 @@
 
     <!-- 默认的注解映射支持 -->
     <!--<mvc:annotation-driven/>-->
-    <mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="customConversionService">
         <!--enableMatrixVariables="true">-->
         <mvc:message-converters register-defaults="true">
             <!-- StringHttpMessageConverter 编码为UTF-8，防止乱码 -->
@@ -67,6 +67,15 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <!-- 类型转换 -->
+    <bean id="customConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.xtuer.converter.DateConverter"/>
+            </set>
+        </property>
+    </bean>
 
     <!-- Freemarker 视图解析器 -->
     <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
