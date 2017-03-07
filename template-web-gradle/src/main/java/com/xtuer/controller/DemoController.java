@@ -141,7 +141,7 @@ public class DemoController {
     }
 
     /**
-     * 字符串日期转换为日期 Date 对象
+     * 字符串日期转换为日期 Date 对象，接收 2 种格式的字符串: yyyy-MM-dd 或者 yyyy-MM-dd HH:mm:ss
      * URL: http://localhost:8080/string-to-date?date=2017-03-12
      *      http://localhost:8080/string-to-date?date=2017-03-12%2012:10:15
      * @param date
