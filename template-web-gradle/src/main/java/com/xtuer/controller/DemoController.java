@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -148,5 +151,24 @@ public class DemoController {
     @ResponseBody
     public Result<Date> stringToDate(@RequestParam("date") Date date) {
         return Result.ok("日期转换", date);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    //                                          文件上传                                 //
+    //////////////////////////////////////////////////////////////////////////////////////
+    // http://localhost:8080/demo/upload
+    @GetMapping(UriView.URI_DEMO_UPLOAD)
+    public String toUploadPage() {
+        return UriView.VIEW_DEMO_UPLOAD;
+    }
+
+    @PostMapping(UriView.URI_DEMO_UPLOAD)
+    @ResponseBody
+    public Result uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        logger.debug(file.getOriginalFilename());
+        // 不会自动创建文件夹
+        // 会覆盖同名文件
+        file.transferTo(new File("/Users/Biao/Desktop/x/" + file.getOriginalFilename()));
+        return Result.ok("OK", file.getOriginalFilename());
     }
 }
