@@ -103,9 +103,9 @@
         </property>
     </bean>
 
-    <!--<bean class="com.xtuer.exception.XHandlerExceptionResolver"/>-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
+    <!--<bean class="com.xtuer.exception.XHandlerExceptionResolver"/>-->
     <bean id="compositeExceptionResolver" class="org.springframework.web.servlet.handler.HandlerExceptionResolverComposite">
         <property name="exceptionResolvers">
             <list>

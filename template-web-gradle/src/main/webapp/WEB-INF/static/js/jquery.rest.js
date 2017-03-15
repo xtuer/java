@@ -94,9 +94,9 @@
                 type:  settings.httpMethod,
                 dataType:    'json',
                 contentType: 'application/json;charset=utf-8',
-                beforeSend: function(request) {
-                    request.setRequestHeader("X-Requested-With", 'XMLHttpRequest');
-                }
+                // 服务器抛异常时，有时 Windows 的 Tomcat 环境下竟然取不到 header X-Requested-With, Mac 下没问题，
+                // 正常请求时是好的，手动添加 X-Requested-With 后正常和异常时都能取到了
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
             })
             .done(function(data, textStatus, jqXHR) {
                 settings.success(data, textStatus, jqXHR);
