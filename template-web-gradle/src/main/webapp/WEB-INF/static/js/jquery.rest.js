@@ -11,7 +11,7 @@
      * 调用例子:
      *      $.rest.get({url: '/rest', data: {name: 'Alice'}, success: function(result) {
      *          console.log(result);
-     *      }}, error: function(errorResponse) {});
+     *      }}, fail: function(failResponse) {});
      */
     $.rest = {
         /**
@@ -24,7 +24,7 @@
          *        {json}     data      请求的参数         (可选)
          *        {boolean}  async     默认为异步方式     (可选)
          *        {function} success   请求成功时的回调函数(可选)
-         *        {function} error     请求失败时的回调函数(可选)
+         *        {function} fail      请求失败时的回调函数(可选)
          *        {function} complete  请求完成后的回调函数(可选)
          * @return 没有返回值
          */
@@ -62,7 +62,7 @@
          *        {json}     data       请求的参数        (可选)
          *        {boolean}  async      默认为异步方式     (可选)
          *        {function} success    请求成功时的回调函数(可选)
-         *        {function} error      请求失败时的回调函数(可选)
+         *        {function} fail       请求失败时的回调函数(可选)
          *        {function} complete   请求完成后的回调函数(可选)
          */
         sendRequest: function(options) {
@@ -70,7 +70,7 @@
                 data: {},
                 async: true,
                 success: function() {},
-                error: function() {},
+                fail: function() {},
                 complete: function() {}
             };
 
@@ -93,14 +93,17 @@
                 async: settings.async,
                 type:  settings.httpMethod,
                 dataType:    'json',
-                contentType: 'application/json;charset=utf-8'
+                contentType: 'application/json;charset=utf-8',
+                beforeSend: function(request) {
+                    request.setRequestHeader("X-Requested-With", 'XMLHttpRequest');
+                }
             })
             .done(function(data, textStatus, jqXHR) {
                 settings.success(data, textStatus, jqXHR);
             })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                // data|jqXHR, textStatus, jqXHR|errorThrown
-                settings.error(jqXHR, textStatus, errorThrown);
+            .fail(function(jqXHR, textStatus, failThrown) {
+                // data|jqXHR, textStatus, jqXHR|failThrown
+                settings.fail(jqXHR, textStatus, failThrown);
             })
             .always(function() {
                 settings.complete();

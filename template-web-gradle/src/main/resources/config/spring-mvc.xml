@@ -103,8 +103,21 @@
         </property>
     </bean>
 
-    <bean class="com.xtuer.exception.XHandlerExceptionResolver"/>
+    <!--<bean class="com.xtuer.exception.XHandlerExceptionResolver"/>-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+    <bean id="compositeExceptionResolver" class="org.springframework.web.servlet.handler.HandlerExceptionResolverComposite">
+        <property name="exceptionResolvers">
+            <list>
+                <bean class="com.xtuer.exception.XHandlerExceptionResolver"/>
+            </list>
+        </property>
+        <property name="order" value="0"/>
+    </bean>
+
+    <mvc:cors>
+        <mvc:mapping path="/**"/>
+    </mvc:cors>
 
     <!-- 对静态资源的访问，如 js, css, jpg, png -->
     <!-- 如 HTML 里访问 /js/jquery.js, 则实际访问的是 /WEB-INF/asset/js/jquery.js -->

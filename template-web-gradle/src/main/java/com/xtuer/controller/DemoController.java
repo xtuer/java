@@ -1,5 +1,6 @@
 package com.xtuer.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
@@ -136,7 +137,8 @@ public class DemoController {
     // http://localhost:8080/exception-ajax
     @GetMapping("/exception-ajax")
     @ResponseBody
-    public Result exceptionWhenAjax() {
+    public Result exceptionWhenAjax(Demo demo) {
+        System.out.println(JSON.toJSONString(demo));
         throw new RuntimeException("AJAX 访问发生异常");
     }
 

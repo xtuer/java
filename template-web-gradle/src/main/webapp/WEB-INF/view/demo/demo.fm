@@ -33,12 +33,12 @@
 
             $.rest.get({url: '/rest/{id}', urlParams: {id: 121}, data: {name: '黄彪'}, success: function(result) {
                 console.log(result);
-            }, error: function(e) {
+            }, fail: function(e) {
                 console.log(e);
             }});
 
             // AJAX 请求时后端发生异常
-            $.rest.get({url: '/exception-ajax', success: function(result) {
+            $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
                 if (!result.success) {
                     $('#error').html(result.message + '<br>' + result.data);
                 }
