@@ -70,7 +70,7 @@
                 data: {},
                 async: true,
                 success: function() {},
-                fail: function() {},
+                fail: function(error) {console.log(error)}, // 默认把错误打印到控制台
                 complete: function() {}
             };
 

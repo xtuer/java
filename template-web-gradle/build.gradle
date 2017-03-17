@@ -56,7 +56,7 @@ ext.versions = [
     servlet:        '3.1.0',
     freemarker:     '2.3.23',
     lombok:         '1.16.14',
-    fastjson:       '1.2.28',
+    fastjson:       '1.2.29',
     mysql:          '5.1.21',
     mybatis:        '3.2.1',
     mybatisSpring:  '1.2.2',

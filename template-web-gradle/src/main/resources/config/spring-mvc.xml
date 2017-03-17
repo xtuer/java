@@ -115,16 +115,17 @@
         <property name="order" value="0"/>
     </bean>
 
+    <!-- 启用跨域请求 -->
     <mvc:cors>
         <mvc:mapping path="/**"/>
     </mvc:cors>
 
     <!-- 对静态资源的访问，如 js, css, jpg, png -->
     <!-- 如 HTML 里访问 /js/jquery.js, 则实际访问的是 /WEB-INF/asset/js/jquery.js -->
-    <mvc:resources mapping="/js/**"   location="/WEB-INF/static/js/"   cache-period="31556926"/>
-    <mvc:resources mapping="/css/**"  location="/WEB-INF/static/css/"  cache-period="31556926"/>
-    <mvc:resources mapping="/img/**"  location="/WEB-INF/static/img/"  cache-period="31556926"/>
-    <mvc:resources mapping="/lib/**"  location="/WEB-INF/static/lib/"  cache-period="31556926"/>
-    <mvc:resources mapping="/html/**" location="/WEB-INF/static/html/" cache-period="31556926"/>
-    <mvc:resources mapping="/favicon.ico"    location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
+    <mvc:resources mapping="/js/**"       location="/WEB-INF/static/js/"             cache-period="31556926"/>
+    <mvc:resources mapping="/css/**"      location="/WEB-INF/static/css/"            cache-period="31556926"/>
+    <mvc:resources mapping="/img/**"      location="/WEB-INF/static/img/"            cache-period="31556926"/>
+    <mvc:resources mapping="/lib/**"      location="/WEB-INF/static/lib/"            cache-period="31556926"/>
+    <mvc:resources mapping="/html/**"     location="/WEB-INF/static/html/"           cache-period="31556926"/>
+    <mvc:resources mapping="/favicon.ico" location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
 </beans>

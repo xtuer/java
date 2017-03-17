@@ -25,6 +25,7 @@ public class DemoController {
     private DemoMapper demoMapper;
 
     @RequestMapping("/")
+    @ResponseBody
     public String index() {
         return "首页";
     }
