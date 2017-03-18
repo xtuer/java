@@ -4,14 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
+import com.xtuer.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -159,7 +162,7 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                          文件上传                                 //
     //////////////////////////////////////////////////////////////////////////////////////
-    // http://localhost:8080/demo/upload
+    // URL: http://localhost:8080/demo/upload
     @GetMapping(UriView.URI_DEMO_UPLOAD)
     public String toUploadPage() {
         return UriView.VIEW_DEMO_UPLOAD;
@@ -173,5 +176,23 @@ public class DemoController {
         // 会覆盖同名文件
         file.transferTo(new File("/Users/Biao/Desktop/x/" + file.getOriginalFilename()));
         return Result.ok("OK", file.getOriginalFilename());
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    //                                        参数验证                                   //
+    //////////////////////////////////////////////////////////////////////////////////////
+    // URL:
+    // http://localhost:8080/demo/validate
+    // http://localhost:8080/demo/validate?id=2
+    // http://localhost:8080/demo/validate?id=2&info=amazing
+    @GetMapping(UriView.URI_DEMO_VALIDATE)
+    @ResponseBody
+    public Result validateDemo(@Valid Demo demo, BindingResult bindingResult) {
+        // 如有参数错误，则返回错误信息给客户端
+        if (bindingResult.hasErrors()) {
+            return Result.fail(CommonUtils.getBindingMessage(bindingResult));
+        }
+
+        return Result.ok("", demo);
     }
 }

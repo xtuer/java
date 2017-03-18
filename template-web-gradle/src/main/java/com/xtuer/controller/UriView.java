@@ -5,11 +5,12 @@ package com.xtuer.controller;
  */
 public interface UriView {
     // 案例展示
-    String URI_DEMO         = "/demo";
-    String VIEW_DEMO        = "demo/demo.fm";
-    String URI_DEMO_MYBATIS = "/demo/{id}";
-    String URI_DEMO_UPLOAD  = "/demo/upload";
-    String VIEW_DEMO_UPLOAD = "demo/upload.fm";
+    String URI_DEMO          = "/demo";
+    String VIEW_DEMO         = "demo/demo.fm";
+    String URI_DEMO_MYBATIS  = "/demo/{id}";
+    String URI_DEMO_UPLOAD   = "/demo/upload";
+    String VIEW_DEMO_UPLOAD  = "demo/upload.fm";
+    String URI_DEMO_VALIDATE = "/demo/validate";
 
     // 通用 URI 和 VIEW
     String FORWARD    = "forward:";
