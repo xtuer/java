@@ -195,4 +195,10 @@ public class DemoController {
 
         return Result.ok("", demo);
     }
+
+    @GetMapping("/uniqueName")
+    @ResponseBody
+    public Result uniqueName(@RequestParam String username) {
+        return new Result(!"ali".equals(username), "");
+    }
 }

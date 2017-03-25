@@ -34,6 +34,7 @@ dependencies {
     compile 'org.springframework.session:spring-session-data-redis:1.2.1.RELEASE'
     compile 'com.flowpowered:flow-noise:1.0.0'
     compile 'com.mzlion:easy-okhttp:1.0.7-beta'
+    compile 'org.docx4j:docx4j:3.3.3'
 
     testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
     testCompile 'junit:junit:4.12'
