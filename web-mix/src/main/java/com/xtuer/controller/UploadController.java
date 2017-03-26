@@ -40,8 +40,29 @@ public class UploadController {
     @ResponseBody
     public String uploadFile(@RequestParam("file") MultipartFile file) {
         saveFile(file);
+        System.out.println(file.getOriginalFilename());
 
         return "Success";
+    }
+
+    /**
+     * CKEditor 上传图片
+     *
+     * @param file 上传的图片
+     * @param callback 图片上传成功后的回调函数
+     * @return 返回一段 <script></script>，CKEditor 会调用这一段 script
+     */
+    @PostMapping("/ckeditor-upload")
+    @ResponseBody
+    public String uploadCkeditor(@RequestParam("upload") MultipartFile file, @RequestParam("CKEditorFuncNum") String callback) {
+        // [1] 存储上传得到的图片网络地址
+        System.out.println(file.getOriginalFilename());
+
+        // [2] 检查图片的格式，如果有错返回错误的 script，如 : <script>alert('图片格式不支持');</script>
+
+        // [3] 上传成功，返回的 script 里带上图片的网络地址
+        String imageUrl = "/img/x.png";
+        return String.format("<script>window.parent.CKEDITOR.tools.callFunction(%s, '%s')</script>", callback, imageUrl);
     }
 
     /**

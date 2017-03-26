@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor 的使用</title>
+    <script src="/lib/ckeditor/ckeditor.js"></script>
+</head>
+
+<body>
+    <!--  -->
+    <div id="editor-box" style="display: none; padding: 5px;">
+        <textarea id="editor"></textarea>
+    </div>
+    <button id="show-editor-button">弹出编辑器</button>
+
+    <script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://cdn.staticfile.org/layer/2.3/layer.js"></script>
+
+    <script>
+        CKEDITOR.replace('editor');
+
+        $('#show-editor-button').click(function(event) {
+            showEditorDialog();
+        });
+
+        function showEditorDialog() {
+            layer.open({
+                type: 1,
+                title: '魔法编辑器', // [可选]
+                closeBtn: false,
+                content: $('#editor-box'), // 对话框中的内容部分
+                area: ['700px'], // 对话框的大小, 可以同时指定高宽 ['700px', '440px']
+                shadeClose: false, // 为 true 时点击遮罩关闭
+                zIndex: 1000,
+                btn: ['保存', '取消'], // 自定义按钮
+                btn1: function() {
+                    var content = CKEDITOR.instances.editor.getData();
+                    alert(content);
+                    layer.closeAll(); // 关闭所有弹出窗口
+                },
+                btn2: function(e) {
+                    // return false; // 不关闭弹出窗口
+                },
+                success: function() {
+                    createCkeditor('editor');
+                }
+            });
+        }
+
+        // 创建 CKEditor 编辑器，如果已经存在，则先销毁
+        function createCkeditor(name) {
+            var editor = CKEDITOR.instances[name];
+
+            if (editor) {
+                editor.destroy(true);
+            }
+
+            CKEDITOR.replace(name, {
+                language: 'zh-cn',
+                allowedContent: true,
+                removePlugins: 'elementspath',
+                resize_enabled: false,
+                height: '300px',
+                filebrowserImageUploadUrl: '/ckeditor-upload' // 不同页面上传的地址有可能不一样哦
+            });
+        }
+
+    </script>
+</body>
+
+</html>
