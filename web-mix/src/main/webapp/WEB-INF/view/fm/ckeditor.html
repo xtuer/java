@@ -18,7 +18,7 @@
     <script src="http://cdn.staticfile.org/layer/2.3/layer.js"></script>
 
     <script>
-        CKEDITOR.replace('editor');
+        createCkeditor('editor'); // 先创建一个固定高度的 editor，弹出层的效果更好
 
         $('#show-editor-button').click(function(event) {
             showEditorDialog();
@@ -44,6 +44,7 @@
                 },
                 success: function() {
                     createCkeditor('editor');
+                    CKEDITOR.instances.editor.setData('<b>This is for test</b>');
                 }
             });
         }
@@ -62,7 +63,8 @@
                 removePlugins: 'elementspath',
                 resize_enabled: false,
                 height: '300px',
-                filebrowserImageUploadUrl: '/ckeditor-upload' // 不同页面上传的地址有可能不一样哦
+                filebrowserUploadUrl: '/ckeditor-upload-file', // 上传文件，the Upload tab will appear in the Link, Image, and Flash dialog windows.
+                filebrowserImageUploadUrl: '/ckeditor-upload-image'// 上传图片，the location of the script that handles file uploads in the Image dialog window. If not set, CKEditor will use filebrowserUploadUrl.
             });
         }
 

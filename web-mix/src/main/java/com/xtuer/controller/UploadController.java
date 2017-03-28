@@ -49,20 +49,48 @@ public class UploadController {
      * CKEditor 上传图片
      *
      * @param file 上传的图片
-     * @param callback 图片上传成功后的回调函数
+     * @param funcNumber 图片上传成功后的回调标志
      * @return 返回一段 <script></script>，CKEditor 会调用这一段 script
      */
-    @PostMapping("/ckeditor-upload")
+    @PostMapping("/ckeditor-upload-image")
     @ResponseBody
-    public String uploadCkeditor(@RequestParam("upload") MultipartFile file, @RequestParam("CKEditorFuncNum") String callback) {
+    public String ckeditorUploadImage(@RequestParam("upload") MultipartFile file, @RequestParam("CKEditorFuncNum") String funcNumber) {
         // [1] 存储上传得到的图片网络地址
-        System.out.println(file.getOriginalFilename());
+        System.out.println("上传图片: " + file.getOriginalFilename());
+        System.out.println("FuncNumber: " + funcNumber);
 
         // [2] 检查图片的格式，如果有错返回错误的 script，如 : <script>alert('图片格式不支持');</script>
 
         // [3] 上传成功，返回的 script 里带上图片的网络地址
-        String imageUrl = "/img/x.png";
-        return String.format("<script>window.parent.CKEDITOR.tools.callFunction(%s, '%s')</script>", callback, imageUrl);
+        String imageUrl = "/img/x.png"; // 为了简单测试，总返回同一个图片地址
+        return String.format("<script>window.parent.CKEDITOR.tools.callFunction(%s, '%s')</script>", funcNumber, imageUrl);
+    }
+
+    /**
+     * CKEditor 上传文件
+     *
+     * @param file 上传的文件
+     * @param funcNumber 文件上传成功后的回调标志
+     * @return 返回一段 <script></script>，CKEditor 会调用这一段 script
+     */
+    @PostMapping("/ckeditor-upload-file")
+    @ResponseBody
+    public String ckeditorUploadFile(@RequestParam("upload") MultipartFile file, @RequestParam("CKEditorFuncNum") String funcNumber) {
+        // [1] 存储上传得到的文件网络地址
+        System.out.println("上传文件: " + file.getOriginalFilename());
+        System.out.println("FuncNumber: " + funcNumber);
+
+        // [2] 检查文件的格式，如果有错返回错误的 script，如 : <script>alert('文件格式不支持');</script>
+
+        // [3] 上传成功，返回的 script 里带上图片的网络地址
+        String fileUrl = "/files/x.rar"; // 为了简单测试，总返回同一个文件的地址
+        return String.format("<script>window.parent.CKEDITOR.tools.callFunction(%s, '%s')</script>", funcNumber, fileUrl);
+    }
+
+    @PostMapping("/umeditor-upload")
+    @ResponseBody
+    public String uploadUmeditor() {
+        return null;
     }
 
     /**

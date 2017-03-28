@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="/lib/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+    <style media="screen">
+        .edui-container {
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="editor" style="display: none; padding: 10px;">
+        <script type="text/plain" id="myEditor" style="width:1000px;height:240px;">
+            <p>这里我可以写一些输入提示</p>
+        </script>
+    </div>
+    <button id="show-editor-button">Show Editor</button>
+
+    <script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://cdn.staticfile.org/layer/2.3/layer.js"></script>
+    <script src="/lib/umeditor/third-party/template.min.js"></script>
+    <script src="/lib/umeditor/umeditor.config.js"></script>
+    <script src="/lib/umeditor/umeditor.js"></script>
+    <script>
+        var um = UM.getEditor('myEditor', {
+            initialFrameWidth: 680,
+            initialFrameHeight: 300
+        });
+
+        $('#show-editor-button').click(function(event) {
+            layer.open({
+                type: 1,
+                title: '编辑课程', // [可选]
+                title: false,
+                closeBtn: false,
+                content: $('#editor'), // 对话框中的内容部分
+                area: ['700px'], // 对话框的大小, 可以同时指定高宽 ['700px', '440px']
+                shadeClose: false, // 为 true 时点击遮罩关闭
+                btn: ['保存', '删除', '取消'], // 自定义按钮
+                zIndex: 100,
+                btn1: function() {
+                    alert(UM.getEditor('myEditor').getContent());
+                    layer.closeAll(); // 关闭所有弹出窗口
+                },
+                btn2: function(e) {
+                    // return false; // 不关闭弹出窗口
+                },
+                success: function() {
+                    UM.getEditor('myEditor').setContent('欢迎使用umeditor', true);
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

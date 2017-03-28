@@ -8,5 +8,6 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <mvc:view-controller path="/rest-view" view-name="rest-view.html"/>
-    <mvc:view-controller path="/editor" view-name="editor.html"/>
+    <mvc:view-controller path="/ckeditor" view-name="ckeditor.html"/>
+    <mvc:view-controller path="/umeditor" view-name="umeditor.html"/>
 </beans>

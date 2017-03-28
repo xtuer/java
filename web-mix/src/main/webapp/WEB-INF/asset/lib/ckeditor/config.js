@@ -12,17 +12,17 @@ CKEDITOR.editorConfig = function( config ) {
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
 		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-		{ name: 'links' },
-		{ name: 'insert' },
-		{ name: 'forms' },
-		{ name: 'tools' },
-		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		{ name: 'others' },
-		'/',
+		// '/',
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
 		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+        { name: 'links' },
+		{ name: 'insert' },
+		{ name: 'forms' },
 		{ name: 'styles' },
 		{ name: 'colors' },
+        { name: 'others' },
+        { name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+        { name: 'tools' },
 		// { name: 'about' }
 	];
 
@@ -35,6 +35,4 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
-    // config.filebrowserImageUploadUrl = "/upload-file";
-
 };

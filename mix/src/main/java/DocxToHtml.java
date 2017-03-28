@@ -34,6 +34,6 @@ public class DocxToHtml {
     }
 
     public static void main(String[] args) throws Exception {
-        convertDocxToHtml("/Users/Biao/Desktop/E丢丢APP后台配置文档.docx", "/Users/Biao/Desktop/x/y.html");
+        convertDocxToHtml("/Users/Biao/Desktop/全书可编辑word文稿/第一章习题课电场力的性质.docx", "/Users/Biao/Desktop/x/y.html");
     }
 }
