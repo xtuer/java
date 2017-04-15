@@ -67,7 +67,7 @@ public class BlogSitemapGenerator {
      */
     private static File[] getBlogs(String blogDirPath) {
         File[] mds = new File(blogDirPath).listFiles((dir, name) -> {
-            return name.toLowerCase().endsWith("md");
+            return name.toLowerCase().endsWith(".md");
         });
 
         return mds;
