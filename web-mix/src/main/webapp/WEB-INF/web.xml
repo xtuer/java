@@ -5,22 +5,6 @@
             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1"
          metadata-complete="true">
-    <!-- Context Param -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:config/mybatis.xml
-            classpath:config/spring-session.xml
-            classpath:config/spring-security.xml
-        </param-value>
-    </context-param>
-
-    <!-- Listener -->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
-    <!-- Filter -->
     <!-- 浏览器的 form 不支持 put, delete 等 method, 由该 filter 将 /blog?_method=delete 转换为标准的 http delete 方法 -->
     <filter>
         <filter-name>HiddenHttpMethodFilter</filter-name>
@@ -31,7 +15,7 @@
         <servlet-name>springmvc</servlet-name>
     </filter-mapping>
 
-    <!-- 处理 POST 的中文 -->
+    <!-- POST 请求的编码 -->
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -49,26 +33,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- Spring Session Data Redis Filter -->
-    <filter>
-        <filter-name>springSessionRepositoryFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSessionRepositoryFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
-    <!-- Spring Security Filter -->
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy
-        </filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <!-- Spring MVC Servlet -->
     <servlet>
@@ -77,10 +42,7 @@
 
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>
-                classpath:config/spring-mvc.xml
-                classpath:config/spring-transaction.xml
-            </param-value>
+            <param-value>classpath:config/spring-mvc.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -88,10 +50,4 @@
         <servlet-name>springmvc</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
-    <!-- 默认的错误处理页面 -->
-    <error-page>
-        <error-code>404</error-code>
-        <location>/404</location>
-    </error-page>
 </web-app>

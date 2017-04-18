@@ -1,0 +1,27 @@
+.directory-tree-side-bar {
+    position: fixed;
+    top: 0;
+    left: 103px;
+    width: 250px;
+    bottom: 0;
+    border-right: 1px solid #DADADA;
+    overflow: auto;
+}
+
+.main {
+    position: fixed;
+    top: 0;
+    left: 355px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#vue-files {
+    margin: 0em;
+    padding: 1em;
+}
+
+.ui.card {
+    box-shadow: 0 1px 3px 0 #D4D4D5;
+}

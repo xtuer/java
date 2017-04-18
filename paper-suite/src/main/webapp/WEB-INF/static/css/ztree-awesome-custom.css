@@ -1,0 +1,37 @@
+ .node_name {
+     font-size: 14px;
+     margin-left: 2px;
+ }
+
+ .ztree li a {
+     margin-bottom: 3px;
+ }
+
+ .ztree, .ztree * {
+     background: white;
+ }
+
+ .ztree, .ztree li a,
+ .ztree li span.button::before,
+ .ztree li span.button.ico_open::before,
+ .ztree li span.button.ico_close::before,
+ .ztree li span.button.ico_docu::before,
+ span.tmpzTreeMove_arrow::before {
+     color: #444;
+ }
+
+ .ztree li a.curSelectedNode {
+     background-color: white;
+     color: black;
+     font-weight: bold;
+ }
+
+ .ztree li a.curSelectedNode_Edit input.rename {
+    font-size: 12px;
+    height:18px;
+    width:100px;
+ }
+
+.ztree li span.button.root_close::before {
+    content: "\f054";
+}

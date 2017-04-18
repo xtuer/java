@@ -96,14 +96,13 @@ public class DemoController {
      * REST 的更新
      * URL: http://localhost:8080/rest
      *
-     * @param name
-     * @param age
+     * @param map
      * @return
      */
     @PutMapping("/rest")
     @ResponseBody
-    public Result restPut(@RequestParam String name, @RequestParam int age) {
-        return new Result(true, "UPDATE handled", name + " : " + age);
+    public Result restPut(@RequestBody Map map) {
+        return new Result(true, "UPDATE handled", map);
     }
 
     /**

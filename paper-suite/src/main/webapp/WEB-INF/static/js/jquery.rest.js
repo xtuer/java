@@ -2,20 +2,16 @@
 
 (function($) {
     /**
-     * 执行 REST 请求的 jQuery 插件，sync 开头的为同步请求，不以 sync 开头的为异步请求:
-     *      Get    请求调用 $.rest.get(),    $.rest.syncGet()
-     *      Create 请求调用 $.rest.create(), $.rest.syncCreate()
-     *      Update 请求调用 $.rest.update(), $.rest.syncUpdate()
-     *      Delete 请求调用 $.rest.remove(), $.rest.syncRemove()
+     * 执行 REST 请求的 jQuery 插件:
+     *      Get    请求调用 $.rest.get()
+     *      Create 请求调用 $.rest.create()
+     *      Update 请求调用 $.rest.update()
+     *      Delete 请求调用 $.rest.remove()
      *
      * 调用例子:
      *      $.rest.get({url: '/rest', data: {name: 'Alice'}, success: function(result) {
      *          console.log(result);
-     *      }});
-     *
-     *      $.rest.syncGet({url: '/rest', data: {name: 'Alice'}, success: function(result) { // 同步请求
-     *          console.log(result);
-     *      }});
+     *      }}, fail: function(failResponse) {});
      *
      *      $.rest.update({url: '/rest/books/{bookId}', urlParams: {bookId: 23}, data: {name: 'C&S'}, success: function(result) {
      *          console.log(result);
@@ -41,42 +37,27 @@
             this.sendRequest(options);
         },
         create: function(options) {
-            options.data = options.data || {};
             options.httpMethod = 'POST';
+            options.data = options.data ? JSON.stringify(options.data) : {};
             this.sendRequest(options);
         },
         update: function(options) {
-            options.data = options.data || {};
-            options.httpMethod   = 'POST';
-            options.data._method = 'PUT'; // SpringMvc HiddenHttpMethodFilter 的 PUT 请求
+            options.httpMethod = 'PUT';
+            options.data = options.data ? JSON.stringify(options.data) : {};
             this.sendRequest(options);
         },
         remove: function(options) {
-            options.data = options.data || {};
-            options.httpMethod   = 'POST';
-            options.data._method = 'DELETE'; // SpringMvc HiddenHttpMethodFilter 的 DELETE 请求
+            options.httpMethod = 'DELETE';
+            options.data = options.data ? JSON.stringify(options.data) : {};
             this.sendRequest(options);
-        },
-        // 阻塞请求
-        syncGet: function(options) {
-            options.async = false;
-            this.get(options);
-        },
-        syncCreate: function(options) {
-            options.async = false;
-            this.create(options);
-        },
-        syncUpdate: function(options) {
-            options.async = false;
-            this.update(options);
-        },
-        syncRemove: function(options) {
-            options.async = false;
-            this.remove(options);
         },
 
         /**
          * 执行 Ajax 请求，不推荐直接调用这个方法.
+         * 因为发送给 SpringMVC 的 Ajax 请求中必须满足下面的条件才能执行成功:
+         *     1. dataType: 'json'
+         *     2. contentType: 'application/json'
+         *     3. data: GET 时为 json 对象，POST, PUT, DELETE 时必须为 JSON.stringify(data)
          *
          * @param {json} options 有以下几个选项:
          *        {string}   url        请求的 URL        (必选)
@@ -93,7 +74,7 @@
                 data: {},
                 async: true,
                 success: function() {},
-                fail: function(error) { console.error(error) }, // 默认把错误打印到控制台
+                fail: function(error) {console.log(error)}, // 默认把错误打印到控制台
                 complete: function() {}
             };
 
@@ -103,7 +84,6 @@
             // 替换路径中的变量，例如 /rest/users/{id}, 其中 {id} 为要被 settings.urlParams.id 替换的部分
             if (settings.urlParams) {
                 settings.url = settings.url.replace(/\{\{|\}\}|\{(\w+)\}/g, function(m, n) {
-                    // m 是正则中捕捉的组 $0，n 是 $1，function($0, $1, $2, ...)
                     if (m == '{{') { return '{'; }
                     if (m == '}}') { return '}'; }
                     return settings.urlParams[n];
@@ -117,7 +97,7 @@
                 async: settings.async,
                 type:  settings.httpMethod,
                 dataType:    'json',
-                contentType: 'application/x-www-form-urlencoded',
+                contentType: 'application/json;charset=utf-8',
                 // 服务器抛异常时，有时 Windows 的 Tomcat 环境下竟然取不到 header X-Requested-With, Mac 下没问题，
                 // 正常请求时是好的，手动添加 X-Requested-With 后正常和异常时都能取到了
                 headers: {'X-Requested-With': 'XMLHttpRequest'}

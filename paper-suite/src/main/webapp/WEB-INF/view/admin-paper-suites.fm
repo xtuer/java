@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>管理套卷</title>
+    <link rel="stylesheet" href="//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css">
+    <link rel="stylesheet" href="/css/admin-paper-suites.css">
+</head>
+
+<body>
+    <!-- [1] 菜单栏 -->
+    <div class="ui left vertical inverted visible sidebar labeled icon menu">
+        <a class="item"><i class="home icon"></i>Home</a>
+        <a class="item"><i class="share alternate square icon"></i> 套卷管理</a>
+        <a class="item"><i class="block layout icon"></i> 知识点管理</a>
+    </div>
+
+    <!-- [2] 目录树 -->
+    <div class="directory-tree-side-bar">
+        <ul id="directory-tree" class="ztree"></ul>
+    </div>
+
+    <!-- [3] 网页的主要部分 -->
+    <div class="main ui">
+        <!-- 文件列表 -->
+        <div class="ui six column grid" id="vue-files">
+            <div class="ui column" v-for="(file, index) in files" :data-id="file.fileId" :key="file.fileId">
+                <div class="ui card">
+                    <div class="image">
+                        <img :src="file.image">
+                    </div>
+                    <div class="extra content">
+                        <span v-text="file.name"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/require.js"></script>
+    <script src="/js/require-config.js"></script>
+    <script src="/js/admin-paper-suites.js"></script>
+</body>
+
+</html>
