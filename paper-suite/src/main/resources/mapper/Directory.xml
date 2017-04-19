@@ -18,14 +18,24 @@
         ORDER BY name
     </select>
 
+    <!--是否有子目录-->
+    <select id="hasSubdirectories" parameterType="long" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM directory WHERE parent_directory_id=#{directoryId} AND is_deleted=0)
+    </select>
+
+    <!--目录 directoryId 中是否有文件-->
+    <select id="hasFiles" parameterType="long" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM file WHERE directory_id=#{directoryId} AND is_deleted=0)
+    </select>
+
     <!--创建目录-->
-    <insert id="createDirectory" parameterType="Directory">
+    <insert id="createDirectory" parameterType="Directory" useGeneratedKeys="true" keyProperty="directoryId">
         INSERT INTO directory(name, uuid_name, parent_directory_id, is_deleted)
         VALUES(#{name}, #{uuidName}, #{parentDirectoryId}, 0)
     </insert>
 
     <!--修改目录的父目录 id-->
-    <update id="updateParentDirectoryId">
+    <update id="changeParentDirectoryId">
         UPDATE directory SET parent_directory_id=#{parentDirectoryId} WHERE directory_id=#{directoryId}
     </update>
 

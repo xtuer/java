@@ -1,3 +1,7 @@
+body {
+    position: relative;
+}
+
 .directory-tree-side-bar {
     position: fixed;
     top: 0;
@@ -6,6 +10,7 @@
     bottom: 0;
     border-right: 1px solid #DADADA;
     overflow: auto;
+    /*z-index: 1;*/
 }
 
 .main {
@@ -15,6 +20,7 @@
     right: 0;
     bottom: 0;
     overflow: auto;
+    /*z-index: 1;*/
 }
 
 #vue-files {
@@ -23,5 +29,33 @@
 }
 
 .ui.card {
-    box-shadow: 0 1px 3px 0 #D4D4D5;
+    /*box-shadow: 0 1px 3px 0 #D4D4D5;*/
+}
+
+#directory-tree-menu {
+    position:absolute;
+    top:0;
+    display: none;
+    margin: 0;
+    padding: 6px 0;
+    text-align: left;
+    border: 1px solid #BFBFBF;
+    border-radius: 3px;
+    background-color: #EEE;
+    box-shadow: 0 0 10px #AAA;
+}
+
+#directory-tree-menu li {
+    padding: 2px 15px;
+	list-style: none outside none;
+	cursor: default;
+    color: #666;
+}
+#directory-tree-menu li:hover {
+    color: #EEE;
+    background-color: #666;
+}
+
+li#menu-item-delete, li#menu-item-rename {
+    margin-top: 1px;
 }

@@ -34,14 +34,15 @@ public class DirectoryController {
     /**
      * 创建目录
      * URL: /rest/directories
-     *      参数: name, parentDirectoryId
+     * 参数: name, parentDirectoryId
+     *
      * @param directory
      * @param bindingResult
      * @return
      */
     @PostMapping(UriView.REST_DIRECTORIES)
     @ResponseBody
-    public Result<Directory> createDirectory(@Valid @RequestBody Directory directory, BindingResult bindingResult) {
+    public Result<Directory> createDirectory(@Valid Directory directory, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
         if (bindingResult.hasErrors()) {
             return Result.fail(CommonUtils.getBindingMessage(bindingResult));
@@ -57,14 +58,12 @@ public class DirectoryController {
      * URL: /rest/directories/3/name
      *
      * @param directoryId 目录的 id
-     * @param map 参数列表，其中有目录的新名字 name
+     * @param name 目录的新名字 name
      * @return
      */
     @PutMapping(UriView.REST_DIRECTORY_NAME)
     @ResponseBody
-    public Result<?> renameDirectory(@PathVariable long directoryId, @RequestBody Map<String, String> map) {
-        String name = map.get("name");
-
+    public Result renameDirectory(@PathVariable long directoryId, @RequestParam String name) {
         if (name == null || name.trim().equals("")) {
             return Result.fail("目录名不能为空");
         }
@@ -73,11 +72,36 @@ public class DirectoryController {
         return Result.ok("重命名目录成功");
     }
 
+    /**
+     * 移动目录
+     * URL: /rest/directories/3/parentId
+     * 参数: name, parentDirectoryId
+     *
+     * @param directoryId
+     * @param parentDirectoryId
+     * @return
+     */
+    @PutMapping(UriView.REST_DIRECTORY_PARENT_ID)
+    @ResponseBody
+    public Result changeParentDirectoryId(@PathVariable long directoryId, @RequestParam long parentDirectoryId) {
+        directoryMapper.changeParentDirectoryId(directoryId, parentDirectoryId);
+        return Result.ok("移动目录成功");
+    }
+
+    /**
+     * 删除目录
+     *
+     * @param directoryId
+     * @return
+     */
     @DeleteMapping(UriView.REST_DIRECTORIES_WITH_ID)
     @ResponseBody
-    public Result<?> deleteDirectory(@PathVariable long directoryId) {
-        directoryMapper.markDirectoryAsDeleted(directoryId);
-
-        return Result.ok();
+    public Result deleteDirectory(@PathVariable long directoryId) {
+        if (directoryMapper.hasSubdirectories(directoryId)) {
+            return Result.fail("不能删除非空目录");
+        } else {
+            directoryMapper.markDirectoryAsDeleted(directoryId);
+            return Result.ok();
+        }
     }
 }

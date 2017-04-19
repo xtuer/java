@@ -20,6 +20,13 @@
     <div class="directory-tree-side-bar">
         <ul id="directory-tree" class="ztree"></ul>
     </div>
+    
+    <!-- 目录树的右键菜单 -->
+	<ul id="directory-tree-menu">
+		<li id="menu-item-create">新建文件夹</li>
+		<li id="menu-item-delete">删除文件夹</li>
+		<li id="menu-item-rename">重命名</li>
+	</ul>
 
     <!-- [3] 网页的主要部分 -->
     <div class="main ui">

@@ -13,10 +13,16 @@ public interface DirectoryMapper {
     void createDirectory(Directory directory);
 
     // 修改目录的父目录 id
-    void updateParentDirectoryId(@Param("directoryId") long directoryId, @Param("parentDirectoryId") long parentDirectoryId);
+    void changeParentDirectoryId(@Param("directoryId") long directoryId, @Param("parentDirectoryId") long parentDirectoryId);
 
     // 重命名目录
     void renameDirectory(@Param("directoryId") long directoryId, @Param("name") String name);
+
+    // 是否有子目录
+    boolean hasSubdirectories(long directoryId);
+
+    // 目录 directoryId 中是否有文件
+    boolean hasFiles(long directoryId);
 
     // 设置 is_deleted 为 1，标记目录已经被删除了
     void markDirectoryAsDeleted(@Param("directoryId") long directoryId);

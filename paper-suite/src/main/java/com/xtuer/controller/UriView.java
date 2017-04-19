@@ -32,4 +32,5 @@ public interface UriView {
     String REST_DIRECTORIES         = "/rest/directories"; // 目录, 过滤条件是父目录的 ID: parentDirectoryId
     String REST_DIRECTORIES_WITH_ID = "/rest/directories/{directoryId}";
     String REST_DIRECTORY_NAME      = "/rest/directories/{directoryId}/name";
+    String REST_DIRECTORY_PARENT_ID = "/rest/directories/{directoryId}/parentId";
 }
