@@ -9,13 +9,14 @@
 </head>
 
 <body>
+    <div id="foo"></div>
     Welcome to ${action}
     <pre id="error">...</pre>
 
     <script>
         $(document).ready(function() {
             // 服务器端的 GET 需要启用 UTF-8 才不会乱吗
-            $.rest.get({url: URLs.REST_ONE, data: {name: 'Alice'}, success: function(result) {
+            $.rest.get({url: '/rest', data: {name: 'Alice'}, success: function(result) {
                 console.log(result);
             }});
 
@@ -38,13 +39,39 @@
             }});
 
             // AJAX 请求时后端发生异常
-            $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
-                if (!result.success) {
-                    $('#error').html(result.message + '<br>' + result.data);
+            // $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
+            //     if (!result.success) {
+            //         $('#error').html(result.message + '<br>' + result.data);
+            //     }
+            // }, fail: function(e) {
+            //     console.log(e);
+            // }});
+
+            function __cas_account_loaded(data) {
+                console.log('jsonp');
+                console.log(data);
+            }
+
+            // JSON P
+            $.ajax({
+                url     : 'http://127.0.0.1:8080/jsonp-test',
+                type    : 'GET',
+                dataType: 'jsonp', // 表示要用 JSONP 进行跨域访问
+                success : function(a, b, c) { // 随机生成回调函数名
+                    console.log(a + ", " + b + ", " + c);
                 }
-            }, fail: function(e) {
-                console.log(e);
-            }});
+            });
+
+            // $.ajax({
+            //     url     : "http://eplatform.edu-edu.com.cn/cas/web/logininfo/jsonp",
+            //     type    : "GET",
+            //     dataType: "jsonp", // 表示要用 JSONP 进行跨域访问
+            //     jsonp   : "jsonpCallback",
+            //     jsonpCallback: "__cas_account_loaded"
+            // });
+
+
+
         });
     </script>
 </body>

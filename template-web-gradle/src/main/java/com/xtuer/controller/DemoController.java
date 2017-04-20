@@ -1,6 +1,7 @@
 package com.xtuer.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONPObject;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -201,5 +203,11 @@ public class DemoController {
     @ResponseBody
     public Result uniqueName(@RequestParam String username) {
         return new Result(!"ali".equals(username), "");
+    }
+
+    @GetMapping(value="/jsonp-test", produces="application/javascript;charset=UTF-8")
+    @ResponseBody
+    public String jsonpTest(@RequestParam String callback) {
+        return Result.jsonp(callback, "Goo", "Radius", 2012);
     }
 }
