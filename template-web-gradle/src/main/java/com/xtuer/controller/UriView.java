@@ -4,6 +4,8 @@ package com.xtuer.controller;
  * 集中管理 URI 和 VIEW
  */
 public interface UriView {
+    String JSONP_CONTENT_TYPE = "application/javascript;charset=UTF-8";
+
     // 案例展示
     String URI_DEMO          = "/demo";
     String VIEW_DEMO         = "demo/demo.fm";

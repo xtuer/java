@@ -46,15 +46,12 @@ public final class Result<T> {
      * 使用传入的回调函数名字 callback 和参数 params 构造一个 JSONP 响应格式的字符串。
      *
      * @param callback 浏览器端 JSONP 回调函数的名字
-     * @param params 参数列表
+     * @param data 参数列表
      * @return 返回 JSONP 格式的字符串
      */
-    public static String jsonp(String callback, Object... params) {
+    public static String jsonp(String callback, Object data) {
         JSONPObject jp = new JSONPObject(callback);
-
-        for (Object param : params) {
-            jp.addParameter(param);
-        }
+        jp.addParameter(data);
 
         return jp.toString();
     }

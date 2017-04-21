@@ -205,9 +205,9 @@ public class DemoController {
         return new Result(!"ali".equals(username), "");
     }
 
-    @GetMapping(value="/jsonp-test", produces="application/javascript;charset=UTF-8")
+    @GetMapping(value="/jsonp-test", produces=UriView.JSONP_CONTENT_TYPE)
     @ResponseBody
     public String jsonpTest(@RequestParam String callback) {
-        return Result.jsonp(callback, "Goo", "Radius", 2012);
+        return Result.jsonp(callback, Result.ok("Congratulation", "Your data object"));
     }
 }
