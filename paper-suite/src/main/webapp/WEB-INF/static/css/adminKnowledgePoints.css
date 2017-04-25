@@ -1,0 +1,30 @@
+body {
+    font-family: "微软雅黑", Helvetica, Arial, sans-serif;
+}
+
+.main {
+    margin-left: 102px;
+    padding: 20px;
+}
+
+.ui.tag.label, .ui.tag.label:first-child {
+    margin: 0 10px 10px 15px;
+}
+
+#edit-knowledge-group-dialog {
+    padding: 10px;
+    display: none;
+}
+
+#edit-knowledge-group-dialog .ui.input {
+    display: none;
+}
+
+#edit-knowledge-group-dialog .icon:hover {
+    color: darkred;
+    cursor: pointer;
+}
+
+#edit-knowledge-group-dialog td {
+    cursor: default;
+}

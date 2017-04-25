@@ -5,22 +5,22 @@
     <meta charset="utf-8">
     <title>管理套卷</title>
     <link rel="stylesheet" href="//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css">
-    <link rel="stylesheet" href="/css/admin-paper-suites.css">
+    <link rel="stylesheet" href="/css/adminPaperSuites.css">
 </head>
 
 <body>
     <!-- [1] 菜单栏 -->
     <div class="ui left vertical inverted visible sidebar labeled icon menu">
         <a class="item"><i class="home icon"></i>Home</a>
-        <a class="item"><i class="share alternate square icon"></i> 套卷管理</a>
-        <a class="item"><i class="block layout icon"></i> 知识点管理</a>
+        <a class="item" href="/adminPaperSuites"><i class="share alternate square icon"></i> 套卷管理</a>
+        <a class="item" href="/adminKnowledgePoints"><i class="block layout icon"></i> 知识点管理</a>
     </div>
 
     <!-- [2] 目录树 -->
     <div class="directory-tree-side-bar">
         <ul id="directory-tree" class="ztree"></ul>
     </div>
-    
+
     <!-- 目录树的右键菜单 -->
 	<ul id="directory-tree-menu">
 		<li id="menu-item-create">新建文件夹</li>
@@ -46,8 +46,8 @@
     </div>
 
     <script src="/lib/require.js"></script>
-    <script src="/js/require-config.js"></script>
-    <script src="/js/admin-paper-suites.js"></script>
+    <script src="/js/requireConfig.js"></script>
+    <script src="/js/adminPaperSuites.js"></script>
 </body>
 
 </html>

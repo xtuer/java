@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.PaperDirectoryMapper">
+    <!--查找父目录下的目录-->
+    <select id="findPaperSubdirectories" resultType="PaperDirectory">
+        SELECT paper_directory_id as paperDirectoryId,
+            name,
+            uuid_name as uuidName,
+            parent_paper_directory_id as parentPaperDirectoryId,
+            is_deleted as deleted
+        FROM  paper_directory
+        WHERE parent_paper_directory_id=#{paperDirectoryId} AND is_deleted=0
+        ORDER BY name
+    </select>
+
+    <!--是否有子目录-->
+    <select id="hasPaperSubdirectories" parameterType="long" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM paper_directory WHERE parent_paper_directory_id=#{paperDirectoryId} AND is_deleted=0)
+    </select>
+
+    <!-- 目录中是否有试卷-->
+    <select id="hasPapers" parameterType="long" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM paper WHERE paper_directory_id=#{paperDirectoryId} AND is_deleted=0)
+    </select>
+
+    <!--创建目录-->
+    <insert id="createPaperDirectory" parameterType="PaperDirectory" useGeneratedKeys="true" keyProperty="paperDirectoryId">
+        INSERT INTO paper_directory(name, uuid_name, parent_paper_directory_id, is_deleted)
+        VALUES(#{name}, #{uuidName}, #{parentPaperDirectoryId}, 0)
+    </insert>
+
+    <!--修改目录的父目录 id-->
+    <update id="changeParentPaperDirectoryId">
+        UPDATE paper_directory SET parent_paper_directory_id=#{parentPaperDirectoryId} WHERE paper_directory_id=#{paperDirectoryId}
+    </update>
+
+    <!--重命名目录-->
+    <update id="renamePaperDirectory">
+        UPDATE paper_directory SET name=#{name} WHERE paper_directory_id=#{paperDirectoryId}
+    </update>
+
+    <!--设置 is_deleted 为 1，标记目录已经被删除了-->
+    <update id="markPaperDirectoryAsDeleted">
+        UPDATE paper_directory SET is_deleted=1 WHERE paper_directory_id=#{paperDirectoryId}
+    </update>
+</mapper>

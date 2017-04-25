@@ -1,3 +1,3 @@
-var URLs = {
+var Urls = {
     REST_ONE: '/rest'
 };

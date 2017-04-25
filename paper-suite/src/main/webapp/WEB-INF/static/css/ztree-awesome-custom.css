@@ -1,14 +1,20 @@
  .node_name {
-     font-size: 14px;
-     margin-left: 2px;
+    font-size: 14px;
+    margin-left: 2px;
  }
 
  .ztree li a {
-     margin-bottom: 3px;
+    margin-bottom: 3px;
+    margin-left: 2px;
+    padding: 0 2px;
  }
 
+.ztree li a:hover {
+    text-decoration: none;
+}
+
  .ztree, .ztree * {
-     background: white;
+    background: white;
  }
 
  .ztree, .ztree li a,
@@ -17,13 +23,13 @@
  .ztree li span.button.ico_close::before,
  .ztree li span.button.ico_docu::before,
  span.tmpzTreeMove_arrow::before {
-     color: #444;
+    color: #444;
  }
 
  .ztree li a.curSelectedNode {
-     background-color: white;
-     color: black;
-     font-weight: bold;
+    background-color: #666;
+    color: #EEE;
+    border-radius: 2px;
  }
 
  .ztree li a.curSelectedNode_Edit input.rename {
@@ -34,4 +40,9 @@
 
 .ztree li span.button.root_close::before {
     content: "\f054";
+}
+
+/* 隐藏 open and close icon */
+.ztree li span.button.ico_open::before, .ztree li span.button.ico_close::before {
+    display: none;
 }

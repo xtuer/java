@@ -1,13 +1,14 @@
 // 文件名: require-config.js
 require.config({
     paths: {
-        jquery:     '//cdn.bootcss.com/jquery/1.9.1/jquery.min',
-        layer:      '//cdn.staticfile.org/layer/2.3/layer',
-        vue:        '//cdn.staticfile.org/vue/2.0.3/vue',
+        jquery    : '//cdn.bootcss.com/jquery/1.9.1/jquery.min',
+        layer     : '//cdn.staticfile.org/layer/2.3/layer',
+        vue       : '//cdn.staticfile.org/vue/2.0.3/vue',
         semanticUi: '//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min',
-        ztree:      '//cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min',
-        urls:       '/js/urls',
-        rest:       '/js/jquery.rest'
+        ztree     : '//cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min',
+        urls      : '/js/urls',
+        rest      : '/js/jquery.rest',
+        util      : '/js/util'
     },
     shim: {
         layer: {
@@ -23,6 +24,9 @@ require.config({
                    'css!/css/ztree-awesome-custom.css']
         },
         rest: {
+            deps: ['jquery']
+        },
+        util: {
             deps: ['jquery']
         }
     },

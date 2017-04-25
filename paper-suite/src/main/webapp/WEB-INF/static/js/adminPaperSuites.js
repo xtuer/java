@@ -8,7 +8,7 @@ function Directory(tree) {
  * 点击目录时，列出此目录下的所有文件
  */
 Directory.getFiles = function(event, treeId, treeNode, clickFlag) {
-    console.log(treeNode.directoryId);
+    console.log(treeNode.paperDirectoryId);
 };
 
 /**
@@ -16,12 +16,12 @@ Directory.getFiles = function(event, treeId, treeNode, clickFlag) {
  */
 Directory.create = function(parentTreeNode) {
     var name = '新建文件夹';
-    var parentDirectoryId = parentTreeNode ? parentTreeNode.directoryId : 0;
+    var parentPaperDirectoryId = parentTreeNode ? parentTreeNode.paperDirectoryId : 0;
 
-    $.rest.syncCreate({url: Urls.REST_DIRECTORIES, data: {name: name, parentDirectoryId: parentDirectoryId}, success: function(result) {
+    $.rest.syncCreate({url: Urls.REST_PAPER_DIRECTORIES, data: {name: name, parentPaperDirectoryId: parentPaperDirectoryId}, success: function(result) {
         if (result.success) {
-            var directoryId = result.data.directoryId;
-            var node = {directoryId: directoryId, parentDirectoryId: parentDirectoryId, name: name, isParent: true};
+            var paperDirectoryId = result.data.paperDirectoryId;
+            var node = {paperDirectoryId: paperDirectoryId, parentPaperDirectoryId: parentPaperDirectoryId, name: name, isParent: true};
             window.tree.addNodes(parentTreeNode, -1, node, false);
         } else {
             layer.msg(result.message);
@@ -50,7 +50,7 @@ Directory.rename = function(treeId, treeNode, newName, isCancel) {
 
         // Ajax 同步请求服务器重命名
         var ok = false;
-        $.rest.syncUpdate({url: Urls.REST_DIRECTORY_NAME, urlParams: {directoryId: treeNode.directoryId},
+        $.rest.syncUpdate({url: Urls.REST_PAPER_DIRECTORY_NAME, urlParams: {paperDirectoryId: treeNode.paperDirectoryId},
             data: {name: newName}, success: function(result) {
             ok = result.success;
 
@@ -72,10 +72,10 @@ Directory.changeParent = function(event, treeId, treeNodes, targetNode, moveType
     //     beforeDrop 中得不到新的 parentId，如果需要修改服务器上的 parentId 只好在 onDrop 里获取了
     //     Ajax 同步请求服务器更新数据库中节点的 parentId，更像失败则弹出错误信息，提示用户刷新界面保证数据的正确显示
     var node = treeNodes[0];
-    var directoryId = node.directoryId;
-    var parentDirectoryId = node.parentDirectoryId;
-    $.rest.syncUpdate({url: Urls.REST_DIRECTORY_PARENT_ID, urlParams: {directoryId: directoryId},
-        data: {parentDirectoryId: parentDirectoryId}, success: function(result) {
+    var paperDirectoryId = node.paperDirectoryId;
+    var parentPaperDirectoryId = node.parentPaperDirectoryId;
+    $.rest.syncUpdate({url: Urls.REST_PAPER_DIRECTORY_PARENT_ID, urlParams: {paperDirectoryId: paperDirectoryId},
+        data: {parentPaperDirectoryId: parentPaperDirectoryId}, success: function(result) {
 
         if (!result.success) {
             layer.msg(result.message);
@@ -94,7 +94,7 @@ Directory.changeParent = function(event, treeId, treeNodes, targetNode, moveType
  */
 Directory.remove = function(treeNode) {
     // Ajax 同步请求服务器删除数据库中的节点，成功则从 tree 中删除此 node
-    $.rest.syncRemove({url: Urls.REST_DIRECTORIES_WITH_ID, urlParams: {directoryId: treeNode.directoryId}, success: function(result) {
+    $.rest.syncRemove({url: Urls.REST_PAPER_DIRECTORIES_BY_ID, urlParams: {paperDirectoryId: treeNode.paperDirectoryId}, success: function(result) {
         if (result.success) {
             window.tree.removeNode(treeNode);
         } else {
@@ -120,8 +120,8 @@ Tree.init = function() {
         data: {
             simpleData: {
                 enable:  true, // 启用数组结构的数据创建 zTree
-                idKey:   'directoryId',       // 定义 node id 的 key，可自定义
-                pIdKey:  'parentDirectoryId', // 定义 parent id 的 key，可自定义
+                idKey:   'paperDirectoryId',       // 定义 node id 的 key，可自定义
+                pIdKey:  'parentPaperDirectoryId', // 定义 parent id 的 key，可自定义
                 rootPId: 0 // 根节点的 parentId，这个节点是看不到的，因为不存在
             },
             keep: {
@@ -135,13 +135,15 @@ Tree.init = function() {
         },
         view: {
             selectedMulti: false,     // [*] 为 true 时可选择多个节点，为 false 只能选择一个，默认为 true
+            showIcon: false
         },
         async: {
             enable: true,
             type: 'get',
             url: function(treeId, treeNode) {
                 // treeNode 不存在时表示需要加载根节点下的数据
-                return Urls.REST_DIRECTORIES + '?parentDirectoryId=' + (treeNode ? treeNode.directoryId : 0);
+                var paperDirectoryId = treeNode ? treeNode.paperDirectoryId : 0;
+                return Urls.REST_PAPER_SUBDIRECTORIES.format({paperDirectoryId: paperDirectoryId});
             },
             dataFilter: function(treeId, parentNode, result) {
                 if (result.success) {
@@ -256,7 +258,8 @@ Tree.hideMenu = function() {
 /*-----------------------------------------------------------------------------|
  |                             require entry point                             |
  |----------------------------------------------------------------------------*/
-require(['jquery', 'vue', 'layer', 'semanticUi', 'ztree', 'rest', 'urls'], function($, Vue) {
+require(['jquery', 'vue', 'layer', 'semanticUi', 'ztree', 'rest', 'urls', 'util'], function($, Vue) {
+    Util.activateSidebarItem(1);
     Tree.init(); // 初始化目录树
 
     /*-----------------------------------------------------------------------------|

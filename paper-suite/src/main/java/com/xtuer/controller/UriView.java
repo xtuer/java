@@ -28,9 +28,20 @@ public interface UriView {
     // RESTful 风格获取资源的 URI 格式，变量名以 REST_ 开头，URI 放在 rest 下
     // 获取或修改 topic, question 资源的 RESTful 风格的 URL, 资源都用复数形式方便式统一管理 URL
 
-    // 目录文件相关
-    String REST_DIRECTORIES         = "/rest/directories"; // 目录, 过滤条件是父目录的 ID: parentDirectoryId
-    String REST_DIRECTORIES_WITH_ID = "/rest/directories/{directoryId}";
-    String REST_DIRECTORY_NAME      = "/rest/directories/{directoryId}/name";
-    String REST_DIRECTORY_PARENT_ID = "/rest/directories/{directoryId}/parentId";
+    // 试卷目录
+    String REST_PAPER_SUBDIRECTORIES      = "/rest/paperDirectories/{paperDirectoryId}/paperSubdirectories";
+    String REST_PAPER_DIRECTORIES         = "/rest/paperDirectories";
+    String REST_PAPER_DIRECTORIES_BY_ID   = "/rest/paperDirectories/{paperDirectoryId}";
+    String REST_PAPER_DIRECTORY_NAME      = "/rest/paperDirectories/{paperDirectoryId}/name";
+    String REST_PAPER_DIRECTORY_PARENT_ID = "/rest/paperDirectories/{paperDirectoryId}/parentPaperDirectoryId";
+
+    // 试卷
+    String REST_PAPERS_OF_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers";
+
+    // 知识点
+    String REST_KNOWLEDGE_POINTS       = "/rest/knowledgePoints";
+    String REST_KNOWLEDGE_POINTS_BY_ID = "/rest/knowledgePoints/{knowledgePointId}";
+
+    String REST_KNOWLEDGE_POINT_GROUPS       = "/rest/knowledgePointGroups";
+    String REST_KNOWLEDGE_POINT_GROUPS_BY_ID = "/rest/knowledgePointGroups/{knowledgePointGroupId}";
 }

@@ -5,7 +5,7 @@ import org.springframework.validation.FieldError;
 
 import java.util.UUID;
 
-public class CommonUtils {
+public final class CommonUtils {
     /**
      * BindingResult 中的错误信息很多，对用户不够友好，使用 getBindingMessage()
      * 提取对用户阅读友好的定义验证规则 message。
