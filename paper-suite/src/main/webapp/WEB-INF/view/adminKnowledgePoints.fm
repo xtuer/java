@@ -3,51 +3,59 @@
 
 <head>
     <meta charset="utf-8">
-    <title>管理套卷</title>
+    <title>知识点管理</title>
     <link rel="stylesheet" href="//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css">
     <link rel="stylesheet" href="/css/adminKnowledgePoints.css">
 </head>
 
 <body>
-    <!-- [1] 菜单栏 -->
+    <!-- 菜单栏 -->
     <div class="ui left vertical inverted visible sidebar labeled icon menu">
         <a class="item"><i class="home icon"></i>Home</a>
         <a class="item" href="/adminPaperSuites"><i class="share alternate square icon"></i> 套卷管理</a>
         <a class="item" href="/adminKnowledgePoints"><i class="block layout icon"></i> 知识点管理</a>
     </div>
 
-    <!-- [3] 网页的主要部分 -->
+    <!-- 网页的主要部分 -->
     <div class="main">
         <div class="ui grid">
-            <!-- 知识点分类 -->
-            <div class="ui sixteen wide column">
+            <!-- 工具栏 -->
+            <div class="ui sixteen wide column" id="vue-toolbar">
                 <div class="ui buttons">
-                    <button class="ui secondary icon button" id="admin-knowledge-point-group-button"
-                        data-tooltip="知识点分类管理" data-position="bottom left" data-inverted="" data-variation="tiny">
+                    <!-- 点击弹出管理知识点分类编辑器窗口 -->
+                    <button class="ui secondary icon button" data-tooltip="管理知识点分类" data-position="bottom left" data-inverted="" data-variation="tiny" @click="popupEditKnowledgePointGroupsDialog()">
                         <i class="icon edit"></i>
                     </button>
-                    <div class="ui floating dropdown button" id="vue-knowledge-point-group">
+                    <!-- 知识点分类选择下拉框 -->
+                    <div class="ui floating dropdown button">
                         <span class="text">选择知识点分类</span>
                         <div class="menu">
-                            <div class="item" v-for="group in knowledgePointGroups" :data-id="group.knowledgePointGroupId">{{group.name}}</div>
+                            <div class="item" v-for="(group, index) in knowledgePointGroups"
+                                :key="group.knowledgePointGroupId"
+                                :data-id="group.knowledgePointGroupId"
+                                @click="showKnowledgePoints(index)"
+                                v-text="group.name">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button class="ui labeled icon button" id="create-knowledge-point-button"><i class="icon plus"></i> 增加知识点</button>
+
+                <!-- 点击弹出增加知识点窗口 -->
+                <button class="ui labeled icon button" @click="popupCreateKnowledgePointDialig()"><i class="icon plus"></i> 增加知识点</button>
             </div>
 
             <!-- 知识点列表 -->
             <div class="ui sixteen wide column">
                 <div id="vue-knowledge-points">
-                    <a class="ui tag label" v-for="(point, index) in knowledgePoints" :data-id="point.id" @click="editTag(index)">{{point.name}}</a>
+                    <a class="ui tag label" v-for="(point, index) in knowledgePoints" :key="point.knowledgePoint" @click="editknowledgePoint(index)" v-text="point.name"></a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Dialogs -->
-    <!-- 知识点管理编辑对话框 -->
-    <div id="edit-knowledge-group-dialog">
+    <!-- 知识点分类管理编辑对话框 -->
+    <div id="knowledge-point-group-editor-dialog">
         <div id="vue-knowledge-point-group-editor" class="ui form">
             <table class="ui celled striped table">
                 <tbody>
@@ -57,19 +65,36 @@
                         </td>
                         <td class="collapsing">
                             <i class="icon edit" @click="showInput(index, $event)"></i>
-                            <i class="icon delete" @click="removeItem(index)"></i>
+                            <i class="icon delete" @click="removeKnowledgePointGroup(index)"></i>
                         </td>
                     </tr>
                 </tbody>
                 <tfoot class="full-width">
                     <tr>
                         <!-- 添加的按钮 -->
-                        <th colspan="2"><i class="plus icon" style="float: right;" @click="createItem()"></i></th>
+                        <th colspan="2"><i class="plus icon" style="float: right;" @click="createKnowledgePointGroup()"></i></th>
                     </tr>
                 </tfoot>
             </table>
             <!-- 输入框 -->
-            <input class="ui input" type="text" @keyup.enter="updateItem()" @blur="hideInput()" @keyup.esc="hideInput()">
+            <input class="ui input" type="text" @keyup.enter="updateKnowledgePointGroup()" @blur="hideInput()" @keyup.esc="hideInput()">
+        </div>
+    </div>
+
+    <!-- 知识点管理编辑对话框 -->
+    <div id="knowledge-point-editor-dialog">
+        <div id="vue-knowledge-point-editor" class="ui form">
+            <div class="field">
+                <select class="ui selection dropdown" v-model="knowledgePoint.knowledgePointGroupId">
+                    <option v-for="(group, index) in knowledgePointGroups" :key="group.knowledgePointGroupId" :value="group.knowledgePointGroupId">{{group.name}}</option>
+                </select>
+            </div>
+            <div class="field">
+                <div class="ui labeled input">
+                    <div class="ui label">知识点 </div>
+                    <input type="text" placeholder="请输入知识点" v-model="knowledgePoint.name">
+                </div>
+            </div>
         </div>
     </div>
 

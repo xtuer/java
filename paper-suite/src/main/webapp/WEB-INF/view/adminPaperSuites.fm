@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>管理套卷</title>
+    <title>套卷管理</title>
     <link rel="stylesheet" href="//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css">
     <link rel="stylesheet" href="/css/adminPaperSuites.css">
 </head>

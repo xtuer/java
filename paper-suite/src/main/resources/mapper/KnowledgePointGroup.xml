@@ -7,7 +7,9 @@
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.KnowledgePointGroupMapper">
     <select id="findAllKnowledgePointGroups" resultType="KnowledgePointGroup">
-        SELECT knowledge_point_group_id AS knowledgePointGroupId, name FROM knowledge_point_group WHERE is_deleted=0
+        SELECT knowledge_point_group_id AS knowledgePointGroupId, name
+        FROM knowledge_point_group WHERE is_deleted=0
+        ORDER BY name
     </select>
 
     <insert id="createKnowledgePointGroup" parameterType="KnowledgePointGroup" useGeneratedKeys="true" keyProperty="knowledgePointGroupId">

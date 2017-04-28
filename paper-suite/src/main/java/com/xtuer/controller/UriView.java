@@ -39,9 +39,11 @@ public interface UriView {
     String REST_PAPERS_OF_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers";
 
     // 知识点
-    String REST_KNOWLEDGE_POINTS       = "/rest/knowledgePoints";
-    String REST_KNOWLEDGE_POINTS_BY_ID = "/rest/knowledgePoints/{knowledgePointId}";
+    String REST_KNOWLEDGE_POINTS_OF_GROUP = "/rest/knowledgePointGroups/{knowledgePointGroupId}/knowledgePoints";
+    String REST_KNOWLEDGE_POINTS          = "/rest/knowledgePoints";
+    String REST_KNOWLEDGE_POINTS_BY_ID    = "/rest/knowledgePoints/{knowledgePointId}";
 
+    // 知识点分类
     String REST_KNOWLEDGE_POINT_GROUPS       = "/rest/knowledgePointGroups";
     String REST_KNOWLEDGE_POINT_GROUPS_BY_ID = "/rest/knowledgePointGroups/{knowledgePointGroupId}";
 }
