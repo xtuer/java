@@ -29,6 +29,10 @@ public final class CommonUtils {
      * @return 返回 UUID
      */
     public static String uuid() {
-        return UUID.randomUUID().toString().replace("-", "").toUpperCase();
+        return UUID.randomUUID().toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(uuid());
     }
 }

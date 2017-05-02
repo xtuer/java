@@ -60,7 +60,7 @@ public class KnowledgePointGroupController {
      */
     @PutMapping(UriView.REST_KNOWLEDGE_POINT_GROUPS_BY_ID)
     @ResponseBody
-    public Result updateKnowledgePointGroup(@PathVariable Long knowledgePointGroupId,
+    public Result updateKnowledgePointGroup(@PathVariable String knowledgePointGroupId,
                                             @Valid KnowledgePointGroup group, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
         if (bindingResult.hasErrors()) {
@@ -82,7 +82,7 @@ public class KnowledgePointGroupController {
      */
     @DeleteMapping(UriView.REST_KNOWLEDGE_POINT_GROUPS_BY_ID)
     @ResponseBody
-    public Result deleteKnowledgePointGroup(@PathVariable Long knowledgePointGroupId) {
+    public Result deleteKnowledgePointGroup(@PathVariable String knowledgePointGroupId) {
         groupMapper.markKnowledgePointGroupAsDeleted(knowledgePointGroupId);
         return Result.ok();
     }

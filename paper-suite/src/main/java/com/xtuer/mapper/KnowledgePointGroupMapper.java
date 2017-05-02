@@ -15,5 +15,5 @@ public interface KnowledgePointGroupMapper {
     void updateKnowledgePointGroup(KnowledgePointGroup group);
 
     // 标记 KnowledgePointGroup 为已删除
-    void markKnowledgePointGroupAsDeleted(long knowledgePointGroupId);
+    void markKnowledgePointGroupAsDeleted(String knowledgePointGroupId);
 }

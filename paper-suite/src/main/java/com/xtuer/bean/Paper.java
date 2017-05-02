@@ -4,17 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 public class Paper {
-    private Long   paperId;
+    private String paperId;
     private String name;
     private String uuidName;
     private String originalName;
-    private Long   directoryId;
+    private String directoryId;
     private String realDirectoryName;
     private String subject;
     private Date   year;
     private boolean deleted;
+
+    private List<KnowledgePoint> knowledgePoints; // 知识点
 }

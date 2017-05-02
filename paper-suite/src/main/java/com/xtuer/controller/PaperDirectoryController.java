@@ -26,7 +26,7 @@ public class PaperDirectoryController {
      */
     @GetMapping(UriView.REST_PAPER_SUBDIRECTORIES)
     @ResponseBody
-    public Result<List<PaperDirectory>> findPaperSubdirectories(@PathVariable long paperDirectoryId) {
+    public Result<List<PaperDirectory>> findPaperSubdirectories(@PathVariable String paperDirectoryId) {
         return Result.ok("", paperDirectoryMapper.findPaperSubdirectories(paperDirectoryId));
     }
 
@@ -63,7 +63,7 @@ public class PaperDirectoryController {
      */
     @PutMapping(UriView.REST_PAPER_DIRECTORY_NAME)
     @ResponseBody
-    public Result renamePaperDirectory(@PathVariable long paperDirectoryId, @RequestParam String name) {
+    public Result renamePaperDirectory(@PathVariable String paperDirectoryId, @RequestParam String name) {
         if (name == null || name.trim().equals("")) {
             return Result.fail("目录名不能为空");
         }
@@ -83,7 +83,7 @@ public class PaperDirectoryController {
      */
     @PutMapping(UriView.REST_PAPER_DIRECTORY_PARENT_ID)
     @ResponseBody
-    public Result changeParentPaperDirectoryId(@PathVariable long paperDirectoryId, @RequestParam long parentPaperDirectoryId) {
+    public Result changeParentPaperDirectoryId(@PathVariable String paperDirectoryId, @RequestParam String parentPaperDirectoryId) {
         paperDirectoryMapper.changeParentPaperDirectoryId(paperDirectoryId, parentPaperDirectoryId);
         return Result.ok("移动目录成功");
     }
@@ -97,7 +97,7 @@ public class PaperDirectoryController {
      */
     @DeleteMapping(UriView.REST_PAPER_DIRECTORIES_BY_ID)
     @ResponseBody
-    public Result deletePaperDirectory(@PathVariable long paperDirectoryId) {
+    public Result deletePaperDirectory(@PathVariable String paperDirectoryId) {
         if (paperDirectoryMapper.hasPaperSubdirectories(paperDirectoryId) || paperDirectoryMapper.hasPapers(paperDirectoryId)) {
             return Result.fail("不能删除非空目录");
         } else {

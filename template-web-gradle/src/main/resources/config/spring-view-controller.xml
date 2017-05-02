@@ -9,4 +9,5 @@
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <mvc:view-controller path="/admin" view-name="admin.fm"/>
     <mvc:view-controller path="/404"   view-name="404.fm"/>
+    <mvc:view-controller path="/useRequire" view-name="demo/useRequire.fm"/>
 </beans>

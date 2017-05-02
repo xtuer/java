@@ -19,19 +19,23 @@
     </select>
 
     <!--是否有子目录-->
-    <select id="hasPaperSubdirectories" parameterType="long" resultType="boolean">
+    <select id="hasPaperSubdirectories" parameterType="string" resultType="boolean">
         SELECT EXISTS(SELECT 1 FROM paper_directory WHERE parent_paper_directory_id=#{paperDirectoryId} AND is_deleted=0)
     </select>
 
     <!-- 目录中是否有试卷-->
-    <select id="hasPapers" parameterType="long" resultType="boolean">
+    <select id="hasPapers" parameterType="string" resultType="boolean">
         SELECT EXISTS(SELECT 1 FROM paper WHERE paper_directory_id=#{paperDirectoryId} AND is_deleted=0)
     </select>
 
     <!--创建目录-->
-    <insert id="createPaperDirectory" parameterType="PaperDirectory" useGeneratedKeys="true" keyProperty="paperDirectoryId">
-        INSERT INTO paper_directory(name, uuid_name, parent_paper_directory_id, is_deleted)
-        VALUES(#{name}, #{uuidName}, #{parentPaperDirectoryId}, 0)
+    <insert id="createPaperDirectory" parameterType="PaperDirectory">
+        <selectKey keyProperty="paperDirectoryId" resultType="string" order="BEFORE">
+            SELECT uuid() FROM dual
+        </selectKey>
+
+        INSERT INTO paper_directory(paper_directory_id, name, uuid_name, parent_paper_directory_id, is_deleted)
+        VALUES(#{paperDirectoryId}, #{name}, #{uuidName}, #{parentPaperDirectoryId}, 0)
     </insert>
 
     <!--修改目录的父目录 id-->

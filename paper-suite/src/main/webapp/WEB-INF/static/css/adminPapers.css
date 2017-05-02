@@ -24,6 +24,21 @@ body {
     /*z-index: 1;*/
 }
 
+#tool-bar {
+    margin: 0;
+    padding: 1rem;
+    padding-bottom: 0;
+}
+
+#tool-bar.ui.grid>.column:not(.row) {
+    padding-bottom: 0;
+}
+
+#papers-dialog {
+    display: none;
+    padding: 1rem;
+}
+
 #vue-files {
     margin: 0em;
     padding: 1em;

@@ -26,7 +26,7 @@ public class KnowledgePointController {
      */
     @GetMapping(UriView.REST_KNOWLEDGE_POINTS_OF_GROUP)
     @ResponseBody
-    public Result<List<KnowledgePoint>> findKnowledgePointsByKnowledgePointGroupId(@PathVariable long knowledgePointGroupId) {
+    public Result<List<KnowledgePoint>> findKnowledgePointsByKnowledgePointGroupId(@PathVariable String knowledgePointGroupId) {
         return Result.ok("", mapper.findKnowledgePointsByKnowledgePointGroupId(knowledgePointGroupId));
     }
 
@@ -65,7 +65,7 @@ public class KnowledgePointController {
      */
     @PutMapping(UriView.REST_KNOWLEDGE_POINTS_BY_ID)
     @ResponseBody
-    public Result updateKnowledgePoint(@PathVariable long knowledgePointId,
+    public Result updateKnowledgePoint(@PathVariable String knowledgePointId,
                                        @Valid KnowledgePoint knowledgePoint, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
         if (bindingResult.hasErrors()) {
@@ -88,7 +88,7 @@ public class KnowledgePointController {
      */
     @DeleteMapping(UriView.REST_KNOWLEDGE_POINTS_BY_ID)
     @ResponseBody
-    public Result deleteKnowledgePoint(@PathVariable long knowledgePointId) {
+    public Result deleteKnowledgePoint(@PathVariable String knowledgePointId) {
         mapper.markKnowledgePointAsDeleted(knowledgePointId);
 
         return Result.ok();

@@ -36,7 +36,10 @@ public interface UriView {
     String REST_PAPER_DIRECTORY_PARENT_ID = "/rest/paperDirectories/{paperDirectoryId}/parentPaperDirectoryId";
 
     // 试卷
-    String REST_PAPERS_OF_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers";
+    String REST_PAPERS_OF_DIRECTORY       = "/rest/paperDirectories/{paperDirectoryId}/papers";
+    String REST_PAPERS                    = "/rest/paperDirectories/papers/{paperId}";
+    String REST_PAPERS_SEARCH             = "/rest/papers/search";
+    String REST_PAPERS_COUNT_OF_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers/count";
 
     // 知识点
     String REST_KNOWLEDGE_POINTS_OF_GROUP = "/rest/knowledgePointGroups/{knowledgePointGroupId}/knowledgePoints";

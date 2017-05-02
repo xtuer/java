@@ -213,7 +213,7 @@ KnowledgePointGroup.remove = function(knowledgePointGroupId, index) {
 /*-----------------------------------------------------------------------------|
  |                                 Main entry                                  |
  |----------------------------------------------------------------------------*/
-require(['jquery', 'vue', 'semanticUi', 'layer', 'util', 'rest', 'urls'], function($, Vue) {
+require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], function($, Vue) {
     Util.activateSidebarItem(2);
 
     // 知识点数组
@@ -276,7 +276,7 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'util', 'rest', 'urls'], functi
             showInput: function(index, event) {
                 this.currentIndex = index;
                 var $input = this.getInput();
-                var name = window.knowledgePointGroups[index].name; // 要编辑的知识点分类的名字
+                var name = this.knowledgePointGroups[index].name; // 要编辑的知识点分类的名字
 
                 // 1. 找到要插入的行
                 // 2. 隐藏 name
@@ -307,7 +307,7 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'util', 'rest', 'urls'], functi
                 // 3. 更新成功后隐藏输入框，显示知识点分类的名字 (update() 中给处理了)
                 var $input = this.getInput();
                 var name = $.trim($input.val());
-                var knowledgePointGroupId = window.knowledgePointGroups[this.currentIndex].knowledgePointGroupId;
+                var knowledgePointGroupId = this.knowledgePointGroups[this.currentIndex].knowledgePointGroupId;
 
                 // 名字不能为空
                 if (!name) {
@@ -320,13 +320,14 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'util', 'rest', 'urls'], functi
             // 删除知识点分类
             removeKnowledgePointGroup: function(index) {
                 // 删除前最好是询问一下是否确定删除，防止误操作
-                var name = window.knowledgePointGroups[index].name;
+                var self = this;
+                var name = this.knowledgePointGroups[index].name;
                 var dlg = layer.confirm('您确定删除<font color="red"> {0} </font>吗？'.format(name), {
                     title: '删除',
                     btn: ['确定', '取消']
                 }, function() {
                     layer.close(dlg);
-                    var knowledgePointGroupId = window.knowledgePointGroups[index].knowledgePointGroupId;
+                    var knowledgePointGroupId = self.knowledgePointGroups[index].knowledgePointGroupId;
                     KnowledgePointGroup.remove(knowledgePointGroupId, index);
                 });
             },
@@ -353,7 +354,7 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'util', 'rest', 'urls'], functi
         },
         methods: {
             editknowledgePoint: function(index) {
-                var knowledgePoint = $.extend({}, window.knowledgePoints[index]);
+                var knowledgePoint = $.extend({}, this.knowledgePoints[index]);
                 popupEditKnowledgePointsDialog(knowledgePoint, index);
             }
         }

@@ -12,15 +12,19 @@
         ORDER BY name
     </select>
 
-    <insert id="createKnowledgePointGroup" parameterType="KnowledgePointGroup" useGeneratedKeys="true" keyProperty="knowledgePointGroupId">
-        INSERT INTO knowledge_point_group(name, is_deleted) VALUES(#{name}, 0)
+    <insert id="createKnowledgePointGroup" parameterType="KnowledgePointGroup">
+        <selectKey keyProperty="knowledgePointGroupId" resultType="string" order="BEFORE">
+            SELECT uuid() FROM dual
+        </selectKey>
+
+        INSERT INTO knowledge_point_group(knowledge_point_group_id, name, is_deleted) VALUES(#{knowledgePointGroupId}, #{name}, 0)
     </insert>
 
     <update id="updateKnowledgePointGroup" parameterType="KnowledgePointGroup">
         UPDATE knowledge_point_group SET name=#{name} WHERE knowledge_point_group_id=#{knowledgePointGroupId}
     </update>
 
-    <update id="markKnowledgePointGroupAsDeleted" parameterType="long">
+    <update id="markKnowledgePointGroupAsDeleted" parameterType="string">
         UPDATE knowledge_point_group SET is_deleted=1 WHERE knowledge_point_group_id=#{knowledgePointGroupId}
     </update>
 </mapper>

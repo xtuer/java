@@ -12,7 +12,7 @@
     <!-- 菜单栏 -->
     <div class="ui left vertical inverted visible sidebar labeled icon menu">
         <a class="item"><i class="home icon"></i>Home</a>
-        <a class="item" href="/adminPaperSuites"><i class="share alternate square icon"></i> 套卷管理</a>
+        <a class="item" href="/adminPapers"><i class="share alternate square icon"></i> 套卷管理</a>
         <a class="item" href="/adminKnowledgePoints"><i class="block layout icon"></i> 知识点管理</a>
     </div>
 
@@ -85,9 +85,18 @@
     <div id="knowledge-point-editor-dialog">
         <div id="vue-knowledge-point-editor" class="ui form">
             <div class="field">
-                <select class="ui selection dropdown" v-model="knowledgePoint.knowledgePointGroupId">
+                <!-- <select class="ui selection dropdown" v-model="knowledgePoint.knowledgePointGroupId">
                     <option v-for="(group, index) in knowledgePointGroups" :key="group.knowledgePointGroupId" :value="group.knowledgePointGroupId">{{group.name}}</option>
-                </select>
+                </select> -->
+
+                <div class="ui selection dropdown">
+                    <input type="hidden" name="knowledgePointGroupId" v-model="knowledgePoint.knowledgePointGroupId">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">选择知识点分类</div>
+                    <div class="menu">
+                        <div class="item" v-for="(group, index) in knowledgePointGroups" :key="group.knowledgePointGroupId" :data-value="group.knowledgePointGroupId">{{group.name}}</div>
+                    </div>
+                </div>
             </div>
             <div class="field">
                 <div class="ui labeled input">

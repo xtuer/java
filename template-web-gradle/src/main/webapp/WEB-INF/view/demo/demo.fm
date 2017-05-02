@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>SpringMVC REST</title>
     <script src="/lib/jquery.min.js"></script>
-    <script src="/js/jquery.rest.js"></script>
+    <script src="/lib/jquery.rest.js"></script>
     <script src="/js/urls.js"></script>
 </head>
 
@@ -39,13 +39,13 @@
             }});
 
             // AJAX 请求时后端发生异常
-            // $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
-            //     if (!result.success) {
-            //         $('#error').html(result.message + '<br>' + result.data);
-            //     }
-            // }, fail: function(e) {
-            //     console.log(e);
-            // }});
+            $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
+                if (!result.success) {
+                    $('#error').html(result.message + '<br>' + result.data);
+                }
+            }, fail: function(e) {
+                console.log(e);
+            }});
 
             function __cas_account_loaded(data) {
                 console.log('jsonp');

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xtuer.mapper.PaperMapper">
+    <sql id="paperColumns">
+        p.paper_id            as paper_id,
+        p.name                as name,
+        p.uuid_name           as uuid_ame,
+        p.original_name       as original_name,
+        p.paper_directory_id  as paper_directory_id,
+        p.real_directory_name as real_directory_name,
+        p.subject             as subject,
+        p.publish_year        as publish_year
+    </sql>
+    <sql id="paperColumnsWithKnowledgePoints">
+        p.paper_id            as paper_id,
+        p.name                as name,
+        p.uuid_name           as uuid_ame,
+        p.original_name       as original_name,
+        p.paper_directory_id  as paper_directory_id,
+        p.real_directory_name as real_directory_name,
+        p.subject             as subject,
+        p.publish_year        as publish_year,
+        kp.name               as kp_name,
+        kp.knowledge_point_id as kp_knowledge_point_id
+    </sql>
+
+    <!--查找没有分配 paper directory 的试卷-->
+    <select id="findPaperByPaperId" parameterType="string" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper AS p
+        LEFT JOIN (
+            SELECT ikp.name,
+                pkpr.paper_id,
+                pkpr.knowledge_point_id
+            FROM paper_knowledge_point_relation AS pkpr, knowledge_point AS ikp
+            WHERE pkpr.paper_id=#{paperId}
+                AND pkpr.knowledge_point_id=ikp.knowledge_point_id
+        ) AS kp ON p.paper_id=kp.paper_id
+        WHERE p.paper_id=#{paperId}
+    </select>
+
+    <!--查找目录下前 50 个试卷-->
+    <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper AS p
+        LEFT JOIN (
+            SELECT ikp.name,
+                pkpr.paper_id,
+                pkpr.knowledge_point_id
+            FROM paper_knowledge_point_relation AS pkpr, knowledge_point AS ikp
+            WHERE pkpr.paper_id IN (SELECT paper_id FROM paper WHERE paper_directory_id=#{paperDirectoryId})
+                AND pkpr.knowledge_point_id=ikp.knowledge_point_id
+        ) AS kp ON p.paper_id=kp.paper_id
+        WHERE p.paper_directory_id=#{paperDirectoryId}
+        LIMIT ${offset}, ${count}
+    </select>
+
+    <!--目录下试卷的数量-->
+    <select id="papersCountByPaperDirectoryId" parameterType="string" resultType="int">
+        SELECT count(paper_id)
+        FROM paper
+        WHERE paper_directory_id=#{paperDirectoryId}
+    </select>
+
+    <!--根据学科和名字查找前 50 个为分配目录的试卷-->
+    <select id="findPapersBySubjectAndNameFilterNotInPaperDirectory" resultMap="paperResultMap">
+        SELECT <include refid="paperColumns"/>
+        FROM paper AS p
+        WHERE subject=#{subject} AND paper_directory_id='0' AND original_name LIKE CONCAT('%',#{nameFilter},'%')
+        LIMIT 0, 50
+    </select>
+
+    <resultMap id="paperResultMap" type="Paper">
+        <id property="paperId"               column="paper_id"/>
+        <result property="name"              column="name"/>
+        <result property="uuidName"          column="uuid_name"/>
+        <result property="originalName"      column="original_name"/>
+        <result property="directoryId"       column="directory_id"/>
+        <result property="realDirectoryName" column="real_directory_name"/>
+        <result property="subject"           column="subject"/>
+        <result property="year"              column="year"/>
+
+        <collection property="knowledgePoints" ofType="KnowledgePoint" column="paper_id" columnPrefix="kp_" resultMap="knowledgePointResultMap"/>
+    </resultMap>
+
+    <resultMap id="knowledgePointResultMap" type="KnowledgePoint">
+        <id property="knowledgePointId" column="knowledge_point_id"/>
+        <result property="name"         column="name"/>
+    </resultMap>
+</mapper>

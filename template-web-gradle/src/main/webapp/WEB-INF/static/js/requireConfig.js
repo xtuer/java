@@ -5,7 +5,6 @@ require.config({
         vue       : '//cdn.staticfile.org/vue/2.0.3/vue',
         semanticUi: '//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min',
         ztree     : '//cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min',
-        pagination: '/lib/jquery.jqpagination.min',
         rest      : '/lib/jquery.rest',
         urls      : '/js/urls',
         util      : '/js/util'
@@ -22,9 +21,6 @@ require.config({
                    'css!//cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css',
                    'css!//cdn.staticfile.org/zTree.v3/3.5.28/css/awesomeStyle/awesome.min.css',
                    'css!/css/ztree-awesome-custom.css']
-        },
-        pagination: {
-            deps: ['jquery', 'css!/lib/jqpagination.css']
         },
         rest: {
             deps: ['jquery']

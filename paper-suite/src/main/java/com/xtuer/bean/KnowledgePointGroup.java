@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Getter
 @Setter
 public class KnowledgePointGroup {
-    private Long knowledgePointGroupId;
+    private String knowledgePointGroupId;
 
     @NotBlank(message="名字不能为空")
     private String name;
