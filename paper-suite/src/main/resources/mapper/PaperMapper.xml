@@ -28,7 +28,7 @@
         kp.knowledge_point_id as kp_knowledge_point_id
     </sql>
 
-    <!--查找没有分配 paper directory 的试卷-->
+    <!--查找试卷，同时查出试卷的知识点-->
     <select id="findPaperByPaperId" parameterType="string" resultMap="paperResultMap">
         SELECT <include refid="paperColumnsWithKnowledgePoints"/>
         FROM paper AS p
@@ -45,16 +45,8 @@
 
     <!--查找目录下前 50 个试卷-->
     <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
-        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        SELECT <include refid="paperColumns"/>
         FROM paper AS p
-        LEFT JOIN (
-            SELECT ikp.name,
-                pkpr.paper_id,
-                pkpr.knowledge_point_id
-            FROM paper_knowledge_point_relation AS pkpr, knowledge_point AS ikp
-            WHERE pkpr.paper_id IN (SELECT paper_id FROM paper WHERE paper_directory_id=#{paperDirectoryId})
-                AND pkpr.knowledge_point_id=ikp.knowledge_point_id
-        ) AS kp ON p.paper_id=kp.paper_id
         WHERE p.paper_directory_id=#{paperDirectoryId}
         LIMIT ${offset}, ${count}
     </select>
@@ -72,6 +64,13 @@
         FROM paper AS p
         WHERE subject=#{subject} AND paper_directory_id='0' AND original_name LIKE CONCAT('%',#{nameFilter},'%')
         LIMIT 0, 50
+    </select>
+
+    <!--查找试卷的知识点-->
+    <select id="findKnowledgePointByPaperId" parameterType="string" resultType="KnowledgePoint">
+        SELECT kp.knowledge_point_id AS knowledgePointId, kp.name AS name
+        FROM knowledge_point kp, paper_knowledge_point_relation pkpr
+        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id AND pkpr.paper_id=#{paperId}
     </select>
 
     <resultMap id="paperResultMap" type="Paper">

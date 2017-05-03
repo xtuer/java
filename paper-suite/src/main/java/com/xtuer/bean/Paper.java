@@ -17,7 +17,6 @@ public class Paper {
     private String realDirectoryName;
     private String subject;
     private Date   year;
-    private boolean deleted;
 
     private List<KnowledgePoint> knowledgePoints; // 知识点
 }

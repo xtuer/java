@@ -25,22 +25,26 @@ public class PaperController {
      */
     @GetMapping(UriView.REST_PAPERS)
     @ResponseBody
-    public Result<List<Paper>> papers(@PathVariable String paperId) {
+    public Result<List<Paper>> papersById(@PathVariable String paperId) {
         return Result.ok("", paperMapper.findPaperByPaperId(paperId));
     }
 
     /**
-     * URL: http://localhost:8080/rest/paperDirectories/0/papers
+     * 查找目录中第 page 页的试卷，page 默认为 1
+     * URL: http://localhost:8080/rest/paperDirectories/0/papers?page=2
      *
      * @param paperDirectoryId 目录 id
+     * @param page 页数
      * @return
      */
     @GetMapping(UriView.REST_PAPERS_OF_DIRECTORY)
     @ResponseBody
     public Result<List<Paper>> papersOfDirectory(@PathVariable String paperDirectoryId,
-                                                 @RequestParam(required=false, defaultValue="0") int page) {
+                                                 @RequestParam(required=false, defaultValue="1") int page) {
         int count = 5;
-        int offset = page * count;
+        int offset = (page-1) * count;
+        offset = offset < 0 ? 0 : offset;
+
         return Result.ok("", paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, count));
     }
 

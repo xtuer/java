@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>套卷管理</title>
-    <link rel="stylesheet" href="//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css">
+    <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
     <link rel="stylesheet" href="/css/adminPapers.css">
 </head>
 

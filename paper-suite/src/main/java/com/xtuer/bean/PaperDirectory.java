@@ -14,5 +14,4 @@ public class PaperDirectory {
     private String uuidName;
     @NotBlank(message="父目录 ID 不能为空")
     private String parentPaperDirectoryId;
-    private boolean deleted;
 }

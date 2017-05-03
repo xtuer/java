@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>知识点管理</title>
-    <link rel="stylesheet" href="//cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css">
+    <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
     <link rel="stylesheet" href="/css/adminKnowledgePoints.css">
 </head>
 
@@ -41,7 +41,7 @@
                 </div>
 
                 <!-- 点击弹出增加知识点窗口 -->
-                <button class="ui labeled icon button" @click="popupCreateKnowledgePointDialig()"><i class="icon plus"></i> 增加知识点</button>
+                <button class="ui labeled icon button" @click="popupCreateKnowledgePointDialig()"><i class="icon plus"></i> 添加知识点</button>
             </div>
 
             <!-- 知识点列表 -->
