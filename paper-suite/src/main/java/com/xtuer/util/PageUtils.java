@@ -5,7 +5,7 @@ package com.xtuer.util;
  *     PageUtils.offset(pageNumber, pageSize) 用于计算起始位置
  *     PageUtils.pageCount(recordCount, pageSize) 用于计算共有多少页
  */
-public class PageUtils {
+public final class PageUtils {
     /**
      * 根据传入的页数、每页上的最多记录数计算这一页面的开始位置 offset
      *
