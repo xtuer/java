@@ -61,7 +61,7 @@ public class CommonUtils {
      * @return 返回 UUID
      */
     public static String uuid() {
-        return UUID.randomUUID().toString().replace("-", "").toUpperCase();
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
 

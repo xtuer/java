@@ -34,18 +34,27 @@ body {
     padding-bottom: 0;
 }
 
-#papers-dialog {
+#choose-papers-dialog {
     display: none;
     padding: 1rem;
 }
 
-#vue-files {
+#vue-papers {
     margin: 0em;
     padding: 1em;
 }
 
-.ui.card {
+#vue-papers .ui.card {
     /*box-shadow: 0 1px 3px 0 #D4D4D5;*/
+}
+
+#vue-papers .ui.card .dimmer {
+    border-top-left-radius: .28571429rem;
+    border-top-right-radius: .28571429rem;
+}
+
+#vue-papers .ui.card .dimmable .content {
+    padding: 5px;
 }
 
 #directory-tree {
@@ -78,4 +87,15 @@ body {
 
 li#menu-item-delete, li#menu-item-rename {
     margin-top: 1px;
+}
+
+#vue-choose-papers .ui.column {
+    padding-bottom: 0;
+}
+
+/* 文本只显示在一行，溢出时显示三个小点 */
+.elide {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

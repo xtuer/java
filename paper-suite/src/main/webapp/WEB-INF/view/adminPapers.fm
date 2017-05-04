@@ -33,19 +33,24 @@
         <!-- 工具栏 -->
         <div class="ui grid" id="tool-bar">
             <div class="ui column">
-                <button class="ui labeled icon button" id="popupPapersDialogButton"><i class="icon plus"></i> 添加试卷</button>
+                <button class="ui labeled icon button" id="popupChoosePapersDialogButton"><i class="icon plus"></i> 添加试卷</button>
             </div>
         </div>
 
-        <!-- 文件列表 -->
-        <div class="ui six column grid" id="vue-files">
-            <div class="ui column" v-for="(file, index) in files" :data-id="file.fileId" :key="file.fileId">
-                <div class="ui card">
-                    <div class="image">
-                        <img :src="file.image">
+        <!-- 试卷列表 -->
+        <div class="ui six column grid" id="vue-papers">
+            <div class="ui column" v-for="(paper, index) in papers" :data-id="paper.paperId" :key="paper.paperId">
+                <div class="ui card" >
+                    <div class="dimmable image" @click="foo()">
+                        <div class="ui dimmer">
+                            <div class="content">
+                                <div class="center">{{paper.originalName}}</div>
+                            </div>
+                        </div>
+                        <img src="/img/default.jpg">
                     </div>
-                    <div class="extra content">
-                        <span v-text="file.name"></span>
+                    <div class="extra content elide">
+                        <span class="paper-name" v-text="paper.name" :data-content="paper.originalName"></span>
                     </div>
                 </div>
             </div>
@@ -53,23 +58,31 @@
     </div>
 
     <!-- Dialogs -->
-    <div id="papers-dialog">
-        <div class="ui one column grid">
-            <div class="ui column" style="display: flex;">
-                <div class="ui icon input" style="flex: 1;">
-                    <input type="text" placeholder="搜索...">
-                    <i class="circular search link icon"></i>
+    <!-- 试卷选择对话框 -->
+    <div id="choose-papers-dialog">
+        <div class="ui one column grid" id="vue-choose-papers">
+            <div class="ui column">
+                <!-- 选择学科 -->
+                <div class="ui left action input" style="width: 100%;">
+                    <select class="ui compact selection dropdown" v-model="subject">
+                        <option value="高中数学">高中数学</option>
+                        <option value="高中语文">高中语文</option>
+                        <option value="高中物理">高中物理</option>
+                        <option value="高中化学">高中化学</option>
+                        <option value="高中地理">高中地理</option>
+                        <option value="高中历史">高中历史</option>
+                    </select>
+                    <input type="text" placeholder="搜索……" v-model="nameFilter" @keyup.enter="findPapers()" style="border-radius: 0;">
+                    <div type="submit" class="ui button" @click="findPapers()" style="border-radius: 0 .28571429rem .28571429rem 0;">搜索</div>
                 </div>
-                <button class="circular ui icon button" style="margin-left: 1rem;"><i class="icon refresh"></i></button>
             </div>
 
             <div class="ui column">
-                <div id="vue-segments">
-                    <div class="ui segment" :class="segmentClass(index)" v-for="(item, index) in items">
-                        <div class="ui checkbox">
-                            <input type="checkbox" name="example">
-                            <label v-html="item.text"></label>
-                        </div>
+                <!-- 搜索得到的试卷 -->
+                <div class="ui segment" :class="segmentClass(index)" v-for="(paper, index) in papers">
+                    <div class="ui checkbox">
+                        <input type="checkbox" v-model="paper.checked">
+                        <label v-html="paper.name"></label>
                     </div>
                 </div>
             </div>

@@ -48,7 +48,7 @@
         SELECT <include refid="paperColumns"/>
         FROM paper AS p
         WHERE p.paper_directory_id=#{paperDirectoryId}
-        LIMIT ${offset}, ${count}
+        LIMIT ${offset}, ${size}
     </select>
 
     <!--目录下试卷的数量-->
@@ -62,7 +62,10 @@
     <select id="findPapersBySubjectAndNameFilterNotInPaperDirectory" resultMap="paperResultMap">
         SELECT <include refid="paperColumns"/>
         FROM paper AS p
-        WHERE subject=#{subject} AND paper_directory_id='0' AND original_name LIKE CONCAT('%',#{nameFilter},'%')
+        WHERE subject=#{subject} AND paper_directory_id='0'
+            <if test="nameFilter!=null and nameFilter!='' ">
+                AND original_name LIKE CONCAT('%',#{nameFilter},'%')
+            </if>
         LIMIT 0, 50
     </select>
 

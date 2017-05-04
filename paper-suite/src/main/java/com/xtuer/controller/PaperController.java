@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.Paper;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.PaperMapper;
+import com.xtuer.util.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +41,11 @@ public class PaperController {
     @GetMapping(UriView.REST_PAPERS_OF_DIRECTORY)
     @ResponseBody
     public Result<List<Paper>> papersOfDirectory(@PathVariable String paperDirectoryId,
-                                                 @RequestParam(required=false, defaultValue="1") int page) {
-        int count = 5;
-        int offset = (page-1) * count;
-        offset = offset < 0 ? 0 : offset;
+                                                 @RequestParam(required=false, defaultValue="1") int page,
+                                                 @RequestParam(required=false, defaultValue="50") int size) {
+        int offset = PageUtils.offset(page, size);
 
-        return Result.ok("", paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, count));
+        return Result.ok("", paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, size));
     }
 
     /**

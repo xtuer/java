@@ -13,5 +13,8 @@ var Urls = {
     // 知识点
     REST_KNOWLEDGE_POINTS_OF_GROUP : '/rest/knowledgePointGroups/{knowledgePointGroupId}/knowledgePoints',
     REST_KNOWLEDGE_POINTS          : '/rest/knowledgePoints',
-    REST_KNOWLEDGE_POINTS_BY_ID    : '/rest/knowledgePoints/{knowledgePointId}'
+    REST_KNOWLEDGE_POINTS_BY_ID    : '/rest/knowledgePoints/{knowledgePointId}',
+
+    // 试卷
+    REST_PAPERS_SEARCH : '/rest/papers/search'
 };

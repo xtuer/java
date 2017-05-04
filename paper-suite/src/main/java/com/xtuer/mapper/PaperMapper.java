@@ -16,7 +16,7 @@ public interface PaperMapper {
     // 查找目录下的试卷
     List<Paper> findPapersByPaperDirectoryId(@Param("paperDirectoryId") String paperDirectoryId,
                                              @Param("offset") int offset,
-                                             @Param("count") int count);
+                                             @Param("size") int size);
 
     // 查找试卷的知识点
     List<KnowledgePoint> findKnowledgePointByPaperId(String paperId);
