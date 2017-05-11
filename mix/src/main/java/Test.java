@@ -1,15 +1,12 @@
-import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        File dir = new File("/Users/Biao/Documents/套卷/高中数学（2183套）/GSZH030C");
-        int count = 0;
-
-        for (File file : dir.listFiles()) {
-            System.out.println(file.getName());
-            ++count;
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse("1979-12-30");
+            System.out.print(new SimpleDateFormat("YYYY-MM-dd").format(date));
+        } catch (Exception e) {
         }
-
-        System.out.println(count);
     }
 }

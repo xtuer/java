@@ -6,6 +6,7 @@
     <title>套卷管理</title>
     <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
     <link rel="stylesheet" href="/css/adminPapers.css">
+    <script src="/lib/laydate/laydate.js"></script>
 </head>
 
 <body>
@@ -26,6 +27,9 @@
         <li id="menu-item-create">新建文件夹</li>
         <li id="menu-item-delete">删除文件夹</li>
         <li id="menu-item-rename">重命名</li>
+        <hr>
+        <li id="menu-item-expand-all">全部展开</li>
+        <li id="menu-item-refresh-count">刷新数量</li>
     </ul>
 
     <!-- [3] 网页的主要部分 -->
@@ -33,27 +37,52 @@
         <!-- 工具栏 -->
         <div class="ui grid" id="tool-bar">
             <div class="ui column">
-                <button class="ui labeled icon button" id="popupChoosePapersDialogButton"><i class="icon plus"></i> 添加试卷</button>
+                <button class="ui right floated circular basic button">导出</button>
+                <div class="toggle-buttons">
+                    <div class="ui labeled icon button" id="popup-choose-papers-dialog-button"><i class="icon plus"></i>添加试卷</div>
+                    <div class="ui labeled icon button" id="show-konwledge-points"><i class="icon tags"></i>所有知识点</div>
+                </div>
             </div>
         </div>
 
-        <!-- 试卷列表 -->
-        <div class="ui six column grid" id="vue-papers">
+        <div class="ui one column grid" id="vue-knowledge-points" style="margin: -1rem 1rem; margin-top: 1rem;">
+            <div class="ui column">
+                <div class="ui segment">
+                    <a class="ui tag label" :class="{checked: point.checked}" v-for="point in knowledgePoints" @click="showPapers(point, $event)" :key="point.knowledgePointId" v-text="point.name"></a>
+                    <span v-show="knowledgePoints.length==0">没有知识点</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 试卷列表，使用 card 显示试卷 -->
+        <div class="ui five column grid" id="vue-papers">
             <div class="ui column" v-for="(paper, index) in papers" :data-id="paper.paperId" :key="paper.paperId">
-                <div class="ui card" >
-                    <div class="dimmable image" @click="foo()">
+                <div class="ui card">
+                    <div class="dimmable image">
                         <div class="ui dimmer">
                             <div class="content">
-                                <div class="center">{{paper.originalName}}</div>
+                                <div class="center">
+                                    {{paper.originalName}}
+                                    <hr>
+                                    {{knowledgePointsString(paper.knowledgePoints)}}
+                                </div>
                             </div>
                         </div>
                         <img src="/img/default.jpg">
                     </div>
-                    <div class="extra content elide">
-                        <span class="paper-name" v-text="paper.name" :data-content="paper.originalName"></span>
+                    <div class="content">
+                        <div class="description elide" v-text="paper.name"></div>
+                    </div>
+                    <div class="extra content">
+                        <i class="icon move" :data-id="paper.paperId" :data-paper-directory-id="paper.paperDirectoryId" :data-index="index" :data-name="paper.name"></i>
+                        <i class="icon edit" @click="editPaper(index)"></i>
+                        <i class="icon tags" :data-content="knowledgePointsString(paper.knowledgePoints)"></i>
+                        <span class="elide" style="float: right;" v-html="paper.subject"></span>
                     </div>
                 </div>
             </div>
+
+            <div v-show="papers.length===0">当前目录没有试卷或则还没有选择目录</div>
         </div>
     </div>
 
@@ -65,14 +94,15 @@
                 <!-- 选择学科 -->
                 <div class="ui left action input" style="width: 100%;">
                     <select class="ui compact selection dropdown" v-model="subject">
-                        <option value="高中数学">高中数学</option>
                         <option value="高中语文">高中语文</option>
+                        <option value="高中数学">高中数学</option>
                         <option value="高中物理">高中物理</option>
                         <option value="高中化学">高中化学</option>
-                        <option value="高中地理">高中地理</option>
                         <option value="高中历史">高中历史</option>
+                        <option value="高中地理">高中地理</option>
+                        <option value="高中生物">高中生物</option>
                     </select>
-                    <input type="text" placeholder="搜索……" v-model="nameFilter" @keyup.enter="findPapers()" style="border-radius: 0;">
+                    <input type="text" placeholder="搜索……" v-model.trim="nameFilter" @keyup.enter="findPapers()" style="border-radius: 0;">
                     <div type="submit" class="ui button" @click="findPapers()" style="border-radius: 0 .28571429rem .28571429rem 0;">搜索</div>
                 </div>
             </div>
@@ -84,6 +114,66 @@
                         <input type="checkbox" v-model="paper.checked">
                         <label v-html="paper.name"></label>
                     </div>
+                </div>
+                <div v-show="papers.length==0">没有符合条件的试卷...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 试卷编辑对话框 -->
+    <div id="paper-editor-dialog">
+        <div id="vue-paper-editor" class="ui form">
+            <div class="field">
+                <div class="ui labeled input">
+                    <div class="ui label">原始名字</div>
+                    <input type="text" v-model="paper.originalName" readonly="" style="color: #BBB;">
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui labeled input">
+                    <div class="ui label">显示名字</div>
+                    <input type="text" v-model="paper.name">
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui labeled input">
+                    <div class="ui label">发布时间</div>
+                    <input type="text" class="publish-date" id="publish-date" v-model="paper.publishDate" readonly="">
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui two top attached buttons">
+                    <!-- 知识点分类选择下拉框 -->
+                    <div class="ui floating dropdown button knowledge-point-groups-dropdown">
+                        <i class="icon object group"></i>
+                        <span class="text">选择知识点分类</span>
+                        <div class="menu">
+                            <div class="item" v-for="group in knowledgePointGroups"
+                                :key="group.knowledgePointGroupId"
+                                :data-id="group.knowledgePointGroupId"
+                                @click="loadKnowledgePoints(group)"
+                                v-text="group.name">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 知识点选择下拉框 -->
+                    <div class="ui floating dropdown button knowledge-points-dropdown" style="border-left: 1px solid #CCC;">
+                        <i class="icon tag"></i>
+                        <span class="text">选择知识点</span>
+                        <div class="menu">
+                            <div class="item" v-for="(point, index) in knowledgePoints"
+                                :key="index"
+                                @click="addKnowledgePointToPaper(point)"
+                                v-text="point.name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui bottom attached segment" style="height: 250px; overflow: auto;">
+                    <a class="ui label" v-for="point in paper.knowledgePoints" style="margin-bottom: 5px;">
+                        {{point.name}}
+                        <i class="delete icon" @click="removeKnowledgePointFromPaper(point)"></i>
+                    </a>
                 </div>
             </div>
         </div>

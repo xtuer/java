@@ -172,10 +172,9 @@ KnowledgePointGroup.create = function(knowledgePointGroup) {
  * 更新知识点分类
  *
  * @param  {object} knowledgePointGroup KnowledgePointGroup 对象
- * @param  {int} index 需要编辑的知识点分类在 window.knowledgePointGroups 中的下标
  * @return 无返回值
  */
-KnowledgePointGroup.update = function(knowledgePointGroup, index) {
+KnowledgePointGroup.update = function(knowledgePointGroup) {
     $.rest.update({url: Urls.REST_KNOWLEDGE_POINT_GROUPS_BY_ID,
         urlParams: {knowledgePointGroupId: knowledgePointGroup.knowledgePointGroupId},
         data: {name: knowledgePointGroup.name}, success: function(result) {
@@ -183,33 +182,30 @@ KnowledgePointGroup.update = function(knowledgePointGroup, index) {
             layer.msg(result.message);
             return;
         }
-
-        // 更新下拉框中的知识点分类
-        window.knowledgePointGroups[index].name = knowledgePointGroup.name;
-        window.knowledgePointGroups.splice(index, 1, window.knowledgePointGroups[index]);
-        window.vueKnowledgePointGroupEditor.hideInput();
     }});
 };
 
 /**
  * 删除知识点分类
  *
- * @param {int} knowledgePointGroupId 知识点分类 id
- * @param {int} index 知识点分类下拉框中的下标
+ * @param {int} knowledgePointGroup 知识点分类
  * @return 无返回值
  */
-KnowledgePointGroup.remove = function(knowledgePointGroupId, index) {
+KnowledgePointGroup.remove = function(knowledgePointGroup) {
     $.rest.remove({url: Urls.REST_KNOWLEDGE_POINT_GROUPS_BY_ID,
-        urlParams: {knowledgePointGroupId: knowledgePointGroupId},
+        urlParams: {knowledgePointGroupId: knowledgePointGroup.knowledgePointGroupId},
         success: function(result) {
         if (!result.success) {
             layer.msg(result.message);
             return;
         }
 
+        // 从知识点分类数组中删除
+        var index = window.knowledgePointGroups.indexOf(knowledgePointGroup);
         window.knowledgePointGroups.splice(index, 1);
     }});
 };
+
 /*-----------------------------------------------------------------------------|
  |                                 Main entry                                  |
  |----------------------------------------------------------------------------*/
@@ -269,70 +265,57 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
         el: '#vue-knowledge-point-group-editor',
         data: {
             knowledgePointGroups: window.knowledgePointGroups,
-            currentIndex: -1
+            editedKnowledgePointGroup: null,
+            cachedKnowledgePointGroupName: ''
         },
         methods: {
-            // 显示输入框
-            showInput: function(index, event) {
-                this.currentIndex = index;
-                var $input = this.getInput();
-                var name = this.knowledgePointGroups[index].name; // 要编辑的知识点分类的名字
-
-                // 1. 找到要插入的行
-                // 2. 隐藏 name
-                // 3. 插入 input
-                $td = $(event.target).parent().prev();
-                $('.name', $td).hide();
-                $input.val(name).appendTo($td).show().focus();
+            // 进入编辑知识点分类模式
+            editGroup: function(group) {
+                // 保存正在编辑的知识点分类
+                this.editedKnowledgePointGroup = group;
+                this.cachedKnowledgePointGroupName = group.name;
             },
-            // 隐藏输入框
-            hideInput: function() {
-                // 1. 隐藏 input
-                // 2. 把相应的 name 显示出来
-                // 3. 然后把 input 从 item 中移走，防止 item 被删除时 input 也被删除
-                var $input = this.getInput();
-                $input.hide();
-                $input.siblings('.name').show();
-                $input.appendTo('#vue-knowledge-point-group-editor');
+            // 取消编辑
+            cancelEdit: function() {
+                // 有时候会调用 2 次，为了不让在控制台输出错误信息，非 null 时才操作
+                if (this.editedKnowledgePointGroup) {
+                    this.editedKnowledgePointGroup.name = this.cachedKnowledgePointGroupName;
+                    this.editedKnowledgePointGroup = null;
+                }
             },
             // 创建知识点分类
-            createKnowledgePointGroup: function() {
-                // 创建默认的知识点
+            createGroup: function() {
+                // 发送请求到服务器上创建知识点分类
                 KnowledgePointGroup.create({name: '[新知识点分类]'});
             },
-            // 按下回车时更新知识点分类
-            updateKnowledgePointGroup: function() {
-                // 1. 获取 input 中知识点分类的名字
-                // 2. 更新到数据库
-                // 3. 更新成功后隐藏输入框，显示知识点分类的名字 (update() 中给处理了)
-                var $input = this.getInput();
-                var name = $.trim($input.val());
-                var knowledgePointGroupId = this.knowledgePointGroups[this.currentIndex].knowledgePointGroupId;
-
+            // 更新知识点分类
+            updateGroup: function(todo) {
                 // 名字不能为空
-                if (!name) {
+                if (!this.editedKnowledgePointGroup.name) {
                     layer.msg('知识点分类不能为空');
                     return;
                 }
 
-                KnowledgePointGroup.update(new KnowledgePointGroup(knowledgePointGroupId, name), this.currentIndex);
+                // 发送请求到服务器上更新知识点分类
+                KnowledgePointGroup.update(this.editedKnowledgePointGroup);
+                this.editedKnowledgePointGroup = null;
             },
-            // 删除知识点分类
-            removeKnowledgePointGroup: function(index) {
-                // 删除前最好是询问一下是否确定删除，防止误操作
-                var self = this;
-                var name = this.knowledgePointGroups[index].name;
+            removeGroup: function(knowledgePointGroup) {
+                var name = knowledgePointGroup.name;
                 var dlg = layer.confirm('您确定删除<font color="red"> {0} </font>吗？'.format(name), {
                     title: '删除',
                     btn: ['确定', '取消']
                 }, function() {
                     layer.close(dlg);
-                    var knowledgePointGroupId = self.knowledgePointGroups[index].knowledgePointGroupId;
-                    KnowledgePointGroup.remove(knowledgePointGroupId, index);
+                    KnowledgePointGroup.remove(knowledgePointGroup);
                 });
-            },
-            getInput: function() {
-                return $('#vue-knowledge-point-group-editor input'); // 返回 input
+            }
+        },
+        directives: {
+            'group-focus': function(el, binding) {
+                if (binding.value) {
+                    el.focus();
+                }
             }
         }
     });
@@ -343,6 +326,11 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
         data: {
             knowledgePointGroups: window.knowledgePointGroups, // 知识点分类
             knowledgePoint: KnowledgePoint.emptyKnowledgePoint()
+        },
+        watch: {
+            knowledgePoint: function(oldValue, newValue) {
+                // console.log(JSON.stringify(this.knowledgePoint));
+            }
         }
     });
 
@@ -368,7 +356,7 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
      * @return 无返回值
      */
     function popupEditKnowledgePointsDialog(knowledgePoint, index) {
-        vueKnowledgePointEditor.knowledgePoint = knowledgePoint; // 先更新知识点编辑器中的知识点
+        window.vueKnowledgePointEditor.knowledgePoint = knowledgePoint; // 先更新知识点编辑器中的知识点
 
         // 选择当前的知识点
         $('#vue-knowledge-point-editor .dropdown').dropdown('set selected', knowledgePoint.knowledgePointGroupId);
@@ -383,8 +371,11 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
             btn: ['保存', '删除', '取消'],
             // 创建和更新
             btn1: function() {
-                var kpgId = vueKnowledgePointEditor.knowledgePoint.knowledgePointGroupId; // 正编辑的知识点分类的 id
+                // var kpgId = vueKnowledgePointEditor.knowledgePoint.knowledgePointGroupId; // 正编辑的知识点分类的 id
+                var kpgId = $('#vue-knowledge-point-editor input[name="knowledgePointGroupId"]').val();
                 var name  = $.trim(vueKnowledgePointEditor.knowledgePoint.name);
+
+                knowledgePoint.knowledgePointGroupId = kpgId; // value 不是手动输入的 v-model 绑定不会生效，Vue 的 bug?
 
                 if (!name) {
                     layer.msg('知识点不能为空');

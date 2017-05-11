@@ -13,10 +13,10 @@ public class Paper {
     private String name;
     private String uuidName;
     private String originalName;
-    private String directoryId;
+    private String paperDirectoryId;
     private String realDirectoryName;
     private String subject;
-    private Date   year;
+    private Date   publishDate;
 
     private List<KnowledgePoint> knowledgePoints; // 知识点
 }

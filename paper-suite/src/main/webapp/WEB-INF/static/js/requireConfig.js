@@ -4,6 +4,7 @@ require.config({
         layer     : '//cdn.staticfile.org/layer/2.3/layer',
         vue       : '//cdn.staticfile.org/vue/2.0.3/vue',
         semanticUi: '/lib/semantic/semantic.min',
+        semanticUiCalendar: '/lib/semantic/calendar/calendar.min',
         ztree     : '//cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min',
         pagination: '/lib/jquery.jqpagination.min',
         rest      : '/lib/jquery.rest',
@@ -16,6 +17,9 @@ require.config({
         },
         semanticUi: {
             deps: ['jquery']
+        },
+        semanticUiCalendar: {
+            deps: ['semanticUi', 'css!/lib/semantic/calendar/calendar.min.css']
         },
         ztree: {
             deps: ['jquery',

@@ -10,11 +10,21 @@
     <select id="findPaperSubdirectories" resultType="PaperDirectory">
         SELECT paper_directory_id as paperDirectoryId,
             name,
-            uuid_name as uuidName,
             parent_paper_directory_id as parentPaperDirectoryId,
             is_deleted as deleted
         FROM  paper_directory
         WHERE parent_paper_directory_id=#{paperDirectoryId} AND is_deleted=0
+        ORDER BY name
+    </select>
+
+    <!--获取所有的目录-->
+    <select id="getAllPaperDirectories" resultType="PaperDirectory">
+        SELECT paper_directory_id as paperDirectoryId,
+            name,
+            parent_paper_directory_id as parentPaperDirectoryId,
+            is_deleted as deleted
+        FROM  paper_directory
+        WHERE is_deleted=0
         ORDER BY name
     </select>
 
@@ -23,19 +33,39 @@
         SELECT EXISTS(SELECT 1 FROM paper_directory WHERE parent_paper_directory_id=#{paperDirectoryId} AND is_deleted=0)
     </select>
 
-    <!-- 目录中是否有试卷-->
+    <!--目录中是否有试卷-->
     <select id="hasPapers" parameterType="string" resultType="boolean">
         SELECT EXISTS(SELECT 1 FROM paper WHERE paper_directory_id=#{paperDirectoryId} AND is_deleted=0)
     </select>
 
+    <!--检查目录是否存在-->
+    <select id="isPaperDirectoryExisting" parameterType="string" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM paper_directory WHERE paper_directory_id=#{paperDirectoryId})
+    </select>
+
+    <!--查询所有目录下试卷的数量-->
+    <select id="findPapersCountInPaperDirectories" resultType="map">
+        SELECT p.paper_directory_id AS paperDirectoryId, count(pd.paper_directory_id) AS count
+        FROM paper p, paper_directory pd WHERE p.paper_directory_id=pd.paper_directory_id
+        GROUP BY pd.paper_directory_id
+    </select>
+
+    <!--查询目录下试卷的所有知识点-->
+    <select id="findKnowledgePointsInPaperDirectory" parameterType="string" resultType="KnowledgePoint">
+        SELECT DISTINCT kp.knowledge_point_id AS knowledgePointId, kp.name AS name
+        FROM paper_knowledge_point_relation pkpr, knowledge_point kp, paper p
+        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id
+            AND p.paper_id=pkpr.paper_id
+            AND p.paper_directory_id=#{paperDirectoryId}
+            AND p.is_deleted=0
+            AND pkpr.is_deleted=0
+        ORDER BY name
+    </select>
+
     <!--创建目录-->
     <insert id="createPaperDirectory" parameterType="PaperDirectory">
-        <selectKey keyProperty="paperDirectoryId" resultType="string" order="BEFORE">
-            SELECT uuid() FROM dual
-        </selectKey>
-
-        INSERT INTO paper_directory(paper_directory_id, name, uuid_name, parent_paper_directory_id, is_deleted)
-        VALUES(#{paperDirectoryId}, #{name}, #{uuidName}, #{parentPaperDirectoryId}, 0)
+        INSERT INTO paper_directory(paper_directory_id, name, parent_paper_directory_id, is_deleted)
+        VALUES(#{paperDirectoryId}, #{name}, #{parentPaperDirectoryId}, 0)
     </insert>
 
     <!--修改目录的父目录 id-->
@@ -49,7 +79,7 @@
     </update>
 
     <!--设置 is_deleted 为 1，标记目录已经被删除了-->
-    <update id="markPaperDirectoryAsDeleted">
+    <update id="markPaperDirectoryAsDeleted" parameterType="string">
         UPDATE paper_directory SET is_deleted=1 WHERE paper_directory_id=#{paperDirectoryId}
     </update>
 </mapper>

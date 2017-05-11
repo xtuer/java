@@ -13,10 +13,6 @@
     </select>
 
     <insert id="createKnowledgePointGroup" parameterType="KnowledgePointGroup">
-        <selectKey keyProperty="knowledgePointGroupId" resultType="string" order="BEFORE">
-            SELECT uuid() FROM dual
-        </selectKey>
-
         INSERT INTO knowledge_point_group(knowledge_point_group_id, name, is_deleted) VALUES(#{knowledgePointGroupId}, #{name}, 0)
     </insert>
 

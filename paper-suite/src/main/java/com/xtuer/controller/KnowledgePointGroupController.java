@@ -43,6 +43,7 @@ public class KnowledgePointGroupController {
             return Result.fail(CommonUtils.getBindingMessage(bindingResult));
         }
 
+        group.setKnowledgePointGroupId(CommonUtils.uuid());
         group.setName(group.getName().trim());
         groupMapper.createKnowledgePointGroup(group);
 

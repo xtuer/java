@@ -54,34 +54,33 @@
     </div>
 
     <!-- Dialogs -->
-    <!-- 知识点分类管理编辑对话框 -->
+    <!-- 知识点分类编辑对话框 -->
     <div id="knowledge-point-group-editor-dialog">
         <div id="vue-knowledge-point-group-editor" class="ui form">
             <table class="ui celled striped table">
                 <tbody>
-                    <tr v-for="(group, index) in knowledgePointGroups" :key="group.knowledgePointGroupId" :data-id="group.knowledgePointGroupId">
-                        <td>
+                    <tr class="knowledge-point-group" :class="{editing: group==editedKnowledgePointGroup}" v-for="(group, index) in knowledgePointGroups" :key="group.knowledgePointGroupId" :data-id="group.knowledgePointGroupId">
+                        <td @dblclick="editGroup(group)">
                             <span class="name">{{group.name}}</span>
+                            <input type="text" v-model.trim="group.name" @keyup.enter="updateGroup(group)" @keyup.esc="cancelEdit()" @blur="cancelEdit()" v-group-focus="group==editedKnowledgePointGroup">
                         </td>
                         <td class="collapsing">
-                            <i class="icon edit" @click="showInput(index, $event)"></i>
-                            <i class="icon delete" @click="removeKnowledgePointGroup(index)"></i>
+                            <i class="icon edit" @click="editGroup(group)"></i>
+                            <i class="icon delete" @click="removeGroup(group)"></i>
                         </td>
                     </tr>
                 </tbody>
                 <tfoot class="full-width">
                     <tr>
                         <!-- 添加的按钮 -->
-                        <th colspan="2"><i class="plus icon" style="float: right;" @click="createKnowledgePointGroup()"></i></th>
+                        <th colspan="2"><i class="plus icon" style="float: right;" @click="createGroup()"></i></th>
                     </tr>
                 </tfoot>
             </table>
-            <!-- 输入框 -->
-            <input class="ui input" type="text" @keyup.enter="updateKnowledgePointGroup()" @blur="hideInput()" @keyup.esc="hideInput()">
         </div>
     </div>
 
-    <!-- 知识点管理编辑对话框 -->
+    <!-- 知识点编辑对话框 -->
     <div id="knowledge-point-editor-dialog">
         <div id="vue-knowledge-point-editor" class="ui form">
             <div class="field">
@@ -90,7 +89,8 @@
                 </select> -->
 
                 <div class="ui selection dropdown">
-                    <input type="hidden" name="knowledgePointGroupId" v-model="knowledgePoint.knowledgePointGroupId">
+                    <!-- <input type="hidden" name="knowledgePointGroupId" v-model="knowledgePoint.knowledgePointGroupId"> -->
+                    <input type="hidden" name="knowledgePointGroupId">
                     <i class="dropdown icon"></i>
                     <div class="default text">选择知识点分类</div>
                     <div class="menu">
@@ -104,6 +104,7 @@
                     <input type="text" placeholder="请输入知识点" v-model="knowledgePoint.name">
                 </div>
             </div>
+            <!-- {{knowledgePoint.knowledgePointGroupId}} - {{knowledgePoint.name}} -->
         </div>
     </div>
 

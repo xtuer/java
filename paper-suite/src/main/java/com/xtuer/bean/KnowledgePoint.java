@@ -14,4 +14,6 @@ public class KnowledgePoint {
 
     @NotBlank(message="知识点分类不能为 null")
     private String knowledgePointGroupId;
+
+    private String paperId;
 }

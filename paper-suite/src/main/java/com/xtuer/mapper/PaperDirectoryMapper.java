@@ -1,11 +1,16 @@
 package com.xtuer.mapper;
 
+import com.xtuer.bean.KnowledgePoint;
 import com.xtuer.bean.PaperDirectory;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PaperDirectoryMapper {
+    // 获取所有的目录
+    List<PaperDirectory> getAllPaperDirectories();
+
     // 查找父目录下的目录
     List<PaperDirectory> findPaperSubdirectories(@Param("paperDirectoryId") String paperDirectoryId);
 
@@ -25,6 +30,14 @@ public interface PaperDirectoryMapper {
     // 目录 paperDirectoryId 中是否有文件
     boolean hasPapers(String paperDirectoryId);
 
+    boolean isPaperDirectoryExisting(String paperDirectoryId);
+
     // 设置 is_deleted 为 1，标记目录已经被删除了
-    void markPaperDirectoryAsDeleted(@Param("paperDirectoryId") String paperDirectoryId);
+    void markPaperDirectoryAsDeleted(String paperDirectoryId);
+
+    // 查询所有目录下试卷的数量
+    List<Map<String, String>> findPapersCountInPaperDirectories();
+
+    // 查询目录下试卷的所有知识点
+    List<KnowledgePoint> findKnowledgePointsInPaperDirectory(String paperDirectoryId);
 }

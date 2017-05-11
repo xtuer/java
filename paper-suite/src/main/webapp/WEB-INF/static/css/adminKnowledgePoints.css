@@ -11,13 +11,13 @@ body {
     margin: 0 1rem 1rem 1rem;
 }
 
+#vue-toolbar .ui.buttons {
+    margin-right: 1rem !important;
+}
+
 #knowledge-point-group-editor-dialog,
 #knowledge-point-editor-dialog {
     padding: 1rem;
-    display: none;
-}
-
-#knowledge-point-group-editor-dialog .ui.input {
     display: none;
 }
 
@@ -30,6 +30,14 @@ body {
     cursor: default;
 }
 
-#vue-toolbar .ui.buttons {
-    margin-right: 1rem !important;
+#knowledge-point-group-editor-dialog .knowledge-point-group input {
+    display: none;
+}
+
+#knowledge-point-group-editor-dialog .knowledge-point-group.editing input {
+    display: block;
+}
+
+#knowledge-point-group-editor-dialog .knowledge-point-group.editing .name {
+    display: none;
 }

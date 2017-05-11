@@ -11,10 +11,10 @@ import java.util.List;
 
 public final class PaperImporter {
     public static void main(String[] args) throws Exception {
-        String subject = "高中数学";
-        File paperDir  = new File("/Users/Biao/Documents/套卷/高中数学（2183套）/GSZH030C");
-        File destDir   = new File("/Users/Biao/Documents/套卷/paper-suite");
-        int paperCount = 7305;
+        String subject = "高中语文";
+        File paperDir  = new File("/Users/Biao/Documents/套卷/高中语文（2804套）/GZYW033C");
+        File destDir   = new File("/Users/Biao/Documents/套卷/papers");
+        int paperCount = 15439; // 数据库里已有试卷的数量
 
         importPaperToDb(subject, paperDir, destDir, paperCount);
     }
@@ -35,12 +35,13 @@ public final class PaperImporter {
             String realDirectoryName = "" + paperCount/500; // 每个目录放 500 个试卷
 
             try {
-                pstmt = conn.prepareStatement("INSERT INTO paper(name, uuid_name, original_name, real_directory_name, subject) VALUES(?, ?, ?, ?, ?)");
-                pstmt.setString(1, name);
-                pstmt.setString(2, uuidName);
-                pstmt.setString(3, originalName);
-                pstmt.setString(4, realDirectoryName);
-                pstmt.setString(5, subject);
+                pstmt = conn.prepareStatement("INSERT INTO paper(paper_id, name, uuid_name, original_name, real_directory_name, subject) VALUES(?, ?, ?, ?, ?, ?)");
+                pstmt.setString(1, CommonUtils.uuid());
+                pstmt.setString(2, name);
+                pstmt.setString(3, uuidName);
+                pstmt.setString(4, originalName);
+                pstmt.setString(5, realDirectoryName);
+                pstmt.setString(6, subject);
                 pstmt.execute();
                 conn.commit();
 

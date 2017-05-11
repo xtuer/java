@@ -112,3 +112,5 @@ processResources {
         filter(ReplaceTokens, tokens: loadConfiguration())
     }
 }
+
+war.archiveName 'ROOT.zip'

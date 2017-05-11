@@ -47,6 +47,7 @@ public class KnowledgePointController {
             return Result.fail(CommonUtils.getBindingMessage(bindingResult));
         }
 
+        knowledgePoint.setKnowledgePointId(CommonUtils.uuid());
         knowledgePoint.setName(knowledgePoint.getName().trim());
         mapper.createKnowledgePoint(knowledgePoint);
 

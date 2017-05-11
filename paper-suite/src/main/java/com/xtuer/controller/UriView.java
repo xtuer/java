@@ -34,12 +34,18 @@ public interface UriView {
     String REST_PAPER_DIRECTORIES_BY_ID   = "/rest/paperDirectories/{paperDirectoryId}";
     String REST_PAPER_DIRECTORY_NAME      = "/rest/paperDirectories/{paperDirectoryId}/name";
     String REST_PAPER_DIRECTORY_PARENT_ID = "/rest/paperDirectories/{paperDirectoryId}/parentPaperDirectoryId";
+    String REST_PAPER_DIRECTORIES_PAPERS_COUNT = "/rest/paperDirectories/papersCount";
+    String REST_PAPER_DIRECTORIES_KNOWLEDGE_POINTS = "/rest/paperDirectories/{paperDirectoryId}/knowledgePoints";
 
     // 试卷
-    String REST_PAPERS_OF_DIRECTORY       = "/rest/paperDirectories/{paperDirectoryId}/papers";
-    String REST_PAPERS                    = "/rest/paperDirectories/papers/{paperId}";
-    String REST_PAPERS_SEARCH             = "/rest/papers/search";
-    String REST_PAPERS_COUNT_OF_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers/count";
+    String REST_PAPERS_OF_DIRECTORY        = "/rest/paperDirectories/{paperDirectoryId}/papers";
+    String REST_PAPERS_BY_ID               = "/rest/papers/{paperId}";
+    String REST_PAPERS_SEARCH              = "/rest/papers/search";
+    String REST_PAPERS_REDIRECTORY         = "/rest/papers/re-directory";
+    String REST_PAPERS_COUNT_OF_DIRECTORY  = "/rest/paperDirectories/{paperDirectoryId}/papers/count";
+    String REST_PAPERS_KNOWLEDGE_POINTS    = "/rest/papers/{paperId}/knowledgePoints";
+    String REST_PAPERS_KNOWLEDGE_POINTS_BY_ID = "/rest/papers/{paperId}/knowledgePoints/{knowledgePointId}";
+    String REST_PAPERS_SEARCH_IN_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers/search";
 
     // 知识点
     String REST_KNOWLEDGE_POINTS_OF_GROUP = "/rest/knowledgePointGroups/{knowledgePointGroupId}/knowledgePoints";

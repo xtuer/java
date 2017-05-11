@@ -7,8 +7,28 @@ function Directory(tree) {
 /**
  * 点击目录时，列出此目录下的所有文件
  */
-Directory.getFiles = function(event, treeId, treeNode, clickFlag) {
-    console.log(treeNode.paperDirectoryId);
+Directory.getPapers = function(event, treeId, treeNode, clickFlag) {
+    var paperDirectoryId = treeNode.paperDirectoryId;
+
+    $('#tool-bar .toggle-buttons').show();
+    $('#vue-knowledge-points').slideUp();
+    $('#vue-papers').attr('data-paper-directory-id', paperDirectoryId);
+
+    $.rest.get({url: Urls.REST_PAPERS_OF_DIRECTORY, urlParams: {paperDirectoryId: paperDirectoryId}, success: function(result) {
+        if (!result.success) {
+            layer.msg(result.msg);
+            return;
+        }
+
+        var papers = result.data;
+        for (var i=0; i<papers.length; ++i) {
+            // 只保留 publishDate 中的年月日
+            if (papers[i].publishDate && papers[i].publishDate.length>10) {
+                papers[i].publishDate = papers[i].publishDate.substring(0, 10);
+            }
+        }
+        window.vuePapers.papers = papers;
+    }});
 };
 
 /**
@@ -81,11 +101,11 @@ Directory.changeParent = function(event, treeId, treeNodes, targetNode, moveType
             layer.msg(result.message);
 
             alert('移动目录失败，页面即将刷新');
-            location.replace();
+            // location.replace();
         }
     }, fail: function() {
         alert('移动目录失败，页面即将刷新');
-        location.replace();
+        // location.replace();
     }});
 };
 
@@ -103,6 +123,38 @@ Directory.remove = function(treeNode) {
     }});
 };
 
+/**
+ * 拖拽试卷到目录上时移动试卷到此目录中
+ *
+ * @param  {string} newPaperDirectoryId 目录 id
+ * @param  {string} newPaperDirectoryName
+ * @return 无返回值
+ */
+Directory.movePaperToDirectoryOnDrop = function(newPaperDirectoryId, newPaperDirectoryName) {
+    var paperName = DnD.$draggedElement.attr('data-name');
+    var paperId = DnD.$draggedElement.attr('data-id');
+    var paperIndex = DnD.$draggedElement.attr('data-index');
+    var paperDirectoryId = DnD.$draggedElement.attr('data-paper-directory-id');
+
+    if (paperDirectoryId === newPaperDirectoryId) {
+        layer.msg('已经在当前目录，不需要移动');
+        return;
+    }
+
+    // 修改选中的试卷的目录
+    $.rest.update({url: Urls.REST_PAPERS_REDIRECTORY, data: {paperIds: [paperId], paperDirectoryId: newPaperDirectoryId},
+    success: function(result) {
+        if (!result.success) {
+            layer.msg(result.message);
+            return;
+        }
+
+        // 成功移动试卷到目录后，更新 Vue 对象 window.vuePapers 的数据，更新界面
+        window.vuePapers.papers.splice(paperIndex, 1);
+        layer.msg('{0} 移动到了 {1}'.format(paperName, newPaperDirectoryName));
+    }});
+};
+
 /*-----------------------------------------------------------------------------|
  |                                    Tree                                     |
  |----------------------------------------------------------------------------*/
@@ -116,6 +168,8 @@ Tree.newNodeParentNode = null;  // 新节点的父节点
  * 初始化目录树
  */
 Tree.init = function() {
+    Tree.papersCount = []; // 目录下试卷的数量
+
     Tree.setting = {
         data: {
             simpleData: {
@@ -135,44 +189,74 @@ Tree.init = function() {
         },
         view: {
             selectedMulti: false,     // [*] 为 true 时可选择多个节点，为 false 只能选择一个，默认为 true
-            showIcon: false
+            showIcon: false,
+            addDiyDom: Tree.addDiyDom
         },
-        async: {
-            enable: true,
-            type: 'get',
-            url: function(treeId, treeNode) {
-                // treeNode 不存在时表示需要加载根节点下的数据
-                var paperDirectoryId = treeNode ? treeNode.paperDirectoryId : 0;
-                return Urls.REST_PAPER_SUBDIRECTORIES.format({paperDirectoryId: paperDirectoryId});
-            },
-            dataFilter: function(treeId, parentNode, result) {
-                if (result.success) {
-                    var directories = result.data;
-                    for (var i = 0; i < directories.length; i++) {
-                        directories[i].isParent = true;
-                    }
-                    return directories;
-                }
-
-                return null;
-            }
-        },
+        // async: {
+        //     enable: true,
+        //     type: 'get',
+        //     url: function(treeId, treeNode) {
+        //         // treeNode 不存在时表示需要加载根节点下的数据
+        //         var paperDirectoryId = treeNode ? treeNode.paperDirectoryId : 0;
+        //         return Urls.REST_PAPER_SUBDIRECTORIES.format({paperDirectoryId: paperDirectoryId});
+        //     },
+        //     dataFilter: function(treeId, parentNode, result) {
+        //         if (result.success) {
+        //             var directories = result.data;
+        //             for (var i = 0; i < directories.length; i++) {
+        //                 directories[i].isParent = true;
+        //             }
+        //             return directories;
+        //         }
+        //
+        //         return null;
+        //     }
+        // },
         callback: {
             beforeRename: Directory.rename,
             onDrop: Directory.changeParent,
-            onClick: Directory.getFiles,
+            onClick: Directory.getPapers,
             onRightClick: Tree.showMenu,
             onExpand: function(event, treeId, treeNode) {
+                Tree.showPapersCount(treeNode.children);
+
                 // 展开后再创建
                 if (Tree.needCreateNewNode) {
                     Tree.needCreateNewNode = false;
                     Directory.create(Tree.newNodeParentNode);
                 }
+            },
+            onMouseUp: function(event, treeId, treeNode) {
+                // 拖放到节点上
+                if (treeNode && DnD.$draggedElement) {
+                    Directory.movePaperToDirectoryOnDrop(treeNode.paperDirectoryId, treeNode.name);
+                }
             }
         }
     };
 
-    window.tree = $.fn.zTree.init($('#directory-tree'), Tree.setting);
+    // 加载目录下试卷的数量
+    Tree.loadPapersCount();
+
+    // window.tree = $.fn.zTree.init($('#directory-tree'), Tree.setting);
+    // 一次性加载所有目录
+    $.rest.get({url: Urls.REST_PAPER_DIRECTORIES, success: function(result) {
+        if (!result.success) {
+            layer.msg(result.message);
+            return;
+        }
+
+        var paperDirectories = result.data;
+        for (var i=0; i<paperDirectories.length; ++i) {
+            paperDirectories[i].isParent = true;
+        }
+        window.tree = $.fn.zTree.init($('#directory-tree'), Tree.setting, paperDirectories);
+
+        setTimeout(function() {
+            Tree.showPapersCount(Tree.getRoots());
+        }, 50);
+
+    }});
 
     $('#menu-item-create').click(function(event) {
         Tree.hideMenu();
@@ -211,6 +295,21 @@ Tree.init = function() {
         if (nodes.length === 0) { return; }
 
         window.tree.editName(nodes[0]);
+    });
+
+    $('#menu-item-expand-all').click(function(event) {
+        Tree.hideMenu();
+        window.tree.expandAll(true);
+
+        setTimeout(function() {
+            Tree.showPapersCount(Tree.getAllNodes());
+        }, 300);
+    });
+
+    $('#menu-item-refresh-count').click(function(event) {
+        Tree.hideMenu();
+        Tree.loadPapersCount();
+        Tree.showPapersCount(Tree.getAllNodes());
     });
 };
 
@@ -253,4 +352,47 @@ Tree.showMenu = function(event, treeId, treeNode) {
 Tree.hideMenu = function() {
     $('#directory-tree-menu').hide();
     $(document).off('mousedown');
+};
+
+Tree.addDiyDom = function(treeId, treeNode) {
+    var aObj = $('#' + treeNode.tId + '_a');
+    aObj.after('<span class="count">[0]</span>');
+};
+
+Tree.getRoots = function() {
+    return window.tree.getNodesByFilter(function(treeNode) {
+        return (treeNode.level === 0);
+    }, false);
+};
+
+Tree.getAllNodes = function() {
+    return window.tree.getNodesByFilter(function(treeNode) {
+        return true;
+    }, false);
+};
+
+Tree.showPapersCount = function(treeNodes) {
+    if (!treeNodes) {return;}
+
+    for (var i=0; i<treeNodes.length; ++i) {
+        for (var j=0; j<Tree.papersCount.length; ++j) {
+            var treeNode = treeNodes[i];
+            var paperCount = Tree.papersCount[j];
+
+            if (treeNode.paperDirectoryId == paperCount.paperDirectoryId) {
+                $('#' + treeNode.tId + '_a').siblings('.count').replaceWith('<span class="count">[' + paperCount.count + ']</span>');
+            }
+        }
+    }
+};
+
+Tree.loadPapersCount = function() {
+    $.rest.syncGet({url: Urls.REST_PAPER_DIRECTORIES_PAPERS_COUNT, success: function(result) {
+        if (!result.success) {
+            layer.msg(result.message);
+            return;
+        }
+
+        Tree.papersCount = result.data;
+    }});
 };

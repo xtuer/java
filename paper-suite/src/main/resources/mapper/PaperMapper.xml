@@ -8,22 +8,23 @@
     <sql id="paperColumns">
         p.paper_id            as paper_id,
         p.name                as name,
-        p.uuid_name           as uuid_ame,
+        p.uuid_name           as uuid_name,
         p.original_name       as original_name,
         p.paper_directory_id  as paper_directory_id,
         p.real_directory_name as real_directory_name,
         p.subject             as subject,
-        p.publish_year        as publish_year
+        p.publish_date        as publish_date
     </sql>
     <sql id="paperColumnsWithKnowledgePoints">
         p.paper_id            as paper_id,
         p.name                as name,
-        p.uuid_name           as uuid_ame,
+        p.uuid_name           as uuid_name,
         p.original_name       as original_name,
         p.paper_directory_id  as paper_directory_id,
         p.real_directory_name as real_directory_name,
         p.subject             as subject,
-        p.publish_year        as publish_year,
+        p.publish_date        as publish_date,
+
         kp.name               as kp_name,
         kp.knowledge_point_id as kp_knowledge_point_id
     </sql>
@@ -39,6 +40,7 @@
             FROM paper_knowledge_point_relation AS pkpr, knowledge_point AS ikp
             WHERE pkpr.paper_id=#{paperId}
                 AND pkpr.knowledge_point_id=ikp.knowledge_point_id
+                AND pkpr.is_deleted=0
         ) AS kp ON p.paper_id=kp.paper_id
         WHERE p.paper_id=#{paperId}
     </select>
@@ -47,44 +49,120 @@
     <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
         SELECT <include refid="paperColumns"/>
         FROM paper AS p
-        WHERE p.paper_directory_id=#{paperDirectoryId}
-        LIMIT ${offset}, ${size}
+        WHERE p.paper_directory_id=#{paperDirectoryId} AND is_deleted=0
     </select>
+    <!--<select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper AS p
+        LEFT JOIN (
+        	SELECT pkpr.paper_id AS paper_id, kp.knowledge_point_id AS knowledge_point_id, kp.name AS name
+            FROM paper_knowledge_point_relation pkpr, knowledge_point kp
+            WHERE pkpr.knowledge_point_id=kp.knowledge_point_id AND pkpr.is_deleted=0
+        ) AS kp on kp.paper_id=p.paper_id
+        WHERE p.paper_directory_id=#{paperDirectoryId} AND p.is_deleted=0
+    </select>-->
+
 
     <!--目录下试卷的数量-->
     <select id="papersCountByPaperDirectoryId" parameterType="string" resultType="int">
         SELECT count(paper_id)
         FROM paper
-        WHERE paper_directory_id=#{paperDirectoryId}
+        WHERE paper_directory_id=#{paperDirectoryId} AND is_deleted=0
     </select>
 
     <!--根据学科和名字查找前 50 个为分配目录的试卷-->
     <select id="findPapersBySubjectAndNameFilterNotInPaperDirectory" resultMap="paperResultMap">
         SELECT <include refid="paperColumns"/>
         FROM paper AS p
-        WHERE subject=#{subject} AND paper_directory_id='0'
+        WHERE subject=#{subject} AND paper_directory_id='0' AND is_deleted=0
             <if test="nameFilter!=null and nameFilter!='' ">
                 AND original_name LIKE CONCAT('%',#{nameFilter},'%')
             </if>
+        ORDER BY p.original_name
         LIMIT 0, 50
     </select>
 
+    <!--查找目录下某个知识点的试卷-->
+    <select id="findPapersByKnowledgePointIdsInPaperDirectory" resultMap="paperResultMap">
+        SELECT <include refid="paperColumns"/>
+        FROM paper p, paper_knowledge_point_relation pkpr
+        WHERE p.paper_directory_id=#{paperDirectoryId}
+            AND p.paper_id=pkpr.paper_id
+            AND p.is_deleted=0
+            AND pkpr.is_deleted=0
+            AND pkpr.knowledge_point_id IN
+            <foreach collection="knowledgePointIds" item="pointId" open="(" close=")" separator=",">
+                #{pointId}
+            </foreach>
+    </select>
+
     <!--查找试卷的知识点-->
-    <select id="findKnowledgePointByPaperId" parameterType="string" resultType="KnowledgePoint">
+    <select id="findKnowledgePointsByPaperId" parameterType="string" resultType="KnowledgePoint">
         SELECT kp.knowledge_point_id AS knowledgePointId, kp.name AS name
         FROM knowledge_point kp, paper_knowledge_point_relation pkpr
-        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id AND pkpr.paper_id=#{paperId}
+        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id AND pkpr.paper_id=#{paperId} AND pkpr.is_deleted=0
     </select>
+
+    <!--查找多个试卷的知识点-->
+    <select id="findKnowledgePointsByPaperIds" resultType="KnowledgePoint">
+        SELECT pkpr.paper_id      AS paperId,
+            kp.knowledge_point_id AS knowledgePointId,
+            kp.name               AS name
+        FROM knowledge_point kp, paper_knowledge_point_relation pkpr
+        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id  AND pkpr.is_deleted=0
+            AND pkpr.paper_id IN
+            <foreach collection="paperIds" item="paperId" open="(" close=")" separator=",">
+                #{paperId}
+            </foreach>
+    </select>
+
+    <!--查看试卷是否有知识点-->
+    <select id="hasKnowledgePoint" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1 FROM paper_knowledge_point_relation
+            WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId} AND is_deleted=0
+        )
+    </select>
+
+    <!--给试卷添加知识点-->
+    <update id="addKnowledgePoint">
+        INSERT INTO paper_knowledge_point_relation (paper_id,  knowledge_point_id, is_deleted)
+        VALUES (#{paperId}, #{knowledgePointId}, 0)
+    </update>
+
+    <!--设置试卷的目录-->
+    <update id="setParentPaperDirectory">
+        UPDATE paper SET paper_directory_id=#{paperDirectoryId} WHERE paper_id=#{paperId}
+    </update>
+
+    <!--设置多个试卷的目录-->
+    <update id="setPapersPaperDirectory">
+        UPDATE paper SET paper_directory_id=#{paperDirectoryId} WHERE paper_id IN
+        <foreach collection="paperIds" item="paperId" open="(" close=")" separator=",">
+            #{paperId}
+        </foreach>
+    </update>
+
+    <!--更新试卷，目前只能更新名字和发布时间-->
+    <update id="updatePaper" parameterType="Paper">
+        UPDATE paper SET name=#{name}, publish_date=#{publishDate}
+        WHERE paper_id=#{paperId}
+    </update>
+
+    <update id="deleteKnowledgePoint">
+        UPDATE paper_knowledge_point_relation SET is_deleted=1
+        WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
+    </update>
 
     <resultMap id="paperResultMap" type="Paper">
         <id property="paperId"               column="paper_id"/>
         <result property="name"              column="name"/>
         <result property="uuidName"          column="uuid_name"/>
         <result property="originalName"      column="original_name"/>
-        <result property="directoryId"       column="directory_id"/>
+        <result property="paperDirectoryId"  column="paper_directory_id"/>
         <result property="realDirectoryName" column="real_directory_name"/>
         <result property="subject"           column="subject"/>
-        <result property="year"              column="year"/>
+        <result property="publishDate"       column="publish_date"/>
 
         <collection property="knowledgePoints" ofType="KnowledgePoint" column="paper_id" columnPrefix="kp_" resultMap="knowledgePointResultMap"/>
     </resultMap>
