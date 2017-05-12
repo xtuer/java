@@ -6,7 +6,7 @@ import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-public class DocxToHtml {
+public class DocxToHtmlUtils {
     /**
      * 把docx转成html
      *
@@ -34,6 +34,6 @@ public class DocxToHtml {
     }
 
     public static void main(String[] args) throws Exception {
-        convertDocxToHtml("/Users/Biao/Desktop/全书可编辑word文稿/第一章习题课电场力的性质.docx", "/Users/Biao/Desktop/x/y.html");
+        convertDocxToHtml("/Users/Biao/Downloads/平台初始化功能优化的一些想法.docx", "/Users/Biao/Desktop/doc/y.html");
     }
 }

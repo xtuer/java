@@ -10,16 +10,25 @@ import java.util.Collections;
 import java.util.List;
 
 public final class PaperImporter {
-    public static void main(String[] args) throws Exception {
-        String subject = "高中语文";
-        File paperDir  = new File("/Users/Biao/Documents/套卷/高中语文（2804套）/GZYW033C");
-        File destDir   = new File("/Users/Biao/Documents/套卷/papers");
-        int paperCount = 15439; // 数据库里已有试卷的数量
+    public static final int DIRECTORY_COUNT = 100; // 试卷的目录个数
 
-        importPaperToDb(subject, paperDir, destDir, paperCount);
+    public static void main(String[] args) throws Exception {
+        String[][] papersInfo = {
+                {"高中语文", "/Users/Biao/Documents/套卷/高中语文（2804套）/GZYW033C"} // 学科 + 此学科试卷目录
+        };
+
+        File destDir   = new File("/Users/Biao/Documents/套卷/papers");
+
+        // 导入所有学科的试卷
+        for (int i=0; i<papersInfo.length; ++i) {
+            String subject = papersInfo[i][0];
+            File paperDir  = new File(papersInfo[i][1]);
+
+            importPaperToDb(subject, paperDir, destDir);
+        }
     }
 
-    public static void importPaperToDb(String subject, File paperDir, File destDir, int paperCount) throws Exception {
+    public static void importPaperToDb(String subject, File paperDir, File destDir) throws Exception {
         List<File> papers = Arrays.asList(paperDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".doc"))); // doc 文件
         Collections.sort(papers, (a, b) -> a.getName().compareTo(b.getName())); // 对文件名进行排序
 
@@ -31,8 +40,9 @@ public final class PaperImporter {
             // name, uuid_name, original_name, real_directory_name, subject
             String name = paper.getName();
             String originalName = name;
-            String uuidName = CommonUtils.uuid() + "." + FilenameUtils.getExtension(name);
-            String realDirectoryName = "" + paperCount/500; // 每个目录放 500 个试卷
+            String uuid = CommonUtils.uuid();
+            String uuidName = uuid + "." + FilenameUtils.getExtension(name);
+            String realDirectoryName = Math.abs(uuid.hashCode()) % DIRECTORY_COUNT + ""; // 使用 hashCode 来计算所在目录
 
             try {
                 pstmt = conn.prepareStatement("INSERT INTO paper(paper_id, name, uuid_name, original_name, real_directory_name, subject) VALUES(?, ?, ?, ?, ?, ?)");
@@ -45,11 +55,10 @@ public final class PaperImporter {
                 pstmt.execute();
                 conn.commit();
 
-                // move file
+                // 复制或则移动文件
                 File finalDir = new File(destDir, realDirectoryName);
-                FileUtils.moveFile(paper, new File(finalDir, uuidName));
-
-                ++paperCount;
+                FileUtils.copyFile(paper, new File(finalDir, uuidName));
+                // FileUtils.moveFile(paper, new File(finalDir, uuidName));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 conn.rollback();
@@ -59,8 +68,6 @@ public final class PaperImporter {
         }
 
         close(conn, null, null);
-
-        System.out.println(paperCount);
     }
 
     /*******************************************************************************

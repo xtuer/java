@@ -34,7 +34,11 @@ dependencies {
     compile 'org.springframework.session:spring-session-data-redis:1.2.1.RELEASE'
     compile 'com.flowpowered:flow-noise:1.0.0'
     compile 'com.mzlion:easy-okhttp:1.0.7-beta'
+
     compile 'org.docx4j:docx4j:3.3.3'
+    compile 'com.itextpdf:itextpdf:5.5.11'
+    compile 'org.apache.poi:poi:3.16'
+    compile 'org.apache.poi:poi-scratchpad:3.16'
 
     testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1'
     testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
