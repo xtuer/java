@@ -1,215 +1,4 @@
-/*-----------------------------------------------------------------------------|
- |                               KnowledgePoint                                |
- |----------------------------------------------------------------------------*/
-/**
- * 知识点的类
- *
- * @param {int} knowledgePointId      知识点 id
- * @param {string} name               知识点
- * @param {int} knowledgePointGroupId 知识点分类 id
- */
-function KnowledgePoint(knowledgePointId, name, knowledgePointGroupId) {
-    this.knowledgePointId = knowledgePointId;
-    this.name = name;
-    this.knowledgePointGroupId = knowledgePointGroupId;
-}
-
-/**
- * 创建一个空的知识点
- *
- * @return {object} 空的知识点对象
- */
-KnowledgePoint.emptyKnowledgePoint = function() {
-    return new KnowledgePoint(0, '', 0);
-};
-
-/**
- * 创建知识点
- * @param  {object} knowledgePoint KnowledgePoint 对象
- * @return 无返回值
- */
-KnowledgePoint.create = function(knowledgePoint) {
-    $.rest.create({url: Urls.REST_KNOWLEDGE_POINTS, data: knowledgePoint, success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        // 知识点创建成功后，如果它属于当前的知识点分类则加入到当前的知识点中，显示到界面上
-        var currentKnowledgePointGroupId = window.vueToolbar.getCurrentKnowledgePointGroup().knowledgePointGroupId;
-        if (knowledgePoint.knowledgePointGroupId === currentKnowledgePointGroupId) {
-            knowledgePoints.push(result.data);
-        }
-
-        window.vueKnowledgePointEditor.knowledgePoint = KnowledgePoint.emptyKnowledgePoint();
-        layer.msg('知识点创建成功');
-    }});
-};
-
-/**
- * 更新知识点
- *
- * @param  {object} knowledgePoint KnowledgePoint 对象
- * @param  {int} index             需要更新的知识点在 window.knowledgePoints 中的下标
- * @return 无返回值
- */
-KnowledgePoint.update = function(knowledgePoint, index) {
-    $.rest.update({url: Urls.REST_KNOWLEDGE_POINTS_BY_ID, urlParams: {knowledgePointId: knowledgePoint.knowledgePointId},
-    data: knowledgePoint, success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        // 更新界面上的知识点，如果不是当前知识点分类的，则删除
-        var currentKnowledgePointGroupId = window.vueToolbar.getCurrentKnowledgePointGroup().knowledgePointGroupId;
-        if (knowledgePoint.knowledgePointGroupId === currentKnowledgePointGroupId) {
-            window.knowledgePoints.splice(index, 1, knowledgePoint);
-        } else {
-            window.knowledgePoints.splice(index, 1);
-        }
-
-        layer.msg('知识点保存成功');
-    }});
-};
-
-/**
- * 删除知识点
- *
- * @param  {int} knowledgePointId 知识点 id
- * @param  {int} index            需要删除的知识点在 window.knowledgePoints 中的下标
- * @return 无返回值
- */
-KnowledgePoint.remove = function(knowledgePointId, index) {
-    $.rest.remove({url: Urls.REST_KNOWLEDGE_POINTS_BY_ID, urlParams: {knowledgePointId: knowledgePointId},
-    success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        // 删除界面上的知识点
-        window.knowledgePoints.splice(index, 1);
-        layer.closeAll();
-        layer.msg('知识点删除成功');
-    }});
-};
-
-/**
- * 加载指定知识点分类下的知识点
- *
- * @param  {int} knowledgePointGroupId 知识点分类的 id
- * @return 无返回值
- */
-KnowledgePoint.loadKnowledgePoints = function(knowledgePointGroupId) {
-    $.rest.get({url: Urls.REST_KNOWLEDGE_POINTS_OF_GROUP, urlParams: {knowledgePointGroupId: knowledgePointGroupId},
-        success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        window.knowledgePoints.splice(0, window.knowledgePoints.length);
-        var groups = result.data;
-
-        for (var i = 0; i < groups.length; ++i) {
-            window.knowledgePoints.push(groups[i]);
-        }
-    }});
-};
-
-/*-----------------------------------------------------------------------------|
- |                             KnowledgePointGroup                             |
- |----------------------------------------------------------------------------*/
-/**
- * 知识点分类的类
- */
-function KnowledgePointGroup(knowledgePointGroupId, name) {
-    this.knowledgePointGroupId = knowledgePointGroupId;
-    this.name = name;
-}
-
-/**
- * 从服务器加载知识点分类
- *
- * @return 无返回值
- */
-KnowledgePointGroup.loadKnowledgePointGroups = function() {
-    $.rest.get({url: Urls.REST_KNOWLEDGE_POINT_GROUPS, success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        window.knowledgePointGroups.splice(0, window.knowledgePointGroups.length); // 清空已有知识点分类
-        var groups = result.data;
-
-        for (var i = 0; i < groups.length; ++i) {
-            window.knowledgePointGroups.push(groups[i]);
-        }
-    }});
-};
-
-/**
- * 创建知识点分类
- *
- * @param  {object} knowledgePointGroup KnowledgePointGroup 对象
- * @return 无返回值
- */
-KnowledgePointGroup.create = function(knowledgePointGroup) {
-    $.rest.create({url: Urls.REST_KNOWLEDGE_POINT_GROUPS, data: knowledgePointGroup, success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        knowledgePointGroup.knowledgePointGroupId = result.data.knowledgePointGroupId;
-        window.knowledgePointGroups.push(knowledgePointGroup);
-    }});
-};
-
-/**
- * 更新知识点分类
- *
- * @param  {object} knowledgePointGroup KnowledgePointGroup 对象
- * @return 无返回值
- */
-KnowledgePointGroup.update = function(knowledgePointGroup) {
-    $.rest.update({url: Urls.REST_KNOWLEDGE_POINT_GROUPS_BY_ID,
-        urlParams: {knowledgePointGroupId: knowledgePointGroup.knowledgePointGroupId},
-        data: {name: knowledgePointGroup.name}, success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-    }});
-};
-
-/**
- * 删除知识点分类
- *
- * @param {int} knowledgePointGroup 知识点分类
- * @return 无返回值
- */
-KnowledgePointGroup.remove = function(knowledgePointGroup) {
-    $.rest.remove({url: Urls.REST_KNOWLEDGE_POINT_GROUPS_BY_ID,
-        urlParams: {knowledgePointGroupId: knowledgePointGroup.knowledgePointGroupId},
-        success: function(result) {
-        if (!result.success) {
-            layer.msg(result.message);
-            return;
-        }
-
-        // 从知识点分类数组中删除
-        var index = window.knowledgePointGroups.indexOf(knowledgePointGroup);
-        window.knowledgePointGroups.splice(index, 1);
-    }});
-};
-
-/*-----------------------------------------------------------------------------|
- |                                 Main entry                                  |
- |----------------------------------------------------------------------------*/
-require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], function($, Vue) {
+require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls', 'knowledgePoint', 'knowledgePointGroup'], function($, Vue) {
     Util.activateSidebarItem(2);
 
     // 知识点数组
@@ -250,12 +39,20 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
             // 显示此分类下的所有知识点
             showKnowledgePoints: function(index) {
                 this.currentIndex = index;
-                var knowledgePointGroupId = this.getCurrentKnowledgePointGroup().knowledgePointGroupId;
-                KnowledgePoint.loadKnowledgePoints(knowledgePointGroupId);
+                KnowledgePointDao.loadKnowledgePoints(this.getCurrentKnowledgePointGroupId(), function(points) {
+                    window.knowledgePoints.splice(0, window.knowledgePoints.length);
+
+                    for (var i = 0; i < points.length; ++i) {
+                        window.knowledgePoints.push(points[i]);
+                    }
+                });
             },
             // 取得下拉框中当前选中的知识点分类
             getCurrentKnowledgePointGroup: function() {
                 return this.currentIndex === -1 ? {knowledgePointGroupId: 0, name: ''} : this.knowledgePointGroups[this.currentIndex];
+            },
+            getCurrentKnowledgePointGroupId: function() {
+                return this.getCurrentKnowledgePointGroup().knowledgePointGroupId;
             }
         }
     });
@@ -286,7 +83,9 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
             // 创建知识点分类
             createGroup: function() {
                 // 发送请求到服务器上创建知识点分类
-                KnowledgePointGroup.create({name: '[新知识点分类]'});
+                KnowledgePointGroupDao.create({name: '[新知识点分类]'}, function(knowledgePointGroup) {
+                    window.knowledgePointGroups.push(knowledgePointGroup);
+                });
             },
             // 更新知识点分类
             updateGroup: function(todo) {
@@ -297,7 +96,7 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
                 }
 
                 // 发送请求到服务器上更新知识点分类
-                KnowledgePointGroup.update(this.editedKnowledgePointGroup);
+                KnowledgePointGroupDao.update(this.editedKnowledgePointGroup);
                 this.editedKnowledgePointGroup = null;
             },
             removeGroup: function(knowledgePointGroup) {
@@ -307,7 +106,11 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
                     btn: ['确定', '取消']
                 }, function() {
                     layer.close(dlg);
-                    KnowledgePointGroup.remove(knowledgePointGroup);
+                    KnowledgePointGroupDao.remove(knowledgePointGroup, function(knowledgePointGroup) {
+                        // 从知识点分类数组中删除
+                        var index = window.knowledgePointGroups.indexOf(knowledgePointGroup);
+                        window.knowledgePointGroups.splice(index, 1);
+                    });
                 });
             }
         },
@@ -342,7 +145,7 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
         },
         methods: {
             editknowledgePoint: function(index) {
-                var knowledgePoint = $.extend({}, this.knowledgePoints[index]);
+                var knowledgePoint = $.extend(true, {}, this.knowledgePoints[index]);
                 popupEditKnowledgePointsDialog(knowledgePoint, index);
             }
         }
@@ -371,11 +174,11 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
             btn: ['保存', '删除', '取消'],
             // 创建和更新
             btn1: function() {
-                // var kpgId = vueKnowledgePointEditor.knowledgePoint.knowledgePointGroupId; // 正编辑的知识点分类的 id
+                // input 是通过 val() 来设置值的，v-model 无效
                 var kpgId = $('#vue-knowledge-point-editor input[name="knowledgePointGroupId"]').val();
-                var name  = $.trim(vueKnowledgePointEditor.knowledgePoint.name);
+                var name  = vueKnowledgePointEditor.knowledgePoint.name; // 知识点的名字
 
-                knowledgePoint.knowledgePointGroupId = kpgId; // value 不是手动输入的 v-model 绑定不会生效，Vue 的 bug?
+                knowledgePoint.knowledgePointGroupId = kpgId;
 
                 if (!name) {
                     layer.msg('知识点不能为空');
@@ -384,9 +187,28 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
 
                 // 如果 index 等于 -1 则为创建，否则为更新
                 if (index === -1) {
-                    KnowledgePoint.create(new KnowledgePoint(0, name, kpgId)); // 创建
+                    // 创建知识点
+                    KnowledgePointDao.create(new KnowledgePoint(0, name, kpgId), function(newKnowledgePoint) {
+                        // 知识点创建成功后，如果它属于当前的知识点分类则加入到当前的知识点中，显示到界面上
+                        if (newKnowledgePoint.knowledgePointGroupId === window.vueToolbar.getCurrentKnowledgePointGroupId()) {
+                            window.knowledgePoints.push(newKnowledgePoint);
+                        }
+
+                        window.vueKnowledgePointEditor.knowledgePoint = KnowledgePoint.emptyKnowledgePoint();
+                        layer.msg('知识点创建成功');
+                    });
                 } else {
-                    KnowledgePoint.update(knowledgePoint, index); // 更新
+                    // 更新知识点
+                    KnowledgePointDao.update(knowledgePoint, function() {
+                        // 更新界面上的知识点，如果不是当前知识点分类的，则删除
+                        if (knowledgePoint.knowledgePointGroupId === window.vueToolbar.getCurrentKnowledgePointGroupId()) {
+                            window.knowledgePoints.splice(index, 1, knowledgePoint);
+                        } else {
+                            window.knowledgePoints.splice(index, 1);
+                        }
+
+                        layer.msg('知识点保存成功');
+                    });
                 }
             },
             // 删除
@@ -402,7 +224,12 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
                     btn: ['确定', '取消']
                 }, function() {
                     layer.close(dlg);
-                    KnowledgePoint.remove(knowledgePoint.knowledgePointId, index);
+
+                    KnowledgePointDao.remove(knowledgePoint.knowledgePointId, function() {
+                        window.knowledgePoints.splice(index, 1); // 删除界面上的知识点
+                        layer.closeAll();
+                        layer.msg('知识点删除成功');
+                    });
                 });
 
                 return false;
@@ -410,6 +237,14 @@ require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls'], functi
         });
     }
 
-    KnowledgePointGroup.loadKnowledgePointGroups();
+    // 加载所有的知识点分类
+    KnowledgePointGroupDao.loadKnowledgePointGroups(function(groups) {
+        window.knowledgePointGroups.splice(0, window.knowledgePointGroups.length);
+
+        for (var i=0; i<groups.length; i++) {
+            window.knowledgePointGroups.push(groups[i]);
+        }
+    });
+
     $('.ui.dropdown').dropdown();
 });

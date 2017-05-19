@@ -9,7 +9,13 @@ require.config({
         pagination: '/lib/jquery.jqpagination.min',
         rest      : '/lib/jquery.rest',
         urls      : '/js/urls',
-        util      : '/js/util'
+        util      : '/js/util',
+        dnd       : '/js/DnD',
+        paper     : '/js/Paper',
+        paperDirectory     : '/js/PaperDirectory',
+        paperDirectoryTree : '/js/PaperDirectoryTree',
+        knowledgePoint     : '/js/KnowledgePoint',
+        knowledgePointGroup: '/js/KnowledgePointGroup'
     },
     shim: {
         layer: {
@@ -35,6 +41,9 @@ require.config({
         },
         util: {
             deps: ['jquery']
+        },
+        paperDirectoryTree: {
+            deps: ['dnd', 'paperDirectory']
         }
     },
     map: {

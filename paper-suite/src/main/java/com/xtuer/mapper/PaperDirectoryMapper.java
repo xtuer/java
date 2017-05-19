@@ -36,7 +36,7 @@ public interface PaperDirectoryMapper {
     void markPaperDirectoryAsDeleted(String paperDirectoryId);
 
     // 查询所有目录下试卷的数量
-    List<Map<String, String>> findPapersCountInPaperDirectories();
+    List<Map<String, String>> findPaperCountsInPaperDirectories();
 
     // 查询目录下试卷的所有知识点
     List<KnowledgePoint> findKnowledgePointsInPaperDirectory(String paperDirectoryId);

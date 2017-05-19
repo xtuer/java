@@ -5,7 +5,7 @@ var Urls = {
     REST_PAPER_DIRECTORIES_BY_ID  : '/rest/paperDirectories/{paperDirectoryId}',
     REST_PAPER_DIRECTORY_NAME     : '/rest/paperDirectories/{paperDirectoryId}/name',
     REST_PAPER_DIRECTORY_PARENT_ID: '/rest/paperDirectories/{paperDirectoryId}/parentPaperDirectoryId',
-    REST_PAPER_DIRECTORIES_PAPERS_COUNT: '/rest/paperDirectories/papersCount',
+    REST_PAPER_DIRECTORIES_PAPER_COUNTS: '/rest/paperDirectories/paperCounts',
     REST_PAPER_DIRECTORIES_KNOWLEDGE_POINTS: '/rest/paperDirectories/{paperDirectoryId}/knowledgePoints',
 
     // 知识点分类

@@ -13,7 +13,8 @@
         p.paper_directory_id  as paper_directory_id,
         p.real_directory_name as real_directory_name,
         p.subject             as subject,
-        p.publish_date        as publish_date
+        p.publish_year        as publish_year,
+        p.is_exportable       as is_exportable
     </sql>
     <sql id="paperColumnsWithKnowledgePoints">
         p.paper_id            as paper_id,
@@ -23,7 +24,8 @@
         p.paper_directory_id  as paper_directory_id,
         p.real_directory_name as real_directory_name,
         p.subject             as subject,
-        p.publish_date        as publish_date,
+        p.publish_year        as publish_year,
+        p.is_exportable       as is_exportable,
 
         kp.name               as kp_name,
         kp.knowledge_point_id as kp_knowledge_point_id
@@ -145,7 +147,7 @@
 
     <!--更新试卷，目前只能更新名字和发布时间-->
     <update id="updatePaper" parameterType="Paper">
-        UPDATE paper SET name=#{name}, publish_date=#{publishDate}
+        UPDATE paper SET name=#{name}, publish_year=#{publishYear}, is_exportable=#{exportable}
         WHERE paper_id=#{paperId}
     </update>
 
@@ -162,7 +164,8 @@
         <result property="paperDirectoryId"  column="paper_directory_id"/>
         <result property="realDirectoryName" column="real_directory_name"/>
         <result property="subject"           column="subject"/>
-        <result property="publishDate"       column="publish_date"/>
+        <result property="publishYear"       column="publish_year"/>
+        <result property="exportable"        column="is_exportable"/>
 
         <collection property="knowledgePoints" ofType="KnowledgePoint" column="paper_id" columnPrefix="kp_" resultMap="knowledgePointResultMap"/>
     </resultMap>

@@ -44,7 +44,7 @@
     </select>
 
     <!--查询所有目录下试卷的数量-->
-    <select id="findPapersCountInPaperDirectories" resultType="map">
+    <select id="findPaperCountsInPaperDirectories" resultType="map">
         SELECT p.paper_directory_id AS paperDirectoryId, count(pd.paper_directory_id) AS count
         FROM paper p, paper_directory pd WHERE p.paper_directory_id=pd.paper_directory_id
         GROUP BY pd.paper_directory_id

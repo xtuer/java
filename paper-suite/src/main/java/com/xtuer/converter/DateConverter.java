@@ -30,9 +30,7 @@ public class DateConverter implements Converter<String, Date> {
         try {
             return format.parse(source);
         } catch (ParseException ex) {
-            logger.warn(ExceptionUtils.getStackTrace(ex));
+            throw new RuntimeException("日期格式错误，应该是 yyyy-MM-dd 或则 yyyy-MM-dd HH:mm:ss", ex);
         }
-
-        return null;
     }
 }

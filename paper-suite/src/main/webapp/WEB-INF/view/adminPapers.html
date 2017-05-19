@@ -6,7 +6,6 @@
     <title>套卷管理</title>
     <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
     <link rel="stylesheet" href="/css/adminPapers.css">
-    <script src="/lib/laydate/laydate.js"></script>
 </head>
 
 <body>
@@ -135,10 +134,25 @@
                     <input type="text" v-model="paper.name">
                 </div>
             </div>
-            <div class="field">
-                <div class="ui labeled input">
+            <div class="two fields">
+                <!-- <div class="ui labeled input">
                     <div class="ui label">发布时间</div>
-                    <input type="text" class="publish-date" id="publish-date" v-model="paper.publishDate" readonly="">
+                    <input type="text" class="publish-year" id="publish-year" v-model="paper.publishYear" readonly="">
+                </div> -->
+                <div class="field">
+                    <div class="ui calendar" id="year-chooser">
+                        <div class="ui labeled input icon">
+                            <div class="ui label">发布时间</div>
+                            <i class="calendar icon"></i>
+                            <input type="text" id="publish-year" v-model="paper.publishYear" placeholder="年" readonly="">
+                        </div>
+                    </div>
+                </div>
+                <div class="field" style="display: flex; align-items:center;">
+                    <div class="ui checkbox">
+                        <input type="checkbox" v-model="paper.exportable">
+                        <label>可导出</label>
+                    </div>
                 </div>
             </div>
             <div class="field">
@@ -181,7 +195,6 @@
 
     <script src="/lib/require.js"></script>
     <script src="/js/requireConfig.js"></script>
-    <script src="/js/adminPaperDirectories.js"></script>
     <script src="/js/adminPapers.js"></script>
 </body>
 

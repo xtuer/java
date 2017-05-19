@@ -14,9 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Map;
 
@@ -200,5 +203,11 @@ public class DemoController {
     @ResponseBody
     public Result uniqueName(@RequestParam String username) {
         return new Result(!"ali".equals(username), "");
+    }
+
+    @GetMapping("testUrl")
+    @ResponseBody
+    public Result testUrl(HttpServletRequest request) throws URISyntaxException {
+        return Result.ok(new URI(request.getRequestURL().toString()).getHost());
     }
 }

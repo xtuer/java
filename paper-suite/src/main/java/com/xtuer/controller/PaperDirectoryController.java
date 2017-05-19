@@ -126,10 +126,10 @@ public class PaperDirectoryController {
      *
      * @return
      */
-    @GetMapping(UriView.REST_PAPER_DIRECTORIES_PAPERS_COUNT)
+    @GetMapping(UriView.REST_PAPER_DIRECTORIES_PAPER_COUNTS)
     @ResponseBody
-    public Result findPapersCountInPaperDirectories() {
-        List<Map<String, String>> counts = directoryMapper.findPapersCountInPaperDirectories();
+    public Result findPaperCountsInPaperDirectories() {
+        List<Map<String, String>> counts = directoryMapper.findPaperCountsInPaperDirectories();
         return Result.ok("", counts);
     }
 

@@ -16,7 +16,8 @@ public class Paper {
     private String paperDirectoryId;
     private String realDirectoryName;
     private String subject;
-    private Date   publishDate;
+    private String publishYear;
+    private boolean exportable;
 
     private List<KnowledgePoint> knowledgePoints; // 知识点
 }

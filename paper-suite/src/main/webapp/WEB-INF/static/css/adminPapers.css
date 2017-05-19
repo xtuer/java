@@ -132,6 +132,20 @@ li#menu-item-delete, li#menu-item-rename {
     background: darkgrey;
 }
 
+#year-chooser .ui.label {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#year-chooser input {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0;
+}
+
 .count {
     color: #AAA;
+}
+
+.layui-layer-rim {
+    border-radius: 2px !important;
 }

@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public final class PaperImporter {
-    public static final int DIRECTORY_COUNT = 100; // 试卷的目录个数
-
     public static void main(String[] args) throws Exception {
         String[][] papersInfo = {
                 {"高中语文", "/Users/Biao/Documents/套卷/高中语文（2804套）/GZYW033C"} // 学科 + 此学科试卷目录
@@ -42,7 +40,7 @@ public final class PaperImporter {
             String originalName = name;
             String uuid = CommonUtils.uuid();
             String uuidName = uuid + "." + FilenameUtils.getExtension(name);
-            String realDirectoryName = Math.abs(uuid.hashCode()) % DIRECTORY_COUNT + ""; // 使用 hashCode 来计算所在目录
+            String realDirectoryName = CommonUtils.directoryNameByUuid(uuid);
 
             try {
                 pstmt = conn.prepareStatement("INSERT INTO paper(paper_id, name, uuid_name, original_name, real_directory_name, subject) VALUES(?, ?, ?, ?, ?, ?)");

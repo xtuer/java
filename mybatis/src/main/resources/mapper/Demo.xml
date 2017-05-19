@@ -20,6 +20,19 @@ CREATE TABLE `demo` (
         WHERE id=#{id}
     </select>
 
+    <select id="findDemosByInfo" parameterType="string" resultType="Demo">
+        SELECT id, info
+        FROM demo
+        WHERE info=#{info}
+    </select>
+
+    <select id="hasDemo" resultType="boolean">
+        SELECT count(*) FROM demo
+    </select>
+    <select id="demoCount" resultType="int">
+        SELECT count(*) FROM demo
+    </select>
+
     <insert id="insertDemo" parameterType="Demo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO demo (info) VALUES (#{info})
     </insert>

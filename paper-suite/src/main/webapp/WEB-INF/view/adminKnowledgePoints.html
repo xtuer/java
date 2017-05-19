@@ -84,12 +84,7 @@
     <div id="knowledge-point-editor-dialog">
         <div id="vue-knowledge-point-editor" class="ui form">
             <div class="field">
-                <!-- <select class="ui selection dropdown" v-model="knowledgePoint.knowledgePointGroupId">
-                    <option v-for="(group, index) in knowledgePointGroups" :key="group.knowledgePointGroupId" :value="group.knowledgePointGroupId">{{group.name}}</option>
-                </select> -->
-
                 <div class="ui selection dropdown">
-                    <!-- <input type="hidden" name="knowledgePointGroupId" v-model="knowledgePoint.knowledgePointGroupId"> -->
                     <input type="hidden" name="knowledgePointGroupId">
                     <i class="dropdown icon"></i>
                     <div class="default text">选择知识点分类</div>
@@ -101,7 +96,7 @@
             <div class="field">
                 <div class="ui labeled input">
                     <div class="ui label">知识点 </div>
-                    <input type="text" placeholder="请输入知识点" v-model="knowledgePoint.name">
+                    <input type="text" placeholder="请输入知识点" v-model.trim="knowledgePoint.name">
                 </div>
             </div>
             <!-- {{knowledgePoint.knowledgePointGroupId}} - {{knowledgePoint.name}} -->
