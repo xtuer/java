@@ -1,7 +1,6 @@
 package com.xtuer.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONPObject;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
@@ -15,12 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 @Controller
 public class DemoController {
@@ -82,8 +79,9 @@ public class DemoController {
     }
 
     /**
-     * REST 的读取
+     * REST 读取
      * URL: http://localhost:8080/rest
+     * 参数: name
      *
      * @param name
      * @return
@@ -95,8 +93,22 @@ public class DemoController {
     }
 
     /**
+     * REST 创建
+     * URL: http://localhost:8080/rest
+     * 参数: 无
+     *
+     * @return
+     */
+    @PostMapping("/rest")
+    @ResponseBody
+    public Result restPost() {
+        return new Result(true, "CREATE handled");
+    }
+
+    /**
      * REST 的更新
      * URL: http://localhost:8080/rest
+     * 参数: name, age
      *
      * @param name
      * @param age
@@ -109,20 +121,9 @@ public class DemoController {
     }
 
     /**
-     * REST 创建
-     * URL: http://localhost:8080/rest
-     *
-     * @return
-     */
-    @PostMapping("/rest")
-    @ResponseBody
-    public Result restPost() {
-        return new Result(true, "CREATE handled");
-    }
-
-    /**
      * REST 删除
      * URL: http://localhost:8080/rest
+     * 参数: 无
      *
      * @return
      */
@@ -130,6 +131,45 @@ public class DemoController {
     @ResponseBody
     public Result restDelete() {
         return new Result(true, "DELETE handled");
+    }
+
+    /**
+     * REST 创建，处理 application/json 的请求
+     * URL: http://localhost:8080/rest/requestBody
+     * 参数: name
+     *
+     * @return
+     */
+    @PostMapping("/rest/requestBody")
+    @ResponseBody
+    public Result restPostJsonRequestBody(@RequestBody String content) {
+        return new Result(true, "CREATE requestBody handled: " + content);
+    }
+
+    /**
+     * REST 更新，处理 application/json 的请求
+     * URL: http://localhost:8080/rest/requestBody
+     * 参数: name
+     *
+     * @return
+     */
+    @PutMapping("/rest/requestBody")
+    @ResponseBody
+    public Result restUpdateJsonRequestBody(@RequestBody String content) {
+        return new Result(true, "UPDATE requestBody handled: " + content);
+    }
+
+    /**
+     * REST 删除，处理 application/json 的请求
+     * URL: http://localhost:8080/rest/requestBody
+     * 参数: name
+     *
+     * @return
+     */
+    @DeleteMapping("/rest/requestBody")
+    @ResponseBody
+    public Result restDeleteJsonRequestBody(@RequestBody String content) {
+        return new Result(true, "DELETE requestBody handled: " + content);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////

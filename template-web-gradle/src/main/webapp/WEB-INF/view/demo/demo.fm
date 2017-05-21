@@ -5,7 +5,6 @@
     <title>SpringMVC REST</title>
     <script src="/lib/jquery.min.js"></script>
     <script src="/lib/jquery.rest.js"></script>
-    <script src="/js/urls.js"></script>
 </head>
 
 <body>
@@ -15,11 +14,18 @@
 
     <script>
         $(document).ready(function() {
-            // 服务器端的 GET 需要启用 UTF-8 才不会乱吗
+            // [1] 服务器端的 GET 需要启用 UTF-8 才不会乱吗
             $.rest.get({url: '/rest', data: {name: 'Alice'}, success: function(result) {
                 console.log(result);
             }});
 
+            $.rest.get({url: '/rest/{id}', urlParams: {id: 121}, data: {name: '黄彪'}, success: function(result) {
+                console.log(result);
+            }, fail: function(e) {
+                console.log(e);
+            }});
+
+            // [2] 普通 form 表单提交 rest Ajax 请求
             $.rest.create({url: '/rest', success: function(result) {
                 console.log(result);
             }});
@@ -32,13 +38,20 @@
                 console.log(result);
             }});
 
-            $.rest.get({url: '/rest/{id}', urlParams: {id: 121}, data: {name: '黄彪'}, success: function(result) {
+            // [3] 使用 request body 传递复杂 Json 对象
+            $.rest.create({url: '/rest/requestBody', data: {name: 'Alice'}, jsonRequestBody: true, success: function(result) {
                 console.log(result);
-            }, fail: function(e) {
-                console.log(e);
             }});
 
-            // AJAX 请求时后端发生异常
+            $.rest.update({url: '/rest/requestBody', data: {name: 'Alice'}, jsonRequestBody: true, success: function(result) {
+                console.log(result);
+            }});
+
+            $.rest.remove({url: '/rest/requestBody', data: {name: 'Alice'}, jsonRequestBody: true, success: function(result) {
+                console.log(result);
+            }});
+
+            // [4] AJAX 请求时后端发生异常时也会调用 success 回调，result.success 为 false，result.data 为异常信息
             $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
                 if (!result.success) {
                     $('#error').html(result.message + '<br>' + result.data);
@@ -47,12 +60,7 @@
                 console.log(e);
             }});
 
-            function __cas_account_loaded(data) {
-                console.log('jsonp');
-                console.log(data);
-            }
-
-            // JSON P
+            // [5] JSON P
             $.ajax({
                 url     : 'http://127.0.0.1:8080/jsonp-test',
                 type    : 'GET',
@@ -61,17 +69,6 @@
                     console.log(a);
                 }
             });
-
-            // $.ajax({
-            //     url     : "http://eplatform.edu-edu.com.cn/cas/web/logininfo/jsonp",
-            //     type    : "GET",
-            //     dataType: "jsonp", // 表示要用 JSONP 进行跨域访问
-            //     jsonp   : "jsonpCallback",
-            //     jsonpCallback: "__cas_account_loaded"
-            // });
-
-
-
         });
     </script>
 </body>
