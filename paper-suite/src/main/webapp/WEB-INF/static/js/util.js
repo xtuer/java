@@ -33,12 +33,49 @@ var formatString = function (str, replacements) {
     });
 };
 
+/**
+ * 从数组中删除下标为 index 的元素
+ *
+ * @param  {Integer} index 要删除的元素的下标
+ * @return 无返回值
+ */
+Array.prototype.remove = function(index) {
+    this.splice(index, 1);
+};
+
+/**
+ * 在下标为 index 处向数组中插入一个元素，例如 arr.remove(2)
+ *
+ * @param  {Integer}     index 要插入元素的位置
+ * @param  {ElementType} elem  要插入的元素
+ * @return 无返回值
+ */
+Array.prototype.insert = function(index, elem) {
+    this.splice(index, 0, elem);
+};
+
+/**
+ * 替换数组中下标为 index 处的元素
+ *
+ * @param  {Integer}     index 要替换的元素的位置
+ * @param  {ElementType} elem  用于替换的元素
+ * @return 无返回值
+ */
+Array.prototype.replace = function(index, elem) {
+    if (index>=0 && index<this.length) {
+        this.splice(index, 1, elem);
+    }
+};
+
+/*-----------------------------------------------------------------------------|
+ |                                    Util                                     |
+ |----------------------------------------------------------------------------*/
 function Util() {
 
 }
 
 /**
- * 设置 sidebar 的第 activateSidebarItem 个 item 为当前也的 item
+ * 设置 sidebar 的第 activateSidebarItem 个 item 为当前也的 item，例如 arr.insert(3, 'Alice')
  *
  * @param  {[type]} sidebarItemIndex item 的下标，从 0 开始
  * @return 无返回值
