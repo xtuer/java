@@ -1,3 +1,5 @@
+package com.xtuer.util;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -108,10 +110,10 @@ public class DocToHtmlUtils {
     }
 
     public static void main(String argv[]) throws Exception {
-        convertDocToHtml(new File("/Users/Biao/Documents/workspace/hxdd/技术方案/技术方案.doc"),
+        convertDocToHtml(new File("/Users/Biao/Desktop/doc/x.doc"),
                 new File("/Users/Biao/Desktop/doc/x"));
-//        convertDocToHtml(new File("/Users/Biao/Desktop/doc/x.doc"),
-//                new File("/Users/Biao/Desktop/doc/y"),
-//                "goo.html", null, "UTF-8");
+        convertDocToHtml(new File("/Users/Biao/Desktop/doc/x.doc"),
+                new File("/Users/Biao/Desktop/doc/y"),
+                "goo.html", null, "UTF-8");
     }
 }

@@ -24,5 +24,7 @@ var Urls = {
     REST_PAPERS_REDIRECTORY     : '/rest/papers/re-directory',
     REST_PAPERS_KNOWLEDGE_POINTS: '/rest/papers/{paperId}/knowledgePoints',
     REST_PAPERS_KNOWLEDGE_POINTS_BY_ID: '/rest/papers/{paperId}/knowledgePoints/{knowledgePointId}',
-    REST_PAPERS_SEARCH_IN_DIRECTORY   : '/rest/paperDirectories/{paperDirectoryId}/papers/search'
+    REST_PAPERS_SEARCH_IN_DIRECTORY   : '/rest/paperDirectories/{paperDirectoryId}/papers/search',
+    REST_PAPERS_PREVIEW               : '/rest/papers/{paperId}/preview',
+    REST_PAPERS_DOWNLOAD              : '/rest/papers/{paperId}/download'
 };

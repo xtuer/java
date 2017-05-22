@@ -54,7 +54,7 @@
         </div>
 
         <!-- 试卷列表，使用 card 显示试卷 -->
-        <div class="ui five column grid" id="vue-papers">
+        <!-- <div class="ui five column grid" id="vue-papers">
             <div class="ui column" v-for="(paper, index) in papers" :data-id="paper.paperId" :key="paper.paperId">
                 <div class="ui card">
                     <div class="dimmable image">
@@ -82,6 +82,38 @@
             </div>
 
             <div v-show="papers.length===0">当前目录没有试卷或则还没有选择目录</div>
+        </div> -->
+        <div class="" id="vue-papers">
+            <table class="ui compact celled table">
+                <thead>
+                <tr>
+                    <th>试卷名称</th>
+                    <th>试卷年份</th>
+                    <th>所属地区</th>
+                    <th>试卷来源</th>
+                    <th>试卷类型</th>
+                    <th>学科</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(paper, index) in papers" :data-id="paper.paperId" :key="paper.paperId">
+                        <td v-text="paper.name" @click="editPaper(index)" style="cursor: pointer;"></td>
+                        <td v-text="paper.publishYear"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="collapsing" v-text="paper.subject"></td>
+                        <td class="collapsing">
+                            <i class="icon move" :data-id="paper.paperId" :data-paper-directory-id="paper.paperDirectoryId" :data-index="index" :data-name="paper.name"></i>
+                            <!-- <i class="icon edit" @click="editPaper(index)"></i> -->
+                            <i class="icon drupal" @click="previewPaper(paper)"></i>
+                            <i class="icon cloud download" @click="downloadPaper(paper)"></i>
+                            <i class="icon tags" :data-content="knowledgePointsString(paper.knowledgePoints)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

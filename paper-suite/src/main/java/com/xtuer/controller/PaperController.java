@@ -5,21 +5,35 @@ import com.xtuer.bean.Paper;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.PaperDirectoryMapper;
 import com.xtuer.mapper.PaperMapper;
+import com.xtuer.service.PaperService;
 import com.xtuer.util.PageUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
 @Controller
 public class PaperController {
+    private static Logger logger = LoggerFactory.getLogger(PaperController.class);
+
     @Autowired
     private PaperMapper paperMapper;
 
     @Autowired
     private PaperDirectoryMapper directoryMapper;
+
+    @Autowired
+    private PaperService paperService;
 
     /**
      * URL: http://localhost:8080/rest/paperDirectories/papers/1
@@ -202,6 +216,47 @@ public class PaperController {
                     paper.getKnowledgePoints().add(point);
                 }
             }
+        }
+    }
+
+    /**
+     * 预览试卷
+     *
+     * @param paperId 试卷 id
+     * @return 预览的 URL
+     */
+    @GetMapping(UriView.REST_PAPERS_PREVIEW)
+    @ResponseBody
+    public Result paperPreviewInfo(@PathVariable String paperId) throws Exception {
+        String url = paperService.getPaperPreviewUrl(paperId);
+
+        if (url != null) {
+            return Result.ok("", url);
+        } else {
+            return Result.fail("找不到试卷预览文件");
+        }
+    }
+
+    @GetMapping(UriView.REST_PAPERS_DOWNLOAD)
+    public void downloadPaper(@PathVariable String paperId, HttpServletResponse response) {
+        InputStream in = null;
+        OutputStream out = null;
+
+        try {
+            Paper paper = paperMapper.findPaperByPaperId(paperId);
+
+            String filename = new String(paper.getOriginalName().getBytes("UTF-8"), "ISO8859_1"); // 解决乱码问题
+            response.setContentType("application/octet-stream"); // 以流的形式下载文件
+            response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+
+            in = new FileInputStream(paperService.getPaperFile(paper));
+            out = response.getOutputStream();
+            IOUtils.copy(in, out);
+        } catch (Exception ex) {
+            logger.warn(ex.getMessage());
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
         }
     }
 }

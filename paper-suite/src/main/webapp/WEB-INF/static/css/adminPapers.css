@@ -53,7 +53,11 @@ body {
     box-shadow: 0 0px 3px 0 #CCC;
 }
 
-#vue-papers .icon.move, #vue-papers .icon.edit {
+#vue-papers td {
+    min-width: 80px;
+}
+
+#vue-papers .icon {
     cursor: pointer;
 }
 
@@ -116,7 +120,7 @@ li#menu-item-delete, li#menu-item-rename {
 }
 
 #tool-bar .toggle-buttons {
-    display: none;
+    /*display: none;*/
 }
 
 #vue-knowledge-points {

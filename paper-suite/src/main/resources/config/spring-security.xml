@@ -22,6 +22,9 @@
 
         <csrf disabled="true"/>
         <remember-me key="uniqueAndSecret" token-validity-seconds="2592000"/>
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
     </http>
 
     <authentication-manager>

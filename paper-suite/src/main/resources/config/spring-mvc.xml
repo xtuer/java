@@ -10,6 +10,14 @@
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--全局配置文件-->
+    <bean id="yamlProperties" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">
+        <property name="resources">
+            <list>
+                <value>classpath:config/config.yml</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- 静态的文件的 URL 映射 -->
     <import resource="classpath:config/spring-view-controller.xml"/>
@@ -129,5 +137,6 @@
     <mvc:resources mapping="/img/**"      location="/WEB-INF/static/img/"            cache-period="31556926"/>
     <mvc:resources mapping="/lib/**"      location="/WEB-INF/static/lib/"            cache-period="31556926"/>
     <mvc:resources mapping="/html/**"     location="/WEB-INF/static/html/"           cache-period="31556926"/>
+    <mvc:resources mapping="/preview/**"  location="/WEB-INF/static/preview/"        cache-period="31556926"/>
     <mvc:resources mapping="/favicon.ico" location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
 </beans>

@@ -103,9 +103,9 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                 // papers 的数据变化后，DOM 更新完成时调用下面的函数
                 this.$nextTick(function() {
                     $('#vue-papers .dimmable').dimmer({on: 'hover'}); // 鼠标放到 dimmable 上时显示 dimmer
-                    $('#vue-papers .icon.tags, #vue-papers .icon.move').popup({position: 'bottom left', offset: -12}); // 初始化 popup
-                    $(document).off('mousedown', '#vue-papers .ui.card .icon.move', DnD.mouseDown);
-                    $(document).on('mousedown', '#vue-papers .ui.card .icon.move', DnD.mouseDown);
+                    $('#vue-papers .icon.tags, #vue-papers .icon.move').popup({position: 'left center', offset: -12}); // 初始化 popup
+                    $(document).off('mousedown', '#vue-papers .icon.move', DnD.mouseDown);
+                    $(document).on('mousedown',  '#vue-papers .icon.move', DnD.mouseDown);
                 });
             }
         },
@@ -161,6 +161,7 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                     }
                 });
             },
+            // 知识点的字符串
             knowledgePointsString: function(knowledgePoints) {
                 var names = [];
 
@@ -169,6 +170,30 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                 }
 
                 return names.length>0 ? names.join('、') : '没有知识点';
+            },
+            // 预览试卷
+            previewPaper: function(paper) {
+                $.rest.get({url: Urls.REST_PAPERS_PREVIEW, urlParams: {paperId: paper.paperId}, success: function(result) {
+                    console.log(result);
+                    if (!result.success) {
+                        layer.msg(result.message);
+                        return;
+                    }
+
+                    layer.open({
+                        type: 2,
+                        title: paper.name,
+                        shadeClose: true,
+                        shade: 0.8,
+                        area: ['70%', '90%'],
+                        content: result.data // 预览文件的 url
+                    });
+                }});
+            },
+            // 下载试卷
+            downloadPaper: function(paper) {
+                var url = Urls.REST_PAPERS_DOWNLOAD.format({paperId: paper.paperId});
+                window.open(url);
             }
         }
     });

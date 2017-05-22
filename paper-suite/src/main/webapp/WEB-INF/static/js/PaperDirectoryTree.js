@@ -61,12 +61,13 @@ EditablePaperDirectoryTree.prototype.init = function() {
         // 创建 zTree 对象
         self.tree = $.fn.zTree.init($('#' + self.treeElementId), self.setting, paperDirectories);
 
-        // 下一个事件循环中处理显示第一个几点下的试卷
+        // 下一个事件循环中处理显示第一个目录下的试卷
         setTimeout(function() {
             self.showPapersCount(TreeUtils.getRoots(self.tree));
 
             // 选中第一个节点
             var firstRoot = TreeUtils.getRoots(self.tree)[0];
+            $('#vue-papers').attr('data-paper-directory-id', firstRoot.paperDirectoryId);
             if (firstRoot) {
                 self.tree.selectNode(firstRoot);
                 PaperDirectoryDao.loadPapers(firstRoot.paperDirectoryId, function(papers) {
