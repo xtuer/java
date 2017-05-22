@@ -68,6 +68,7 @@ ext.versions = [
     commonsConfiguration: '1.10',
     snakeyaml     : '1.18',
     poiScratchpad : '3.16',
+    wmf2svg       : '0.9.8',
     logback       : '1.2.1',
     junit         : '4.12',
     jclOverSlf4j  : '1.7.21'
@@ -94,6 +95,7 @@ dependencies {
             "commons-configuration:commons-configuration:$versions.commonsConfiguration",
             "org.yaml:snakeyaml:$versions.snakeyaml",
             "org.apache.poi:poi-scratchpad:$versions.poiScratchpad",
+            "net.arnx:wmf2svg:$versions.wmf2svg",
             "ch.qos.logback:logback-classic:$versions.logback",               // Logback
             "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf4j"
     )

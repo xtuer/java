@@ -84,7 +84,7 @@
             <div v-show="papers.length===0">当前目录没有试卷或则还没有选择目录</div>
         </div> -->
         <div class="" id="vue-papers">
-            <table class="ui compact celled table">
+            <table class="ui compact selectable celled table">
                 <thead>
                 <tr>
                     <th>试卷名称</th>
@@ -93,24 +93,25 @@
                     <th>试卷来源</th>
                     <th>试卷类型</th>
                     <th>学科</th>
-                    <th></th>
+                    <th>状态</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(paper, index) in papers" :data-id="paper.paperId" :key="paper.paperId">
-                        <td v-text="paper.name" @click="editPaper(index)" style="cursor: pointer;"></td>
+                        <td class="dnd-paper-name elide" v-text="paper.name" @click="editPaper(paper)" style="cursor: pointer; max-width: 500px;" :data-id="paper.paperId" :data-paper-directory-id="paper.paperDirectoryId" :data-index="index" :data-name="paper.name"></td>
                         <td v-text="paper.publishYear"></td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td class="collapsing" v-text="paper.subject"></td>
-                        <td class="collapsing">
+                        <td class="collapsing">未处理</td>
+                        <!-- <td class="collapsing">
                             <i class="icon move" :data-id="paper.paperId" :data-paper-directory-id="paper.paperDirectoryId" :data-index="index" :data-name="paper.name"></i>
-                            <!-- <i class="icon edit" @click="editPaper(index)"></i> -->
+                            <i class="icon write square" @click="editPaper(index)"></i>
                             <i class="icon drupal" @click="previewPaper(paper)"></i>
-                            <i class="icon cloud download" @click="downloadPaper(paper)"></i>
                             <i class="icon tags" :data-content="knowledgePointsString(paper.knowledgePoints)"></i>
-                        </td>
+                            <i class="icon cloud download" @click="downloadPaper(paper)"></i>
+                        </td> -->
                     </tr>
                 </tbody>
             </table>
@@ -154,12 +155,12 @@
     <!-- 试卷编辑对话框 -->
     <div id="paper-editor-dialog">
         <div id="vue-paper-editor" class="ui form">
-            <div class="field">
+            <!-- <div class="field">
                 <div class="ui labeled input">
                     <div class="ui label">原始名字</div>
                     <input type="text" v-model="paper.originalName" readonly="" style="color: #BBB;">
                 </div>
-            </div>
+            </div> -->
             <div class="field">
                 <div class="ui labeled input">
                     <div class="ui label">显示名字</div>

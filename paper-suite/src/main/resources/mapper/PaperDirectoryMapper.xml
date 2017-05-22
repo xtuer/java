@@ -43,10 +43,14 @@
         SELECT EXISTS(SELECT 1 FROM paper_directory WHERE paper_directory_id=#{paperDirectoryId})
     </select>
 
-    <!--查询所有目录下试卷的数量-->
+    <!--查询所有目录下试卷的数量，当此目录下没有试卷时 count 也为 1，因为 left join + group by 的结果，但此时 paperId 不存在-->
     <select id="findPaperCountsInPaperDirectories" resultType="map">
-        SELECT p.paper_directory_id AS paperDirectoryId, count(pd.paper_directory_id) AS count
-        FROM paper p, paper_directory pd WHERE p.paper_directory_id=pd.paper_directory_id
+        SELECT pd.paper_directory_id AS paperDirectoryId,
+            pd.parent_paper_directory_id AS parentPaperDirectoryId,
+            count(pd.paper_directory_id) AS count,
+            p.paper_id AS paperId
+        FROM  paper_directory pd
+        LEFT JOIN paper p ON p.paper_directory_id=pd.paper_directory_id
         GROUP BY pd.paper_directory_id
     </select>
 

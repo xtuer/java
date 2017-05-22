@@ -104,24 +104,29 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                 this.$nextTick(function() {
                     $('#vue-papers .dimmable').dimmer({on: 'hover'}); // 鼠标放到 dimmable 上时显示 dimmer
                     $('#vue-papers .icon.tags, #vue-papers .icon.move').popup({position: 'left center', offset: -12}); // 初始化 popup
-                    $(document).off('mousedown', '#vue-papers .icon.move', DnD.mouseDown);
-                    $(document).on('mousedown',  '#vue-papers .icon.move', DnD.mouseDown);
+                    // $(document).off('mousedown', '#vue-papers .icon.move', DnD.mouseDown);
+                    // $(document).on('mousedown',  '#vue-papers .icon.move', DnD.mouseDown);
+
+                    $(document).off('mousedown', '#vue-papers .dnd-paper-name', DnD.mouseDown);
+                    $(document).on('mousedown',  '#vue-papers .dnd-paper-name', DnD.mouseDown);
                 });
             }
         },
         methods: {
-            editPaper: function(index) {
-                this.editedIndex = index;
-                var paperId = this.papers[index].paperId;
+            editPaper: function(paper) {
+                var self = this;
+                this.editedIndex = this.papers.indexOf(paper);
+                var paperId = paper.paperId;
 
                 layer.open({
                     type: 1,
-                    title: false,
+                    // title: false,
+                    title: paper.originalName,
                     skin: 'layui-layer-rim', //加上边框
                     closeBtn: 0,
-                    area: ['550px'], //宽高
+                    area: ['750px'], //宽高
                     content: $('#paper-editor-dialog'),
-                    btn: ['保存', '取消'],
+                    btn: ['保存', '预览', '下载', '取消'],
                     btn1: function() {
                         // 保存更新
                         var paper = window.vuePaperEditor.paper;
@@ -137,6 +142,14 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                         }
                     },
                     btn2: function() {
+                        self.previewPaper(paper);
+                        return false;
+                    },
+                    btn3: function() {
+                        self.downloadPaper(paper);
+                        return false;
+                    },
+                    btn4: function() {
                         return true; // 点击取消按钮，关闭对话框
                     }, success: function() {
                         // 知识点和知识点分类下拉框恢复默认选项
