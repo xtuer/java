@@ -11,9 +11,8 @@
 <body>
     <!-- [1] 菜单栏 -->
     <div class="ui left vertical inverted visible sidebar labeled icon menu">
-        <a class="item"><i class="home icon"></i>Home</a>
-        <a class="item" href="/adminPapers"><i class="share alternate square icon"></i> 套卷管理</a>
-        <a class="item" href="/adminKnowledgePoints"><i class="block layout icon"></i> 知识点管理</a>
+        <a class="item" href="/adminPapers"><i class="share alternate square icon"></i> 套卷</a>
+        <a class="item" href="/adminKnowledgePoints"><i class="sitemap icon"></i> 知识点</a>
     </div>
 
     <!-- [2] 目录树 -->
@@ -83,6 +82,7 @@
 
             <div v-show="papers.length===0">当前目录没有试卷或则还没有选择目录</div>
         </div> -->
+        <!-- 试卷列表，使用 table 显示试卷 -->
         <div class="" id="vue-papers">
             <table class="ui compact selectable celled table">
                 <thead>

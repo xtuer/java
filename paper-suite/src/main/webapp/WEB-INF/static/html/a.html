@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+
+<body>
+    <button>下载</button>
+    <script src="/lib/jquery.min.js" charset="utf-8"></script>
+    <script>
+        $('button').click(function(event) {
+            var $form = $('<form method="GET"></form>');
+            $form.attr('action', '/rest/papers/0004f34744134f9cbd11e84cd6783ef6/download');
+            $form.appendTo($('body'));
+            $form.submit();
+        });
+    </script>
+</body>
+
+</html>

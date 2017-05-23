@@ -306,12 +306,6 @@ EditablePaperDirectoryTree.prototype.loadPapersCount = function() {
     var self = this;
     PaperDirectoryDao.loadPaperCounts(function(paperCounts) {
         // self.paperCounts = paperCounts;
-        for (var j=0; j<paperCounts.length; ++j) {
-            // paperId 不存在，则说明此目录下没有试卷，但是服务器端 left join + group by 此时的数字为 1
-            if (!paperCounts[j].paperId) {
-                paperCounts[j].count = 0;
-            }
-        }
 
         // 递归的计算目录上的试卷数量
         var tree = new CountTree(paperCounts);

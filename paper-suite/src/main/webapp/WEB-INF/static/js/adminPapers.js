@@ -1,6 +1,6 @@
 require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 'pagination', 'rest', 'urls', 'util',
     'paper', 'knowledgePointGroup', 'paperDirectoryTree'], function($, Vue) {
-    Util.activateSidebarItem(1);
+    Util.activateSidebarItem(0);
     new EditablePaperDirectoryTree('directory-tree'); // 初始化目录树
 
     /*-----------------------------------------------------------------------------|
@@ -206,7 +206,11 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
             // 下载试卷
             downloadPaper: function(paper) {
                 var url = Urls.REST_PAPERS_DOWNLOAD.format({paperId: paper.paperId});
-                window.open(url);
+                // window.open(url);
+                var $form = $('<form method="GET"></form>');
+                $form.attr('action', url);
+                $form.appendTo($('body'));
+                $form.submit();
             }
         }
     });

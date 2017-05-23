@@ -10,6 +10,14 @@
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--全局配置文件-->
+    <bean id="globalConfig" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">
+        <property name="resources">
+            <list>
+                <value>classpath:config/config.yml</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- 静态的文件的 URL 映射 -->
     <import resource="classpath:config/spring-view-controller.xml"/>

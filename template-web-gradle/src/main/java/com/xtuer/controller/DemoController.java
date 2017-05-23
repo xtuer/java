@@ -14,10 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 
 @Controller
 public class DemoController {
@@ -25,6 +27,9 @@ public class DemoController {
 
     @Autowired
     private DemoMapper demoMapper;
+
+    @Resource(name = "globalConfig")
+    private Properties globalConfig;
 
     @RequestMapping("/")
     @ResponseBody
@@ -249,5 +254,20 @@ public class DemoController {
     @ResponseBody
     public String jsonpTest(@RequestParam String callback) {
         return Result.jsonp(callback, Result.ok("Congratulation", "Your data object"));
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    //                                        使用配置                                   //
+    //////////////////////////////////////////////////////////////////////////////////////
+    // URL:
+    // http://localhost:8080/properties
+    @GetMapping("/properties")
+    @ResponseBody
+    public String properties() {
+        System.out.println(globalConfig.getProperty("jdbc.driverClassName"));
+        System.out.println(globalConfig.getProperty("jdbc.url"));
+        System.out.println(globalConfig.getProperty("jdbc.password"));
+
+        return globalConfig.getProperty("url.home");
     }
 }

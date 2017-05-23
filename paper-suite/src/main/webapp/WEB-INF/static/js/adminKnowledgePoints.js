@@ -1,5 +1,5 @@
 require(['jquery', 'vue', 'semanticUi', 'layer', 'rest', 'util', 'urls', 'knowledgePoint', 'knowledgePointGroup'], function($, Vue) {
-    Util.activateSidebarItem(2);
+    Util.activateSidebarItem(1);
 
     // 知识点数组
     window.knowledgePoints = []; // {knowledgePoint: 0, name: '', knowledgePointGroupId: 0}
