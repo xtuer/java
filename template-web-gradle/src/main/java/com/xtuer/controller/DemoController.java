@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Properties;
 
 @Controller
@@ -267,7 +268,16 @@ public class DemoController {
         System.out.println(globalConfig.getProperty("jdbc.driverClassName"));
         System.out.println(globalConfig.getProperty("jdbc.url"));
         System.out.println(globalConfig.getProperty("jdbc.password"));
+        System.out.println(globalConfig.getProperty("urls[0]"));
 
-        return globalConfig.getProperty("url.home");
+        Enumeration en = globalConfig.propertyNames();
+        while (en.hasMoreElements()) {
+            String key = en.nextElement().toString();
+            String value = globalConfig.getProperty(key);
+
+            System.out.println(key + " : " + value);
+        }
+
+        return globalConfig.getProperty("jdbc.password");
     }
 }
