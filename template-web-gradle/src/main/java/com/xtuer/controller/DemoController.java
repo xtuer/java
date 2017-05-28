@@ -5,6 +5,7 @@ import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
 import com.xtuer.util.CommonUtils;
+import com.xtuer.util.TaskQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Random;
 
 @Controller
 public class DemoController {
@@ -31,6 +33,9 @@ public class DemoController {
 
     @Resource(name = "globalConfig")
     private Properties globalConfig;
+
+    @Resource(name="singleTaskQueue")
+    private TaskQueue singleTaskQueue;
 
     @RequestMapping("/")
     @ResponseBody
@@ -260,8 +265,7 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                        使用配置                                   //
     //////////////////////////////////////////////////////////////////////////////////////
-    // URL:
-    // http://localhost:8080/properties
+    // URL: http://localhost:8080/properties
     @GetMapping("/properties")
     @ResponseBody
     public String properties() {
@@ -279,5 +283,18 @@ public class DemoController {
         }
 
         return globalConfig.getProperty("jdbc.password");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    //                                        任务队列                                   //
+    //////////////////////////////////////////////////////////////////////////////////////
+    // URL: http://localhost:8080/tasks/{taskId}
+    @GetMapping("/tasks/{taskId}")
+    @ResponseBody
+    public Result task(@PathVariable int taskId) {
+        Random rand = new Random();
+        singleTaskQueue.addTask(taskId, rand.nextInt(4) + 1); // 任务执行时间为 1 到 4 秒
+
+        return Result.ok("" + taskId);
     }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--全局配置文件-->
+    <bean id="globalConfig" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">
+        <property name="resources">
+            <list>
+                <value>classpath:config/config.yml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--单任务队列-->
+    <bean id="singleTaskQueue" class="com.xtuer.util.TaskQueue" destroy-method="destroy">
+        <constructor-arg value="1"/>
+    </bean>
+</beans>
