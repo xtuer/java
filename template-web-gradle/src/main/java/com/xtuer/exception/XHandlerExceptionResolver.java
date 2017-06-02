@@ -2,7 +2,7 @@ package com.xtuer.exception;
 
 import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Result;
-import com.xtuer.controller.UriView;
+import com.xtuer.controller.Urls;
 import com.xtuer.util.NetUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -64,18 +64,18 @@ public final class XHandlerExceptionResolver implements HandlerExceptionResolver
      * @return ModelAndView 对象，给定了 view 和异常信息
      */
     private ModelAndView handleNonAjaxException(Exception ex, String error, String stack) {
-        String errorViewName = UriView.VIEW_ERROR; // 显示错误的默认页面
+        String errorPageFile = Urls.FILE_ERROR; // 显示错误的默认页面
 
         // 如果是我们定义的异常 ApplicationException，则取得它的异常显示页面的 view name
         if (ex instanceof ApplicationException) {
             ApplicationException appEx = (ApplicationException) ex;
-            errorViewName = (appEx.getErrorViewName() == null) ? errorViewName : appEx.getErrorViewName();
+            errorPageFile = (appEx.getErrorPageFile() == null) ? errorPageFile : appEx.getErrorPageFile();
         }
 
         ModelMap model = new ModelMap();
         model.addAttribute("error", error);  // 异常信息
         model.addAttribute("detail", stack); // 异常堆栈
 
-        return new ModelAndView(errorViewName, model);
+        return new ModelAndView(errorPageFile, model);
     }
 }

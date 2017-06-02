@@ -1,21 +1,22 @@
 package com.xtuer.exception;
 
 /**
- * 定义应用程序级别统一的异常，能够指定异常显示的页面，即 error view name。
+ * 定义应用程序级别统一的异常，能够指定异常显示的页面，即 error page file。
+ * 默认的错误页面是 error.fm，异常还能传入 errorPageFile 指定自己的错误页面。
  */
 public class ApplicationException extends RuntimeException {
-    private String errorViewName = null;
+    private String errorPageFile = null; // 错误页面的模版文件
 
     public ApplicationException(String message) {
         this(message, null);
     }
 
-    public ApplicationException(String message, String errorViewName) {
+    public ApplicationException(String message, String errorPageFile) {
         super(message);
-        this.errorViewName = errorViewName;
+        this.errorPageFile = errorPageFile;
     }
 
-    public String getErrorViewName() {
-        return errorViewName;
+    public String getErrorPageFile() {
+        return errorPageFile;
     }
 }

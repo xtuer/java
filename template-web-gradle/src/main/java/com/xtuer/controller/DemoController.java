@@ -5,7 +5,6 @@ import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
 import com.xtuer.util.CommonUtils;
-import com.xtuer.util.TaskQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.Random;
 
 @Controller
 public class DemoController {
@@ -34,9 +32,6 @@ public class DemoController {
     @Resource(name = "globalConfig")
     private Properties globalConfig;
 
-    @Resource(name="singleTaskQueue")
-    private TaskQueue singleTaskQueue;
-
     @RequestMapping("/")
     @ResponseBody
     public String index() {
@@ -44,10 +39,10 @@ public class DemoController {
     }
 
     // URL: http://localhost:8080/demo
-    @RequestMapping(UriView.URI_DEMO)
+    @RequestMapping(Urls.PAGE_DEMO)
     public String toHelloPage(ModelMap map) {
         map.put("action", "access demo page");
-        return UriView.VIEW_DEMO;
+        return Urls.FILE_DEMO;
     }
 
     /**
@@ -57,7 +52,7 @@ public class DemoController {
      * @param id
      * @return
      */
-    @RequestMapping(UriView.URI_DEMO_MYBATIS)
+    @RequestMapping(Urls.PAGE_DEMO_MYBATIS)
     @ResponseBody
     public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
         return Result.ok("", demoMapper.findDemoById(id));
@@ -217,12 +212,12 @@ public class DemoController {
     //                                          文件上传                                 //
     //////////////////////////////////////////////////////////////////////////////////////
     // URL: http://localhost:8080/demo/upload
-    @GetMapping(UriView.URI_DEMO_UPLOAD)
+    @GetMapping(Urls.PAGE_DEMO_UPLOAD)
     public String toUploadPage() {
-        return UriView.VIEW_DEMO_UPLOAD;
+        return Urls.FILE_DEMO_UPLOAD;
     }
 
-    @PostMapping(UriView.URI_DEMO_UPLOAD)
+    @PostMapping(Urls.PAGE_DEMO_UPLOAD)
     @ResponseBody
     public Result uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         logger.debug(file.getOriginalFilename());
@@ -239,7 +234,7 @@ public class DemoController {
     // http://localhost:8080/demo/validate
     // http://localhost:8080/demo/validate?id=2
     // http://localhost:8080/demo/validate?id=2&info=amazing
-    @GetMapping(UriView.URI_DEMO_VALIDATE)
+    @GetMapping(Urls.PAGE_DEMO_VALIDATE)
     @ResponseBody
     public Result validateDemo(@Valid Demo demo, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
@@ -256,7 +251,7 @@ public class DemoController {
         return new Result(!"ali".equals(username), "");
     }
 
-    @GetMapping(value="/jsonp-test", produces=UriView.JSONP_CONTENT_TYPE)
+    @GetMapping(value="/jsonp-test", produces= Urls.JSONP_CONTENT_TYPE)
     @ResponseBody
     public String jsonpTest(@RequestParam String callback) {
         return Result.jsonp(callback, Result.ok("Congratulation", "Your data object"));
@@ -283,18 +278,5 @@ public class DemoController {
         }
 
         return globalConfig.getProperty("jdbc.password");
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////
-    //                                        任务队列                                   //
-    //////////////////////////////////////////////////////////////////////////////////////
-    // URL: http://localhost:8080/tasks/{taskId}
-    @GetMapping("/tasks/{taskId}")
-    @ResponseBody
-    public Result task(@PathVariable int taskId) {
-        Random rand = new Random();
-        singleTaskQueue.addTask(taskId, rand.nextInt(4) + 1); // 任务执行时间为 1 到 4 秒
-
-        return Result.ok("" + taskId);
     }
 }

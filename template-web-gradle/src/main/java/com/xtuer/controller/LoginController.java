@@ -19,7 +19,7 @@ public class LoginController {
      * @param model
      * @return
      */
-    @GetMapping(value=UriView.URI_LOGIN)
+    @GetMapping(value= Urls.PAGE_LOGIN)
     public String loginPage(@RequestParam(value="error", required=false) String error,
                             @RequestParam(value="logout", required=false) String logout,
                             ModelMap model) {
@@ -28,14 +28,12 @@ public class LoginController {
         status = (logout != null) ? "Logout successful" : status; // 注销成功
         model.put("status", status);
 
-        return UriView.VIEW_LOGIN;
+        return Urls.FILE_LOGIN;
     }
 
-    @GetMapping(UriView.URI_DENY)
+    @GetMapping(Urls.PAGE_DENY)
     @ResponseBody
     public String toDenyPage() {
         return "权限不够!";
     }
-
-
 }
