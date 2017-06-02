@@ -8,7 +8,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  * 1. 当 AJAX 请求时发生异常，返回 JSON 格式的错误信息
  * 2. 非 AJAX 请求时发生异常，错误信息显示到 HTML 网页
  */
-public final class XHandlerExceptionResolver implements HandlerExceptionResolver {
-    private static Logger logger = LoggerFactory.getLogger(XHandlerExceptionResolver.class);
+public final class HandlerExceptionResolver implements org.springframework.web.servlet.HandlerExceptionResolver {
+    private static Logger logger = LoggerFactory.getLogger(HandlerExceptionResolver.class);
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request,

@@ -111,7 +111,7 @@
     <bean id="compositeExceptionResolver" class="org.springframework.web.servlet.handler.HandlerExceptionResolverComposite">
         <property name="exceptionResolvers">
             <list>
-                <bean class="com.xtuer.exception.XHandlerExceptionResolver"/>
+                <bean class="com.xtuer.exception.HandlerExceptionResolver"/>
             </list>
         </property>
         <property name="order" value="0"/>
