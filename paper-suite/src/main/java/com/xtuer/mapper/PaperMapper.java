@@ -46,5 +46,11 @@ public interface PaperMapper {
     // 更新试卷，目前只能更新名字和发布时间
     void updatePaper(Paper paper);
 
+    // 插入试卷
+    void insertPaper(Paper paper);
+
+    // 更新试卷的元数据
+    void updatePaperMeta(Paper paper);
+
     void deleteKnowledgePoint(@Param("paperId") String paperId, @Param("knowledgePointId") String knowledgePointId);
 }

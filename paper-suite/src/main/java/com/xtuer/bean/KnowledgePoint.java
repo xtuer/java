@@ -7,13 +7,15 @@ import org.hibernate.validator.constraints.NotBlank;
 @Getter
 @Setter
 public class KnowledgePoint {
-    private String knowledgePointId; // uuid
+    private String knowledgePointId;
 
-    @NotBlank(message="知识点不能为空")
+    @NotBlank(message="知识点分类不能为空")
+    private String parentKnowledgePointId;
+
+    @NotBlank(message="名字不能为空")
     private String name;
 
-    @NotBlank(message="知识点分类不能为 null")
-    private String knowledgePointGroupId;
+    private int type; // 1 为知识点, 0 为知识点分类
 
-    private String paperId;
+    private String paperId; // 试卷 id，使用试卷查找知识点时用到
 }

@@ -33,6 +33,10 @@ var formatString = function (str, replacements) {
     });
 };
 
+/*-----------------------------------------------------------------------------|
+ |                                    Array                                    |
+ |----------------------------------------------------------------------------*/
+
 /**
  * 从数组中删除下标为 index 的元素
  *
@@ -67,6 +71,15 @@ Array.prototype.replace = function(index, elem) {
     }
 };
 
+/**
+ * 清空数组
+ *
+ * @return 无返回值
+ */
+Array.prototype.empty = function() {
+    this.splice(0, this.length);
+};
+
 /*-----------------------------------------------------------------------------|
  |                                    Util                                     |
  |----------------------------------------------------------------------------*/
@@ -84,4 +97,35 @@ Util.activateSidebarItem = function(sidebarItemIndex) {
     $('.sidebar .item').eq(sidebarItemIndex).addClass('active').click(function(event) {
         event.preventDefault();
     });
+};
+
+/*-----------------------------------------------------------------------------|
+ |                                  TreeUtils                                  |
+ |----------------------------------------------------------------------------*/
+function TreeUtils() {
+
+}
+
+/**
+ * 取得所有的跟节点，ztree 树可以有多个跟节点，其实是一个森林
+ *
+ * @param  {object} ztree ztree 对象
+ * @return 返回树的所有跟节点
+ */
+TreeUtils.getRoots = function(ztree) {
+    return ztree.getNodesByFilter(function(treeNode) {
+        return (treeNode.level === 0);
+    }, false);
+};
+
+/**
+ * 取得树的所有节点
+ *
+ * @param  {object} ztree ztree 对象
+ * @return 返回树的所有节点
+ */
+TreeUtils.getAllNodes = function(ztree) {
+    return ztree.getNodesByFilter(function(treeNode) {
+        return true;
+    }, false);
 };

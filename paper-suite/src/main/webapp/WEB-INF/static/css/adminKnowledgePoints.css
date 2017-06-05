@@ -2,42 +2,66 @@ body {
     font-family: "微软雅黑", Helvetica, Arial, sans-serif;
 }
 
+.knowledge-point-group-tree-sidebar {
+    position: fixed;
+    top: 0;
+    left: 90px;
+    width: 250px;
+    bottom: 0;
+    border-right: 1px solid #DADADA;
+    overflow: auto;
+    /*z-index: 1;*/
+}
+
 .main {
-    margin-left: 102px;
-    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 355px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    /*z-index: 1;*/
 }
 
-.ui.tag.label, .ui.tag.label:first-child {
-    margin: 0 1rem 1rem 1rem;
-}
-
-#vue-toolbar .ui.buttons {
-    margin-right: 1rem !important;
-}
-
-#knowledge-point-group-editor-dialog,
-#knowledge-point-editor-dialog {
-    padding: 1rem;
+#knowledge-point-group-tree-menu {
+    position:absolute;
+    top:0;
     display: none;
+    margin: 0;
+    padding: 6px 0;
+    text-align: left;
+    border: 1px solid #BFBFBF;
+    border-radius: 3px;
+    background-color: #EEE;
+    box-shadow: 0 0 10px #AAA;
+    z-index: 100000;
 }
 
-#knowledge-point-group-editor-dialog .icon:hover {
+#knowledge-point-group-tree-menu li {
+    padding: 2px 15px;
+	list-style: none outside none;
+	cursor: default;
+    color: #666;
+}
+#knowledge-point-group-tree-menu li:hover {
+    color: #EEE;
+    background-color: #666;
+}
+
+#toolbar {
+    margin: 0;
+}
+
+#toolbar .ui.column {
+    padding-bottom: 0;
+}
+
+#vue-knowledge-points .ui.tag.label {
+    margin-top: 20px;
+    margin-left: 2em;
+    padding-right: 0;
+}
+
+#vue-knowledge-points .ui.tag.label .remove:hover {
     color: darkred;
-    cursor: pointer;
-}
-
-#knowledge-point-group-editor-dialog td {
-    cursor: default;
-}
-
-#knowledge-point-group-editor-dialog .knowledge-point-group input {
-    display: none;
-}
-
-#knowledge-point-group-editor-dialog .knowledge-point-group.editing input {
-    display: block;
-}
-
-#knowledge-point-group-editor-dialog .knowledge-point-group.editing .name {
-    display: none;
 }

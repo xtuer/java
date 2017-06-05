@@ -6,7 +6,7 @@ body {
 .directory-tree-side-bar {
     position: fixed;
     top: 0;
-    left: 103px;
+    left: 90px;
     width: 250px;
     bottom: 0;
     border-right: 1px solid #DADADA;

@@ -90,37 +90,6 @@ CountTree.recursiveCount = function(treeNode) {
 };
 
 /*-----------------------------------------------------------------------------|
- |                                  TreeUtils                                  |
- |----------------------------------------------------------------------------*/
-function TreeUtils() {
-
-}
-
-/**
- * 取得所有的跟节点，ztree 树可以有多个跟节点，其实是一个森林
- *
- * @param  {object} ztree ztree 对象
- * @return 返回树的所有跟节点
- */
-TreeUtils.getRoots = function(ztree) {
-    return ztree.getNodesByFilter(function(treeNode) {
-        return (treeNode.level === 0);
-    }, false);
-};
-
-/**
- * 取得树的所有节点
- *
- * @param  {object} ztree ztree 对象
- * @return 返回树的所有节点
- */
-TreeUtils.getAllNodes = function(ztree) {
-    return ztree.getNodesByFilter(function(treeNode) {
-        return true;
-    }, false);
-};
-
-/*-----------------------------------------------------------------------------|
  |                         EditablePaperDirectoryTree                          |
  |----------------------------------------------------------------------------*/
 function EditablePaperDirectoryTree(treeElementId) {
@@ -270,56 +239,6 @@ EditablePaperDirectoryTree.prototype.hideMenu = function() {
 };
 
 /**
- * 在节点的名字后面加上此目录下试卷的数量 DOM
- *
- * @param  {string} treeId   zTree id
- * @param  {object} treeNode zTree node object
- * @return 无返回值
- */
-EditablePaperDirectoryTree.prototype.addCounter = function(treeId, treeNode) {
-    var $node = $('#' + treeNode.tId + '_a');
-    $node.after('<span class="count">[0]</span>');
-};
-
-/**
- * 在节点的名字后面显示此目录下试卷的数量
- *
- * @param  {array} treeNodes zTree nodes
- * @return 无返回值
- */
-EditablePaperDirectoryTree.prototype.showPapersCount = function(treeNodes) {
-    if (!treeNodes) {return;}
-
-    for (var i=0; i<treeNodes.length; ++i) {
-        for (var j=0; j<this.paperCounts.length; ++j) {
-            var treeNode = treeNodes[i];
-            var paperCount = this.paperCounts[j];
-
-            if (treeNode.paperDirectoryId == paperCount.paperDirectoryId) {
-                $('#' + treeNode.tId + '_a').siblings('.count').replaceWith('<span class="count">[' + paperCount.count + ']</span>');
-            }
-        }
-    }
-};
-
-EditablePaperDirectoryTree.prototype.loadPapersCount = function() {
-    var self = this;
-    PaperDirectoryDao.loadPaperCounts(function(paperCounts) {
-        // self.paperCounts = paperCounts;
-
-        // 递归的计算目录上的试卷数量
-        var tree = new CountTree(paperCounts);
-        CountTree.recursiveCount(tree.root);
-        self.paperCounts = [];
-
-        for (var i=0; i<tree.treeNodes.length; ++i) {
-            var node = tree.treeNodes[i];
-            self.paperCounts.push({paperDirectoryId: node.id, parentPaperDirectoryId: node.parentId, count: node.sum});
-        }
-    });
-};
-
-/**
  * 构建 zTree 的配置
  *
  * @return {Object} JSON 配置对象
@@ -377,7 +296,7 @@ EditablePaperDirectoryTree.prototype.getSettings = function() {
                 var node = treeNodes[0];
                 PaperDirectoryDao.updateParent(node, function() {
                     alert('移动目录失败，页面即将刷新');
-                    location.replace(); // 移动目录失败刷新页面
+                    location.reload(); // 移动目录失败刷新页面
                 });
             },
             onClick: function(event, treeId, treeNode, clickFlag) {
@@ -430,4 +349,54 @@ EditablePaperDirectoryTree.prototype.getSettings = function() {
     };
 
     return setting;
+};
+
+/**
+ * 在节点的名字后面加上此目录下试卷的数量 DOM
+ *
+ * @param  {string} treeId   zTree id
+ * @param  {object} treeNode zTree node object
+ * @return 无返回值
+ */
+EditablePaperDirectoryTree.prototype.addCounter = function(treeId, treeNode) {
+    var $node = $('#' + treeNode.tId + '_a');
+    $node.after('<span class="count">[0]</span>');
+};
+
+/**
+ * 在节点的名字后面显示此目录下试卷的数量
+ *
+ * @param  {array} treeNodes zTree nodes
+ * @return 无返回值
+ */
+EditablePaperDirectoryTree.prototype.showPapersCount = function(treeNodes) {
+    if (!treeNodes) {return;}
+
+    for (var i=0; i<treeNodes.length; ++i) {
+        for (var j=0; j<this.paperCounts.length; ++j) {
+            var treeNode = treeNodes[i];
+            var paperCount = this.paperCounts[j];
+
+            if (treeNode.paperDirectoryId == paperCount.paperDirectoryId) {
+                $('#' + treeNode.tId + '_a').siblings('.count').replaceWith('<span class="count">[' + paperCount.count + ']</span>');
+            }
+        }
+    }
+};
+
+EditablePaperDirectoryTree.prototype.loadPapersCount = function() {
+    var self = this;
+    PaperDirectoryDao.loadPaperCounts(function(paperCounts) {
+        // self.paperCounts = paperCounts;
+
+        // 递归的计算目录上的试卷数量
+        var tree = new CountTree(paperCounts);
+        CountTree.recursiveCount(tree.root);
+        self.paperCounts = [];
+
+        for (var i=0; i<tree.treeNodes.length; ++i) {
+            var node = tree.treeNodes[i];
+            self.paperCounts.push({paperDirectoryId: node.id, parentPaperDirectoryId: node.parentId, count: node.sum});
+        }
+    });
 };

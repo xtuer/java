@@ -15,7 +15,7 @@ require.config({
         paperDirectory     : '/js/PaperDirectory',
         paperDirectoryTree : '/js/PaperDirectoryTree',
         knowledgePoint     : '/js/KnowledgePoint',
-        knowledgePointGroup: '/js/KnowledgePointGroup'
+        knowledgePointGroupTree: '/js/KnowledgePointGroupTree'
     },
     shim: {
         layer: {
@@ -43,6 +43,9 @@ require.config({
             deps: ['jquery']
         },
         paperDirectoryTree: {
+            deps: ['dnd', 'paperDirectory']
+        },
+        knowledgePointGroupTree: {
             deps: ['dnd', 'paperDirectory']
         }
     },

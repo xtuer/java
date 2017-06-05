@@ -1,5 +1,5 @@
 require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 'pagination', 'rest', 'urls', 'util',
-    'paper', 'knowledgePointGroup', 'paperDirectoryTree'], function($, Vue) {
+    'paper', 'paperDirectoryTree'], function($, Vue) {
     Util.activateSidebarItem(0);
     new EditablePaperDirectoryTree('directory-tree'); // 初始化目录树
 

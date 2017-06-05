@@ -4,6 +4,7 @@
         "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- 使用视图 view_paper_knowledge_point 可以简化试卷的查询 -->
 <mapper namespace="com.xtuer.mapper.PaperMapper">
     <sql id="paperColumns">
         p.paper_id            as paper_id,
@@ -14,6 +15,9 @@
         p.real_directory_name as real_directory_name,
         p.subject             as subject,
         p.publish_year        as publish_year,
+        p.region              as region,
+        p.paper_from          as paper_from,
+        p.paper_type          as paper_type,
         p.is_exportable       as is_exportable
     </sql>
     <sql id="paperColumnsWithKnowledgePoints">
@@ -25,6 +29,9 @@
         p.real_directory_name as real_directory_name,
         p.subject             as subject,
         p.publish_year        as publish_year,
+        p.region              as region,
+        p.paper_from          as paper_from,
+        p.paper_type          as paper_type,
         p.is_exportable       as is_exportable,
 
         kp.name               as kp_name,
@@ -34,51 +41,34 @@
     <!--查找试卷，同时查出试卷的知识点-->
     <select id="findPaperByPaperId" parameterType="string" resultMap="paperResultMap">
         SELECT <include refid="paperColumnsWithKnowledgePoints"/>
-        FROM paper AS p
-        LEFT JOIN (
-            SELECT ikp.name,
-                pkpr.paper_id,
-                pkpr.knowledge_point_id
-            FROM paper_knowledge_point_relation AS pkpr, knowledge_point AS ikp
-            WHERE pkpr.paper_id=#{paperId}
-                AND pkpr.knowledge_point_id=ikp.knowledge_point_id
-                AND pkpr.is_deleted=0
-        ) AS kp ON p.paper_id=kp.paper_id
+        FROM paper p
+        LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
         WHERE p.paper_id=#{paperId}
     </select>
 
     <!--查找目录下前 50 个试卷-->
     <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
-        SELECT <include refid="paperColumns"/>
-        FROM paper AS p
-        WHERE p.paper_directory_id=#{paperDirectoryId} AND is_deleted=0
-    </select>
-    <!--<select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
         SELECT <include refid="paperColumnsWithKnowledgePoints"/>
-        FROM paper AS p
-        LEFT JOIN (
-        	SELECT pkpr.paper_id AS paper_id, kp.knowledge_point_id AS knowledge_point_id, kp.name AS name
-            FROM paper_knowledge_point_relation pkpr, knowledge_point kp
-            WHERE pkpr.knowledge_point_id=kp.knowledge_point_id AND pkpr.is_deleted=0
-        ) AS kp on kp.paper_id=p.paper_id
-        WHERE p.paper_directory_id=#{paperDirectoryId} AND p.is_deleted=0
-    </select>-->
-
+        FROM (
+            SELECT * FROM paper WHERE paper_directory_id=#{paperDirectoryId} LIMIT ${offset}, ${size}
+        ) p
+        LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
+    </select>
 
     <!--目录下试卷的数量-->
     <select id="papersCountByPaperDirectoryId" parameterType="string" resultType="int">
         SELECT count(paper_id)
         FROM paper
-        WHERE paper_directory_id=#{paperDirectoryId} AND is_deleted=0
+        WHERE paper_directory_id=#{paperDirectoryId}
     </select>
 
-    <!--根据学科和名字查找前 50 个为分配目录的试卷-->
+    <!--根据学科和名字查找前 50 个未分配目录的试卷-->
     <select id="findPapersBySubjectAndNameFilterNotInPaperDirectory" resultMap="paperResultMap">
         SELECT <include refid="paperColumns"/>
         FROM paper AS p
-        WHERE subject=#{subject} AND paper_directory_id='0' AND is_deleted=0
+        WHERE p.subject=#{subject} AND p.paper_directory_id='0'
             <if test="nameFilter!=null and nameFilter!='' ">
-                AND original_name LIKE CONCAT('%',#{nameFilter},'%')
+                AND p.original_name LIKE CONCAT('%',#{nameFilter},'%')
             </if>
         ORDER BY p.original_name
         LIMIT 0, 50
@@ -86,13 +76,11 @@
 
     <!--查找目录下某个知识点的试卷-->
     <select id="findPapersByKnowledgePointIdsInPaperDirectory" resultMap="paperResultMap">
-        SELECT <include refid="paperColumns"/>
-        FROM paper p, paper_knowledge_point_relation pkpr
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper p, view_paper_knowledge_point kp
         WHERE p.paper_directory_id=#{paperDirectoryId}
-            AND p.paper_id=pkpr.paper_id
-            AND p.is_deleted=0
-            AND pkpr.is_deleted=0
-            AND pkpr.knowledge_point_id IN
+            AND p.paper_id=kp.paper_id
+            AND kp.knowledge_point_id IN
             <foreach collection="knowledgePointIds" item="pointId" open="(" close=")" separator=",">
                 #{pointId}
             </foreach>
@@ -100,19 +88,16 @@
 
     <!--查找试卷的知识点-->
     <select id="findKnowledgePointsByPaperId" parameterType="string" resultType="KnowledgePoint">
-        SELECT kp.knowledge_point_id AS knowledgePointId, kp.name AS name
-        FROM knowledge_point kp, paper_knowledge_point_relation pkpr
-        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id AND pkpr.paper_id=#{paperId} AND pkpr.is_deleted=0
+        SELECT paper_id as paperId, knowledge_point_id AS knowledgePointId, name
+        FROM view_paper_knowledge_point
+        WHERE paper_id=#{paperId}
     </select>
 
     <!--查找多个试卷的知识点-->
     <select id="findKnowledgePointsByPaperIds" resultType="KnowledgePoint">
-        SELECT pkpr.paper_id      AS paperId,
-            kp.knowledge_point_id AS knowledgePointId,
-            kp.name               AS name
-        FROM knowledge_point kp, paper_knowledge_point_relation pkpr
-        WHERE kp.knowledge_point_id=pkpr.knowledge_point_id  AND pkpr.is_deleted=0
-            AND pkpr.paper_id IN
+        SELECT paper_id as paperId, knowledge_point_id AS knowledgePointId, name
+        FROM view_paper_knowledge_point
+        WHERE paper_id IN
             <foreach collection="paperIds" item="paperId" open="(" close=")" separator=",">
                 #{paperId}
             </foreach>
@@ -121,8 +106,8 @@
     <!--查看试卷是否有知识点-->
     <select id="hasKnowledgePoint" resultType="boolean">
         SELECT EXISTS(
-            SELECT 1 FROM paper_knowledge_point_relation
-            WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId} AND is_deleted=0
+            SELECT 1 FROM view_paper_knowledge_point
+            WHERE paper_id=#{paperId}
         )
     </select>
 
@@ -156,6 +141,18 @@
         WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
     </update>
 
+    <!--插入试卷-->
+    <insert id="insertPaper" parameterType="Paper">
+        INSERT INTO paper(paper_id, name, uuid_name, original_name, real_directory_name, subject, created_time)
+        VALUES(#{paperId}, #{name}, #{uuidName}, #{originalName}, #{realDirectoryName}, #{subject}, now())
+    </insert>
+
+    <!--更新试卷的元数据-->
+    <update id="updatePaperMeta" parameterType="Paper">
+        UPDATE paper SET region=#{region}, paper_from=#{paperFrom}, paper_type=#{paperType}
+        WHERE subject=#{subject} AND original_name=#{originalName}
+    </update>
+
     <resultMap id="paperResultMap" type="Paper">
         <id property="paperId"               column="paper_id"/>
         <result property="name"              column="name"/>
@@ -165,6 +162,9 @@
         <result property="realDirectoryName" column="real_directory_name"/>
         <result property="subject"           column="subject"/>
         <result property="publishYear"       column="publish_year"/>
+        <result property="region"            column="region"/>
+        <result property="paperFrom"         column="paper_from"/>
+        <result property="paperType"         column="paper_type"/>
         <result property="exportable"        column="is_exportable"/>
 
         <collection property="knowledgePoints" ofType="KnowledgePoint" column="paper_id" columnPrefix="kp_" resultMap="knowledgePointResultMap"/>

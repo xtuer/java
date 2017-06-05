@@ -13,9 +13,12 @@ var Urls = {
     REST_KNOWLEDGE_POINT_GROUPS_BY_ID: '/rest/knowledgePointGroups/{knowledgePointGroupId}',
 
     // 知识点
-    REST_KNOWLEDGE_POINTS_OF_GROUP: '/rest/knowledgePointGroups/{knowledgePointGroupId}/knowledgePoints',
-    REST_KNOWLEDGE_POINTS         : '/rest/knowledgePoints',
-    REST_KNOWLEDGE_POINTS_BY_ID   : '/rest/knowledgePoints/{knowledgePointId}',
+    REST_KNOWLEDGE_POINTS_FILTER   : '/rest/knowledgePoints?parentKnowledgePointId={parentKnowledgePointId}&type={type}',
+    REST_KNOWLEDGE_POINTS          : '/rest/knowledgePoints',
+    REST_KNOWLEDGE_POINTS_BY_ID    : '/rest/knowledgePoints/{knowledgePointId}',
+    REST_KNOWLEDGE_POINTS_IN_GROUP : '/rest/knowledgePointGroups/{knowledgePointGroupId}/knowledgePoints',
+    REST_KNOWLEDGE_POINTS_NAME     : '/rest/knowledgePoints/{knowledgePointId}/name',
+    REST_KNOWLEDGE_POINTS_PARENT_ID: '/rest/knowledgePoints/{knowledgePointId}/parentKnowledgePointId',
 
     // 试卷
     REST_PAPERS_BY_ID           : '/rest/papers/{paperId}',

@@ -46,3 +46,17 @@
 .ztree li span.button.ico_open::before, .ztree li span.button.ico_close::before {
     display: none;
 }
+
+/* 展开图标 */
+.ztree li span.button.roots_open::before,
+.ztree li span.button.center_open::before,
+.ztree li span.button.bottom_open::before {
+    content: "\f068";
+}
+
+/* 关闭图标 */
+.ztree li span.button.roots_close::before,
+.ztree li span.button.center_close::before,
+.ztree li span.button.bottom_close::before {
+    content: "\f067";
+}

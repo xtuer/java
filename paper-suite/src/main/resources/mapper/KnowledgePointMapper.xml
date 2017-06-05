@@ -6,17 +6,60 @@
 
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.KnowledgePointMapper">
-    <select id="findKnowledgePointsByKnowledgePointGroupId" parameterType="string" resultType="KnowledgePoint">
-        SELECT knowledge_point_id as knowledgePointId,
-            knowledge_point_group_id as knowledgePointGroupId,
-            name
-        FROM knowledge_point WHERE knowledge_point_group_id = #{knowledgePointGroupId} AND is_deleted=0
+    <sql id="columns">
+        name,
+        type,
+        knowledge_point_id as knowledgePointId,
+        parent_knowledge_point_id as parentKnowledgePointId
+    </sql>
+
+    <select id="findKnowledgePoints" resultType="KnowledgePoint">
+        SELECT <include refid="columns"/>
+        FROM knowledge_point
+        WHERE parent_knowledge_point_id=#{parentKnowledgePointId}
+            AND type=#{type}
+            AND is_deleted=0
         ORDER BY name
     </select>
 
+    <!--查找所有知识点分类-->
+    <select id="findAllKnowledgePointGroups" resultType="KnowledgePoint">
+        SELECT <include refid="columns"/>
+        FROM knowledge_point
+        WHERE type=0 AND is_deleted=0
+        ORDER BY name
+    </select>
+
+    <!--查找分类下的知识点-->
+    <select id="findKnowledgePointsInGroup" parameterType="string" resultType="KnowledgePoint">
+        SELECT <include refid="columns"/>
+        FROM knowledge_point
+        WHERE parent_knowledge_point_id=#{knowledgePointGroupId}
+            AND type=1
+            AND is_deleted=0
+        ORDER BY name
+    </select>
+
+    <!--分类下是否有知识点-->
+    <select id="hasKnowledgePoints" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1 FROM knowledge_point
+            WHERE parent_knowledge_point_id=#{knowledgePointId} AND is_deleted=0
+        )
+    </select>
+
+    <!--知识点下是否有试卷-->
+    <select id="hasPapers" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1 FROM view_paper_knowledge_point
+            WHERE knowledge_point_id=#{knowledgePointId}
+        )
+    </select>
+
+    <!--创建知识点-->
     <insert id="createKnowledgePoint" parameterType="KnowledgePoint">
-        INSERT INTO knowledge_point(knowledge_point_id, name, knowledge_point_group_id, is_deleted)
-        VALUES(#{knowledgePointId}, #{name}, #{knowledgePointGroupId}, 0)
+        INSERT INTO knowledge_point(knowledge_point_id, parent_knowledge_point_id, name, type, is_deleted)
+        VALUES(#{knowledgePointId}, #{parentKnowledgePointId}, #{name}, #{type}, 0)
     </insert>
 
     <update id="updateKnowledgePoint">
@@ -24,7 +67,19 @@
         WHERE knowledge_point_id=#{knowledgePointId}
     </update>
 
-    <update id="markKnowledgePointAsDeleted">
+    <!--重命名知识点-->
+    <update id="renameKnowledgePoint">
+        UPDATE knowledge_point SET name=#{name}
+        WHERE knowledge_point_id=#{knowledgePointId}
+    </update>
+
+    <!--移动知识点到其他分类-->
+    <update id="reparentKnowledgePoint">
+        UPDATE knowledge_point SET parent_knowledge_point_id=#{newParentKnowledgePointId}
+        WHERE knowledge_point_id=#{knowledgePointId}
+    </update>
+
+    <update id="deleteKnowledgePoint">
         UPDATE knowledge_point SET is_deleted=1 WHERE knowledge_point_id=#{knowledgePointId}
     </update>
 </mapper>
