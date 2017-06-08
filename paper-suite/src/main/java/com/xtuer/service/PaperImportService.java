@@ -90,6 +90,8 @@ public class PaperImportService {
             String paperRegion = record.get("PaperRegion").trim();
             String paperFrom = record.get("PaperFrom").trim();
             String paperType = record.get("PaperType").trim();
+            String description = record.get("memo").trim();
+            String originalPaperId = record.get("FixPaperID").trim();
 
             Paper paper = new Paper();
             paper.setOriginalName(paperName + ".doc")
@@ -97,7 +99,8 @@ public class PaperImportService {
                     .setRegion(paperRegion)
                     .setPaperFrom(paperFrom)
                     .setPaperType(paperType)
-                    .setSubject(subject);
+                    .setSubject(subject)
+                    .setDescription(description);
 
             mapper.updatePaperMeta(paper);
         }

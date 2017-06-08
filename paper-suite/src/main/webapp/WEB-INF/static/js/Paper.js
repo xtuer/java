@@ -51,8 +51,11 @@ PaperDao.findPapersByKnowledgePointIdsInPaperDirectory = function(paperDirectory
  * @return 无返回值
  */
 PaperDao.update = function(paper, callback) {
+    delete paper.knowledgePoints;
+
     $.rest.update({url: Urls.REST_PAPERS_BY_ID, urlParams: {paperId: paper.paperId},
-    data: {name: paper.name, publishYear: paper.publishYear, exportable: paper.exportable},
+    // data: {name: paper.name, publishYear: paper.publishYear, status: paper.status, description: paper.description},
+    data: paper,
     success: function(result) {
         if (!result.success) {
             layer.msg(result.message);
@@ -137,20 +140,25 @@ PaperDao.addPapersToPaperDirectory = function(papers, paperDirectoryId, callback
 /**
  * 添加知识点到试卷
  *
- * @param  {String}   paperId        试卷 id
- * @param  {String}   knowledgePoint 知识点
- * @param  {Function} callback       添加知识点成功时的回调函数，参数为被添加的知识点
+ * @param  {String}   paperId         试卷 id
+ * @param  {Array}    knowledgePoints 知识点数组
+ * @param  {Function} callback        添加知识点成功时的回调函数，参数为新添加的知识点的 ids 数组
  * @return 无返回值
  */
 
-PaperDao.addKnowledgePoint = function(paperId, knowledgePoint, callback) {
+PaperDao.addKnowledgePoints = function(paperId, knowledgePoints, callback) {
+    // 知识点的 ids
+    var pointIds = knowledgePoints.map(function(p) {
+        return p.knowledgePointId;
+    });
+
     $.rest.create({url: Urls.REST_PAPERS_KNOWLEDGE_POINTS, urlParams: {paperId: paperId},
-    data: {knowledgePointId: knowledgePoint.knowledgePointId}, success: function(result) {
+    data: {knowledgePointIds: pointIds}, success: function(result) {
         if (!result.success) {
             layer.msg(result.message);
             return;
         }
 
-        callback && callback(knowledgePoint);
+        callback && callback(result.data);
     }});
 };

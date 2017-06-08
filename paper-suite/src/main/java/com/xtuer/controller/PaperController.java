@@ -49,10 +49,7 @@ public class PaperController {
 
     @PutMapping(UriView.REST_PAPERS_BY_ID)
     @ResponseBody
-    public Result updatePaper(@PathVariable String paperId, Paper paper) {
-        if (paperId != paper.getPaperId()) {
-            return Result.fail("试卷 ID 不对");
-        }
+    public Result updatePaper(Paper paper) {
         paperMapper.updatePaper(paper);
 
         return Result.ok();
@@ -74,7 +71,6 @@ public class PaperController {
                                                  @RequestParam(required=false, defaultValue="50") int size) {
         int offset = PageUtils.offset(page, size);
         List<Paper> papers = paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, size);
-        loadKnowledgePoints(papers);
 
         return Result.ok("", papers);
     }
@@ -129,23 +125,27 @@ public class PaperController {
     /**
      * 给试卷添加知识点
      * URL: http://localhost:8080/rest/papers/23232/knowledgePoints
-     * 参数: knowledgePointId
+     * 参数: knowledgePointIds[]
      *
      * @param paperId
-     * @param knowledgePointId
+     * @param knowledgePointIds
      * @return
      */
     @PostMapping(UriView.REST_PAPERS_KNOWLEDGE_POINTS)
     @ResponseBody
-    public Result addKnowledgePoint(@PathVariable String paperId, @RequestParam String knowledgePointId) {
-        // 如果知识点存在则不添加
-        // 如果知识点不存在则添加
-        if (paperMapper.hasKnowledgePoint(paperId, knowledgePointId)) {
-            return Result.fail("知识点已经存在，不需要重复添加");
-        } else {
-            paperMapper.addKnowledgePoint(paperId, knowledgePointId);
-            return Result.ok("知识点添加成功");
+    public Result addKnowledgePoints(@PathVariable String paperId, @RequestParam("knowledgePointIds[]") List<String> knowledgePointIds) {
+        List<String> addedKnowledgePointIds = new LinkedList<>(); // 新增加的知识点 id
+
+        for (String knowledgePointId : knowledgePointIds) {
+            // 如果知识点存在则不添加
+            // 如果知识点不存在则添加
+            if (!paperMapper.hasKnowledgePoint(paperId, knowledgePointId)) {
+                paperMapper.addKnowledgePoint(paperId, knowledgePointId);
+                addedKnowledgePointIds.add(knowledgePointId);
+            }
         }
+
+        return Result.ok("知识点添加成功", addedKnowledgePointIds);
     }
 
     @GetMapping(UriView.REST_PAPERS_KNOWLEDGE_POINTS)
@@ -184,39 +184,7 @@ public class PaperController {
              papers = paperMapper.findPapersByKnowledgePointIdsInPaperDirectory(paperDirectoryId, knowledgePointIds);
         }
 
-        loadKnowledgePoints(papers);
-
         return Result.ok("", papers);
-    }
-
-    /**
-     * 加载试卷的知识点
-     *
-     * @param papers 试卷的 list
-     */
-    public void loadKnowledgePoints(List<Paper> papers) {
-        if (papers.isEmpty()) {
-            return;
-        }
-
-        List<String> paperIds = new LinkedList<>();
-
-        // 把所有试卷的 id 放入 paperIds
-        for (Paper paper : papers) {
-            paperIds.add(paper.getPaperId());
-        }
-
-        // 根据 paperIds 查找这些试卷的知识点
-        List<KnowledgePoint> points = paperMapper.findKnowledgePointsByPaperIds(paperIds);
-
-        // 知识点放入对应的试卷
-        for (KnowledgePoint point : points) {
-            for (Paper paper : papers) {
-                if (point.getPaperId().equals(paper.getPaperId())) {
-                    paper.getKnowledgePoints().add(point);
-                }
-            }
-        }
     }
 
     /**

@@ -13,6 +13,13 @@
         parent_knowledge_point_id as parentKnowledgePointId
     </sql>
 
+    <!--获取所有的知识点-->
+    <select id="getAllKnowledgePoints" resultType="KnowledgePoint">
+        SELECT <include refid="columns"/>
+        FROM knowledge_point
+        WHERE is_deleted=0
+    </select>
+
     <select id="findKnowledgePoints" resultType="KnowledgePoint">
         SELECT <include refid="columns"/>
         FROM knowledge_point

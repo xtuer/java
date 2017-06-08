@@ -1,3 +1,51 @@
+function ReadOnlyPaperDirectoryTree(treeElementId) {
+    this.treeElementId = treeElementId; // 树的元素 id
+    this.tree = null;
+    this.init();
+}
+
+ReadOnlyPaperDirectoryTree.prototype.init = function() {
+    var self = this;
+    var settings = self.getSettings();
+
+    PaperDirectoryDao.loadPaperDirectories(function(dirs) {
+        for (var i = 0; i < dirs.length; ++i) {
+            dirs[i].isParent = true;
+        }
+
+        self.tree = $.fn.zTree.init($("#" + self.treeElementId), settings, dirs);
+    });
+};
+
+ReadOnlyPaperDirectoryTree.prototype.getSettings = function() {
+    var self = this;
+    var settings = {
+        data: {
+            simpleData: {
+                enable: true,
+                idKey:  'paperDirectoryId',
+                pIdKey: 'parentPaperDirectoryId',
+                rootPId: 0
+            },
+            keep: {
+                parent: true
+            }
+        },view: {
+            selectedMulti: false, // [*] 为 true 时可选择多个节点，为 false 只能选择一个，默认为 true
+            showIcon: false
+        },
+        check: {
+            enable: true,
+            nocheckInherit: true,
+            chkboxType: { 'Y': 's', 'N': '' }
+        },
+        callback: {
+        }
+    };
+
+    return settings;
+};
+
 /*-----------------------------------------------------------------------------|
  |                                  CountTree                                  |
  |----------------------------------------------------------------------------*/
@@ -95,7 +143,7 @@ CountTree.recursiveCount = function(treeNode) {
 function EditablePaperDirectoryTree(treeElementId) {
     this.treeElementId = treeElementId; // 树的元素 id
     this.tree = null;
-    this.setting = null;
+    this.settings = null;
     this.paperCounts = []; // 所有目录下试卷的数量
 
     this.init();
@@ -106,10 +154,7 @@ function EditablePaperDirectoryTree(treeElementId) {
  */
 EditablePaperDirectoryTree.prototype.init = function() {
     var self = this;
-    self.setting = self.getSettings();
-
-    // 加载目录下试卷的数量
-    self.loadPapersCount();
+    self.settings = self.getSettings();
 
     // 一次性加载所有目录
     PaperDirectoryDao.loadPaperDirectories(function(paperDirectories) {
@@ -119,12 +164,13 @@ EditablePaperDirectoryTree.prototype.init = function() {
         }
 
         // 创建 zTree 对象
-        self.tree = $.fn.zTree.init($('#' + self.treeElementId), self.setting, paperDirectories);
+        self.tree = $.fn.zTree.init($('#' + self.treeElementId), self.settings, paperDirectories);
+
+        // 加载目录下试卷的数量
+        self.loadPaperCounts();
 
         // 下一个事件循环中处理显示第一个目录下的试卷
         setTimeout(function() {
-            self.showPapersCount(TreeUtils.getRoots(self.tree));
-
             // 选中第一个节点
             var firstRoot = TreeUtils.getRoots(self.tree)[0];
             $('#vue-papers').attr('data-paper-directory-id', firstRoot.paperDirectoryId);
@@ -173,7 +219,6 @@ EditablePaperDirectoryTree.prototype.init = function() {
     $('#menu-item-rename').click(function(event) {
         self.hideMenu();
         var nodes = self.tree.getSelectedNodes();
-
         if (nodes.length === 0) { return; }
 
         self.tree.editName(nodes[0]); // 编辑第一个被选中的节点
@@ -193,8 +238,7 @@ EditablePaperDirectoryTree.prototype.init = function() {
     // 刷新目录上试卷的数量，从服务器重新加载试卷的数量并更新到 DOM
     $('#menu-item-refresh-count').click(function(event) {
         self.hideMenu();
-        self.loadPapersCount();
-        self.showPapersCount(TreeUtils.getAllNodes(self.tree));
+        self.loadPaperCounts();
     });
 };
 
@@ -384,7 +428,7 @@ EditablePaperDirectoryTree.prototype.showPapersCount = function(treeNodes) {
     }
 };
 
-EditablePaperDirectoryTree.prototype.loadPapersCount = function() {
+EditablePaperDirectoryTree.prototype.loadPaperCounts = function() {
     var self = this;
     PaperDirectoryDao.loadPaperCounts(function(paperCounts) {
         // self.paperCounts = paperCounts;
@@ -398,5 +442,7 @@ EditablePaperDirectoryTree.prototype.loadPapersCount = function() {
             var node = tree.treeNodes[i];
             self.paperCounts.push({paperDirectoryId: node.id, parentPaperDirectoryId: node.parentId, count: node.sum});
         }
+
+        self.showPapersCount(TreeUtils.getAllNodes(self.tree));
     });
 };

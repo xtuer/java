@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface KnowledgePointMapper {
+    // 获取所有的知识点
+    List<KnowledgePoint> getAllKnowledgePoints();
+
     // 查找指定知识点下的知识点
     List<KnowledgePoint> findKnowledgePoints(@Param("parentKnowledgePointId") String parentKnowledgePointId, @Param("type") int type);
 

@@ -1,7 +1,7 @@
 require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 'pagination', 'rest', 'urls', 'util',
-    'paper', 'paperDirectoryTree'], function($, Vue) {
+    'paper', 'paperDirectoryTree', 'knowledgePointGroupTree'], function($, Vue) {
     Util.activateSidebarItem(0);
-    new EditablePaperDirectoryTree('directory-tree'); // 初始化目录树
+    new EditablePaperDirectoryTree('directory-tree'); // 左侧的目录树
 
     /*-----------------------------------------------------------------------------|
      |                                    所有知识点                                 |
@@ -112,32 +112,45 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                 });
             }
         },
+        filters: {
+            statusText: function(value) {
+                value = parseInt(value);
+
+                switch(value) {
+                    case 0: return '未处理';
+                    case 1: return '已通过';
+                    case 2: return '未通过';
+                }
+            }
+        },
         methods: {
             editPaper: function(paper) {
                 var self = this;
                 this.editedIndex = this.papers.indexOf(paper);
-                var paperId = paper.paperId;
 
-                layer.open({
+                var dlg = layer.open({
                     type: 1,
-                    // title: false,
                     title: paper.originalName,
                     skin: 'layui-layer-rim', //加上边框
+                    shade: 0.8,
                     closeBtn: 0,
                     area: ['750px'], //宽高
                     content: $('#paper-editor-dialog'),
                     btn: ['保存', '预览', '下载', '取消'],
                     btn1: function() {
                         // 保存更新
-                        var paper = window.vuePaperEditor.paper;
-                        paper.publishYear = $('#vue-paper-editor #publish-year').val();
+                        var finalPaper = window.vuePaperEditor.paper;
+                        finalPaper.publishYear = $('#publish-year').val();
+                        finalPaper.status = $('#paper-status').dropdown('get value');
 
-                        if (!paper.name) {
+                        console.log(paper.publishYear);
+
+                        if (!finalPaper.name) {
                             layer.msg('试卷名不能为空');
                         } else {
-                            PaperDao.update(paper, function(updatedPaper) {
-                                window.vuePapers.papers.splice(window.vuePapers.editedIndex, 1, updatedPaper);
-                                layer.closeAll();
+                            PaperDao.update(finalPaper, function(updatedPaper) {
+                                window.vuePapers.papers.replace(self.editedIndex, updatedPaper);
+                                layer.close(dlg);
                             });
                         }
                     },
@@ -152,25 +165,9 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                     btn4: function() {
                         return true; // 点击取消按钮，关闭对话框
                     }, success: function() {
-                        // 知识点和知识点分类下拉框恢复默认选项
-                        $('#vue-paper-editor .knowledge-points-dropdown').dropdown('restore defaults');
-                        $('#vue-paper-editor .knowledge-point-groups-dropdown').dropdown('restore defaults');
+                        window.vuePaperEditor.paper = $.extend({}, paper); // 复制一份试卷进行编辑
+                        $('#paper-status').dropdown('set selected', paper.status+'');
                         $('#year-chooser').calendar({type: 'year'});
-
-                        // 加载知识点分类
-                        KnowledgePointGroupDao.loadKnowledgePointGroups(function(knowledgePointGroups) {
-                            window.vuePaperEditor.knowledgePointGroups = [];
-                            window.vuePaperEditor.knowledgePointGroups = knowledgePointGroups;
-                        });
-
-                        // 加载试卷
-                        PaperDao.findById(paperId, function(paper) {
-                            paper.publishYear = paper.publishYear || '';
-                            if (paper.publishYear.length > 10) {
-                                paper.publishYear = paper.publishYear.substring(0, 10); // 只显示年月日
-                            }
-                            window.vuePaperEditor.paper = paper;
-                        });
                     }
                 });
             },
@@ -215,37 +212,103 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
         }
     });
 
+    /*-----------------------------------------------------------------------------|
+     |                                    编辑试卷                                  |
+     |----------------------------------------------------------------------------*/
     window.vuePaperEditor = new Vue({
         el: '#vue-paper-editor',
         data: {
-            paper: {originalName: '', name: '', publishYear: '', knowledgePoints: []},
-            knowledgePoints: [], // 知识点
-            knowledgePointGroups: [] // 知识点分类
+            paper: {originalName: '', name: '', publishYear: '', knowledgePoints: []}
         },
         methods: {
             // 加载知识点
             loadKnowledgePoints: function(knowledgePointGroup) {
+                var self = this;
                 $('#vue-paper-editor .knowledge-points-dropdown').dropdown('restore defaults');
                 KnowledgePointGroupDao.loadKnowledgePoints(knowledgePointGroup.knowledgePointGroupId, function(groups) {
-                    window.vuePaperEditor.knowledgePoints = [];
-                    window.vuePaperEditor.knowledgePoints = groups;
-                });
-            },
-            // 添加知识点到试卷
-            addKnowledgePointToPaper: function(knowledgePoint) {
-                PaperDao.addKnowledgePoint(this.paper.paperId, knowledgePoint, function() {
-                    window.vuePaperEditor.paper.knowledgePoints.push(knowledgePoint);
+                    self.knowledgePoints = [];
+                    self.knowledgePoints = groups;
                 });
             },
             // 删除试卷的知识点
             removeKnowledgePointFromPaper: function(knowledgePoint) {
+                var self = this;
                 var paperId = this.paper.paperId;
                 var knowledgePointId = knowledgePoint.knowledgePointId;
 
                 PaperDao.removeKnowledgePoint(paperId, knowledgePointId, function() {
-                    var index = window.vuePaperEditor.paper.knowledgePoints.indexOf(knowledgePoint);
-                    window.vuePaperEditor.paper.knowledgePoints.splice(index, 1);
+                    var index = self.paper.knowledgePoints.indexOf(knowledgePoint);
+                    self.paper.knowledgePoints.remove(index);
                 });
+            },
+            // 选择知识点对话框
+            openKnowledgePointsChooser: function() {
+                var self = this;
+                var dlg = layer.open({
+                    type: 1,
+                    title: '选择知识点',
+                    skin: 'layui-layer-rim',
+                    shade: 0.8,
+                    closeBtn: 0,
+                    area: ['550px'],
+                    content: $('#knowledge-points-dialog'),
+                    btn: ['确定', '取消'],
+                    btn1: function() {
+                        // 取得选中的知识点
+                        var selectedPoints = window.vueKnowledgePointsChooser.knowledgePoints.filter(function(point) {
+                            return point.checked;
+                        });
+
+                        // 添加知识点到试卷
+                        if (selectedPoints.length > 0) {
+                            PaperDao.addKnowledgePoints(self.paper.paperId, selectedPoints, function(addedPointIds) {
+                                var addedPoints = selectedPoints.filter(function(p) {
+                                    for (var i = 0; i < addedPointIds.length; ++i) {
+                                        if (addedPointIds[i] == p.knowledgePointId) {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                });
+
+                                for (var j = 0; j < addedPoints.length; ++j) {
+                                    self.paper.knowledgePoints.push($.extend({}, selectedPoints[j]));
+                                }
+
+                                layer.close(dlg);
+                            });
+                        }
+                    },
+                    success: function() {
+                        window.vueKnowledgePointsChooser.deselectAll();
+                    }
+                });
+            }
+        }
+    });
+
+    /*-----------------------------------------------------------------------------|
+     |                                    知识点选择                                 |
+     |----------------------------------------------------------------------------*/
+    window.vueKnowledgePointsChooser = new Vue({
+        el: '#vue-knowledge-points-chooser',
+        data: {
+            knowledgePoints: []
+        },
+        methods: {
+            choose: function(point, event) {
+                point.checked = point.checked ? false : true;
+                if (point.checked) {
+                    $(event.target).addClass('checked');
+                } else {
+                    $(event.target).removeClass('checked');
+                }
+            },
+            deselectAll: function() {
+                for (var i = 0; i < this.knowledgePoints.length; ++i) {
+                    this.knowledgePoints[i].checked = false;
+                }
             }
         }
     });
@@ -291,6 +354,9 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
         });
     });
 
+    new ReadOnlyKnowledgePointGroupTree('read-only-knowledge-point-group-tree');
+
+    // 点击按钮 '所有知识点' 显示当前目录下的所有知识点
     $('#show-konwledge-points').click(function(event) {
         // 如果所有知识点显示的，则隐藏
         if (!$('#vue-knowledge-points').is(':hidden')) {
@@ -315,6 +381,48 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
         }});
     });
 
+    // 弹出试卷导出对话框
+    $('#open-export-dialog-button').click(function(event) {
+        var dlg = layer.open({
+            type: 1,
+            title: '试卷导出 -- 仅导出审核通过的试卷',
+            skin: 'layui-layer-rim', //加上边框
+            closeBtn: 0,
+            shade: 0.8,
+            area: ['450px', '400px'], //宽高
+            content: $('#export-papers-dialog'),
+            btn: ['导出', '全选', '展开', '收拢', '取消'],
+            btn1: function() {
+                var nodes = window.exportTree.tree.getCheckedNodes();
+                var paperDirectoryIds = nodes.map(function(n) {
+                    return n.paperDirectoryId;
+                });
+
+                exportPapers(paperDirectoryIds);
+            },
+            btn2: function() {
+                window.exportTree.tree.checkAllNodes(true);
+                return false;
+            },
+            btn3: function() {
+                window.exportTree.tree.expandAll(true);
+                return false;
+            },
+            btn4: function() {
+                window.exportTree.tree.expandAll(false);
+                return false;
+            },
+            success: function() {
+                // 如果导出的目录树存在则销毁
+                if (window.exportTree) {
+                    $.fn.zTree.destroy("export-paper-directories-tree");
+                }
+
+                window.exportTree = new ReadOnlyPaperDirectoryTree('export-paper-directories-tree'); // 导出试卷的目录树
+            }
+        });
+    });
+
     $('.pagination').jqPagination({
         max_page: 30, // 总页数
         page_string: '{max_page} 页之 {current_page}', // 页数显示样式
@@ -324,4 +432,47 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
     });
 
     $('.dropdown').dropdown();
+
+    /**
+     * 导出试卷
+     *
+     * @param {Array} paperDirectoryIds 目录的 id 数组
+     * @return 无返回值
+     */
+    function exportPapers(paperDirectoryIds) {
+        if (paperDirectoryIds.isEmpty()) {
+            layer.msg('请选择目录');
+            return;
+        }
+
+        $.rest.create({url: Urls.REST_EXPORT_PAPERS, data: {paperDirectoryIds: paperDirectoryIds}, success: function(result) {
+            // 后台正在执行导出操作
+            if (!result.success) {
+                layer.msg(result.message);
+                return;
+            }
+
+            // 执行导出，显示 loading 状态
+            if ('paper_export_running' === result.data) {
+                $('#export-papers-dialog .dimmer').addClass('active');
+                checkExportPapersStatus();
+            }
+        }});
+    }
+
+    /**
+     * 检查导出状态
+     *
+     * @return 无返回值
+     */
+    function checkExportPapersStatus() {
+        var checker = setInterval(function() {
+            $.rest.get({url: Urls.REST_EXPORT_PAPERS_STATUS, success: function(result) {
+                if ('paper_export_finished' === result.data) {
+                    $('#export-papers-dialog .dimmer').removeClass('active');
+                    clearInterval(checker);
+                }
+            }});
+        }, 1000);
+    }
 });

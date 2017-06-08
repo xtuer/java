@@ -24,8 +24,8 @@ public class PaperService {
     @Autowired
     private ServletContext servletContext;
 
-    @Resource(name = "yamlProperties")
-    private Properties yamlProperties;
+    @Resource(name = "globalConfig")
+    private Properties config;
 
     /**
      * 获取试卷的预览文件的 URL。
@@ -65,7 +65,7 @@ public class PaperService {
     public File getPaperFile(Paper paper) {
         String realDir = paper.getRealDirectoryName(); // 试卷的上一级目录
         String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
-        String paperDir = yamlProperties.getProperty("paper.baseDirectory") + "/" + realDir; // 试卷的所在目录
+        String paperDir = config.getProperty("paper.baseDirectory") + "/" + realDir; // 试卷的所在目录
 
         return new File(paperDir, paperName); // 试卷文件
     }

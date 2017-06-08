@@ -18,7 +18,9 @@
         p.region              as region,
         p.paper_from          as paper_from,
         p.paper_type          as paper_type,
-        p.is_exportable       as is_exportable
+        p.description         as description,
+        p.original_paper_id   as original_paper_id,
+        p.status              as status
     </sql>
     <sql id="paperColumnsWithKnowledgePoints">
         p.paper_id            as paper_id,
@@ -32,11 +34,37 @@
         p.region              as region,
         p.paper_from          as paper_from,
         p.paper_type          as paper_type,
-        p.is_exportable       as is_exportable,
+        p.description         as description,
+        p.original_paper_id   as original_paper_id,
+        p.status              as status,
 
         kp.name               as kp_name,
         kp.knowledge_point_id as kp_knowledge_point_id
     </sql>
+
+    <!--查找目录下的试卷-->
+    <select id="findPapersInPaperDirectories" resultMap="paperResultMap">
+        SELECT <include refid="paperColumns"/>
+        FROM paper p
+        WHERE status=#{status} AND paper_directory_id IN (
+            <foreach collection="paperDirectoryIds" item="directoryId" separator=",">
+                #{directoryId}
+            </foreach>
+        )
+    </select>
+
+    <!--查找目录下试卷用到的知识点关系-->
+    <select id="findPaperKnowledgePointsRelationInPaperDirectories" resultType="KnowledgePoint">
+        SELECT paper_id AS paperId, knowledge_point_id AS knowledgePointId
+        FROM paper_knowledge_point_relation
+        WHERE is_deleted=0 AND paper_id IN (
+            SELECT paper_id FROM paper WHERE status=#{status} AND is_deleted=0 AND paper_directory_id IN (
+                <foreach collection="paperDirectoryIds" item="directoryId" separator=",">
+                    #{directoryId}
+                </foreach>
+            )
+        )
+    </select>
 
     <!--查找试卷，同时查出试卷的知识点-->
     <select id="findPaperByPaperId" parameterType="string" resultMap="paperResultMap">
@@ -50,7 +78,9 @@
     <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
         SELECT <include refid="paperColumnsWithKnowledgePoints"/>
         FROM (
-            SELECT * FROM paper WHERE paper_directory_id=#{paperDirectoryId} LIMIT ${offset}, ${size}
+            SELECT * FROM paper WHERE paper_directory_id=#{paperDirectoryId}
+            ORDER BY status
+            LIMIT ${offset}, ${size}
         ) p
         LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
     </select>
@@ -107,7 +137,7 @@
     <select id="hasKnowledgePoint" resultType="boolean">
         SELECT EXISTS(
             SELECT 1 FROM view_paper_knowledge_point
-            WHERE paper_id=#{paperId}
+            WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
         )
     </select>
 
@@ -130,14 +160,15 @@
         </foreach>
     </update>
 
-    <!--更新试卷，目前只能更新名字和发布时间-->
+    <!--更新试卷，目前只能更新名字、发布时间、审核状态和描述-->
     <update id="updatePaper" parameterType="Paper">
-        UPDATE paper SET name=#{name}, publish_year=#{publishYear}, is_exportable=#{exportable}
+        UPDATE paper
+        SET name=#{name}, publish_year=#{publishYear}, status=#{status}, description=#{description}
         WHERE paper_id=#{paperId}
     </update>
 
     <update id="deleteKnowledgePoint">
-        UPDATE paper_knowledge_point_relation SET is_deleted=1
+        DELETE FROM paper_knowledge_point_relation
         WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
     </update>
 
@@ -149,7 +180,7 @@
 
     <!--更新试卷的元数据-->
     <update id="updatePaperMeta" parameterType="Paper">
-        UPDATE paper SET region=#{region}, paper_from=#{paperFrom}, paper_type=#{paperType}
+        UPDATE paper SET region=#{region}, paper_from=#{paperFrom}, paper_type=#{paperType}, original_paper_id=#{originalPaperId}
         WHERE subject=#{subject} AND original_name=#{originalName}
     </update>
 
@@ -165,7 +196,9 @@
         <result property="region"            column="region"/>
         <result property="paperFrom"         column="paper_from"/>
         <result property="paperType"         column="paper_type"/>
-        <result property="exportable"        column="is_exportable"/>
+        <result property="description"       column="description"/>
+        <result property="originalPaperId"   column="original_paper_id"/>
+        <result property="status"            column="status"/>
 
         <collection property="knowledgePoints" ofType="KnowledgePoint" column="paper_id" columnPrefix="kp_" resultMap="knowledgePointResultMap"/>
     </resultMap>

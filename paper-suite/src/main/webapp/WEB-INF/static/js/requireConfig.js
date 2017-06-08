@@ -46,7 +46,7 @@ require.config({
             deps: ['dnd', 'paperDirectory']
         },
         knowledgePointGroupTree: {
-            deps: ['dnd', 'paperDirectory']
+            deps: ['dnd', 'knowledgePoint']
         }
     },
     map: {

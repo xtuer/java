@@ -80,6 +80,15 @@ Array.prototype.empty = function() {
     this.splice(0, this.length);
 };
 
+/**
+ * 判断数组是否为空
+ *
+ * @return 数组为空返回 true，否则返回 false
+ */
+Array.prototype.isEmpty = function() {
+    return this.length === 0;
+};
+
 /*-----------------------------------------------------------------------------|
  |                                    Util                                     |
  |----------------------------------------------------------------------------*/

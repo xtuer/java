@@ -3,7 +3,7 @@ body {
     font-family: "微软雅黑", Helvetica, Arial, sans-serif;
 }
 
-.directory-tree-side-bar {
+.directory-tree-sidebar {
     position: fixed;
     top: 0;
     left: 90px;
@@ -11,22 +11,19 @@ body {
     bottom: 0;
     border-right: 1px solid #DADADA;
     overflow: auto;
-    /*z-index: 1;*/
 }
 
 .main {
     position: fixed;
     top: 0;
-    left: 355px;
+    left: 340px;
     right: 0;
     bottom: 0;
     overflow: auto;
-    /*z-index: 1;*/
 }
 
 #tool-bar {
     margin: 0;
-    padding: 1rem;
     padding-bottom: 0;
 }
 
@@ -69,6 +66,11 @@ body {
 
 #vue-papers .ui.card .dimmable .content {
     padding: 5px;
+}
+
+#vue-paper-editor textarea {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 #directory-tree {
@@ -125,6 +127,7 @@ li#menu-item-delete, li#menu-item-rename {
 
 #vue-knowledge-points {
     display: none;
+    margin: 0rem 0rem -1rem;
 }
 
 #vue-knowledge-points .tag {
@@ -132,8 +135,14 @@ li#menu-item-delete, li#menu-item-rename {
     margin-bottom: 5px;
 }
 
-#vue-knowledge-points .tag.checked {
+#vue-knowledge-points .tag.checked,
+#vue-knowledge-points-chooser .ui.label.checked {
     background: darkgrey;
+}
+
+#vue-knowledge-points-chooser .ui.label {
+    margin-top: 0.5em;
+    margin-left: 0.5em;
 }
 
 #year-chooser .ui.label {
@@ -146,10 +155,30 @@ li#menu-item-delete, li#menu-item-rename {
     border-bottom-left-radius: 0;
 }
 
+#export-papers-dialog {
+    display: none;
+    padding: 10px;
+}
+
 .count {
     color: #AAA;
 }
 
 .layui-layer-rim {
     border-radius: 2px !important;
+}
+
+/* 未通过 */
+.reject {
+    color: red;
+}
+
+/* 已通过 */
+.pass {
+    color: green;
+}
+
+/* 未处理 */
+.unhandle {
+    color: black;
 }

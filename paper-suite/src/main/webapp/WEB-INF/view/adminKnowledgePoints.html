@@ -39,14 +39,7 @@
         <!-- 知识点列表 -->
         <div class="ui sixteen wide column">
             <div id="vue-knowledge-points" data-knowledge-point-group-id="0">
-                <a class="ui tag label dnd-point"
-                    v-for="(point, index) in knowledgePoints"
-                    @click="edit(point)"
-                    :key="point.knowledgePointId"
-                    :data-name="point.name"
-                    :data-id="point.knowledgePointId"
-                    :data-group-id="point.parentKnowledgePointId"
-                    :data-index="index">
+                <a class="ui tag label dnd-point" v-for="(point, index) in knowledgePoints" @click="edit(point)" :key="point.knowledgePointId" :data-name="point.name" :data-id="point.knowledgePointId" :data-group-id="point.parentKnowledgePointId" :data-index="index">
                     {{point.name}} &nbsp;&nbsp;<i class="icon remove" @click.stop="remove(index)"></i>
                 </a>
             </div>

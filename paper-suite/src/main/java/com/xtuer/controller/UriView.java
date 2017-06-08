@@ -48,6 +48,8 @@ public interface UriView {
     String REST_PAPERS_SEARCH_IN_DIRECTORY    = "/rest/paperDirectories/{paperDirectoryId}/papers/search";
     String REST_PAPERS_PREVIEW                = "/rest/papers/{paperId}/preview";
     String REST_PAPERS_DOWNLOAD               = "/rest/papers/{paperId}/download";
+    String REST_EXPORT_PAPERS        = "/rest/exportPapers"; // 导出试卷
+    String REST_EXPORT_PAPERS_STATUS = "/rest/exportPapers/status"; // 导出试卷状态
 
     // 知识点
     String REST_KNOWLEDGE_POINTS           = "/rest/knowledgePoints";

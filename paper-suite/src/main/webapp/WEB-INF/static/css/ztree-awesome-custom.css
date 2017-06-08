@@ -60,3 +60,68 @@
 .ztree li span.button.bottom_close::before {
     content: "\f067";
 }
+
+/* 去掉叶节点前的图标 */
+.ztree li span.button.ico_docu::before {
+    content: "";
+}
+
+/* checkbox 选择框 */
+.ztree li span.button.chk.checkbox_false_full::before {
+    content: "\f096";
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_false_full_focus::before {
+    content: "\f096";
+    color: red;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_false_part::before {
+    content: "\f096";
+    color: #aaa;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_false_part_focus::before {
+    content: "\f096";
+    color: #cad96c;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_false_disable::before {
+    content: "\f096";
+    color: grey;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_true_full::before,
+.ztree li span.button.chk.checkbox_true_full_focus::before {
+    content: "\f046";
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_true_full_focus::before {
+    content: "\f046";
+    color: red;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_true_part::before {
+    content: "\f046";
+    color: black;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_true_part_focus::before {
+    content: "\f046";
+    color: red;
+    font-size: 14px;
+}
+
+.ztree li span.button.chk.checkbox_true_disable::before {
+    content: "\f046";
+    color: grey;
+    font-size: 14px;
+}

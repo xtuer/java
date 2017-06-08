@@ -29,5 +29,7 @@ var Urls = {
     REST_PAPERS_KNOWLEDGE_POINTS_BY_ID: '/rest/papers/{paperId}/knowledgePoints/{knowledgePointId}',
     REST_PAPERS_SEARCH_IN_DIRECTORY   : '/rest/paperDirectories/{paperDirectoryId}/papers/search',
     REST_PAPERS_PREVIEW               : '/rest/papers/{paperId}/preview',
-    REST_PAPERS_DOWNLOAD              : '/rest/papers/{paperId}/download'
+    REST_PAPERS_DOWNLOAD              : '/rest/papers/{paperId}/download',
+    REST_EXPORT_PAPERS                : '/rest/exportPapers',
+    REST_EXPORT_PAPERS_STATUS         : '/rest/exportPapers/status'
 };

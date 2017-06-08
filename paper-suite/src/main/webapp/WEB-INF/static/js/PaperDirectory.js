@@ -96,7 +96,7 @@ PaperDirectoryDao.loadPaperDirectories = function(callback) {
  * @return 无返回值
  */
 PaperDirectoryDao.loadPaperCounts = function(callback) {
-    $.rest.syncGet({url: Urls.REST_PAPER_DIRECTORIES_PAPER_COUNTS, success: function(result) {
+    $.rest.get({url: Urls.REST_PAPER_DIRECTORIES_PAPER_COUNTS, success: function(result) {
         if (!result.success) {
             layer.msg(result.message);
             return;

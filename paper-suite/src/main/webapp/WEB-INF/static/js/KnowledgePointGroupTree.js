@@ -1,3 +1,63 @@
+/*-----------------------------------------------------------------------------|
+ |                       ReadOnlyKnowledgePointGroupTree                       |
+ |----------------------------------------------------------------------------*/
+function ReadOnlyKnowledgePointGroupTree(treeElementId) {
+    this.treeElementId = treeElementId; // 树的元素 id
+    this.tree = null;
+    this.init();
+}
+
+ReadOnlyKnowledgePointGroupTree.prototype.init = function() {
+    var self = this;
+    var settings = self.getSettings();
+
+    KnowledgePointDao.loadKnowledgePointGroups(function(knowledgePointGroups) {
+        for (var i = 0; i < knowledgePointGroups.length; ++i) {
+            knowledgePointGroups[i].isParent = true;
+            knowledgePointGroups[i].knowledgePointGroupId = knowledgePointGroups[i].knowledgePointId;
+            knowledgePointGroups[i].parentKnowledgePointGroupId = knowledgePointGroups[i].parentKnowledgePointId;
+        }
+
+        self.tree = $.fn.zTree.init($("#" + self.treeElementId), settings, knowledgePointGroups);
+    });
+};
+
+ReadOnlyKnowledgePointGroupTree.prototype.getSettings = function() {
+    var settings = {
+        data: {
+            simpleData: {
+                enable: true,
+                idKey:  'knowledgePointGroupId',
+                pIdKey: 'parentKnowledgePointGroupId',
+                rootPId: 0
+            },
+            keep: {
+                parent: true
+            }
+        },view: {
+            selectedMulti: false, // [*] 为 true 时可选择多个节点，为 false 只能选择一个，默认为 true
+            showIcon: false
+        },
+        callback: {
+            onClick: function(event, treeId, treeNode, clickFlag) {
+                var knowledgePointGroupId = treeNode.knowledgePointGroupId; // 目录节点的 id
+                window.vueKnowledgePointsChooser.knowledgePoints.empty();
+
+                KnowledgePointDao.loadKnowledgePoints(knowledgePointGroupId, function(points) {
+                    for (var i = 0; i < points.length; ++i) {
+                        window.vueKnowledgePointsChooser.knowledgePoints.push(points[i]);
+                    }
+                });
+            }
+        }
+    };
+
+    return settings;
+};
+
+/*-----------------------------------------------------------------------------|
+ |                       EditableKnowledgePointGroupTree                       |
+ |----------------------------------------------------------------------------*/
 function EditableKnowledgePointGroupTree(treeElementId) {
     this.treeElementId = treeElementId; // 树的元素 id
     this.tree = null;
@@ -11,7 +71,7 @@ function EditableKnowledgePointGroupTree(treeElementId) {
  */
 EditableKnowledgePointGroupTree.prototype.init = function() {
     var self = this;
-    var setting = self.getSettings();
+    var settings = self.getSettings();
 
     KnowledgePointDao.loadKnowledgePointGroups(function(knowledgePointGroups) {
         for (var i = 0; i < knowledgePointGroups.length; ++i) {
@@ -20,7 +80,7 @@ EditableKnowledgePointGroupTree.prototype.init = function() {
             knowledgePointGroups[i].parentKnowledgePointGroupId = knowledgePointGroups[i].parentKnowledgePointId;
         }
 
-        self.tree = $.fn.zTree.init($("#" + self.treeElementId), setting, knowledgePointGroups);
+        self.tree = $.fn.zTree.init($("#" + self.treeElementId), settings, knowledgePointGroups);
 
         // 下一个事件循环中处理显示第一个目录下的试卷
         setTimeout(function() {
@@ -129,7 +189,7 @@ EditableKnowledgePointGroupTree.prototype.hideMenu = function() {
 EditableKnowledgePointGroupTree.prototype.getSettings = function() {
     var self = this;
 
-    var setting = {
+    var settings = {
         data: {
             simpleData: {
                 enable: true,
@@ -230,5 +290,5 @@ EditableKnowledgePointGroupTree.prototype.getSettings = function() {
         }
     };
 
-    return setting;
+    return settings;
 };

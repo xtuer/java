@@ -7,6 +7,13 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface PaperMapper {
+    // 查找目录下的试卷
+    List<Paper> findPapersInPaperDirectories(@Param("paperDirectoryIds") List<String> paperDirectoryIds, @Param("status") int status);
+
+    // 查找目录下试卷用到的知识点关系
+    List<KnowledgePoint> findPaperKnowledgePointsRelationInPaperDirectories(@Param("paperDirectoryIds") List<String> paperDirectoryIds,
+                                                                            @Param("status") int status);
+
     // 查找试卷
     Paper findPaperByPaperId(String paperId);
 
