@@ -25,6 +25,9 @@ public interface PaperMapper {
                                              @Param("offset") int offset,
                                              @Param("size") int size);
 
+    // 目录下试卷的数量
+    int countPapersByPaperDirectoryId(String paperDirectoryId);
+
     // 查找试卷的知识点
     List<KnowledgePoint> findKnowledgePointsByPaperId(String paperId);
 
@@ -34,9 +37,15 @@ public interface PaperMapper {
     // 根据学科和名字查找前 50 个试卷
     List<Paper> findPapersBySubjectAndNameFilterNotInPaperDirectory(@Param("subject") String subject, @Param("nameFilter") String nameFilter);
 
-    // 查找目录下某个知识点的试卷
-    List<Paper> findPapersByKnowledgePointIdsInPaperDirectory(@Param("paperDirectoryId") String paperDirectoryId,
-                                                              @Param("knowledgePointIds") List<String> knowledgePointIds);
+    // 查找目录下带知识点的试卷
+    List<Paper> findPapersByPaperDirectoryIdWithKnowledgePointIds(@Param("paperDirectoryId") String paperDirectoryId,
+                                                                  @Param("knowledgePointIds") List<String> knowledgePointIds,
+                                                                  @Param("offset") int offset,
+                                                                  @Param("size") int size);
+
+    // 目录下带知识点的试卷的数量
+    int countPapersByPaperDirectoryIdWithKnowledgePointIds(@Param("paperDirectoryId") String paperDirectoryId,
+                                                           @Param("knowledgePointIds") List<String> knowledgePointIds);
 
     // 设置试卷的目录
     void setParentPaperDirectory(@Param("paperId") String paperId, @Param("paperDirectoryId") String paperDirectoryId);

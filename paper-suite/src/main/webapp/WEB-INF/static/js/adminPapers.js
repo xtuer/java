@@ -3,6 +3,35 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
     Util.activateSidebarItem(0);
     new EditablePaperDirectoryTree('directory-tree'); // 左侧的目录树
 
+    window.pageSize = 10;   // 每页显示的试卷数量
+    window.pageNumber = 1; // 要加载的页码
+
+    // 设置当前页
+    window.setPageNumber = function(pageNumber) {
+        $('#paginator').pagination('drawPage', pageNumber);
+    };
+
+    // 设置总页数
+    window.setPageCount = function(pageCount) {
+        $('#paginator').pagination('updateItems', pageCount);
+    };
+
+    // 初始化时加载试卷: 点击目录，点击知识点时调用
+    window.loadPapersAsInit = function(paperDirectoryId, knowledgePointIds) {
+        // 请求页数
+        PaperDao.pageCountPapersByKnowledgePointIdInPaperDirectory(paperDirectoryId, knowledgePointIds, window.pageSize, function(pageCount) {
+            window.vuePapers.pageCount = pageCount;
+            window.setPageCount(pageCount);
+        });
+
+        // 加载试卷
+        window.vuePapers.papers = [];
+        PaperDao.findPapersInPaperDirectoryWithKnowledgePointIds(paperDirectoryId, knowledgePointIds, 1, window.pageSize, function(papers) {
+            window.vuePapers.papers = papers;
+            window.setPageNumber(1); // 重新加载后显示为第一页
+        });
+    };
+
     /*-----------------------------------------------------------------------------|
      |                                    所有知识点                                 |
      |----------------------------------------------------------------------------*/
@@ -24,6 +53,11 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                     $(e.target).removeClass('checked');
                 }
 
+                var pointIds = this.checkedKnowledgePointIds(); // 选中的知识点的 id
+                window.loadPapersAsInit(paperDirectoryId, pointIds);
+            },
+            // 选中的知识点的 id 数组
+            checkedKnowledgePointIds: function() {
                 var pointIds = []; // 选中的知识点的 id
 
                 for (var i=0; i<this.knowledgePoints.length; ++i) {
@@ -32,10 +66,7 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                     }
                 }
 
-                PaperDao.findPapersByKnowledgePointIdsInPaperDirectory(paperDirectoryId, pointIds, function(papers) {
-                    window.vuePapers.papers = [];
-                    window.vuePapers.papers = papers;
-                });
+                return pointIds;
             }
         }
     });
@@ -96,7 +127,8 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
         el: '#vue-papers',
         data: {
             papers: [],
-            editedIndex: 0
+            editedIndex: 0,
+            pageCount: 1
         },
         watch: {
             papers: function(newValue, oldValue) {
@@ -354,6 +386,7 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
         });
     });
 
+    // 只读的知识点树，编辑试卷，在选择知识点的对话框中显示
     new ReadOnlyKnowledgePointGroupTree('read-only-knowledge-point-group-tree');
 
     // 点击按钮 '所有知识点' 显示当前目录下的所有知识点
@@ -423,11 +456,21 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
         });
     });
 
-    $('.pagination').jqPagination({
-        max_page: 30, // 总页数
-        page_string: '{max_page} 页之 {current_page}', // 页数显示样式
-        paged: function(page) {
-            alert(page);
+    // 初始化分页插件
+    $('#paginator').pagination({
+        pages: 50,
+        currentPage: 1,
+        prevText: '上一页',
+        nextText: '下一页',
+        cssStyle: 'compact-theme',
+        onPageClick: function(page) {
+            // 加载试卷
+            window.vuePapers.papers = [];
+            var paperDirectoryId = $('#vue-papers').attr('data-paper-directory-id');
+            var knowledgePointIds = window.vueKnowledgePoints.checkedKnowledgePointIds();
+            PaperDao.findPapersInPaperDirectoryWithKnowledgePointIds(paperDirectoryId, knowledgePointIds, page, window.pageSize, function(papers) {
+                window.vuePapers.papers = papers;
+            });
         }
     });
 

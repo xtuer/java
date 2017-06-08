@@ -176,9 +176,7 @@ EditablePaperDirectoryTree.prototype.init = function() {
             $('#vue-papers').attr('data-paper-directory-id', firstRoot.paperDirectoryId);
             if (firstRoot) {
                 self.tree.selectNode(firstRoot);
-                PaperDirectoryDao.loadPapers(firstRoot.paperDirectoryId, function(papers) {
-                    window.vuePapers.papers = papers;
-                });
+                window.loadPapersAsInit(firstRoot.paperDirectoryId, []);
             }
         }, 0);
     });
@@ -350,10 +348,7 @@ EditablePaperDirectoryTree.prototype.getSettings = function() {
                 $('#vue-knowledge-points').slideUp();
                 $('#vue-papers').attr('data-paper-directory-id', paperDirectoryId);
 
-                window.vuePapers.papers = [];
-                PaperDirectoryDao.loadPapers(paperDirectoryId, function(papers) {
-                    window.vuePapers.papers = papers;
-                });
+                window.loadPapersAsInit(paperDirectoryId, []);
             },
             onRightClick: function(event, treeId, treeNode) {
                 // 在右键位置出弹出菜单

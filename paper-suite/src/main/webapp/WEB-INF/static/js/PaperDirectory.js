@@ -5,44 +5,6 @@ function PaperDirectoryDao() {
 }
 
 /**
- * 加载指定目录下的试卷
- * 服务器响应格式:
- * {
- *     "code": 0,
- *     "data": [{
- *         "knowledgePoints": [{
- *             "knowledgePointId": "e4528ea26d4844b286814a08128db068",
- *             "name": "三角函数、三角恒等变换、解三角形",
- *             "paperId": "0d85cb6f97f14523a97019a40b1fe6f1"
- *         }],
- *         "name": "2011届高考数学强化复习训练题24.doc",
- *         "originalName": "2011届高考数学强化复习训练题24.doc",
- *         "paperDirectoryId": "e7247aaedeca453f9678417f6adfb981",
- *         "paperId": "0d85cb6f97f14523a97019a40b1fe6f1",
- *         "realDirectoryName": "16",
- *         "subject": "高中数学",
- *         "uuidName": "b47738a35f6f42bcb94e80ecd8e94cae.doc"
- *     }],
- *     "message": "",
- *     "success": true
- * }
- *
- * @param  {String}   paperDirectoryId 试卷所在目录的 id
- * @param  {Function} callback         加载试卷成功时的回调函数，参数为试卷的数组
- * @return 无返回值
- */
-PaperDirectoryDao.loadPapers = function(paperDirectoryId, callback) {
-    $.rest.get({url: Urls.REST_PAPERS_OF_DIRECTORY, urlParams: {paperDirectoryId: paperDirectoryId}, success: function(result) {
-        if (!result.success) {
-            layer.msg(result.msg);
-            return;
-        }
-
-        callback && callback(result.data); // result.data 为试卷数组
-    }});
-};
-
-/**
  * 加载所有的目录
  * 服务器响应格式:
  * {

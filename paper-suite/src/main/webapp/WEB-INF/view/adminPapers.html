@@ -115,8 +115,14 @@
                     </tr>
                 </tbody>
             </table>
+
+            <!-- 分页插件 -->
+            <center v-show="pageCount > 1">
+                <!-- 分页组件，inline-block 是为了居中显示 -->
+                <div id="paginator" style="display: inline-block;"></div>
+            </center>
         </div>
-    </div>
+    </div> <!-- main end -->
 
     <!-- Dialogs -->
     <!-- 试卷选择对话框 -->
@@ -246,7 +252,7 @@
                 <ul id="read-only-knowledge-point-group-tree" class="ztree"></ul>
             </div>
             <!-- 知识点 -->
-            <div class="" style="flex: 1">
+            <div class="" style="flex: 1; overflow: auto;">
                 <template v-for="(point, index) in knowledgePoints">
                     <a class="ui label" @click="choose(point, $event)" :key="point.knowledgePointId">
                         {{point.name}}

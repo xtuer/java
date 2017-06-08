@@ -6,7 +6,7 @@ require.config({
         semanticUi: '/lib/semantic/semantic.min',
         semanticUiCalendar: '/lib/semantic/calendar/calendar.min',
         ztree     : '//cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min',
-        pagination: '/lib/jquery.jqpagination.min',
+        pagination: '/lib/jquery.simplePagination',
         rest      : '/lib/jquery.rest',
         urls      : '/js/urls',
         util      : '/js/util',
@@ -34,7 +34,7 @@ require.config({
                    'css!/css/ztree-awesome-custom.css']
         },
         pagination: {
-            deps: ['jquery', 'css!/lib/jqpagination.css']
+            deps: ['jquery', 'css!/lib/jquery.simplePagination.css']
         },
         rest: {
             deps: ['jquery']

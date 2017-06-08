@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,16 +60,16 @@ public class PaperController {
      * 参数: page(可选), size(可选)
      *
      * @param paperDirectoryId 目录 id
-     * @param page 页数
+     * @param pageNumber 页数
      * @return
      */
     @GetMapping(UriView.REST_PAPERS_OF_DIRECTORY)
     @ResponseBody
     public Result<List<Paper>> papersOfDirectory(@PathVariable String paperDirectoryId,
-                                                 @RequestParam(required=false, defaultValue="1") int page,
-                                                 @RequestParam(required=false, defaultValue="50") int size) {
-        int offset = PageUtils.offset(page, size);
-        List<Paper> papers = paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, size);
+                                                 @RequestParam(required=false, defaultValue="1") int pageNumber,
+                                                 @RequestParam(required=false, defaultValue="50") int pageSize) {
+        int offset = PageUtils.offset(pageNumber, pageSize);
+        List<Paper> papers = paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, pageSize);
 
         return Result.ok("", papers);
     }
@@ -163,7 +162,7 @@ public class PaperController {
     }
 
     /**
-     * 查找目录下某个知识点的试卷
+     * 查找目录下带知识点的试卷
      * URL: http://localhost:8080/rest/paperDirectories/{paperDirectoryId}/papers/search
      * 参数: knowledgePointIds
      *
@@ -174,17 +173,48 @@ public class PaperController {
     @GetMapping(UriView.REST_PAPERS_SEARCH_IN_DIRECTORY)
     @ResponseBody
     public Result findPapersByKnowledgePointIdInPaperDirectory(@PathVariable String paperDirectoryId,
-                                                               @RequestParam(value="knowledgePointIds[]", required=false) List<String> knowledgePointIds) {
+                                                               @RequestParam(value="knowledgePointIds[]", required=false) List<String> knowledgePointIds,
+                                                               @RequestParam(required=false, defaultValue="1") int pageNumber,
+                                                               @RequestParam(required=false, defaultValue="50") int pageSize) {
         List<Paper> papers;
+        int offset = PageUtils.offset(pageNumber, pageSize);
 
         // 如果没有知识点，则只从目录中查找
         if (knowledgePointIds == null || knowledgePointIds.isEmpty()) {
-            papers = paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, 0, 500);
+            papers = paperMapper.findPapersByPaperDirectoryId(paperDirectoryId, offset, pageSize);
         } else {
-             papers = paperMapper.findPapersByKnowledgePointIdsInPaperDirectory(paperDirectoryId, knowledgePointIds);
+            papers = paperMapper.findPapersByPaperDirectoryIdWithKnowledgePointIds(paperDirectoryId, knowledgePointIds, offset, pageSize);
         }
 
         return Result.ok("", papers);
+    }
+
+    /**
+     * 目录下带知识点的试卷的页数
+     * URL: http://localhost:8080/rest/paperDirectories/{paperDirectoryId}/papers/countAsSearch
+     *
+     * @param paperDirectoryId
+     * @param knowledgePointIds
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(UriView.REST_PAPERS_COUNT_SEARCH_IN_DIRECTORY)
+    @ResponseBody
+    public Result pageCountPapersByKnowledgePointIdInPaperDirectory(@PathVariable String paperDirectoryId,
+                                                                   @RequestParam(value="knowledgePointIds[]", required=false) List<String> knowledgePointIds,
+                                                                   @RequestParam int pageSize) {
+        int paperCount = 0;
+
+        // 如果没有知识点，则只从目录中查找
+        if (knowledgePointIds == null || knowledgePointIds.isEmpty()) {
+            paperCount = paperMapper.countPapersByPaperDirectoryId(paperDirectoryId);
+        } else {
+            paperCount = paperMapper.countPapersByPaperDirectoryIdWithKnowledgePointIds(paperDirectoryId, knowledgePointIds);
+        }
+
+        int pageCount = PageUtils.pageCount(paperCount, pageSize);
+
+        return Result.ok("", pageCount);
     }
 
     /**

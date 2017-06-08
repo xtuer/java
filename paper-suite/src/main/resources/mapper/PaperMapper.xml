@@ -74,17 +74,6 @@
         WHERE p.paper_id=#{paperId}
     </select>
 
-    <!--查找目录下前 50 个试卷-->
-    <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
-        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
-        FROM (
-            SELECT * FROM paper WHERE paper_directory_id=#{paperDirectoryId}
-            ORDER BY status
-            LIMIT ${offset}, ${size}
-        ) p
-        LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
-    </select>
-
     <!--目录下试卷的数量-->
     <select id="papersCountByPaperDirectoryId" parameterType="string" resultType="int">
         SELECT count(paper_id)
@@ -104,9 +93,38 @@
         LIMIT 0, 50
     </select>
 
-    <!--查找目录下某个知识点的试卷-->
-    <select id="findPapersByKnowledgePointIdsInPaperDirectory" resultMap="paperResultMap">
+    <!--查找目录下的试卷-->
+    <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
         SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM (
+            SELECT * FROM paper WHERE paper_directory_id=#{paperDirectoryId}
+            ORDER BY status
+            LIMIT ${offset}, ${size}
+        ) p
+        LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
+    </select>
+
+    <!--目录下试卷的数量-->
+    <select id="countPapersByPaperDirectoryId" parameterType="string" resultType="int">
+        SELECT count(paper_id) FROM paper WHERE paper_directory_id=#{paperDirectoryId}
+    </select>
+
+    <!--查找目录下带知识点的试卷-->
+    <select id="findPapersByPaperDirectoryIdWithKnowledgePointIds" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper p, view_paper_knowledge_point kp
+        WHERE p.paper_directory_id=#{paperDirectoryId}
+            AND p.paper_id=kp.paper_id
+            AND kp.knowledge_point_id IN
+            <foreach collection="knowledgePointIds" item="pointId" open="(" close=")" separator=",">
+                #{pointId}
+            </foreach>
+        LIMIT ${offset}, ${size}
+    </select>
+
+    <!--目录下带知识点的试卷的数量-->
+    <select id="countPapersByPaperDirectoryIdWithKnowledgePointIds" resultType="int">
+        SELECT count(p.paper_id)
         FROM paper p, view_paper_knowledge_point kp
         WHERE p.paper_directory_id=#{paperDirectoryId}
             AND p.paper_id=kp.paper_id

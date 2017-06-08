@@ -24,16 +24,77 @@ PaperDao.findById = function(paperId, callback) {
 };
 
 /**
- * 查找目录下某个知识点的试卷
+ * 加载指定目录下的试卷
+ * 服务器响应格式:
+ * {
+ *     "code": 0,
+ *     "data": [{
+ *         "knowledgePoints": [{
+ *             "knowledgePointId": "e4528ea26d4844b286814a08128db068",
+ *             "name": "三角函数、三角恒等变换、解三角形",
+ *             "paperId": "0d85cb6f97f14523a97019a40b1fe6f1"
+ *         }],
+ *         "name": "2011届高考数学强化复习训练题24.doc",
+ *         "originalName": "2011届高考数学强化复习训练题24.doc",
+ *         "paperDirectoryId": "e7247aaedeca453f9678417f6adfb981",
+ *         "paperId": "0d85cb6f97f14523a97019a40b1fe6f1",
+ *         "realDirectoryName": "16",
+ *         "subject": "高中数学",
+ *         "uuidName": "b47738a35f6f42bcb94e80ecd8e94cae.doc"
+ *     }],
+ *     "message": "",
+ *     "success": true
+ * }
  *
- * @param  {String} paperDirectoryId 目录 id
- * @param  {String} knowledgePointId 知识点 id
- * @param  {Function} callback       查找成功的回调函数，参数为试卷的数组
+ * @param  {String}   paperDirectoryId 试卷所在目录的 id
+ * @param  {Function} callback         加载试卷成功时的回调函数，参数为试卷的数组
  * @return 无返回值
  */
-PaperDao.findPapersByKnowledgePointIdsInPaperDirectory = function(paperDirectoryId, knowledgePointIds, callback) {
+PaperDao.findPapersInPaperDirectory = function(paperDirectoryId, callback) {
+    $.rest.get({url: Urls.REST_PAPERS_OF_DIRECTORY, urlParams: {paperDirectoryId: paperDirectoryId}, success: function(result) {
+        if (!result.success) {
+            layer.msg(result.msg);
+            return;
+        }
+
+        callback && callback(result.data); // result.data 为试卷数组
+    }});
+};
+
+/**
+ * 查找目录下带知识点的试卷的页数
+ *
+ * @param  {String}   paperDirectoryId  目录 id
+ * @param  {Array}    knowledgePointIds 知识点 id 的数组，如果为空则查找此目录下的所有试卷
+ * @param  {int}      pageSize          每页显示试卷数量
+ * @param  {Function} callback          查找成功的回调函数，参数为页数
+ * @return 无返回值
+ */
+PaperDao.pageCountPapersByKnowledgePointIdInPaperDirectory = function(paperDirectoryId, knowledgePointIds, pageSize, callback) {
+    $.rest.get({url: Urls.REST_PAPERS_COUNT_SEARCH_IN_DIRECTORY, urlParams: {paperDirectoryId: paperDirectoryId},
+    data: {knowledgePointIds: knowledgePointIds, pageSize: pageSize}, success: function(result) {
+        if (!result.success) {
+            layer.msg(result.message);
+            return;
+        }
+
+        callback && callback(result.data); // result.data 是页数
+    }});
+};
+
+/**
+ * 查找目录下带知识点的试卷
+ *
+ * @param  {String}   paperDirectoryId  目录 id
+ * @param  {Array}    knowledgePointIds 知识点 id 的数组，如果为空则查找此目录下的所有试卷
+ * @param  {int}      pageNumber        页码
+ * @param  {int}      pageSize          每页显示试卷数量
+ * @param  {Function} callback          查找成功的回调函数，参数为试卷的数组
+ * @return 无返回值
+ */
+PaperDao.findPapersInPaperDirectoryWithKnowledgePointIds = function(paperDirectoryId, knowledgePointIds, pageNumber, pageSize, callback) {
     $.rest.get({url: Urls.REST_PAPERS_SEARCH_IN_DIRECTORY, urlParams: {paperDirectoryId: paperDirectoryId},
-    data: {knowledgePointIds: knowledgePointIds}, success: function(result) {
+    data: {knowledgePointIds: knowledgePointIds, pageNumber: pageNumber, pageSize: pageSize}, success: function(result) {
         if (!result.success) {
             layer.msg(result.message);
             return;
