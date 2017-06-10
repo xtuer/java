@@ -1,5 +1,10 @@
 package com.xtuer.bean;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Enrollment {
     private int enrollmentId;
     private String examUId;
@@ -23,62 +28,6 @@ public class Enrollment {
         this.siteCode = siteCode;
         this.roomCode = roomCode;
         this.seatCode = seatCode;
-        this.periodUnitCode = periodUnitCode;
-    }
-
-    public int getEnrollmentId() {
-        return enrollmentId;
-    }
-
-    public void setEnrollmentId(int enrollmentId) {
-        this.enrollmentId = enrollmentId;
-    }
-
-    public String getExamUId() {
-        return examUId;
-    }
-
-    public void setExamUId(String examUId) {
-        this.examUId = examUId;
-    }
-
-    public String getSubjectCode() {
-        return subjectCode;
-    }
-
-    public void setSubjectCode(String subjectCode) {
-        this.subjectCode = subjectCode;
-    }
-
-    public String getSiteCode() {
-        return siteCode;
-    }
-
-    public void setSiteCode(String siteCode) {
-        this.siteCode = siteCode;
-    }
-
-    public String getRoomCode() {
-        return roomCode;
-    }
-
-    public void setRoomCode(String roomCode) {
-        this.roomCode = roomCode;
-    }
-
-    public String getSeatCode() {
-        return seatCode;
-    }
-
-    public void setSeatCode(String seatCode) {
-        this.seatCode = seatCode;
-    }
-
-    public String getPeriodUnitCode() {
-        return periodUnitCode;
-    }
-
-    public void setPeriodUnitCode(String periodUnitCode) {
         this.periodUnitCode = periodUnitCode;
     }
 }

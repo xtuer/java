@@ -8,6 +8,6 @@ public class Test {
         admin.setId(1);
         admin.setName("Alice");
 
-        System.out.println(JSON.toJSONString(admin, false));
+        System.out.println(JSON.toJSONString(admin, SerializerFeature.PrettyFormat));
     }
 }

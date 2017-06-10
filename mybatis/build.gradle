@@ -42,7 +42,8 @@ dependencies {
 
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'ch.qos.logback:logback-classic:1.1.2'
-    compile 'com.alibaba:fastjson:1.2.17'
+    compile 'com.alibaba:fastjson:1.2.29'
+    compile 'org.projectlombok:lombok:1.16.10'
 
     testCompile('junit:junit:4.12')
     testCompile('org.springframework:spring-test:4.3.0.RELEASE')

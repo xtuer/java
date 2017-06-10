@@ -12,7 +12,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @ContextConfiguration({"classpath:config/spring-beans.xml"})
 
-public class TestDemo {
+public class DemoTest {
     @Autowired
     private DemoMapper mapper;
 
@@ -20,28 +20,27 @@ public class TestDemo {
     public void insertDemo() {
         Demo demo = new Demo();
         demo.setInfo("你要去哪里");
+
         System.out.println(mapper.insertDemo(demo));
         System.out.println(demo.getId());
     }
 
     @Test
     public void findDemo() {
-        for (int i = 0; i < 10000; ++i) {
-            System.out.println("================== " + i);
-            try {
-                Demo demo = mapper.findDemoById(1);
-                System.out.println(JSON.toJSONString(demo));
-
-                Thread.sleep(1000);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
+        Demo demo = mapper.findDemoById(1);
+        System.out.println(JSON.toJSONString(demo));
     }
 
     @Test
     public void findDemos() {
-        List<Demo> demos = mapper.findDemosByInfo("Avatar");
+        List<Demo> demos;
+
+        // 查找到，返回 Demo 的 List 对象
+        demos = mapper.findDemosByInfo("Alice");
+        System.out.println(demos);
+
+        // 查找不到则返回空的 List，而不是 null
+        demos = mapper.findDemosByInfo("Avatar");
         System.out.println(demos);
     }
 

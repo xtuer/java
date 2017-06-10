@@ -27,5 +27,6 @@
     <logger name="org.apache.ibatis.io" level="off"/>
     <logger name="org.springframework" level="info"/>
     <logger name="org.mybatis" level="off"/>
+    <logger name="com.alibaba.druid.pool" level="info"/>
     <logger name="com.xtuer.mapper" level="debug"/>
 </configuration>

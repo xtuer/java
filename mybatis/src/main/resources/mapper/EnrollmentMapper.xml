@@ -4,6 +4,19 @@
         "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!--表结构
+CREATE TABLE `enrollment` (
+    `enrollment_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `exam_uid` varchar(64) DEFAULT NULL,
+    `subject_code` varchar(64) DEFAULT NULL,
+    `site_code` varchar(64) DEFAULT NULL,
+    `room_code` varchar(64) DEFAULT NULL,
+    `seat_code` varchar(64) DEFAULT NULL,
+    `period_unit_code` varchar(64) DEFAULT NULL,
+    PRIMARY KEY (`enrollment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-->
+
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.EnrollmentMapper">
     <insert id="insertEnrollment" parameterType="Enrollment" useGeneratedKeys="true" keyProperty="enrollmentId">
