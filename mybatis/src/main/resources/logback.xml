@@ -25,7 +25,8 @@
     </root>
 
     <logger name="org.springframework" level="info"/>
-    <logger name="com.xtuer.mapper" level="off"/> <!-- 打印 SQL 语句为 debug -->
     <logger name="org.mybatis" level="info"/>
     <logger name="org.apache.ibatis.io" level="off"/>
+    <logger name="com.alibaba.druid.pool" level="off"/>
+    <logger name="com.xtuer.mapper" level="off"/> <!-- 打印 SQL 语句为 debug -->
 </configuration>
