@@ -11,14 +11,20 @@ import java.util.List;
 public class Executor {
     private static final String FILE_NAME = "enrollments.txt";
 
-    public void execute(EnrollmentService enrollmentService, Executable executable) throws SQLException {
-        // 读取数据，计时都放到模版里
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(FILE_NAME);
-        List<Enrollment> enrollments = enrollmentService.readEnrollments(in);
+    private EnrollmentService enrollmentService;
+    private List<Enrollment> enrollments;
 
+    public Executor(EnrollmentService enrollmentService) {
+        this.enrollmentService = enrollmentService;
+
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(FILE_NAME);
+        enrollments = enrollmentService.readEnrollments(in);
+    }
+
+    public void execute(Executable executable) throws SQLException {
         long start = System.currentTimeMillis(); // 开始时间
-        executable.execute(enrollments); // [*] 执行操作
-        long end = System.currentTimeMillis(); // 结束时间
+        executable.execute(enrollments);         // [*] 执行操作
+        long end = System.currentTimeMillis();   // 结束时间
 
         long time = end - start; // 消耗时间
         System.out.printf("插入 %d 个，使用了 %d 毫秒，%d 秒\n", enrollments.size(), time, time / 1000);

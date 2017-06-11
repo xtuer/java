@@ -15,7 +15,7 @@ public class JdbcInsertEnrollmentTest {
     // 不使用事务: 插入 66720 个，使用了 11827 毫秒，11 秒
     @Test
     public void insert() throws Exception {
-        new Executor().execute(enrollmentService, (enrollments) -> {
+        new Executor(enrollmentService).execute((enrollments) -> {
             Connection conn = DbUtils.getConnection();
 
             for (Enrollment enrollment : enrollments) {
@@ -29,7 +29,7 @@ public class JdbcInsertEnrollmentTest {
     // 使用事务: 插入 66720 个，使用了 5256 毫秒，5 秒
     @Test
     public void insertEnrollmentWithTransaction() throws Exception {
-        new Executor().execute(enrollmentService, (enrollments) -> {
+        new Executor(enrollmentService).execute((enrollments) -> {
             int length = enrollments.size();
             Connection conn = DbUtils.getConnection();
 

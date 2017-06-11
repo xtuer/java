@@ -23,7 +23,7 @@ public class MyBatisInsertEnrollmentTest {
     // 不标记为事务: 插入 66720 个，使用了 12872 毫秒，12 秒
     @Test
     public void insert() throws Exception {
-        new Executor().execute(enrollmentService, (enrollments) -> {
+        new Executor(enrollmentService).execute((enrollments) -> {
             for (Enrollment enrollment : enrollments) {
                 enrollmentService.insertEnrollment(enrollment);
             }
@@ -33,7 +33,7 @@ public class MyBatisInsertEnrollmentTest {
     // 使用事务单行插入: 插入 66720 个，使用了 23286 毫秒，23 秒
     @Test
     public void insertWithTransaction() throws Exception {
-        new Executor().execute(enrollmentService, (enrollments) -> {
+        new Executor(enrollmentService).execute((enrollments) -> {
             for (Enrollment enrollment : enrollments) {
                 enrollmentService.insertEnrollmentWithTransaction(enrollment);
             }
@@ -43,7 +43,7 @@ public class MyBatisInsertEnrollmentTest {
     // 使用事务多行插入: 插入 66720 个，使用了 6853 毫秒，6 秒
     @Test
     public void insertEnrollmentsWithTransaction() throws Exception {
-        new Executor().execute(enrollmentService, (enrollments) -> {
+        new Executor(enrollmentService).execute((enrollments) -> {
             int length = enrollments.size();
 
             for (int i = 0, end = 0; i < length; i = end) {
