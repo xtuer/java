@@ -1,13 +1,20 @@
 import com.xtuer.bean.Enrollment;
 import com.xtuer.service.EnrollmentService;
-import com.xtuer.util.DbUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.sql.*;
 
+@RunWith(SpringRunner.class)
+@ContextConfiguration({"classpath:config/spring-beans.xml"})
 public class JdbcInsertEnrollmentTest {
+    @Resource(name="dataSource")
+    private DataSource dataSource;
+
     private static final int MAX_COUNT = 500; // 批量插入的个数
 
     private EnrollmentService enrollmentService = new EnrollmentService();
@@ -16,22 +23,23 @@ public class JdbcInsertEnrollmentTest {
     @Test
     public void insert() throws Exception {
         new Executor(enrollmentService).execute((enrollments) -> {
-            Connection conn = DbUtils.getConnection();
+            Connection conn = dataSource.getConnection();
 
             for (Enrollment enrollment : enrollments) {
                 insertEnrollment(enrollment, conn);
             }
 
-            DbUtils.close(null, null, conn);
+            close(null, null, conn);
         });
     }
 
     // 使用事务: 插入 66720 个，使用了 5256 毫秒，5 秒
+    // 插入 20000 个，使用了 614386 毫秒，614 秒
     @Test
     public void insertEnrollmentWithTransaction() throws Exception {
         new Executor(enrollmentService).execute((enrollments) -> {
             int length = enrollments.size();
-            Connection conn = DbUtils.getConnection();
+            Connection conn = dataSource.getConnection();
 
             conn.setAutoCommit(false);
             for (int i = 0; i < length; i++) {
@@ -43,7 +51,7 @@ public class JdbcInsertEnrollmentTest {
             }
             conn.commit();
 
-            DbUtils.close(null, null, conn);
+            close(null, null, conn);
         });
     }
 
@@ -63,6 +71,35 @@ public class JdbcInsertEnrollmentTest {
 
         stmt.execute();
 
-        DbUtils.close(null, stmt, null);
+        close(null, stmt, null);
+    }
+
+    /**
+     * 释放数据库资源
+     */
+    private void close(ResultSet rs, Statement stmt, Connection conn) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Date;
+
 @Getter
 @Setter
-@ToString
 public class Admin {
     private int id;
     private String name;
+    private Date date;
 
     public Admin() {
 

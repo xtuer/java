@@ -41,6 +41,7 @@ public class MyBatisInsertEnrollmentTest {
     }
 
     // 使用事务多行插入: 插入 66720 个，使用了 6853 毫秒，6 秒
+    // 插入 20000 个，使用了 804749 毫秒，804 秒
     @Test
     public void insertEnrollmentsWithTransaction() throws Exception {
         new Executor(enrollmentService).execute((enrollments) -> {
