@@ -12,7 +12,7 @@ buildscript {
     dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0' }
 }
 
-mainClassName = 'Foo' // TODO: 如果不是可执行 jar 包，不需要
+mainClassName = 'Main' // TODO: 如果不是可执行 jar 包，不需要
 
 jar {
     manifest { attributes 'Main-Class': mainClassName }
@@ -35,12 +35,22 @@ repositories {
 }
 
 dependencies {
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'org.projectlombok:lombok:1.16.10'
-    compile 'com.alibaba:fastjson:1.2.17'
+    compile 'org.springframework:spring-context-support:4.3.0.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.3.0.RELEASE'
+    compile 'com.alibaba:druid:1.0.27'
+    compile 'mysql:mysql-connector-java:5.1.21'
+    compile 'org.mybatis:mybatis:3.2.1'
+    compile 'org.mybatis:mybatis-spring:1.2.2'
 
-    testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
-    testCompile 'junit:junit:4.12'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+    compile 'com.alibaba:fastjson:1.2.29'
+    compile 'org.projectlombok:lombok:1.16.10'
+    compile 'org.yaml:snakeyaml:1.18'
+    compile 'commons-io:commons-io:2.5'
+
+    testCompile('junit:junit:4.12')
+    testCompile('org.springframework:spring-test:4.3.0.RELEASE')
 }
 
 // 创建目录结构的任务，执行后可删除

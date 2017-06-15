@@ -18,7 +18,7 @@ public class PaperExportController {
 
     /**
      * 导出试卷
-     * URL: http://localhost:8080/rest/export-papers
+     * URL: http://localhost:8080/rest/exportPapers
      * 参数: paperDirectoryIds[] 目录 id 数组
      *
      * @param paperDirectoryIds
