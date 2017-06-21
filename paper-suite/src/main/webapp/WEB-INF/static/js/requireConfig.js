@@ -2,7 +2,7 @@ require.config({
     paths: {
         jquery    : '//cdn.bootcss.com/jquery/1.9.1/jquery.min',
         layer     : '//cdn.staticfile.org/layer/2.3/layer',
-        vue       : '//cdn.staticfile.org/vue/2.0.3/vue',
+        vue       : '//cdn.staticfile.org/vue/2.2.6/vue',
         semanticUi: '/lib/semantic/semantic.min',
         semanticUiCalendar: '/lib/semantic/calendar/calendar.min',
         ztree     : '//cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min',

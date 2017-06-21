@@ -32,7 +32,7 @@
     <!--插入试卷知识点关系-->
     <insert id="insertPaperKnowledgePointRelation" parameterType="KnowledgePoint">
         INSERT INTO paper_knowledge_point_relation(paper_id, knowledge_point_id)
-        SELECT #{paperId}, #{knowledgePointId} FROM dual WHERE NOT EXISTS (
+        SELECT #{paperId}, #{knowledgePointId} FROM dual WHERE NOT EXISTS(
             SELECT 1 FROM paper_knowledge_point_relation
             WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
         )
