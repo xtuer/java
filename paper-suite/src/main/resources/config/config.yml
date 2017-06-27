@@ -1,4 +1,4 @@
 paper:
     # 存储试卷文件的目录
-    baseDirectory: /Users/Biao/Documents/套卷/papers
-    exportDirectory: /Users/Biao/Documents/套卷/export
+    baseDirectory: @paper.baseDirectory@
+    exportDirectory: @paper.exportDirectory@
