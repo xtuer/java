@@ -60,6 +60,9 @@ dependencies {
             "org.freemarker:freemarker:$versions.freemarker"                  // Freemarker
     )
 
+    compile 'org.apache.velocity:velocity:1.7'
+    compile 'org.apache.velocity:velocity-tools:2.0'
+
     compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
     testCompile("org.springframework:spring-test:$versions.spring")
     testCompile("junit:junit:$versions.junit")

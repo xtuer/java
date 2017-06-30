@@ -1,10 +1,16 @@
-import java.util.Date;
+import java.io.IOException;
 
 public class Test {
-    public static void main(String[] args) {
-        Date date = new Date();
-        date.setTime(1483200000000L);
-        System.out.println(date);
-        System.out.println(new Date().getTime());
+    public static void main(String[] args) throws IOException {
+        用户 新用户 = new 用户();
+        新用户.名字 = "道格拉斯·狗";
+        新用户.年龄 = 55;
+
+        System.out.println(新用户.名字 + ", " + 新用户.年龄);
     }
+}
+
+class 用户 {
+    public String 名字;
+    public int 年龄;
 }

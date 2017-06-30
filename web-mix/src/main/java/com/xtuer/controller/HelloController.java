@@ -21,9 +21,8 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(ModelMap model) {
-        model.put("name", "Biao");
-
-        return "hello.fm";
+        model.put("name", "道格拉斯·狗");
+        return "hello.vm";
     }
 
     @GetMapping("/webuploader")

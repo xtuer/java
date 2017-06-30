@@ -31,9 +31,8 @@ public class DemoController {
     private DemoMapper demoMapper;
 
     @RequestMapping("/")
-    @ResponseBody
     public String index() {
-        return "首页";
+        return UriView.REDIRECT + UriView.URI_ADMIN_PAPERS;
     }
 
     // URL: http://localhost:8080/demo

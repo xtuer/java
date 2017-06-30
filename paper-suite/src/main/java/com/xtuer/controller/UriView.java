@@ -11,6 +11,7 @@ public interface UriView {
     String URI_DEMO_UPLOAD   = "/demo/upload";
     String VIEW_DEMO_UPLOAD  = "demo/upload.html";
     String URI_DEMO_VALIDATE = "/demo/validate";
+    String URI_ADMIN_PAPERS = "/adminPapers";
 
     // 通用 URI 和 VIEW
     String FORWARD    = "forward:";

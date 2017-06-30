@@ -14,6 +14,7 @@
         <property name="port" value="@redis.port@" />
         <property name="password" value="@redis.password@" />
         <!--<property name="timeout" value="${redis.timeout}" />-->
+        <property name="database" value="0"/>
         <property name="poolConfig" ref="jedisPoolConfig"/>
         <property name="usePool" value="true"/>
     </bean>
