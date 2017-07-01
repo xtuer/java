@@ -29,8 +29,8 @@ public class DemoController {
     @Autowired
     private DemoMapper demoMapper;
 
-    @Resource(name = "globalConfig")
-    private Properties globalConfig;
+    @Resource(name = "config")
+    private Properties config;
 
     @RequestMapping("/")
     @ResponseBody
@@ -47,12 +47,12 @@ public class DemoController {
 
     /**
      * 访问数据库
-     * URL: http://localhost:8080/demo/{id}
+     * URL: http://localhost:8080/demo/mybatis/{id}
      *
      * @param id
      * @return
      */
-    @RequestMapping(Urls.PAGE_DEMO_MYBATIS)
+    @RequestMapping(Urls.API_DEMO_MYBATIS)
     @ResponseBody
     public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
         return Result.ok("", demoMapper.findDemoById(id));
@@ -181,14 +181,14 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                      访问时发生异常                                //
     //////////////////////////////////////////////////////////////////////////////////////
-    // http://localhost:8080/exception
-    @GetMapping("/exception")
+    // http://localhost:8080/demo/exception
+    @GetMapping("/demo/exception")
     public String exception() {
         throw new RuntimeException("普通访问发生异常");
     }
 
-    // http://localhost:8080/exception-ajax
-    @GetMapping("/exception-ajax")
+    // http://localhost:8080/demo/exception-ajax
+    @GetMapping("/demo/exception-ajax")
     @ResponseBody
     public Result exceptionWhenAjax(Demo demo) {
         System.out.println(JSON.toJSONString(demo));
@@ -202,7 +202,7 @@ public class DemoController {
      * @param date
      * @return
      */
-    @GetMapping("/to-date")
+    @GetMapping("/demo/string-to-date")
     @ResponseBody
     public Result<Date> stringToDate(@RequestParam("date") Date date) {
         return Result.ok("日期转换", date);
@@ -211,17 +211,12 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                          文件上传                                 //
     //////////////////////////////////////////////////////////////////////////////////////
-    // URL: http://localhost:8080/demo/upload
-    @GetMapping(Urls.PAGE_DEMO_UPLOAD)
-    public String toUploadPage() {
-        return Urls.FILE_DEMO_UPLOAD;
-    }
-
-    @PostMapping(Urls.PAGE_DEMO_UPLOAD)
+    // URL: http://localhost:8080/form/demo/upload
+    @PostMapping(Urls.FORM_DEMO_UPLOAD)
     @ResponseBody
     public Result uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         logger.debug(file.getOriginalFilename());
-        // 不会自动创建文件夹
+        // 不会自动创建文件夹，没有就报错，为了简单，可以使用 IOUtils 来处理
         // 会覆盖同名文件
         file.transferTo(new File("/Users/Biao/Desktop/x/" + file.getOriginalFilename()));
         return Result.ok("OK", file.getOriginalFilename());
@@ -234,7 +229,7 @@ public class DemoController {
     // http://localhost:8080/demo/validate
     // http://localhost:8080/demo/validate?id=2
     // http://localhost:8080/demo/validate?id=2&info=amazing
-    @GetMapping(Urls.PAGE_DEMO_VALIDATE)
+    @GetMapping("demo/validate")
     @ResponseBody
     public Result validateDemo(@Valid Demo demo, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
@@ -245,13 +240,13 @@ public class DemoController {
         return Result.ok("", demo);
     }
 
-    @GetMapping("/uniqueName")
+    @GetMapping("/demo/uniqueName")
     @ResponseBody
     public Result uniqueName(@RequestParam String username) {
         return new Result(!"ali".equals(username), "");
     }
 
-    @GetMapping(value="/jsonp-test", produces= Urls.JSONP_CONTENT_TYPE)
+    @GetMapping(value="/demo/jsonp-test", produces= Urls.JSONP_CONTENT_TYPE)
     @ResponseBody
     public String jsonpTest(@RequestParam String callback) {
         return Result.jsonp(callback, Result.ok("Congratulation", "Your data object"));
@@ -260,23 +255,23 @@ public class DemoController {
     //////////////////////////////////////////////////////////////////////////////////////
     //                                        使用配置                                   //
     //////////////////////////////////////////////////////////////////////////////////////
-    // URL: http://localhost:8080/properties
-    @GetMapping("/properties")
+    // URL: http://localhost:8080/demo/properties
+    @GetMapping("/demo/properties")
     @ResponseBody
     public String properties() {
-        System.out.println(globalConfig.getProperty("jdbc.driverClassName"));
-        System.out.println(globalConfig.getProperty("jdbc.url"));
-        System.out.println(globalConfig.getProperty("jdbc.password"));
-        System.out.println(globalConfig.getProperty("urls[0]"));
+        System.out.println(config.getProperty("jdbc.driverClassName"));
+        System.out.println(config.getProperty("jdbc.url"));
+        System.out.println(config.getProperty("jdbc.password"));
+        System.out.println(config.getProperty("urls[0]"));
 
-        Enumeration en = globalConfig.propertyNames();
+        Enumeration en = config.propertyNames();
         while (en.hasMoreElements()) {
             String key = en.nextElement().toString();
-            String value = globalConfig.getProperty(key);
+            String value = config.getProperty(key);
 
             System.out.println(key + " : " + value);
         }
 
-        return globalConfig.getProperty("jdbc.password");
+        return config.getProperty("jdbc.password");
     }
 }

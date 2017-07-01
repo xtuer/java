@@ -1,4 +1,4 @@
-// gradle clean build -Penv=production
+// gradle clean build -Denv=production
 environments {
     development {
         jdbc {
@@ -8,8 +8,8 @@ environments {
             password = 'root'
         }
 
-        baseUrl = ''
         logDir = "/temp/logs"
+        staticPath =""
     }
 
     production {
@@ -20,7 +20,7 @@ environments {
             password = 'huaxia-123'
         }
 
-        baseUrl = ''
         logDir = "/temp/logs"
+        staticPath =""
     }
 }

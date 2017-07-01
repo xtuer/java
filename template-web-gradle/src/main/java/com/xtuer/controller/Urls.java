@@ -3,12 +3,14 @@ package com.xtuer.controller;
 /**
  * 集中管理 URL。
  *
- * 其实类名叫 Urls 不是很合适，基本都是 URI，但是对于大多数人来说 URL 更熟悉好记忆一些。
+ * 其实此类名叫 Urls 不是很合适，基本都是 URI，但是对于大多数人来说 URL 更熟悉好记忆一些。
  * 还有少量变量不是 URI，例如 JSONP_CONTENT_TYPE，FORWARD 等，但不多，为了减少类，故就放在这里吧，约定好了就行。
  *
- * 1. 访问页面的 URI 的变量名以 PAGE_ 开头，表明这个 URI 是访问页面
- * 2. 页面对应的模版文件变量名以 FILE_ 开头，表明这个 URI 是文件的路径
- * 3. 操作资源 api 的变量名以 API_ 开头，使用 RESTful 风格
+ * 变量名和 URI 规则:
+ * 1. 页面 URI 的变量名以 PAGE_ 开头，此 URI 以 /page 开头，看到 URL 就知道是什么用途了
+ * 2. 页面对应模版文件的变量名以 FILE_ 开头，表明这个 URI 是文件的路径，即模版的路径
+ * 3. 普通 FORM 表单处理 URI 的变量名以 FORM_ 开头，此 URI 以 /form 开头
+ * 4. 操作资源的 api 变量名以 API_ 开头，此 URI 以 /api 开头，使用 RESTful 风格
  */
 public interface Urls {
     String JSONP_CONTENT_TYPE = "application/javascript;charset=UTF-8"; // JSONP 响应的 header
@@ -17,22 +19,19 @@ public interface Urls {
     String FORWARD    = "forward:";
     String REDIRECT   = "redirect:";
     String PAGE_404   = "/404";
-    String FILE_404   = "404.fm";
-    String FILE_ERROR = "error.fm";
+    String FILE_ERROR = "error.vm";
 
     // 案例展示
-    String PAGE_DEMO = "/demo";
-    String FILE_DEMO = "demo/demo.fm";
-    String PAGE_DEMO_MYBATIS  = "/demo/{id}";
-    String PAGE_DEMO_UPLOAD   = "/demo/upload";
-    String FILE_DEMO_UPLOAD   = "demo/upload.fm";
-    String PAGE_DEMO_VALIDATE = "/demo/validate";
+    String PAGE_DEMO = "/page/demo";
+    String FILE_DEMO = "demo/demo.vm";
+    String FORM_DEMO_UPLOAD = "/form/demo/upload";
+    String API_DEMO_MYBATIS = "/api/demo/mybatis/{id}";
 
     // 登录注销
-    String PAGE_LOGIN  = "/login";   // 登陆 URL
-    String PAGE_LOGOUT = "/logout";  // 注销 URL
-    String PAGE_DENY   = "/deny";    // 无权访问页面的 URL
-    String FILE_LOGIN  = "login.fm"; // 登陆页面
+    String PAGE_LOGIN  = "/page/login";  // 登陆
+    String PAGE_LOGOUT = "/page/logout"; // 注销
+    String PAGE_DENY   = "/page/deny";   // 无权访问页面的 URL
+    String FILE_LOGIN  = "login.vm";   // 登陆页面
 
     // API 使用 RESTful 风格，变量名以 API_ 开头，URI 以 /api 开头, 资源都用复数形式便于统一管理 URL。
     // 下面以操作 subject, question 资源的 RESTful 风格的 URL 为例:

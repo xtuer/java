@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Properties;
+import java.util.*;
 
 public class VelocityTest {
     @Test
@@ -24,7 +24,19 @@ public class VelocityTest {
 
         // [3] 准备模版使用的数据
         VelocityContext ctx = new VelocityContext();
-        ctx.put("name", "Hello");
+
+//        List<Integer> ns = new LinkedList<>();
+//        Set<Integer> ns = new TreeSet<>();
+//        ns.add(100);
+//        ns.add(101);
+//        ns.add(102);
+        int[] ns = {100, 101, 102};
+        Map<String, Integer> map = new HashMap<>();
+        map.put("a", 100);
+        map.put("b", 101);
+        map.put("c", 10233);
+        ctx.put("map", map);
+        ctx.put("ns", ns);
         ctx.put("static", "static path");
 
         // [4] 使用模版和数据生成静态内容，可以用来实现页面静态化，放在 Redis 或则 Nginx 下

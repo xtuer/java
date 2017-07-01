@@ -5,18 +5,18 @@
     <title>登录</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="/static/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/login.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/login.css" rel="stylesheet">
 
-    <script src="/static/lib/jquery.min.js"></script>
-    <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 <div class="container">
 	<div class="login-container">
         <!-- status: login-error, login-success, logout-success -->
-        <div id="status">${status!''}</div>
+        <div id="status">$!status</div>
         <div id="output"></div>
         <div class="avatar"></div>
 

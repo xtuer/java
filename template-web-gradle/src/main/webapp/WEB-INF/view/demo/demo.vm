@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <title>SpringMVC REST</title>
-    <script src="/static/lib/jquery.min.js"></script>
-    <script src="/static/lib/jquery.rest.js"></script>
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/jquery.rest.js"></script>
 </head>
 
 <body>
     <div id="foo"></div>
-    Welcome to ${action}
+    Welcome to $action
     <pre id="error">...</pre>
 
     <script>
@@ -52,7 +52,7 @@
             }});
 
             // [4] AJAX 请求时后端发生异常时也会调用 success 回调，result.success 为 false，result.data 为异常信息
-            $.rest.get({url: '/exception-ajax?id=123', success: function(result) {
+            $.rest.get({url: '/demo/exception-ajax?id=123', success: function(result) {
                 if (!result.success) {
                     $('#error').html(result.message + '<br>' + result.data);
                 }
@@ -62,7 +62,7 @@
 
             // [5] JSON P
             $.ajax({
-                url     : 'http://127.0.0.1:8080/jsonp-test',
+                url     : 'http://127.0.0.1:8080/demo/jsonp-test',
                 type    : 'GET',
                 dataType: 'jsonp', // 表示要用 JSONP 进行跨域访问
                 success : function(a) { // 随机生成回调函数名

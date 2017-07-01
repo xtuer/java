@@ -9,16 +9,16 @@
             http://www.springframework.org/schema/security/spring-security.xsd">
     <http auto-config="true">
         <intercept-url pattern="/login" access="permitAll"/>
-        <intercept-url pattern="/admin" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/page/admin" access="hasRole('ADMIN')"/>
 
-        <form-login login-page="/login"
+        <form-login login-page="/page/login"
                     login-processing-url="/login"
-                    default-target-url  ="/"
-                    authentication-failure-url="/login?error=1"
+                    default-target-url="/"
+                    authentication-failure-url="/page/login?error=1"
                     username-parameter="username"
                     password-parameter="password"/>
         <access-denied-handler error-page="/deny"/>
-        <logout logout-url="/logout" logout-success-url="/login?logout=1"/>
+        <logout logout-url="/logout" logout-success-url="/page/login?logout=1"/>
 
         <csrf disabled="true"/>
         <remember-me key="uniqueAndSecret" token-validity-seconds="2592000"/>

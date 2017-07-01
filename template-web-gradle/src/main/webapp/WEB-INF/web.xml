@@ -10,7 +10,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:config/mybatis.xml
-            classpath:config/spring-session.xml
+            classpath:config/redis.xml
             classpath:config/spring-security.xml
         </param-value>
     </context-param>
