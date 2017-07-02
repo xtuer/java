@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 使用视图 view_paper_knowledge_point 可以简化试卷的查询 -->
+<mapper namespace="com.xtuer.mapper.PaperMapper">
+    <sql id="paperColumns">
+        p.paper_id            as paper_id,
+        p.name                as name,
+        p.uuid_name           as uuid_name,
+        p.original_name       as original_name,
+        p.paper_directory_id  as paper_directory_id,
+        p.real_directory_name as real_directory_name,
+        p.subject             as subject,
+        p.publish_year        as publish_year,
+        p.region              as region,
+        p.paper_from          as paper_from,
+        p.paper_type          as paper_type,
+        p.description         as description,
+        p.original_paper_id   as original_paper_id,
+        p.status              as status
+    </sql>
+    <sql id="paperColumnsWithKnowledgePoints">
+        p.paper_id            as paper_id,
+        p.name                as name,
+        p.uuid_name           as uuid_name,
+        p.original_name       as original_name,
+        p.paper_directory_id  as paper_directory_id,
+        p.real_directory_name as real_directory_name,
+        p.subject             as subject,
+        p.publish_year        as publish_year,
+        p.region              as region,
+        p.paper_from          as paper_from,
+        p.paper_type          as paper_type,
+        p.description         as description,
+        p.original_paper_id   as original_paper_id,
+        p.status              as status,
+
+        kp.name               as kp_name,
+        kp.knowledge_point_id as kp_knowledge_point_id
+    </sql>
+
+    <!--查找目录下的试卷-->
+    <select id="findPapersInPaperDirectories" resultMap="paperResultMap">
+        SELECT <include refid="paperColumns"/>
+        FROM paper p
+        WHERE status=#{status} AND paper_directory_id IN (
+            <foreach collection="paperDirectoryIds" item="directoryId" separator=",">
+                #{directoryId}
+            </foreach>
+        )
+    </select>
+
+    <!--查找目录下试卷用到的知识点关系-->
+    <select id="findPaperKnowledgePointsRelationInPaperDirectories" resultType="KnowledgePoint">
+        SELECT paper_id AS paperId, knowledge_point_id AS knowledgePointId
+        FROM paper_knowledge_point_relation
+        WHERE is_deleted=0 AND paper_id IN (
+            SELECT paper_id FROM paper WHERE status=#{status} AND is_deleted=0 AND paper_directory_id IN (
+                <foreach collection="paperDirectoryIds" item="directoryId" separator=",">
+                    #{directoryId}
+                </foreach>
+            )
+        )
+    </select>
+
+    <!--查找试卷，同时查出试卷的知识点-->
+    <select id="findPaperByPaperId" parameterType="string" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper p
+        LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
+        WHERE p.paper_id=#{paperId}
+    </select>
+
+    <!--目录下试卷的数量-->
+    <select id="papersCountByPaperDirectoryId" parameterType="string" resultType="int">
+        SELECT count(paper_id)
+        FROM paper
+        WHERE paper_directory_id=#{paperDirectoryId}
+    </select>
+
+    <!--根据学科和名字查找前 50 个未分配目录的试卷-->
+    <select id="findPapersBySubjectAndNameFilterNotInPaperDirectory" resultMap="paperResultMap">
+        SELECT <include refid="paperColumns"/>
+        FROM paper AS p
+        WHERE p.subject=#{subject} AND p.paper_directory_id='0'
+            <if test="nameFilter!=null and nameFilter!='' ">
+                AND p.original_name LIKE CONCAT('%',#{nameFilter},'%')
+            </if>
+        ORDER BY p.original_name
+        LIMIT 0, 50
+    </select>
+
+    <!--查找目录下的试卷-->
+    <select id="findPapersByPaperDirectoryId" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM (
+            SELECT * FROM paper WHERE paper_directory_id=#{paperDirectoryId}
+            ORDER BY status
+            LIMIT ${offset}, ${size}
+        ) p
+        LEFT JOIN view_paper_knowledge_point kp ON p.paper_id=kp.paper_id
+    </select>
+
+    <!--目录下试卷的数量-->
+    <select id="countPapersByPaperDirectoryId" parameterType="string" resultType="int">
+        SELECT count(paper_id) FROM paper WHERE paper_directory_id=#{paperDirectoryId}
+    </select>
+
+    <!--查找目录下带知识点的试卷-->
+    <select id="findPapersByPaperDirectoryIdWithKnowledgePointIds" resultMap="paperResultMap">
+        SELECT <include refid="paperColumnsWithKnowledgePoints"/>
+        FROM paper p, view_paper_knowledge_point kp
+        WHERE p.paper_directory_id=#{paperDirectoryId}
+            AND p.paper_id=kp.paper_id
+            AND kp.knowledge_point_id IN
+            <foreach collection="knowledgePointIds" item="pointId" open="(" close=")" separator=",">
+                #{pointId}
+            </foreach>
+        LIMIT ${offset}, ${size}
+    </select>
+
+    <!--目录下带知识点的试卷的数量-->
+    <select id="countPapersByPaperDirectoryIdWithKnowledgePointIds" resultType="int">
+        SELECT count(p.paper_id)
+        FROM paper p, view_paper_knowledge_point kp
+        WHERE p.paper_directory_id=#{paperDirectoryId}
+            AND p.paper_id=kp.paper_id
+            AND kp.knowledge_point_id IN
+            <foreach collection="knowledgePointIds" item="pointId" open="(" close=")" separator=",">
+                #{pointId}
+            </foreach>
+    </select>
+
+    <!--查找试卷的知识点-->
+    <select id="findKnowledgePointsByPaperId" parameterType="string" resultType="KnowledgePoint">
+        SELECT paper_id as paperId, knowledge_point_id AS knowledgePointId, name
+        FROM view_paper_knowledge_point
+        WHERE paper_id=#{paperId}
+    </select>
+
+    <!--查找多个试卷的知识点-->
+    <select id="findKnowledgePointsByPaperIds" resultType="KnowledgePoint">
+        SELECT paper_id as paperId, knowledge_point_id AS knowledgePointId, name
+        FROM view_paper_knowledge_point
+        WHERE paper_id IN
+            <foreach collection="paperIds" item="paperId" open="(" close=")" separator=",">
+                #{paperId}
+            </foreach>
+    </select>
+
+    <!--查看试卷是否有知识点-->
+    <select id="hasKnowledgePoint" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1 FROM view_paper_knowledge_point
+            WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
+        )
+    </select>
+
+    <!--给试卷添加知识点-->
+    <update id="addKnowledgePoint">
+        INSERT INTO paper_knowledge_point_relation (paper_id,  knowledge_point_id, is_deleted)
+        VALUES (#{paperId}, #{knowledgePointId}, 0)
+    </update>
+
+    <!--设置试卷的目录-->
+    <update id="setParentPaperDirectory">
+        UPDATE paper SET paper_directory_id=#{paperDirectoryId} WHERE paper_id=#{paperId}
+    </update>
+
+    <!--设置多个试卷的目录-->
+    <update id="setPapersPaperDirectory">
+        UPDATE paper SET paper_directory_id=#{paperDirectoryId} WHERE paper_id IN
+        <foreach collection="paperIds" item="paperId" open="(" close=")" separator=",">
+            #{paperId}
+        </foreach>
+    </update>
+
+    <!--更新试卷，目前只能更新名字、发布时间、审核状态和描述-->
+    <update id="updatePaper" parameterType="Paper">
+        UPDATE paper
+        SET name=#{name}, publish_year=#{publishYear}, status=#{status}, description=#{description}
+        WHERE paper_id=#{paperId}
+    </update>
+
+    <update id="deleteKnowledgePoint">
+        DELETE FROM paper_knowledge_point_relation
+        WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
+    </update>
+
+    <resultMap id="paperResultMap" type="Paper">
+        <id property="paperId"               column="paper_id"/>
+        <result property="name"              column="name"/>
+        <result property="uuidName"          column="uuid_name"/>
+        <result property="originalName"      column="original_name"/>
+        <result property="paperDirectoryId"  column="paper_directory_id"/>
+        <result property="realDirectoryName" column="real_directory_name"/>
+        <result property="subject"           column="subject"/>
+        <result property="publishYear"       column="publish_year"/>
+        <result property="region"            column="region"/>
+        <result property="paperFrom"         column="paper_from"/>
+        <result property="paperType"         column="paper_type"/>
+        <result property="description"       column="description"/>
+        <result property="originalPaperId"   column="original_paper_id"/>
+        <result property="status"            column="status"/>
+
+        <collection property="knowledgePoints" ofType="KnowledgePoint" column="paper_id" columnPrefix="kp_" resultMap="knowledgePointResultMap"/>
+    </resultMap>
+
+    <resultMap id="knowledgePointResultMap" type="KnowledgePoint">
+        <id property="knowledgePointId" column="knowledge_point_id"/>
+        <result property="name"         column="name"/>
+    </resultMap>
+</mapper>

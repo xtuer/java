@@ -1,0 +1,75 @@
+group 'com.xtuer'
+version '1.0'
+
+apply plugin: 'java'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+buildscript {
+    repositories { jcenter() }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0' }
+}
+
+mainClassName = 'Main' // TODO: 如果不是可执行 jar 包，不需要
+
+jar {
+    manifest { attributes 'Main-Class': mainClassName }
+}
+
+// 打包命令: gradle clean shadowJar
+shadowJar {
+    mergeServiceFiles('META-INF/spring.*')
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework:spring-context-support:4.3.0.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.3.0.RELEASE'
+    compile 'com.alibaba:druid:1.0.27'
+    compile 'mysql:mysql-connector-java:5.1.21'
+    compile 'org.mybatis:mybatis:3.2.1'
+    compile 'org.mybatis:mybatis-spring:1.2.2'
+
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+    compile 'com.alibaba:fastjson:1.2.29'
+    compile 'org.projectlombok:lombok:1.16.10'
+    compile 'org.yaml:snakeyaml:1.18'
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.commons:commons-csv:1.4'
+
+    testCompile('junit:junit:4.12')
+    testCompile('org.springframework:spring-test:4.3.0.RELEASE')
+}
+
+// 创建目录结构的任务，执行后可删除
+task createStructure {
+    doLast {
+        sourceSets*.java.srcDirs*.each { it.mkdirs() }
+        sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+    }
+}
+
+/*
+生成的目录结构
+├── build.gradle
+└── src
+    ├── main
+    │   ├── java
+    │   └── resources
+    └── test
+        ├── java
+        └── resources
+*/

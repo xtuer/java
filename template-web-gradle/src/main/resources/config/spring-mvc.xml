@@ -82,8 +82,6 @@
         <property name="resourceLoaderPath"  value="WEB-INF/view/"/><!-- 设置模版文件的位置 -->
         <property name="velocityProperties">
             <props>
-                <prop key="directive.foreach.counter.name">loopCounter</prop>
-                <prop key="directive.foreach.counter.initial.value">0</prop>
                 <prop key="input.encoding">UTF-8</prop><!-- 指定模板引擎进行模板处理的编码 -->
                 <prop key="output.encoding">UTF-8</prop><!-- 指定输出流的编码 -->
             </props>

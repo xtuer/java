@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.ImporterMapper">
+    <!--插入试卷-->
+    <insert id="insertPaper" parameterType="Paper">
+        INSERT INTO paper(paper_id, name, uuid_name, original_name, real_directory_name, subject, created_time)
+        VALUES(#{paperId}, #{name}, #{uuidName}, #{originalName}, #{realDirectoryName}, #{subject}, now())
+    </insert>
+
+    <!--更新试卷的元数据-->
+    <update id="updatePaperMeta" parameterType="Paper">
+        UPDATE paper SET region=#{region}, paper_from=#{paperFrom}, paper_type=#{paperType}, original_paper_id=#{originalPaperId}
+        WHERE subject=#{subject} AND original_name=#{originalName}
+    </update>
+</mapper>
