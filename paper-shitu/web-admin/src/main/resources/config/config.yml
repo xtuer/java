@@ -1,4 +1,4 @@
 paper:
-    # 存储试卷文件的目录
-    baseDirectory: @paper.baseDirectory@
-    exportDirectory: @paper.exportDirectory@
+    paperDirectory: @paper.paperDirectory@      # 存储试卷文件的目录
+    exportDirectory: @paper.exportDirectory@    # 导出试卷的目录
+    previewDirectory: @paper.previewDirectory@  # 预览文件目录

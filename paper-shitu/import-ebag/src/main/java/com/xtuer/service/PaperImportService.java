@@ -21,7 +21,7 @@ import java.util.Properties;
 
 @Service
 public class PaperImportService {
-    @Resource(name="globalConfig")
+    @Resource(name="config")
     private Properties config;
 
     @Autowired

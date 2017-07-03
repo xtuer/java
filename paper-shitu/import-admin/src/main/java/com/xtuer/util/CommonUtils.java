@@ -1,5 +1,8 @@
 package com.xtuer.util;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 public final class CommonUtils {
@@ -23,5 +26,21 @@ public final class CommonUtils {
         uuid = uuid.replaceAll("^(\\w+)(\\..*)", "$1"); // 去掉 . 和其后面部分
 
         return Math.abs(uuid.hashCode()) % 100 + "";
+    }
+
+    public static List<String> getStrings(Properties props, String key) {
+        List<String> strings = new LinkedList<>();
+
+        for (int i = 0; i < 10000; ++i) {
+            String str = props.getProperty(key + "[" + i + "]");
+
+            if (str != null) {
+                strings.add(str);
+            } else {
+                break;
+            }
+        }
+
+        return strings;
     }
 }

@@ -24,7 +24,7 @@ public class PaperService {
     @Autowired
     private ServletContext servletContext;
 
-    @Resource(name = "globalConfig")
+    @Resource(name = "config")
     private Properties config;
 
     /**
@@ -39,7 +39,7 @@ public class PaperService {
 
         Paper paper = paperMapper.findPaperByPaperId(paperId);
         File paperDoc = getPaperFile(paper); // 试卷文件
-        File paperPreviewHtml = getPaperPreviewFile(paper); // 预览文件
+        File paperPreviewHtml = getPaperPreviewIndex(paper); // 预览文件
 
         // 如果试卷的预览文件不存在，则创建
         if (!paperPreviewHtml.exists()) {
@@ -57,6 +57,20 @@ public class PaperService {
     }
 
     /**
+     * 取得试卷预览文件的 URL
+     *
+     * @param paper
+     * @return 返回试卷预览文件的 URL
+     */
+    public String getPaperPreviewUrl(Paper paper) {
+        String realDirectory = paper.getRealDirectoryName(); // 试卷的上一级目录
+        String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
+        String paperBaseName = FilenameUtils.getBaseName(paperName); // 试卷文件基础名，不包含后缀
+
+        return "/preview/" + realDirectory + "/" + paperBaseName + "/index.html";
+    }
+
+    /**
      * 取得试卷文件
      *
      * @param paper
@@ -65,7 +79,7 @@ public class PaperService {
     public File getPaperFile(Paper paper) {
         String realDir = paper.getRealDirectoryName(); // 试卷的上一级目录
         String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
-        String paperDir = config.getProperty("paper.baseDirectory") + "/" + realDir; // 试卷的所在目录
+        String paperDir = config.getProperty("paper.paperDirectory") + "/" + realDir; // 试卷的所在目录
 
         return new File(paperDir, paperName); // 试卷文件
     }
@@ -76,26 +90,52 @@ public class PaperService {
      * @param paper
      * @return 返回试卷预览文件
      */
-    public File getPaperPreviewFile(Paper paper) {
-        String realDir = paper.getRealDirectoryName(); // 试卷的上一级目录
-        String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
-        String paperBaseName = FilenameUtils.getBaseName(paperName); // 试卷文件基础名，不包含后缀
-        String previewDir = servletContext.getRealPath("") + "/WEB-INF/static/preview/" + realDir + "/" + paperBaseName; // 预览文件所在目录
+    public File getPaperPreviewIndex(Paper paper) {
+        return new File(getPaperPreviewDirectory(paper), "index.html"); // 预览文件
+    }
 
-        return new File(previewDir, "/index.html"); // 预览文件
+    public File getPaperPreviewIndex(String realDirectory, String paperBaseName) {
+        return new File(getPaperPreviewDirectory(realDirectory, paperBaseName), "index.html");
     }
 
     /**
-     * 取得试卷预览文件的 URL
+     * 取得试卷预览目录
      *
      * @param paper
-     * @return 返回试卷预览文件的 URL
+     * @return 返回试卷预览目录
      */
-    public String getPaperPreviewUrl(Paper paper) {
+    public File getPaperPreviewDirectory(Paper paper) {
         String realDir = paper.getRealDirectoryName(); // 试卷的上一级目录
         String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
         String paperBaseName = FilenameUtils.getBaseName(paperName); // 试卷文件基础名，不包含后缀
 
-        return "/preview/" + realDir + "/" + paperBaseName + "/index.html";
+        return getPaperPreviewDirectory(realDir, paperBaseName);
+    }
+
+    /**
+     * 取得试卷预览目录
+     *
+     * @param paperRealDirectory 试卷所在目录
+     * @param paperBaseName 试卷名字，不包含后缀
+     * @return
+     */
+    public File getPaperPreviewDirectory(String paperRealDirectory, String paperBaseName) {
+        String paperPreviewDir = config.getProperty("paper.previewDirectory")
+                + "/" + paperRealDirectory + "/" + paperBaseName; // 预览文件所在目录
+        return new File(paperPreviewDir);
+    }
+
+    /**
+     * 取得试卷预览的图片
+     *
+     * @param paperRealDirectory
+     * @param paperBaseName
+     * @param imageName
+     * @return
+     */
+    public File getPaperPreviewImage(String paperRealDirectory, String paperBaseName, String imageName) {
+        File previewDirectory = getPaperPreviewDirectory(paperRealDirectory, paperBaseName);
+        File imageDirectory = new File(previewDirectory, "img");
+        return new File(imageDirectory, imageName);
     }
 }

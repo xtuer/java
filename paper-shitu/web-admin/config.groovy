@@ -15,8 +15,9 @@ environments {
         }
 
         paper {
-            baseDirectory = '/Users/Biao/Documents/套卷/papers'
+            paperDirectory = '/Users/Biao/Documents/套卷/papers'
             exportDirectory = '/Users/Biao/Documents/套卷/export'
+            previewDirectory = '/Users/Biao/Documents/套卷/preview'
         }
 
         baseUrl = ''
@@ -38,8 +39,9 @@ environments {
         }
 
         paper {
-            baseDirectory = '/data/shitu.edu-edu.com/papers'
+            paperDirectory = '/data/shitu.edu-edu.com/papers'
             exportDirectory = '/data/shitu.edu-edu.com/export'
+            previewDirectory = '/data/shitu.edu-edu.com/preview'
         }
 
         baseUrl = ''

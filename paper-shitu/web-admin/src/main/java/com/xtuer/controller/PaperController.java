@@ -6,7 +6,9 @@ import com.xtuer.bean.Result;
 import com.xtuer.mapper.PaperDirectoryMapper;
 import com.xtuer.mapper.PaperMapper;
 import com.xtuer.service.PaperService;
+import com.xtuer.util.ContentType;
 import com.xtuer.util.PageUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,7 +227,7 @@ public class PaperController {
      */
     @GetMapping(UriView.REST_PAPERS_PREVIEW)
     @ResponseBody
-    public Result paperPreviewInfo(@PathVariable String paperId) throws Exception {
+    public Result paperPreviewUrl(@PathVariable String paperId) throws Exception {
         String url = paperService.getPaperPreviewUrl(paperId);
 
         if (url != null) {
@@ -248,6 +250,59 @@ public class PaperController {
             response.setHeader("Content-Disposition", "attachment;filename=" + filename);
 
             in = new FileInputStream(paperService.getPaperFile(paper));
+            out = response.getOutputStream();
+            IOUtils.copy(in, out);
+        } catch (Exception ex) {
+            logger.warn(ex.getMessage());
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
+        }
+    }
+
+    /**
+     * 试卷预览 html 页面
+     *
+     * @param realDirectory
+     * @param paperBaseName
+     * @param response
+     */
+    @GetMapping(UriView.PAPER_PREVIEW_INDEX)
+    public void paperPreviewIndex(@PathVariable String realDirectory, @PathVariable String paperBaseName, HttpServletResponse response) {
+        InputStream in = null;
+        OutputStream out = null;
+
+        try {
+            response.setContentType("text/html;charset=UTF-8"); // 返回 html
+            in = new FileInputStream(paperService.getPaperPreviewIndex(realDirectory, paperBaseName));
+            out = response.getOutputStream();
+            IOUtils.copy(in, out);
+        } catch (Exception ex) {
+            logger.warn(ex.getMessage());
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
+        }
+    }
+
+    /**
+     * 试卷预览页的图片
+     *
+     * @param realDirectory
+     * @param paperBaseName
+     * @param imageName
+     * @param response
+     */
+    @GetMapping(UriView.PAPER_PREVIEW_IMAGE)
+    public void paperPreviewImage(@PathVariable String realDirectory, @PathVariable String paperBaseName,
+                                  @PathVariable String imageName, HttpServletResponse response) {
+        InputStream in = null;
+        OutputStream out = null;
+
+        try {
+            String imageExt = FilenameUtils.getExtension(imageName); // 图片文件名的后缀
+            response.setContentType(ContentType.getContentType(imageExt)); // 返回图片
+            in = new FileInputStream(paperService.getPaperPreviewImage(realDirectory, paperBaseName, imageName));
             out = response.getOutputStream();
             IOUtils.copy(in, out);
         } catch (Exception ex) {

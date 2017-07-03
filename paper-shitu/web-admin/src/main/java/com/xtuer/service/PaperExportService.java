@@ -33,7 +33,7 @@ public class PaperExportService {
     public static final String EXPORT_RUNNING  = "paper_export_running";  // 正在执行导出
     public static final String EXPORT_FINISHED = "paper_export_finished"; // 导出结束
 
-    @Resource(name="globalConfig")
+    @Resource(name="config")
     private Properties config;
 
     @Autowired
