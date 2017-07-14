@@ -17,4 +17,7 @@ public interface DemoMapper {
 
     // 插入 Demo
     int insertDemo(Demo demo);
+
+    // 更新 Demo
+    void updateDemo(Demo demo);
 }

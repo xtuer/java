@@ -120,8 +120,8 @@ public class PaperExportService {
     private void savePapers(List<Paper> papers, File directory, String fileName) throws IOException {
         OutputStream out = new FileOutputStream(new File(directory, fileName), true); // 试卷 json 输出流
 
-        File paperBaseDir = new File(config.getProperty("paper.baseDirectory")); // 试卷文件的目录
-        File paperBaseExportDir = new File(directory, "papers"); // 导出试卷的目录
+        File paperDir = new File(config.getProperty("paper.paperDirectory")); // 试卷文件的目录
+        File exportDir = new File(directory, "papers"); // 导出试卷的目录
 
         for (Paper paper : papers) {
             exporting(); // 因为写文件可能比较长，所以每写一次都写一次导出状态
@@ -132,9 +132,15 @@ public class PaperExportService {
             IOUtils.write(json, out);
 
             // 复制试卷到导出目录
-            File src = new File(new File(paperBaseDir, paper.getRealDirectoryName()), paper.getUuidName());
-            File dst = new File(paperBaseExportDir, paper.getRealDirectoryName());
-            FileUtils.copyFileToDirectory(src, dst);
+            File src = new File(new File(paperDir, paper.getRealDirectoryName()), paper.getUuidName());
+            File dst = new File(exportDir, paper.getRealDirectoryName());
+
+            try {
+                FileUtils.copyFileToDirectory(src, dst);
+            } catch (IOException e) {
+                // 文件不存在时抛出异常
+                logger.info(e.getMessage());
+            }
         }
 
         IOUtils.closeQuietly(out);

@@ -45,6 +45,6 @@ environments {
         }
 
         baseUrl = ''
-        logDir = "/temp/shitu.edu-edu.com/logs"
+        logDir = "/data/shitu.edu-edu.com/logs"
     }
 }

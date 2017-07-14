@@ -1,9 +1,11 @@
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Test {
-    public static void main(String[] args) {
+public class RandomTest {
+    public static void main(String[] args) throws IOException {
         testRand();
+        testRandFrequent();
     }
 
     public static void testRand() {
@@ -14,7 +16,7 @@ public class Test {
         }
     }
 
-    public static void testFrequent() {
+    public static void testRandFrequent() {
         Random rand = new Random("102");
         Map<Integer, Integer> map = new HashMap<>();
         int max = 10;
@@ -32,21 +34,3 @@ public class Test {
     }
 }
 
-class Random {
-    private long seed;
-
-    public Random(long seed) {
-        this(seed + "");
-    }
-
-    public Random(String seed) {
-        this.seed = seed.hashCode();
-    }
-
-    public int nextInt() {
-        seed = (seed * 9301 + 49297) % 233280;
-        double t = this.seed / 233280.0;
-
-        return (int) Math.abs(Math.ceil(t * 10000000));
-    }
-}

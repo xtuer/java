@@ -54,4 +54,11 @@ public class HelloController {
         response.addCookie(cookie); // Put cookie in response.
         return "Cookie is wrote.";
     }
+
+    @GetMapping("/dot/{name}")
+    @ResponseBody
+    public String dotName(@PathVariable String name) {
+        System.out.println(name);
+        return name;
+    }
 }

@@ -11,7 +11,6 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration({"classpath:config/spring-beans.xml"})
-
 public class DemoTest {
     @Autowired
     private DemoMapper mapper;

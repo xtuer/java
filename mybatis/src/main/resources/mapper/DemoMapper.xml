@@ -36,6 +36,11 @@ CREATE TABLE `demo` (
         SELECT count(id) FROM demo
     </select>
 
+    <!--更新 Demo-->
+    <update id="updateDemo" parameterType="Demo">
+        UPDATE demo SET info=#{info} WHERE id=#{id}
+    </update>
+
     <!--useGeneratedKeys="true" keyProperty="id": demo 的 id 在插入后被赋值为自动生成的 id-->
     <insert id="insertDemo" parameterType="Demo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO demo (info) VALUES (#{info})
