@@ -11,7 +11,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.akhikhl.gretty:gretty:1.4.1'
+        classpath 'org.akhikhl.gretty:gretty:2.0.0'
     }
 }
 
@@ -19,11 +19,12 @@ gretty {
     httpPort = 8080
     contextPath = ''
     servletContainer = 'tomcat7'
+    serverConfigFile = "server.xml"
 
     inplaceMode  = 'hard'
     debugSuspend = false
     managedClassReload      = true
-    recompileOnSourceChange = false
+    recompileOnSourceChange = true
 }
 
 tasks.withType(JavaCompile) {

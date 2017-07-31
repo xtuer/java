@@ -7,9 +7,7 @@
 </head>
 
 <body>
-    #foreach ($n in $ns)
-        $foreach.index
-    #end
+google -- baidu - 2
 </body>
 
 </html>

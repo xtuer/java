@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <title>SpringMVC REST</title>
-    <script src="/lib/jquery.min.js"></script>
-    <script src="/lib/jquery.rest.js"></script>
+    <script src="/static/lib/jquery.min.js"></script>
+    <script src="/static/lib/jquery.rest.js"></script>
 </head>
 
 <body>
     <div id="foo"></div>
-    Welcome to $action
+    Welcome to ${action}
     <pre id="error">...</pre>
 
     <script>

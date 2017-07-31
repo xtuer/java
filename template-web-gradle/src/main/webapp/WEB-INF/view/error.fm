@@ -5,10 +5,10 @@
         <title>错误</title>
     </head>
     <body>
-        错误: $!error<br>
+        错误: ${error!""}<br>
 
-        #if ($detail)
-        <pre>错误细节:<br>$detail</pre>
-        #end
+        <#if test="detail != null">
+            <pre>错误细节:<br>${detail}</pre>
+        </#if>
     </body>
 </html>

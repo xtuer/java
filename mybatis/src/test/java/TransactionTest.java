@@ -13,6 +13,7 @@ public class TransactionTest {
 
     @Test
     public void testTransaction() {
+        System.out.println(service.getClass()); // 查看是否 proxy object
         service.updateData();
     }
 }
