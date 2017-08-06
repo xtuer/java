@@ -1,18 +1,24 @@
 package com.xtuer.controller;
 
 import com.xtuer.bean.Result;
+import com.xtuer.bean.User;
 import com.xtuer.service.XService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Controller
 public class HelloController {
@@ -27,9 +33,10 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(ModelMap model) {
-        model.put("name", "道格拉斯·狗");
-        System.out.println(12);
-        return "hello.vm";
+        model.put("date", new Date());
+        model.put("level", "warning");
+
+        return "leaf.html";
     }
 
     @GetMapping("/webuploader")
@@ -113,5 +120,13 @@ public class HelloController {
         System.out.println(request.getServerPort());
         System.out.println(request.getHeader("Host"));
         return "redirect:/hello";
+    }
+
+    @PostMapping("/xss")
+    @ResponseBody
+    public Result postA(@RequestParam String name, @Valid User user, BindingResult binding, HttpServletRequest request) {
+        System.out.println(name);
+        System.out.println(request.getParameter("name"));
+        return Result.ok("", user);
     }
 }

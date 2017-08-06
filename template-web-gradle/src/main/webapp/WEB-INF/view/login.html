@@ -16,7 +16,7 @@
 <div class="container">
 	<div class="login-container">
         <!-- status: login-error, login-success, logout-success -->
-        <div id="status">${status!""}</div>
+        <div id="status" th:text="${status}"></div>
         <div id="output"></div>
         <div class="avatar"></div>
 

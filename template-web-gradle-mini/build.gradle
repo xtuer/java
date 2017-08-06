@@ -61,3 +61,5 @@ dependencies {
     testCompile("org.springframework:spring-test:$versions.spring")
     testCompile("junit:junit:$versions.junit")
 }
+
+war.archiveName 'mini.war'
