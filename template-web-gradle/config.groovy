@@ -10,6 +10,7 @@ environments {
 
         logDir = "/temp/logs"
         staticPath =""
+        thymeleafCacheable = false
     }
 
     production {
@@ -22,5 +23,6 @@ environments {
 
         logDir = "/temp/logs"
         staticPath =""
+        thymeleafCacheable = true
     }
 }

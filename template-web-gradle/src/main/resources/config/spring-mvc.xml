@@ -80,8 +80,8 @@
     <!-- 使用 thymeleaf 模版 -->
     <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/view/" />
-        <property name="templateMode" value="HTML" />
-        <property name="cacheable" value="false" />
+        <property name="templateMode" value="HTML5" />
+        <property name="cacheable" value="@thymeleafCacheable@" />
     </bean>
 
     <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
