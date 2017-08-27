@@ -1,11 +1,11 @@
-.idea/
-.gradle/
 *.log
 log.txt
+dump.rdb
+.idea/
+.gradle/
 out/
 build/
 logs/
 @logsDir@/
-dump.rdb
 /**/.DS_Store
 paper-suite/src/main/webapp/WEB-INF/static/preview/

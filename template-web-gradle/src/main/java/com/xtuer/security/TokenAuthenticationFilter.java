@@ -49,6 +49,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         HttpServletResponse response = (HttpServletResponse) res;
         Authentication auth = null;
 
+        // 默认创建 session
         allowSessionCreation.set(true);
 
         // 如果 header 里有 auth-token 时，则使用 token 查询用户数据进行登陆验证

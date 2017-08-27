@@ -15,7 +15,7 @@
     <http security="none" pattern="/page/login"/>
     <http security="none" pattern="/static/**"/>
 
-    <http auto-config="true">
+    <http auto-config="true" security-context-repository-ref="sessionSecurityContextRepository">
         <intercept-url pattern="/page/admin" access="hasRole('ROLE_ADMIN')"/>
 
         <form-login login-page="/page/login"
@@ -40,7 +40,7 @@
     <beans:bean id="tokenAuthenticationFilter" class="com.xtuer.security.TokenAuthenticationFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
     </beans:bean>
-
     <beans:bean id="userService" class="com.xtuer.service.UserService"/>
     <beans:bean id="userDetailsService" class="com.xtuer.security.UserDetailsService"/>
+    <beans:bean id="sessionSecurityContextRepository" class="org.springframework.security.web.context.XHttpSessionSecurityContextRepository"/>
 </beans:beans>
