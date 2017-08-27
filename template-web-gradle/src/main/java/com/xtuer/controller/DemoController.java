@@ -8,6 +8,8 @@ import com.xtuer.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -15,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.Filter;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.util.*;
 
 @Controller
 public class DemoController {
@@ -31,6 +32,9 @@ public class DemoController {
 
     @Resource(name = "config")
     private Properties config;
+
+    @Autowired
+    private FilterChainProxy filterChainProxy;
 
     @RequestMapping("/")
     @ResponseBody
@@ -273,5 +277,29 @@ public class DemoController {
         }
 
         return config.getProperty("jdbc.password");
+    }
+
+    /**
+     * 获取 Spring Security 的 filters
+     * URL: http://localhost:8080/demo/filters
+     */
+    @GetMapping("/demo/filters")
+    @ResponseBody
+    public Map securityFilters() {
+        Map<String, Map<String, String>> filterChains= new HashMap<>();
+        int i = 1;
+
+        for(SecurityFilterChain chain :  this.filterChainProxy.getFilterChains()){
+            Map<String, String> filters = new HashMap<>();
+            int j = 1;
+
+            for(Filter filter : chain.getFilters()){
+                filters.put("" + (j++), filter.getClass().getName());
+            }
+
+            filterChains.put("" + (i++), filters);
+        }
+
+        return filterChains;
     }
 }

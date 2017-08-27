@@ -1,0 +1,36 @@
+remotes {
+    webServer {
+        host = '120.92.26.194'
+        user = 'root'
+        password= 'Tiger_sun2017'
+        //identity = file('/Users/Biao/.ssh/id_rsa')
+    }
+}
+
+task deploy {
+    doLast {
+        ssh.settings {
+            // 为了省事，允许部署到所有的服务器
+            // 如果没有这个配置，服务器没有加入到 .ssh/known_hosts 文件，则会报错 reject HostKey...
+            // 手动加也容易，执行一下 ssh user@host，接受即可
+            knownHosts = allowAnyHosts
+        }
+        
+        ssh.run {
+            session(remotes.webServer) {
+                put from: "${buildDir}/libs/ROOT.zip", into: '/data/shitu.edu-edu.com'
+                execute """
+                    source /root/.bash_profile;
+                    /usr/local/edu/tomcat/bin/shutdown.sh;
+                    rm -rf /data/shitu.edu-edu.com/ROOT;
+                    unzip  /data/shitu.edu-edu.com/ROOT.zip -d /data/shitu.edu-edu.com/ROOT;
+                    /usr/local/edu/tomcat/bin/startup.sh;
+                    rm -rf /data/shitu.edu-edu.com/ROOT.zip
+                """
+            }
+        }
+    }
+}
+
+deploy.dependsOn assemble
+assemble.dependsOn clean

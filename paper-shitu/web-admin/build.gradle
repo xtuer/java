@@ -1,21 +1,20 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
-group 'com.xtuer'
-version '1.0'
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
-
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'org.akhikhl.gretty:gretty:1.4.2'
+        classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
     }
 }
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'org.hidetake.ssh'
 
 gretty {
     httpPort = 8080
@@ -46,8 +45,13 @@ repositories {
 
 ext {
     // 运行和打包的环境选择, 默认是开发环境
-    // 获取 gradle 参数中 -Dprofile 的值: gradle -Denv=production clean assemble
+    // 获取 gradle 参数中 -Dprofile 的值: gradle -Denv=production clean build
+    // 构建 gradle clean build
+    //     gradle -Denv=production clean build
+    // 部署 gradle deploy
+    //     gradle -Denv=production deploy
     environment = System.getProperty("env", "development")
+    war.archiveName = 'paper-shitu.war'
 }
 
 ext.versions = [
@@ -121,4 +125,38 @@ processResources {
     }
 }
 
-war.archiveName 'ROOT.zip'
+////////////////////////////////////////////////////////////////////////////////
+//                                    Deploy                                  //
+////////////////////////////////////////////////////////////////////////////////
+remotes {
+    webServer {
+        host = '120.92.26.194'
+        user = 'root'
+        password = 'Tiger_sun2017'
+    }
+}
+
+task deploy {
+    doLast {
+        ssh.settings {
+            knownHosts = allowAnyHosts
+        }
+
+        ssh.run {
+            session(remotes.webServer) {
+                put from: "${buildDir}/libs/${war.archiveName}", into: '/data/shitu.edu-edu.com'
+                execute """
+                    source /root/.bash_profile;
+                    /usr/local/edu/tomcat/bin/shutdown.sh;
+                    rm -rf /data/shitu.edu-edu.com/ROOT;
+                    unzip  /data/shitu.edu-edu.com/${war.archiveName} -d /data/shitu.edu-edu.com/ROOT;
+                    /usr/local/edu/tomcat/bin/startup.sh;
+                    rm -rf /data/shitu.edu-edu.com/${war.archiveName}
+                """
+            }
+        }
+    }
+}
+
+deploy.dependsOn assemble
+assemble.dependsOn clean

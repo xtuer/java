@@ -2,14 +2,21 @@
 <beans:beans
         xmlns="http://www.springframework.org/schema/security"
         xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/security
             http://www.springframework.org/schema/security/spring-security.xsd">
+    <context:annotation-config/>
+
+    <http security="none" pattern="/page/login"/>
+    <http security="none" pattern="/static/**"/>
+
     <http auto-config="true">
-        <intercept-url pattern="/login" access="permitAll"/>
-        <intercept-url pattern="/page/admin" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/page/admin" access="hasRole('ROLE_ADMIN')"/>
 
         <form-login login-page="/page/login"
                     login-processing-url="/login"
@@ -17,19 +24,23 @@
                     authentication-failure-url="/page/login?error=1"
                     username-parameter="username"
                     password-parameter="password"/>
-        <access-denied-handler error-page="/deny"/>
         <logout logout-url="/logout" logout-success-url="/page/login?logout=1"/>
+        <access-denied-handler error-page="/page/deny"/>
 
         <csrf disabled="true"/>
         <remember-me key="uniqueAndSecret" token-validity-seconds="2592000"/>
+
+        <custom-filter ref="tokenAuthenticationFilter" before="FORM_LOGIN_FILTER"/>
     </http>
 
-    <authentication-manager>
-        <authentication-provider>
-            <user-service>
-                <user name="admin" password="admin" authorities="ROLE_ADMIN"/>
-                <user name="alice" password="Passw0rd" authorities="ROLE_USER"/>
-            </user-service>
-        </authentication-provider>
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="userDetailsService"/>
     </authentication-manager>
+
+    <beans:bean id="tokenAuthenticationFilter" class="com.xtuer.security.TokenAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+    </beans:bean>
+
+    <beans:bean id="userService" class="com.xtuer.service.UserService"/>
+    <beans:bean id="userDetailsService" class="com.xtuer.security.UserDetailsService"/>
 </beans:beans>

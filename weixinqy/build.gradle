@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:2.0.0'
+        classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'org.hidetake.ssh'
+apply from: 'deploy.gradle'
+
+gretty {
+    httpPort = 8080
+    contextPath = ''
+    servletContainer = 'tomcat8'
+
+    inplaceMode  = 'hard'
+    debugSuspend = false
+    managedClassReload      = true
+    recompileOnSourceChange = true
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+////////////////////////////////////////////////////////////////////////////////
+//                                   Maven 依赖                               //
+////////////////////////////////////////////////////////////////////////////////
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+ext.versions = [
+    spring   : '4.3.10.RELEASE',
+    servlet  : '3.1.0',
+    fastjson : '1.2.24',
+    thymeleaf: '3.0.7.RELEASE',
+    junit    : '4.12'
+]
+
+dependencies {
+    compile(
+            "org.springframework:spring-webmvc:$versions.spring", // Spring MVC
+            "org.springframework:spring-context-support:$versions.spring",
+            "com.alibaba:fastjson:$versions.fastjson",  // JSON
+            "org.thymeleaf:thymeleaf:$versions.thymeleaf",
+            "org.thymeleaf:thymeleaf-spring4:$versions.thymeleaf"
+    )
+
+    compile 'com.mzlion:easy-okhttp:1.1.2'
+
+    compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
+    testCompile("org.springframework:spring-test:$versions.spring")
+    testCompile("junit:junit:$versions.junit")
+}
+
+war.archiveName 'ROOT.zip'

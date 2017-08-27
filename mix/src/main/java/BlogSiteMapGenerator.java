@@ -46,6 +46,12 @@ public class BlogSitemapGenerator {
 
         for (String tag : metas.keySet()) {
             List<BlogMeta> subMetas = metas.get(tag);
+
+            // 按标题排序
+            Collections.sort(subMetas, (m1, m2) -> {
+                return m1.title.compareToIgnoreCase(m2.title);
+            });
+
             out.append(String.format("\n## %s\n", tag)); // tag 作为二级标题, 把 Blog 分类排列
 
             for (BlogMeta meta : subMetas) {

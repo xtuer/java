@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class LoginController {
+public class AuthenticationController {
     /**
      * 处理登录，登录错误，注销，对应的 URL 为:
-     *    登录页面: /login
-     *    登录错误: /login?error=1
-     *    注销成功: /login?logout=1
+     *     登录页面: /login
+     *     登录错误: /login?error=1
+     *     注销成功: /login?logout=1
      *
      * @param error
      * @param logout
@@ -20,7 +20,7 @@ public class LoginController {
      * @return
      */
     @GetMapping(value= Urls.PAGE_LOGIN)
-    public String loginPage(@RequestParam(value="error", required=false) String error,
+    public String loginPage(@RequestParam(value="error",  required=false) String error,
                             @RequestParam(value="logout", required=false) String logout,
                             ModelMap model) {
         String status = "";
@@ -31,6 +31,10 @@ public class LoginController {
         return Urls.FILE_LOGIN;
     }
 
+    /**
+     * 权限不够时访问次方法
+     * @return
+     */
     @GetMapping(Urls.PAGE_DENY)
     @ResponseBody
     public String toDenyPage() {

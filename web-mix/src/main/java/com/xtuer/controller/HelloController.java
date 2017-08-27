@@ -129,4 +129,13 @@ public class HelloController {
         System.out.println(request.getParameter("name"));
         return Result.ok("", user);
     }
+
+    @GetMapping("/p")
+    @ResponseBody
+    public String separated(HttpServletRequest request) {
+        System.out.println(request.getQueryString());
+        String name = request.getParameter("name");
+        String age = request.getParameter("age");
+        return name + age;
+    }
 }
