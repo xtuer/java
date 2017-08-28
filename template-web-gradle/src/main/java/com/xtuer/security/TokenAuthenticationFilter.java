@@ -64,7 +64,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
                 return;
             }
 
-            // 保存认证信息到 SecurityContext，禁止 sessionRepository 创建 session
+            // 保存认证信息到 SecurityContext，禁止 HttpSessionSecurityContextRepository 创建 session
             allowSessionCreation.set(false);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
