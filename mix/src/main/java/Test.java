@@ -1,25 +1,15 @@
-import com.alibaba.fastjson.JSON;
+import com.mzlion.core.io.IOUtils;
 
-import java.lang.reflect.Field;
+import java.io.*;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Foo foo = new Foo();
-        Field field = Foo.class.getDeclaredField("name");
-        field.setAccessible(true);
-        field.set(foo, "Biao");
+        InputStream in = new FileInputStream(new File("/Users/Biao/Desktop/foo.txt"));
+        OutputStream os = new FileOutputStream(new File("/Users/Biao/Desktop/y/bar.txt"));
 
-        System.out.println(foo);
-    }
-}
+        IOUtils.copy(in, os);
 
-class Foo {
-    private String name;
-
-    @Override
-    public String toString() {
-        return "Foo{" +
-                "name='" + name + '\'' +
-                '}';
+        IOUtils.closeQuietly(in);
+        IOUtils.closeQuietly(os);
     }
 }
