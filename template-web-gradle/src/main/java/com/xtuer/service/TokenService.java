@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.User;
 import com.xtuer.util.JwtUtils;
 
-public class JwtService {
+public class TokenService {
     private String appSecret = "App secret"; // 应用的秘钥，可以定期更换
     private long tokenDuration = 3600L * 24 * 30 * 1000; // token 有效期为 30 天
 
@@ -21,7 +21,7 @@ public class JwtService {
     }
 
     public static void main(String[] args) {
-        JwtService jwt = new JwtService();
+        TokenService service = new TokenService();
 
         // 创建用户对象
         User user = new User("Biao", "---", "ROLE_ADMIN", "ROLE_STAFF");
@@ -29,11 +29,14 @@ public class JwtService {
         user.setMail("biao.mac@icloud.com");
 
         // 使用 user 生成 token
-        String token = jwt.generateToken(user);
+        String token = service.generateToken(user);
         System.out.println(token);
 
+        // 检测 token 是否有效
+        System.out.println(service.checkToken(token));
+
         // 从 token 中提取用户
-        user = jwt.extractUser(token);
+        user = service.extractUser(token);
         System.out.println(JSON.toJSONString(user));
     }
 }

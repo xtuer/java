@@ -10,14 +10,14 @@ import java.util.TreeMap;
 
 /**
  * 使用 JWT 的算法生成 token、验证 token 的有效性以及从 token 中提取数据。Token 中包含了用户数据、签名，并且能够防止 token 被篡改。
- * 增加或者删除不参与签名的数据已有 token 不会失效，增加或者删除参与签名的数据会使已有 token 失效。
+ * 增加或者删除不参与签名的数据已有 token 不会失效，增加或者删除参与签名的数据会使已有 token 失效.
  *
- * 标准 JWT 生成的 token 由 3 部分组成，这里对其进行了简化，去掉了算法说明的部分，保留了数据和签名部分。
+ * 标准 JWT 生成的 token 由 3 部分组成，这里对其进行了简化，去掉了算法说明的部分，保留了数据和签名部分.
  * 参考: http://www.jianshu.com/p/576dbf44b2ae
  */
 public class JwtUtils {
     /**
-     * 使用 User 生成 token，由 2 部分组成，第一个部分为 payload 进行 Base64 编码的字符串，第二部分为签名。
+     * 使用 User 生成 token，由 2 部分组成，第一个部分为 payload 进行 Base64 编码的字符串，第二部分为签名.
      *
      * 算法:
      *     payload: 用户信息 + 签名生成时间进行 Base64 编码
@@ -28,8 +28,8 @@ public class JwtUtils {
      * @return token 字符串
      */
     public static String generateToken(User user, String secret) {
-        // 参与签名的数据
-        Map<String, String> params = new TreeMap<>();
+        // 参与签名的数据: id, username, roles, signAt
+        Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 是为了能够按照 key 进行字母序进行排序
         params.put("id",       user.getId() + "");
         params.put("username", user.getUsername());
         params.put("roles",    JSON.toJSONString(user.getRoles()));
@@ -42,7 +42,9 @@ public class JwtUtils {
         params.put("mail", user.getMail());
         String payload = JSON.toJSONString(params);
 
-        return CommonUtils.base64(payload) + "." + signString;
+        // 使用 Url Safe Base64 进行编码是因为等号 = 会影响读取 cookie 中的值
+        // 而 token 有可能放在 cookie, header, url 中
+        return CommonUtils.base64UrlSafe(payload) + "." + signString;
     }
 
     /**
@@ -56,15 +58,15 @@ public class JwtUtils {
      * @return token 有效时返回 true，无效时返回 false
      */
     public static boolean checkToken(String token, String secret, long duration) {
-        // token 的格式匹配 xxxxx.xxxxx
-        if (token == null || !token.matches("[\\w=+/]+\\.[\\w=+/]+")) {
+        // token 的格式: xxxxx.xxxxx，包含 0-9, a-z, A-Z, %
+        if (token == null || !token.matches("[\\w%]+\\.[\\w]+")) {
             return false;
         }
 
         try {
             // 从 token 中得到用户信息的字符串和签名字符串
             int pos = token.indexOf(".");
-            String payload = CommonUtils.unbase64(token.substring(0, pos));
+            String payload = CommonUtils.unbase64UrlSafe(token.substring(0, pos));
             String signString = token.substring(pos+1);
             JSONObject json = JSON.parseObject(payload);
 
@@ -75,7 +77,7 @@ public class JwtUtils {
                 return false;
             }
 
-            // 使用 token 中的数据计算签名
+            // 使用 token 中的 id, username, roles, signAt 计算签名
             Map<String, String> params = new TreeMap<>();
             params.put("id",       json.getString("id"));
             params.put("username", json.getString("username"));
@@ -94,7 +96,7 @@ public class JwtUtils {
     }
 
     /**
-     * 从 token 中提取用户信息，如果 token 无效则返回 null
+     * 从 token 中提取用户信息，如果 token 无效则返回 null.
      *
      * @param token JWT 生成的 token
      * @param secret 签名的秘钥匙
@@ -108,7 +110,7 @@ public class JwtUtils {
 
         try {
             int pos = token.indexOf(".");
-            String payload = CommonUtils.unbase64(token.substring(0, pos));
+            String payload = CommonUtils.unbase64UrlSafe(token.substring(0, pos));
             JSONObject json = JSON.parseObject(payload);
             JSONArray roles = JSON.parseArray(json.getString("roles"));
             json.put("roles", roles); // 注意: json 中的 roles 是字符串，需要转换为数组
