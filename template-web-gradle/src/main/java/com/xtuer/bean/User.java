@@ -15,6 +15,7 @@ public class User extends org.springframework.security.core.userdetails.User {
     private String username;
     private String password;
     private Set<String> roles = new HashSet<>();
+    private String mail;
 
     public User() {
         // 父类不允许空的用户名、密码和权限，所以给个默认的，这样就可以用默认的构造函数创建 User 对象。

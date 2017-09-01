@@ -1,15 +1,10 @@
-import com.mzlion.core.io.IOUtils;
-
-import java.io.*;
+import java.util.Base64;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        InputStream in = new FileInputStream(new File("/Users/Biao/Desktop/foo.txt"));
-        OutputStream os = new FileOutputStream(new File("/Users/Biao/Desktop/y/bar.txt"));
-
-        IOUtils.copy(in, os);
-
-        IOUtils.closeQuietly(in);
-        IOUtils.closeQuietly(os);
+        String payload = "{\"username\": \"Biao\", \"role\": \"ROLE_ADMIN\", \"signedAt\": 8823414213}";
+        String c = Base64.getEncoder().encodeToString(payload.getBytes());
+        System.out.println(c);
+        System.out.println(new String(Base64.getDecoder().decode(c)));
     }
 }

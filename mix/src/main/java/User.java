@@ -3,6 +3,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Getter
 @Setter
 
@@ -11,15 +14,20 @@ public class User {
     private String username;
     private String email;
     private boolean isLast;
+    private List<String> roles = new LinkedList();
 
     public User() {
     }
 
     @Builder
-    public User(int id, String email, String username) {
+    public User(int id, String username, String email, String... roles) {
         this.id = id;
         this.email = email;
         this.username = username;
+
+        for (String role : roles) {
+            this.roles.add(role);
+        }
     }
 
     public static void main(String[] args) {

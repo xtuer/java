@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.UUID;
 
 public final class CommonUtils {
@@ -53,6 +54,26 @@ public final class CommonUtils {
         }
 
         return null;
+    }
+
+    /**
+     * 对字符串 text 进行 Base64 编码
+     *
+     * @param text 要进行编码的字符串
+     * @return 返回使用 Base64 编码后的字符串
+     */
+    public static String base64(String text) {
+        return Base64.getEncoder().encodeToString(text.getBytes());
+    }
+
+    /**
+     * 把 Base64 编码的字符串 base64Text 解码
+     *
+     * @param base64Text Base64 编码的字符串
+     * @return 返回源字符串
+     */
+    public static String unbase64(String base64Text) {
+        return new String(Base64.getDecoder().decode(base64Text));
     }
 
     /**
