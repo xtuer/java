@@ -32,6 +32,7 @@ public interface Urls {
     String PAGE_LOGOUT = "/page/logout"; // 注销
     String PAGE_DENY   = "/page/deny";   // 无权访问页面的 URL
     String FILE_LOGIN  = "login.html";   // 登陆页面
+    String API_LOGIN_TOKENS = "/api/login/tokens"; // 登陆的 token
 
     // API 使用 RESTful 风格，变量名以 API_ 开头，URI 以 /api 开头, 资源都用复数形式便于统一管理 URL。
     // 下面以操作 subject, question 资源的 RESTful 风格的 URL 为例:

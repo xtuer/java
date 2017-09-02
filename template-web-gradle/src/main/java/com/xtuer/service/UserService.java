@@ -14,4 +14,8 @@ public class UserService {
 
         return null;
     }
+
+    public User findUserByUsernamePassword(String username, String password) {
+        return findUserByUsername(username); // 测试使用
+    }
 }

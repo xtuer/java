@@ -1,21 +1,28 @@
-package com.xtuer.service;
+package com.xtuer.security;
 
 import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.User;
 import com.xtuer.util.JwtUtils;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class TokenService {
     private String appSecret = "App secret"; // 应用的秘钥，可以定期更换
     private long tokenDuration = 3600L * 24 * 30 * 1000; // token 有效期为 30 天
 
+    // 生成 token
     public String generateToken(User user) {
         return JwtUtils.generateToken(user, appSecret);
     }
 
+    // 检测 token 的有效性
     public boolean checkToken(String token) {
         return JwtUtils.checkToken(token, appSecret, tokenDuration);
     }
 
+    // 从 token 中提取用户数据
     public User extractUser(String token) {
         return JwtUtils.extractUser(token, appSecret, tokenDuration);
     }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,5 +42,26 @@ public final class NetUtils {
         } catch (IOException ex) {
             logger.warn(ExceptionUtils.getStackTrace(ex));
         }
+    }
+
+    /**
+     * 获取名字为 name 的  cookie 的值.
+     *
+     * @param request
+     * @param name Cookie 的名字
+     * @return 返回名字为 name 的 cookie 的值，如果 name 不存在则返回 null
+     */
+    public static String getCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(name)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }

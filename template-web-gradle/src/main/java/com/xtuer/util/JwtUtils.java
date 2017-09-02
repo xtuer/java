@@ -14,6 +14,9 @@ import java.util.TreeMap;
  *
  * 标准 JWT 生成的 token 由 3 部分组成，这里对其进行了简化，去掉了算法说明的部分，保留了数据和签名部分.
  * 参考: http://www.jianshu.com/p/576dbf44b2ae
+ *
+ * 需要注意的是，放到 token 里的数据不要太多，否则会使得 token 很大，而 token 有可能放在 cookie, header 中，
+ * 如果过大，容易被截断导致 token 无效.
  */
 public class JwtUtils {
     /**
@@ -29,7 +32,7 @@ public class JwtUtils {
      */
     public static String generateToken(User user, String secret) {
         // 参与签名的数据: id, username, roles, signAt
-        Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 是为了能够按照 key 进行字母序进行排序
+        Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 是为了 key 能够按照字母序进行排序
         params.put("id",       user.getId() + "");
         params.put("username", user.getUsername());
         params.put("roles",    JSON.toJSONString(user.getRoles()));

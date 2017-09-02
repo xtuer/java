@@ -43,6 +43,7 @@
     <beans:bean id="tokenAuthenticationFilter" class="com.xtuer.security.TokenAuthenticationFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
     </beans:bean>
+    <beans:bean id="tokenService" class="com.xtuer.security.TokenService"/>
     <beans:bean id="userService" class="com.xtuer.service.UserService"/>
     <beans:bean id="userDetailsService" class="com.xtuer.security.UserDetailsService"/>
     <beans:bean id="sessionSecurityContextRepository" class="org.springframework.security.web.context.XHttpSessionSecurityContextRepository"/>
