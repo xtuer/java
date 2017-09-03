@@ -37,12 +37,13 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         // 从 token 中提取 user，如果 user 不为 null，则用其创建一个 Authentication 对象
         String token = request.getHeader("auth-token");
         User user = tokenService.extractUser(token);
-        user.setPassword("no usage"); // 密码不能为 null，但是也没有用，所以随便设置一个吧
-        user = User.userWithAuthorities(user); // 生成 authorities
 
         if (user == null) {
             return null;
         } else {
+            user.setPassword("no usage"); // 密码不能为 null，但是也没有用，所以随便设置一个吧
+            user = User.userWithAuthorities(user); // 生成 authorities
+
             return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
         }
     }
