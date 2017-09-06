@@ -2,6 +2,7 @@ package com.xtuer.security;
 
 import com.xtuer.bean.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -82,5 +83,11 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     public static boolean isAllowSessionCreation() {
         Boolean allow = allowSessionCreation.get();
         return allow == null ? true : allow; // 如果是 null，则说明没有设置过，使用默认的，也既是 true
+    }
+
+    @Override
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 }

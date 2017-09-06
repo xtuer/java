@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,16 +132,7 @@ public class HelloController {
         return Result.ok("", user);
     }
 
-    @GetMapping("/p")
-    @ResponseBody
-    public String separated(HttpServletRequest request) {
-        System.out.println(request.getQueryString());
-        String name = request.getParameter("name");
-        String age = request.getParameter("age");
-        return name + age;
-    }
-
-    // localhost:8080/params?error
+    // http://localhost:8080/params?error
     @GetMapping("/params")
     @ResponseBody
     public String params(@RequestParam String error) {

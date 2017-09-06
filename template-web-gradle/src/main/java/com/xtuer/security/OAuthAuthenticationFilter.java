@@ -3,6 +3,8 @@ package com.xtuer.security;
 import com.alibaba.fastjson.JSON;
 import com.mzlion.easyokhttp.HttpClient;
 import com.xtuer.bean.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -85,5 +87,11 @@ public class OAuthAuthenticationFilter extends AbstractAuthenticationProcessingF
         }
 
         chain.doFilter(request, response);
+    }
+
+    @Override
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 }

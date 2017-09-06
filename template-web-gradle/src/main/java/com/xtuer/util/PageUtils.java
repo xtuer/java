@@ -7,7 +7,7 @@ package com.xtuer.util;
  */
 public final class PageUtils {
     /**
-     * 根据传入的页数、每页上的最多记录数计算这一页面的开始位置 offset
+     * 根据传入的页数、每页上的最多记录数计算这一页面的开始位置 offset，最小为 0.
      *
      * @param pageNumber 页数
      * @param pageSize 每页上的最多记录数
@@ -23,7 +23,7 @@ public final class PageUtils {
     }
 
     /**
-     * 根据传入的记录总数、每页上的最多记录数计算总页数 pageCount
+     * 根据传入的记录总数、每页上的最多记录数计算总页数 pageCount，最小为 1 页.
      *
      * @param recordCount 记录的总数
      * @param pageSize 每页上的最多记录数
