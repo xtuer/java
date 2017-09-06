@@ -28,7 +28,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     private static ThreadLocal<Boolean> allowSessionCreation = new ThreadLocal<>(); // 是否允许当前请求创建 session
 
     public TokenAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/login", "POST")); // 参考 UsernamePasswordAuthenticationFilter
+        super("/"); // 参考 UsernamePasswordAuthenticationFilter
     }
 
     @Override
@@ -80,6 +80,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     }
 
     public static boolean isAllowSessionCreation() {
-        return allowSessionCreation.get();
+        Boolean allow = allowSessionCreation.get();
+        return allow == null ? true : allow; // 如果是 null，则说明没有设置过，使用默认的，也既是 true
     }
 }

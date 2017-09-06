@@ -120,5 +120,5 @@
     <mvc:resources mapping="/static/img/**"  location="/WEB-INF/static/img/" cache-period="31556926"/>
     <mvc:resources mapping="/static/lib/**"  location="/WEB-INF/static/lib/" cache-period="31556926"/>
     <mvc:resources mapping="/static/html/**" location="/WEB-INF/view/html/"  cache-period="31556926"/>
-    <mvc:resources mapping="/static/favicon.ico" location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
+    <mvc:resources mapping="/favicon.ico"    location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
 </beans>

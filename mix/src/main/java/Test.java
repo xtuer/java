@@ -1,12 +1,17 @@
-import java.net.URLEncoder;
-import java.util.Base64;
+import com.alibaba.fastjson.JSON;
+import lombok.Data;
 
+@Data
 public class Test {
-    public static void main(String[] args) throws Exception {
-        String c = Base64.getUrlEncoder().encodeToString("Google=+".getBytes());
-        System.out.println(c);
-        System.out.println(new String(Base64.getUrlDecoder().decode(c)));
+    private int id;
 
-        System.out.println(URLEncoder.encode(c, "UTF-8"));
+    public static void main(String[] args) throws Exception {
+        String data = "callback( {\"client_id\":\"101292272\",\"openid\":\"4584E3AAABFC5F052971C278790E9FCF\"} );";
+        int start = data.indexOf("{");
+        int end = data.lastIndexOf("}") + 1;
+        String json = data.substring(start, end);
+
+        String openId = JSON.parseObject(json).getString("openid");
+        System.out.println(openId);
     }
 }

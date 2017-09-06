@@ -1,5 +1,7 @@
 package filter;
 
+import org.springframework.util.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +18,7 @@ public class FilterChain {
     }
 
     public void addFilter(Filter filter) {
-        if (filter == null) {
-            throw new IllegalArgumentException("Filter cannot be null");
-        }
+        Assert.notNull(filter, "Filter cannot be null");
 
         filters.add(filter);
     }

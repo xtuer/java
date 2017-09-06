@@ -138,4 +138,12 @@ public class HelloController {
         String age = request.getParameter("age");
         return name + age;
     }
+
+    // localhost:8080/params?error
+    @GetMapping("/params")
+    @ResponseBody
+    public String params(@RequestParam String error) {
+        System.out.println("Error: " + error);
+        return error;
+    }
 }
