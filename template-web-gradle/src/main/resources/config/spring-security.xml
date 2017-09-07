@@ -50,9 +50,8 @@
         </beans:property>
     </beans:bean>
 
-    <!-- 第三方登陆 filter -->
+    <!-- 第三方登陆 filter 和 Token 登陆验证 filter -->
     <beans:bean id="oauthAuthenticationFilter" class="com.xtuer.security.OAuthAuthenticationFilter"/>
-    <!-- Token 登陆验证 filter -->
     <beans:bean id="tokenAuthenticationFilter" class="com.xtuer.security.TokenAuthenticationFilter"/>
 
     <beans:bean id="tokenService" class="com.xtuer.security.TokenService"/>
