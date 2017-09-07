@@ -4,9 +4,8 @@
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd">
-
     <!-- 1. Data Source -->
-    <import resource="classpath:config/datasource.xml"/>
+    <!--<import resource="classpath:config/datasource.xml"/>-->
 
     <!-- 2. SQL session factory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

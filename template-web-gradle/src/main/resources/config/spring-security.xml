@@ -4,14 +4,17 @@
         xmlns:beans="http://www.springframework.org/schema/beans"
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/security
             http://www.springframework.org/schema/security/spring-security.xsd">
+    <!-- 使用自动装配 -->
     <context:annotation-config/>
 
+    <!--匹配的 URL 不进行身份验证-->
     <http security="none" pattern="/page/login"/>
     <http security="none" pattern="/static/**"/>
 
@@ -55,7 +58,7 @@
     <beans:bean id="tokenAuthenticationFilter" class="com.xtuer.security.TokenAuthenticationFilter"/>
 
     <beans:bean id="tokenService" class="com.xtuer.security.TokenService"/>
-    <beans:bean id="userService" class="com.xtuer.service.UserService"/>
+    <beans:bean id="userService"  class="com.xtuer.service.UserService"/>
     <beans:bean id="userDetailsService" class="com.xtuer.security.UserDetailsService"/>
     <beans:bean id="sessionSecurityContextRepository" class="org.springframework.security.web.context.XHttpSessionSecurityContextRepository"/>
 
