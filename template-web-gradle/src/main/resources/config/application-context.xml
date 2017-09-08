@@ -9,7 +9,7 @@
            http://www.springframework.org/schema/context/spring-context.xsd">
     <context:property-placeholder location="classpath:config/application.properties"/>
 
-    <!-- Service, Dao, Config 等公用的、与 MVC 无关的对象在此生成 -->
+    <!-- Service, Dao, Config, Redis 等公用的、与 MVC 无关的对象在此生成 -->
     <import resource="classpath:config/redis.xml"/>
     <import resource="classpath:config/mybatis.xml"/>
     <import resource="classpath:config/spring-security.xml"/>
