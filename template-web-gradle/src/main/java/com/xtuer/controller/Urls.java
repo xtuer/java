@@ -1,7 +1,7 @@
 package com.xtuer.controller;
 
 /**
- * 集中管理 URL。
+ * 集中管理 URL.
  *
  * 其实此类名叫 Urls 不是很合适，基本都是 URI，但是对于大多数人来说 URL 更熟悉好记忆一些。
  * 还有少量变量不是 URI，例如 JSONP_CONTENT_TYPE，FORWARD 等，但不多，为了减少类，故就放在这里吧，约定好了就行。

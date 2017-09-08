@@ -10,6 +10,8 @@
            http://www.springframework.org/schema/context/spring-context.xsd
            http://www.springframework.org/schema/mvc
            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <context:property-placeholder location="classpath:config/application.properties"/>
+
     <!-- 静态文件的 URL 映射 -->
     <import resource="classpath:config/spring-view-controller.xml"/>
 
@@ -75,7 +77,7 @@
     <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/view/" />
         <property name="templateMode" value="HTML5" />
-        <property name="cacheable" value="@thymeleafCacheable@" />
+        <property name="cacheable" value="${thymeleafCacheable}" />
     </bean>
 
     <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">

@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.User;
 import com.xtuer.security.TokenService;
 import com.xtuer.service.UserService;
+import com.xtuer.util.NetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -30,10 +31,9 @@ public class AuthenticationController {
      *     登录错误: /login?error=1
      *     注销成功: /login?logout=1
      *
-     * @param error
-     * @param logout
-     * @param model
-     * @return
+     * @param error  不为 null 表示登陆出错
+     * @param logout 不为 null 表示注销成功
+     * @param model  保存数据到 view 中显示
      */
     @GetMapping(value= Urls.PAGE_LOGIN)
     public String loginPage(@RequestParam(value="error",  required=false) String error,
@@ -48,22 +48,25 @@ public class AuthenticationController {
     }
 
     /**
-     * 权限不够时访问此方法
-     *
-     * @return
+     * 权限不够时访问 Spring Security forward request 到此方法.
      */
     @GetMapping(Urls.PAGE_DENY)
     @ResponseBody
-    public String toDenyPage() {
+    public String toDenyPage(HttpServletRequest request) {
+        // Ajax 访问时权限不够抛异常，我们提供的异常处理器会转换为 JSON 格式返回.
+        if (NetUtils.useAjax(request)) {
+            throw new RuntimeException("权限不够");
+        }
+
+        // 普通访问返回错误信息或者相关页面
         return "权限不够!";
     }
 
     /**
-     * 使用用户名和密码创建 token
+     * 使用用户名和密码请求 token.
      *
-     * @param username
-     * @param password
-     * @return
+     * @param username 用户名
+     * @param password 密码
      */
     @PostMapping(Urls.API_LOGIN_TOKENS)
     @ResponseBody
@@ -74,10 +77,13 @@ public class AuthenticationController {
         return token;
     }
 
+    /**
+     * 绑定用户
+     */
     @GetMapping("/page/bindUser")
     @ResponseBody
     public String bindUser(HttpServletRequest request, HttpServletResponse response) {
-        // 1. 绑定用户
+        // 1. 绑定用户，用户不存在则先创建
         // TODO
 
         // 2. 绑定用户成功后使用 savedRequest 重定向到登陆前的页面，这里只是为了展示怎么取到登陆前页面的 URL
