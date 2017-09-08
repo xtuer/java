@@ -10,9 +10,8 @@
     <context:property-placeholder location="classpath:config/application.properties"/>
 
     <!-- Service, Dao, Config 等公用的、与 MVC 无关的对象在此生成 -->
-    <import resource="classpath:config/datasource.xml"/>
-    <import resource="classpath:config/mybatis.xml"/>
     <import resource="classpath:config/redis.xml"/>
+    <import resource="classpath:config/mybatis.xml"/>
     <import resource="classpath:config/spring-security.xml"/>
 
     <context:component-scan base-package="com.xtuer.service"/>
