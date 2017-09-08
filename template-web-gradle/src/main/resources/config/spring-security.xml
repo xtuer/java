@@ -14,7 +14,7 @@
     <!-- 使用自动装配 -->
     <context:annotation-config/>
 
-    <!--匹配的 URL 不进行身份验证-->
+    <!-- 匹配的 URL 不进行身份验证 -->
     <http security="none" pattern="/page/login"/>
     <http security="none" pattern="/static/**"/>
 
