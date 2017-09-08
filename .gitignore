@@ -1,8 +1,7 @@
+.gradle/
 *.log
 log.txt
 dump.rdb
-.idea/
-.gradle/
 out/
 build/
 logs/
@@ -10,3 +9,24 @@ logs/
 @logsDir@/
 /**/.DS_Store
 paper-suite/src/main/webapp/WEB-INF/static/preview/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
