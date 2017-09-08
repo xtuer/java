@@ -58,7 +58,7 @@ public class DemoController {
      */
     @RequestMapping(Urls.API_DEMO_MYBATIS)
     @ResponseBody
-    public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
+    public Result queryDemoFromDatabase(@PathVariable int id) {
         return Result.ok("", demoMapper.findDemoById(id));
     }
 
@@ -201,14 +201,14 @@ public class DemoController {
 
     /**
      * 字符串日期转换为日期 Date 对象，接收 2 种格式的字符串: yyyy-MM-dd 或者 yyyy-MM-dd HH:mm:ss
-     * URL: http://localhost:8080/string-to-date?date=2017-03-12
-     *      http://localhost:8080/string-to-date?date=2017-03-12%2012:10:15
+     * URL: http://localhost:8080/demo/string-to-date?date=2017-03-12
+     *      http://localhost:8080/demo/string-to-date?date=2017-03-12%2012:10:15
      * @param date
      * @return
      */
     @GetMapping("/demo/string-to-date")
     @ResponseBody
-    public Result<Date> stringToDate(@RequestParam("date") Date date) {
+    public Result stringToDate(@RequestParam("date") Date date) {
         return Result.ok("日期转换", date);
     }
 

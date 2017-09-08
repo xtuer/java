@@ -6,17 +6,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public final class Result<T> {
+public final class Result {
     private int code;        // 状态码，一般是当 success 为 true 或者 false 时不足够表达时可使用
     private boolean success; // 成功时为 true，失败时为 false
     private String message;  // 成功或则失败时的描述信息
-    private T data;          // 成功或则失败时的更多详细数据，一般失败时不需要
+    private Object data;     // 成功或则失败时的更多详细数据，一般失败时不需要
 
     public Result(boolean success, String message) {
         this(success, message, null);
     }
 
-    public Result(boolean success, String message, T data) {
+    public Result(boolean success, String message, Object data) {
         this.success = success;
         this.message = message;
         this.data = data;
@@ -34,11 +34,11 @@ public final class Result<T> {
         return new Result(false, message);
     }
 
-    public static <T> Result<T> ok(String message, T data) {
+    public static Result ok(String message, Object data) {
         return new Result(true, message, data);
     }
 
-    public static <T> Result<T> fail(String message, T data) {
+    public static Result fail(String message, Object data) {
         return new Result(false, message, data);
     }
 
