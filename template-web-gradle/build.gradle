@@ -1,20 +1,9 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.akhikhl.gretty:gretty:2.0.0'
-        classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
-    }
+plugins {
+    id 'war'
+    id 'java'
+    id 'org.hidetake.ssh' version '2.9.0'
+    id 'org.akhikhl.gretty' version '2.0.0'
 }
-
-import org.apache.tools.ant.filters.ReplaceTokens
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
-apply plugin: 'org.hidetake.ssh'
 
 gretty {
     httpPort = 8080
@@ -27,11 +16,8 @@ gretty {
     recompileOnSourceChange = true
 }
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +30,7 @@ repositories {
 
 ext {
     // 运行和打包的环境选择, 默认是开发环境
-    // 获取 gradle 参数中 -Dprofile 的值: gradle -Denv=production clean build
+    // 获取 gradle 参数中 env 的值: gradle -Denv=production clean build
     // 构建 gradle clean build
     //     gradle -Denv=production clean build
     // 部署 gradle deploy
@@ -77,16 +63,15 @@ ext.versions = [
 
 dependencies {
     compile(
-            "org.springframework:spring-webmvc:$versions.spring",             // Spring MVC
+            "org.springframework:spring-webmvc:$versions.spring", // Spring MVC
             "org.springframework:spring-context-support:$versions.spring",
             "org.springframework.security:spring-security-web:$versions.springSecurity", // Spring Security
             "org.springframework.security:spring-security-config:$versions.springSecurity",
             "org.springframework.session:spring-session-data-redis:$versions.springSession",
-            "org.projectlombok:lombok:$versions.lombok",                      // Getter, Setter generator
-            "com.alibaba:fastjson:$versions.fastjson",                        // JSON
+            "com.alibaba:fastjson:$versions.fastjson", // JSON
             "org.thymeleaf:thymeleaf:$versions.thymeleaf",
             "org.thymeleaf:thymeleaf-spring4:$versions.thymeleaf",
-            "mysql:mysql-connector-java:$versions.mysql",                     // MyBatis
+            "mysql:mysql-connector-java:$versions.mysql", // MyBatis
             "org.springframework:spring-jdbc:$versions.spring",
             "org.mybatis:mybatis-spring:$versions.mybatisSpring",
             "org.mybatis:mybatis:$versions.mybatis",
@@ -96,10 +81,11 @@ dependencies {
             "commons-fileupload:commons-fileupload:$versions.commonsFileupload",
             "org.yaml:snakeyaml:$versions.snakeyaml",
             "com.mzlion:easy-okhttp:$versions.easyOkHttp",
-            "ch.qos.logback:logback-classic:$versions.logback",               // Logback
+            "ch.qos.logback:logback-classic:$versions.logback", // Logback
             "org.slf4j:jcl-over-slf4j:$versions.jclOverSlf4j"
     )
 
+    compileOnly("org.projectlombok:lombok:$versions.lombok")
     compileOnly("javax.servlet:javax.servlet-api:$versions.servlet") // Servlet
     testCompile("org.springframework:spring-test:$versions.spring")
     testCompile("junit:junit:$versions.junit")
@@ -117,38 +103,38 @@ def loadConfiguration() {
 processResources {
     // src/main/resources 下的文件中 @key@ 的内容使用 config.groovy 里对应的进行替换
     from(sourceSets.main.resources.srcDirs) {
-        filter(ReplaceTokens, tokens: loadConfiguration())
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadConfiguration())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                                    Deploy                                  //
+//                                   项目部署                                  //
 ////////////////////////////////////////////////////////////////////////////////
 remotes {
-    webServer {
-        host = '120.92.26.194'
+    server {
+        host = '192.168.82.133'
         user = 'root'
-        password = 'xxx'
-        //identity = file('/Users/Biao/.ssh/id_rsa')
+        // password = 'xxx'
+        identity = file('/Users/Biao/.ssh/id_rsa')
     }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
 }
 
 task deploy {
     doLast {
-        ssh.settings {
-            knownHosts = allowAnyHosts
-        }
-
         ssh.run {
-            session(remotes.webServer) {
-                put from: "${buildDir}/libs/${war.archiveName}", into: '/data/shitu.edu-edu.com'
+            session(remotes.server) {
+                put from: "${buildDir}/libs/${war.archiveName}", into: '/data/xtuer.com'
                 execute """
                     source /root/.bash_profile;
-                    /usr/local/edu/tomcat/bin/shutdown.sh;
-                    rm -rf /data/shitu.edu-edu.com/ROOT;
-                    unzip  /data/shitu.edu-edu.com/${war.archiveName} -d /data/shitu.edu-edu.com/ROOT;
-                    /usr/local/edu/tomcat/bin/startup.sh;
-                    rm -rf /data/shitu.edu-edu.com/${war.archiveName}
+                    /usr/local/tomcat/bin/shutdown.sh;
+                    rm -rf /data/xtuer.com/ROOT;
+                    unzip  /data/xtuer.com/${war.archiveName} -d /data/xtuer.com/ROOT;
+                    /usr/local/tomcat/bin/startup.sh;
+                    rm -rf /data/xtuer.com/${war.archiveName}
                 """
             }
         }
