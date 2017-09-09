@@ -21,7 +21,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:unchecked'
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,8 @@ ext {
     // 获取 gradle 参数中 env 的值: gradle -Denv=production clean build
     // 构建 gradle clean build
     //     gradle -Denv=production clean build
-    // 部署 gradle deploy
-    //     gradle -Denv=production deploy
+    // 部署 gradle clean deploy
+    //     gradle -Denv=production clean deploy
     environment = System.getProperty("env", "development")
     war.archiveName = 'ROOT.zip' // 打包的文件名
 }
@@ -127,7 +127,7 @@ ssh.settings {
     knownHosts = allowAnyHosts
 }
 
-task deploy {
+task deploy(dependsOn: war) {
     doLast {
         ssh.run {
             session(remotes.server) {
@@ -136,14 +136,11 @@ task deploy {
                     source /root/.bash_profile;
                     /usr/local/tomcat/bin/shutdown.sh;
                     rm -rf /data/xtuer.com/ROOT;
-                    unzip  /data/xtuer.com/${war.archiveName} -d /data/xtuer.com/ROOT;
+                    unzip  /data/xtuer.com/${war.archiveName} -d /data/xtuer.com/ROOT > /dev/null;
                     /usr/local/tomcat/bin/startup.sh;
-                    rm -rf /data/xtuer.com/${war.archiveName}
+                    rm -rf /data/xtuer.com/${war.archiveName};
                 """
             }
         }
     }
 }
-
-deploy.dependsOn assemble
-assemble.dependsOn clean
