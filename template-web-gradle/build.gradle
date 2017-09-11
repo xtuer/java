@@ -16,19 +16,10 @@ gretty {
     recompileOnSourceChange = true
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                   Maven 依赖                               //
 ////////////////////////////////////////////////////////////////////////////////
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
@@ -98,16 +89,14 @@ dependencies {
 ////////////////////////////////////////////////////////////////////////////////
 //                                  资源动态替换                                //
 ////////////////////////////////////////////////////////////////////////////////
-def loadConfiguration() {
-    println "==> Load configuration for '${environment}'"
-    def configFile = file('config.groovy') // 配置文件
-    return new ConfigSlurper(environment).parse(configFile.toURI().toURL()).toProperties()
-}
-
 processResources {
     // src/main/resources 下的文件中 @key@ 的内容使用 config.groovy 里对应的进行替换
+    println "==> Load configuration for '${environment}'"
+    def configFile = file('config.groovy') // 配置文件
+    def props = new ConfigSlurper(environment).parse(configFile.toURI().toURL()).toProperties()
+
     from(sourceSets.main.resources.srcDirs) {
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadConfiguration())
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: props)
     }
 }
 
@@ -128,19 +117,31 @@ ssh.settings {
 }
 
 task deploy(dependsOn: war) {
+    def targetDir = '/data/xtuer.com'
     doLast {
         ssh.run {
             session(remotes.server) {
-                put from: "${buildDir}/libs/${war.archiveName}", into: '/data/xtuer.com'
+                put from: "${buildDir}/libs/${war.archiveName}", into: "${targetDir}"
                 execute """
                     source /root/.bash_profile;
                     /usr/local/tomcat/bin/shutdown.sh;
-                    rm -rf /data/xtuer.com/ROOT;
-                    unzip  /data/xtuer.com/${war.archiveName} -d /data/xtuer.com/ROOT > /dev/null;
+                    rm -rf ${targetDir}/ROOT;
+                    unzip  ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
                     /usr/local/tomcat/bin/startup.sh;
-                    rm -rf /data/xtuer.com/${war.archiveName};
+                    rm -rf ${targetDir}/${war.archiveName};
                 """
             }
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    JVM                                     //
+////////////////////////////////////////////////////////////////////////////////
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 }
