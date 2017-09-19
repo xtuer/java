@@ -11,7 +11,7 @@ public final class CommonUtils {
      * @return 返回 UUID
      */
     public static String uuid() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
+        return UUID.randomUUID().toString().toUpperCase();
     }
 
     /**
