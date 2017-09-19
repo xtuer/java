@@ -28,11 +28,18 @@ public final class CommonUtils {
         return Math.abs(uuid.hashCode()) % 100 + "";
     }
 
-    public static List<String> getStrings(Properties props, String key) {
+    /**
+     * 获取 yaml 配置文件生成的 properties 中的数组的项.
+     *
+     * @param yamlProperties
+     * @param key
+     * @return
+     */
+    public static List<String> getStrings(Properties yamlProperties, String key) {
         List<String> strings = new LinkedList<>();
 
         for (int i = 0; i < 10000; ++i) {
-            String str = props.getProperty(key + "[" + i + "]");
+            String str = yamlProperties.getProperty(key + "[" + i + "]");
 
             if (str != null) {
                 strings.add(str);

@@ -6,6 +6,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * 导入试卷的元数据
+ */
 public class PaperMetaImporter {
     public static void main(String[] args) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/importer.xml");
@@ -21,7 +24,7 @@ public class PaperMetaImporter {
             String subject = tokens[0].trim();  // 学科
             String metaFile = tokens[1].trim(); // 学科的元数据文件
 
-            importService.updatePapersMeta(metaFile, subject); // 导入试卷的元数据
+            importService.updatePapersMeta(subject, metaFile); // 导入试卷的元数据
         }
     }
 }

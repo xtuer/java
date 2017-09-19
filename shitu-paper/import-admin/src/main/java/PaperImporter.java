@@ -7,6 +7,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * 导入试卷
+ */
 public final class PaperImporter {
     public static void main(String[] args) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/importer.xml");
@@ -26,7 +29,7 @@ public final class PaperImporter {
             String paperDirectory = tokens[1].trim(); // 试卷目录
             List<File> papers = importService.listPapers(paperDirectory); // 试卷文件
 
-            importService.importPaper(papers, destDirectory, subject); // 导入试卷
+            importService.importPaper(subject, papers, destDirectory); // 导入试卷
         }
     }
 }

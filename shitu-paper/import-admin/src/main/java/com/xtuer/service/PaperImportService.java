@@ -25,14 +25,14 @@ public class PaperImportService {
     private ImporterMapper mapper;
 
     /**
-     * 导入试卷信息到数据库，并移动试卷到指定目录。
+     * 导入试卷信息到数据库，并复制试卷到指定目录.
      *
+     * @param subject
      * @param papers
      * @param destDirectory
-     * @param subject
      */
     @Transactional
-    public void importPaper(List<File> papers, String destDirectory, String subject) {
+    public void importPaper(String subject, List<File> papers, String destDirectory) {
         for (File paperFile : papers) {
             // name, uuid_name, original_name, real_directory_name, subject
             String name         = paperFile.getName();
@@ -62,7 +62,7 @@ public class PaperImportService {
     }
 
     /**
-     * 获取目录下的试卷
+     * 获取目录下的试卷，试卷的扩展名都是 .doc 的 word 文件.
      *
      * @param paperDirectory 试卷的目录
      * @return 试卷的 list
@@ -76,14 +76,14 @@ public class PaperImportService {
     }
 
     /**
-     * 更新试卷的属性
+     * 更新试卷的属性.
      *
-     * @param path 属性文件的路径
      * @param subject 试卷所属学科
+     * @param path 属性文件的路径
      * @throws Exception
      */
     @Transactional
-    public void updatePapersMeta(String path, String subject) throws Exception {
+    public void updatePapersMeta(String subject, String path) throws Exception {
         Reader reader = new InputStreamReader(new FileInputStream(path));
         Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(reader);
 
