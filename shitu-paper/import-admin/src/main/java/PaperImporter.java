@@ -1,31 +1,32 @@
 import com.xtuer.service.PaperImportService;
+import com.xtuer.util.CommonUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.util.List;
+import java.util.Properties;
 
 public final class PaperImporter {
-    // 导入试卷时试卷保存的目录
-    private static final File PAPER_DEST_DIR = new File("/Users/Biao/Documents/套卷/papers");
-
-    // 试卷文件的基础目录
-    private static final String BASE_DIR = "/Users/Biao/Documents/套卷";
-
-    // 学科 + 此学科试卷目录
-    private static final String[][] PAPERS_INFO = {
-            {"高中语文", BASE_DIR + "/高中语文（2804套）/GZYW033C"}
-    };
-
     public static void main(String[] args) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/importer.xml");
-        PaperImportService importer = context.getBean("paperImportService", PaperImportService.class);
+        PaperImportService importService = context.getBean("paperImportService", PaperImportService.class);
+        Properties config = context.getBean("config", Properties.class);
 
-        // 导入所有学科的试卷
-        for (int i = 0; i< PAPERS_INFO.length; ++i) {
-            String subject = PAPERS_INFO[i][0];
-            List<File> papers = importer.listPapers(PAPERS_INFO[i][1]);
-            importer.importPaper(papers, PAPER_DEST_DIR, subject);
+        // 试卷导入后保存到的目录
+        String destDirectory = config.getProperty("paperDest");
+
+        // 试卷的信息: 学科和试卷所在文件夹
+        List<String> infos = CommonUtils.getStrings(config, "paperInfo");
+
+        // 按学科导入试卷
+        for (String info : infos) {
+            String[] tokens = info.split(","); // 高中政治, /Users/Biao/Documents/套卷/original-papers/高中政治（18套）/GZZZ033C
+            String subject = tokens[0].trim(); // 学科
+            String paperDirectory = tokens[1].trim(); // 试卷目录
+            List<File> papers = importService.listPapers(paperDirectory); // 试卷文件
+
+            importService.importPaper(papers, destDirectory, subject); // 导入试卷
         }
     }
 }

@@ -19,6 +19,7 @@ jar {
 // 打包命令: gradle clean shadowJar
 shadowJar {
     mergeServiceFiles('META-INF/spring.*')
+    archiveName = 'import-admin.zip'
 }
 
 tasks.withType(JavaCompile) {

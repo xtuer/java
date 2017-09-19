@@ -8,6 +8,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * 试卷导入服务
  */
+@Service
 public class PaperImportService {
     @Autowired
     private ImporterMapper mapper;
@@ -30,13 +32,13 @@ public class PaperImportService {
      * @param subject
      */
     @Transactional
-    public void importPaper(List<File> papers, File destDirectory, String subject) {
+    public void importPaper(List<File> papers, String destDirectory, String subject) {
         for (File paperFile : papers) {
             // name, uuid_name, original_name, real_directory_name, subject
-            String name = paperFile.getName();
+            String name         = paperFile.getName();
             String originalName = name;
-            String uuid = CommonUtils.uuid();
-            String uuidName = uuid + "." + FilenameUtils.getExtension(name);
+            String uuid         = CommonUtils.uuid();
+            String uuidName     = uuid + "." + FilenameUtils.getExtension(name);
             String realDirectoryName = CommonUtils.directoryNameByUuid(uuid);
 
             Paper paper = new Paper();
@@ -66,6 +68,7 @@ public class PaperImportService {
      * @return 试卷的 list
      */
     public static List<File> listPapers(String paperDirectory) {
+        paperDirectory = paperDirectory.trim();
         List<File> papers = Arrays.asList(new File(paperDirectory).listFiles((dir, name) -> name.toLowerCase().endsWith(".doc")));
         Collections.sort(papers, (a, b) -> a.getName().compareTo(b.getName())); // 对文件名进行排序
 
@@ -85,13 +88,13 @@ public class PaperImportService {
         Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(reader);
 
         for (CSVRecord record : records) {
-            String paperName = record.get("FixPaperName").trim();
-            String paperYear = record.get("PaperYear").trim();
+            String paperName   = record.get("FixPaperName").trim();
+            String paperYear   = record.get("PaperYear").trim();
             String paperRegion = record.get("PaperRegion").trim();
-            String paperFrom = record.get("PaperFrom").trim();
-            String paperType = record.get("PaperType").trim();
+            String paperFrom   = record.get("PaperFrom").trim();
+            String paperType   = record.get("PaperType").trim();
             String description = record.get("memo").trim();
-            String originalPaperId = record.get("FixPaperID").trim();
+            // String originalPaperId = record.get("FixPaperID").trim();
 
             Paper paper = new Paper();
             paper.setOriginalName(paperName + ".doc")
