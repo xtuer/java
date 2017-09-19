@@ -27,9 +27,9 @@ public class PaperImportService {
     @Autowired
     private ImporterMapper mapper;
 
-    private static final String PAPERS_FILE = "papers.json"; // 试卷
+    private static final String PAPERS_FILE            = "papers.json"; // 试卷
     private static final String PAPER_DIRECTORIES_FILE = "paperDirectories.json"; // 试卷目录
-    private static final String KNOWLEDGE_POINTS_FILE = "knowledgePoints.json"; // 知识点
+    private static final String KNOWLEDGE_POINTS_FILE  = "knowledgePoints.json";  // 知识点
     private static final String PAPER_KNOWLEDGE_POINT_RELATION_FILE = "paperKnowledgePointRelation.json"; // 试卷知识点关系
 
     // 导入试卷
@@ -49,11 +49,14 @@ public class PaperImportService {
     // 导入目录
     @Transactional
     public void importPaperDirectories() throws IOException {
+        String tenantCode = config.getProperty("tenantCode");
+
         // 所有的目录都放在一个数组里
         String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), PAPER_DIRECTORIES_FILE));
         List<PaperDirectory> directories = JSON.parseObject(json, new TypeReference<List<PaperDirectory>>(){});
 
         for (PaperDirectory directory : directories) {
+            directory.setTenantCode(tenantCode);
             mapper.insertPaperDirectory(directory);
         }
     }
@@ -61,10 +64,12 @@ public class PaperImportService {
     // 导入知识点
     @Transactional
     public void importKnowledgePoints() throws IOException {
+        String tenantCode = config.getProperty("tenantCode");
         String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), KNOWLEDGE_POINTS_FILE));
         List<KnowledgePoint> points = JSON.parseObject(json, new TypeReference<List<KnowledgePoint>>(){});
 
         for (KnowledgePoint point : points) {
+            point.setTenantCode(tenantCode);
             mapper.insertKnowledgePoint(point);
         }
     }

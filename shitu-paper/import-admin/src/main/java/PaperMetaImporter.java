@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class PaperMetaImporter {
     public static void main(String[] args) throws Exception {
-        ApplicationContext context = new ClassPathXmlApplicationContext("config/importer.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         PaperImportService importService = context.getBean("paperImportService", PaperImportService.class);
         Properties config = context.getBean("config", Properties.class);
 

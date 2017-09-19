@@ -6,7 +6,7 @@
 
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.ImporterMapper">
-    <!--插入试卷-->
+    <!--插入试卷: ON DUPLICATE KEY: 判断主键和 Unique 列，paper_id 是 unique 的 -->
     <insert id="insertPaper" parameterType="Paper">
         INSERT INTO paper(paper_id, name, uuid_name, original_name, paper_directory_id, real_directory_name,
             subject, publish_Year, status, region, paper_from, paper_type, description, created_time)

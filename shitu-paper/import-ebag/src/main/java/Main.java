@@ -4,12 +4,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        ApplicationContext context = new ClassPathXmlApplicationContext("config/spring-beans.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         PaperImportService service = context.getBean(PaperImportService.class);
 
-        service.importPapers();
+//        service.importPapers();
         service.importPaperDirectories();
         service.importKnowledgePoints();
-        service.importPaperKnowledgePointRelation();
+//        service.importPaperKnowledgePointRelation();
     }
 }

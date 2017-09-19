@@ -9,4 +9,5 @@ public class PaperDirectory {
     private String paperDirectoryId;
     private String name;
     private String parentPaperDirectoryId;
+    private String tenantCode;
 }
