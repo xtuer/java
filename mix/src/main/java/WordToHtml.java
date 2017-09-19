@@ -15,15 +15,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-
+/**
+ * 不能保存图片
+ */
 public class WordToHtml {
     public static void main(String[] args) throws Exception {
-        HWPFDocumentCore wordDocument = WordToHtmlUtils.loadDoc(new FileInputStream("/Users/Biao/Desktop/x.doc"));
+        HWPFDocumentCore wordDocument = WordToHtmlUtils.loadDoc(new FileInputStream("/Users/Biao/Desktop/x/xxx.doc"));
 
         WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
         wordToHtmlConverter.processDocument(wordDocument);
         Document htmlDocument = wordToHtmlConverter.getDocument();
-        FileOutputStream out = new FileOutputStream(new File("/Users/Biao/Desktop/x.doc.html"));
+        FileOutputStream out = new FileOutputStream(new File("/Users/Biao/Desktop/doc/x.doc.html"));
 
         DOMSource domSource = new DOMSource(htmlDocument);
         StreamResult streamResult = new StreamResult(out);

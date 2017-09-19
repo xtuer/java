@@ -34,16 +34,13 @@ import org.apache.poi.hwpf.usermodel.TableRow;
 import org.w3c.dom.Document;
 
 /**
- * @author: Chembo Huang
- * @since: May 3, 2012
- * @modified: May 3, 2012
- * @version:
+ * 可以保存图片
  */
 public class Word2Html {
 
     public static void main(String argv[]) {
         try {
-            convert2Html("/Users/Biao/Desktop/x.doc","/Users/Biao/Desktop/x.doc.html");
+            convert2Html("/Users/Biao/Desktop/x/xxx.doc","/Users/Biao/Desktop/doc/y.doc.html");
         } catch (Exception e) {
             e.printStackTrace();
         }

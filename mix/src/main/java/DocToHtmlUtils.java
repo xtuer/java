@@ -166,7 +166,7 @@ public class DocToHtmlUtils {
     }
 
     public static void main(String argv[]) throws Exception {
-        convertDocToHtml(new File("/Users/Biao/Desktop/2011届高考数学强化复习训练题11.doc"),
+        convertDocToHtml(new File("/Users/Biao/Desktop/x.doc"),
                 new File("/Users/Biao/Desktop/doc/x"));
 //        convertDocToHtml(new File("/Users/Biao/Desktop/doc/x.doc"),
 //                new File("/Users/Biao/Desktop/doc/y"),
