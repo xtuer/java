@@ -161,8 +161,8 @@
 
     <!--给试卷添加知识点-->
     <update id="addKnowledgePoint">
-        INSERT INTO paper_knowledge_point_relation (paper_id,  knowledge_point_id, is_deleted)
-        VALUES (#{paperId}, #{knowledgePointId}, 0)
+        INSERT INTO paper_knowledge_point_relation (paper_id,  knowledge_point_id)
+        VALUES (#{paperId}, #{knowledgePointId})
     </update>
 
     <!--设置试卷的目录-->

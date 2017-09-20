@@ -49,9 +49,8 @@ public class PaperImportService {
     // 导入目录
     @Transactional
     public void importPaperDirectories() throws IOException {
-        String tenantCode = config.getProperty("tenantCode");
-
         // 所有的目录都放在一个数组里
+        String tenantCode = getTenantCode();
         String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), PAPER_DIRECTORIES_FILE));
         List<PaperDirectory> directories = JSON.parseObject(json, new TypeReference<List<PaperDirectory>>(){});
 
@@ -64,7 +63,7 @@ public class PaperImportService {
     // 导入知识点
     @Transactional
     public void importKnowledgePoints() throws IOException {
-        String tenantCode = config.getProperty("tenantCode");
+        String tenantCode = getTenantCode();
         String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), KNOWLEDGE_POINTS_FILE));
         List<KnowledgePoint> points = JSON.parseObject(json, new TypeReference<List<KnowledgePoint>>(){});
 
@@ -87,5 +86,9 @@ public class PaperImportService {
 
     private String getPaperMetaDirectory() {
         return config.getProperty("paperMetaDirectory");
+    }
+
+    private String getTenantCode() {
+        return config.get("tenantCode").toString(); // 如果是 int 的字符串，getProperty() 返回 null
     }
 }

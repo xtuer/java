@@ -17,16 +17,16 @@
 
     <!--插入试卷目录-->
     <insert id="insertPaperDirectory" parameterType="PaperDirectory">
-        INSERT INTO paper_directory(paper_directory_id, name, parent_paper_directory_id)
-        VALUES(#{paperDirectoryId}, #{name}, #{parentPaperDirectoryId})
-        ON DUPLICATE KEY UPDATE name=#{name}, parent_paper_directory_id=#{parentPaperDirectoryId}
+        INSERT INTO paper_directory(paper_directory_id, name, parent_paper_directory_id, tenant_code)
+        VALUES(#{paperDirectoryId}, #{name}, #{parentPaperDirectoryId}, #{tenantCode})
+        ON DUPLICATE KEY UPDATE name=#{name}, parent_paper_directory_id=#{parentPaperDirectoryId}, tenant_code=#{tenantCode}
     </insert>
 
     <!--插入知识点-->
     <insert id="insertKnowledgePoint" parameterType="KnowledgePoint">
-        INSERT INTO knowledge_point(knowledge_point_id, name, parent_knowledge_point_id, type)
-        VALUES(#{knowledgePointId}, #{name}, #{parentKnowledgePointId}, #{type})
-        ON DUPLICATE KEY UPDATE name=#{name}, parent_knowledge_point_id=#{parentKnowledgePointId}
+        INSERT INTO knowledge_point(knowledge_point_id, name, parent_knowledge_point_id, type, tenant_code)
+        VALUES(#{knowledgePointId}, #{name}, #{parentKnowledgePointId}, #{type}, #{tenantCode})
+        ON DUPLICATE KEY UPDATE name=#{name}, parent_knowledge_point_id=#{parentKnowledgePointId}, tenant_code=#{tenantCode}
     </insert>
 
     <!--插入试卷知识点关系-->
