@@ -126,7 +126,7 @@ task deploy(dependsOn: war) {
                     source /root/.bash_profile;
                     /usr/local/tomcat/bin/shutdown.sh;
                     rm -rf ${targetDir}/ROOT;
-                    unzip  ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
+                    unzip -u ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
                     /usr/local/tomcat/bin/startup.sh;
                     rm -rf ${targetDir}/${war.archiveName};
                 """
