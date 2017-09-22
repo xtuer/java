@@ -23,7 +23,7 @@ public interface Urls {
 
     // 案例展示
     String PAGE_DEMO = "/page/demo";
-    String FILE_DEMO = "demo/demo.fm";
+    String FILE_DEMO = "demo/demo.html";
     String FORM_DEMO_UPLOAD = "/form/demo/upload";
     String API_DEMO_MYBATIS = "/api/demo/mybatis/{id}";
 
