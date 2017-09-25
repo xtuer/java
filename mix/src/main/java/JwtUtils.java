@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 public class JwtUtils {
     private static final String APP_SECRET = "App Secret";
-    private static final long DURATION     = 3600 * 24 * 30 * 1000; // 30 天
+    private static final long DURATION     = 3600L * 24 * 30 * 1000; // 30 天
 
     /**
      * 使用 User 生成 JWT token。
