@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 public class MqttPublisher {
     private static final String TOPIC_NAME = "foo";
     private static final String WILL_TOPIC_NAME = "foo-will";
-    private static final String HOST = "tcp://ebag.qderzhong.net:1883";
-//    private static final String HOST = "tcp://127.0.0.1:1883";
+//    private static final String HOST = "tcp://ebag.qderzhong.net:1883";
+    private static final String HOST = "tcp://127.0.0.1:1883";
     private static int messageNumber = 0;
 
     public static void main(String[] args) throws URISyntaxException {
