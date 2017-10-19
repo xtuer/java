@@ -1,20 +1,12 @@
-import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.LinkedList;
+import java.util.List;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
-@Data
 public class Test {
-    private static Logger logger = LoggerFactory.getLogger(Test.class);
-    private int id;
-
     public static void main(String[] args) throws Exception {
-        System.out.println(Instant.now().getEpochSecond());
-        System.out.println(System.currentTimeMillis() / 1000);
+        List<String> strs = new LinkedList<>();
+        strs.add("1");
+        strs.add("2");
+        strs.add("3");
+        System.out.println(String.join(", ", strs));
     }
 }
