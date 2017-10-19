@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public final class Result {
-    private int code;        // 状态码，一般是当 success 为 true 或者 false 时不足够表达时可使用
-    private boolean success; // 成功时为 true，失败时为 false
-    private String message;  // 成功或则失败时的描述信息
-    private Object data;     // 成功或则失败时的更多详细数据，一般失败时不需要
+    private boolean success;    // 成功时为 true，失败时为 false
+    private String  message;    // 成功或则失败时的描述信息
+    private Object  data;       // 成功或则失败时的更多详细数据，一般失败时不需要
+    private Integer statusCode; // 状态码，一般是当 success 为 true 或者 false 时不足够表达时可使用
 
     public Result(boolean success, String message) {
         this(success, message, null);
@@ -28,6 +28,10 @@ public final class Result {
 
     public static Result ok(String message) {
         return new Result(true, message);
+    }
+
+    public static Result fail() {
+        return new Result(false, "fail");
     }
 
     public static Result fail(String message) {
