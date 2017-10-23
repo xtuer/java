@@ -18,7 +18,7 @@ buildscript {
 gretty {
     httpPort = 8080
     contextPath = ''
-    servletContainer = 'tomcat7'
+    servletContainer = 'tomcat8'
     serverConfigFile = "server.xml"
 
     inplaceMode  = 'hard'

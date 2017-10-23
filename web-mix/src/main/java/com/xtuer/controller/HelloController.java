@@ -132,11 +132,15 @@ public class HelloController {
         return Result.ok("", user);
     }
 
-    // http://localhost:8080/params?error
+    // http://localhost:8080/params?error&logout
     @GetMapping("/params")
     @ResponseBody
-    public String params(@RequestParam String error) {
+    public String params(@RequestParam String error, @RequestParam(required=false) String logout) {
+        System.out.println(error == null);
+        System.out.println(logout == null);
         System.out.println("Error: " + error);
-        return error;
+        System.out.println("Logout: " + logout);
+
+        return String.join(", ", error, logout);
     }
 }
