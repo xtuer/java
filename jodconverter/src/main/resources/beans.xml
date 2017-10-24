@@ -4,5 +4,5 @@
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="converterBean" class="org.jodconverter.spring.JodConverterBean" destroy-method="destroy"/>
+    <bean id="converterBean" class="org.jodconverter.spring.JodConverterBean"/>
 </beans>
