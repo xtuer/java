@@ -8,6 +8,7 @@ import org.jodconverter.office.LocalOfficeUtils;
 import org.jodconverter.office.OfficeManager;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,6 @@ public class Test {
     private Date date = new Date();
 
     public static void main(String[] args) throws Exception {
-//        JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd";
-        System.out.println(JSON.toJSONString(new Test(), SerializerFeature.WriteDateUseDateFormat));
+        System.out.println(Charset.defaultCharset());
     }
 }
