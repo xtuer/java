@@ -1,21 +1,24 @@
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import lombok.Getter;
+import lombok.Setter;
 import org.jodconverter.JodConverter;
 import org.jodconverter.office.LocalOfficeManager;
 import org.jodconverter.office.LocalOfficeUtils;
 import org.jodconverter.office.OfficeManager;
 
 import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@Getter
+@Setter
 public class Test {
-    public static void main(String[] args) throws Exception {
-        OfficeManager officeManager = LocalOfficeManager.install();
+    private Date date = new Date();
 
-        try {
-            // Start an office process and connect to the started instance (on port 2002).
-            officeManager.start();
-            JodConverter.convert(new File("/Users/Biao/Desktop/使用说明.doc")).to(new File("/Users/Biao/Desktop/out/使用说明.html")).execute();
-        } finally {
-            // Stop the office process
-            LocalOfficeUtils.stopQuietly(officeManager);
-        }
+    public static void main(String[] args) throws Exception {
+//        JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd";
+        System.out.println(JSON.toJSONString(new Test(), SerializerFeature.WriteDateUseDateFormat));
     }
 }
