@@ -7,9 +7,9 @@ public class Main {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         PaperImportService service = context.getBean(PaperImportService.class);
 
-//        service.importPapers();
+        service.importPapers();
         service.importPaperDirectories();
         service.importKnowledgePoints();
-//        service.importPaperKnowledgePointRelation();
+        service.importPaperKnowledgePointRelation();
     }
 }

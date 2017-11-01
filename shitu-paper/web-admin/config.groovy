@@ -1,4 +1,4 @@
-// gradle clean -Denv=production assemble
+// gradle -Denv=production clean assemble
 environments {
     development {
         jdbc {

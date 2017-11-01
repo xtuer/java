@@ -1,4 +1,4 @@
-// gradle clean build -Denv=production
+// gradle -Denv=production clean build
 environments {
     development {
         database {

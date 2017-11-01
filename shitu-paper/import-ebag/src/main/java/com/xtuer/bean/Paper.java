@@ -23,8 +23,8 @@ public class Paper {
     private String paperType;
     private String description;
     private String originalPaperId; // 试卷原数据库中的 FixPaperId
-
     private int status; // 审核状态: 0: 未处理(默认值)，1: 已通过，2: 未通过
 
     private List<KnowledgePoint> knowledgePoints; // 知识点
+    private String tenantCode;
 }

@@ -31,7 +31,8 @@ CREATE TABLE paper (
     original_paper_id varchar(128) DEFAULT NULL COMMENT '乐教乐学中的试卷 id',
     created_time datetime DEFAULT NULL          COMMENT '乐教乐学中的试卷的创建时间',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY tenant_paper (paper_id,tenant_code) COMMENT '租户下的试卷唯一'
 ) ENGINE=InnoDB;
 
 
@@ -51,7 +52,8 @@ CREATE TABLE paper_directory (
     tenant_code varchar(128) DEFAULT NULL                   COMMENT '电子书包中租户的 code',
     is_deleted tinyint(4) DEFAULT '0',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY tenant_directory (paper_directory_id, tenant_code) COMMENT '租户下的试卷目录唯一'
 ) ENGINE=InnoDB;
 
 
@@ -69,7 +71,8 @@ CREATE TABLE knowledge_point (
     tenant_code varchar(128) DEFAULT NULL                   COMMENT '电子书包中租户的 code',
     is_deleted tinyint(4) NOT NULL DEFAULT '0'              COMMENT '1 表示已经删除，0 为没有删除',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY tenant_knowledge_point (knowledge_point_id, tenant_code) COMMENT '租户下的知识点唯一'
 ) ENGINE=InnoDB;
 
 
@@ -84,7 +87,8 @@ CREATE TABLE paper_knowledge_point_relation (
     knowledge_point_id char(64) NOT NULL DEFAULT '' COMMENT '知识点 id',
     tenant_code varchar(128) DEFAULT NULL           COMMENT '电子书包中租户的 code',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY tenant_paper_knowledge_point_relation (paper_id, knowledge_point_id, tenant_code) COMMENT '租户下的试卷+知识点唯一'
 ) ENGINE=InnoDB;
 
 

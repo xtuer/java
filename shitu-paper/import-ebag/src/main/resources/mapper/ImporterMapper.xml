@@ -9,9 +9,9 @@
     <!--插入试卷: ON DUPLICATE KEY: 判断主键和 Unique 列，paper_id 是 unique 的 -->
     <insert id="insertPaper" parameterType="Paper">
         INSERT INTO paper(paper_id, name, uuid_name, original_name, paper_directory_id, real_directory_name,
-            subject, publish_Year, status, region, paper_from, paper_type, description, created_time)
+            subject, publish_Year, status, region, paper_from, paper_type, description, tenant_code, created_time)
         VALUES(#{paperId}, #{name}, #{uuidName}, #{originalName}, #{paperDirectoryId}, #{realDirectoryName},
-            #{subject}, #{publishYear}, #{status}, #{region}, #{paperFrom}, #{paperType}, #{description}, now())
+            #{subject}, #{publishYear}, #{status}, #{region}, #{paperFrom}, #{paperType}, #{description}, #{tenantCode}, now())
         ON DUPLICATE KEY UPDATE paper_directory_id=#{paperDirectoryId}, real_directory_name=#{realDirectoryName}
     </insert>
 
@@ -19,22 +19,24 @@
     <insert id="insertPaperDirectory" parameterType="PaperDirectory">
         INSERT INTO paper_directory(paper_directory_id, name, parent_paper_directory_id, tenant_code)
         VALUES(#{paperDirectoryId}, #{name}, #{parentPaperDirectoryId}, #{tenantCode})
-        ON DUPLICATE KEY UPDATE name=#{name}, parent_paper_directory_id=#{parentPaperDirectoryId}, tenant_code=#{tenantCode}
+        ON DUPLICATE KEY UPDATE name=#{name}, parent_paper_directory_id=#{parentPaperDirectoryId}
     </insert>
 
     <!--插入知识点-->
     <insert id="insertKnowledgePoint" parameterType="KnowledgePoint">
         INSERT INTO knowledge_point(knowledge_point_id, name, parent_knowledge_point_id, type, tenant_code)
         VALUES(#{knowledgePointId}, #{name}, #{parentKnowledgePointId}, #{type}, #{tenantCode})
-        ON DUPLICATE KEY UPDATE name=#{name}, parent_knowledge_point_id=#{parentKnowledgePointId}, tenant_code=#{tenantCode}
+        ON DUPLICATE KEY UPDATE name=#{name}, parent_knowledge_point_id=#{parentKnowledgePointId}
     </insert>
 
     <!--插入试卷知识点关系-->
     <insert id="insertPaperKnowledgePointRelation" parameterType="KnowledgePoint">
-        INSERT INTO paper_knowledge_point_relation(paper_id, knowledge_point_id)
-        SELECT #{paperId}, #{knowledgePointId} FROM dual WHERE NOT EXISTS(
+        INSERT INTO paper_knowledge_point_relation(paper_id, knowledge_point_id, tenant_code)
+        SELECT #{paperId}, #{knowledgePointId}, #{tenantCode}
+        FROM dual
+        WHERE NOT EXISTS(
             SELECT 1 FROM paper_knowledge_point_relation
-            WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId}
+            WHERE paper_id=#{paperId} AND knowledge_point_id=#{knowledgePointId} AND tenant_code=#{tenantCode}
         )
     </insert>
 </mapper>
