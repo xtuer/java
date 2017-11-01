@@ -20,8 +20,8 @@ public class PaperMetaImporter {
 
         // 按学科导入试卷的元数据
         for (String info : infos) {
-            String[] tokens = info.split(",");  // 高中政治, /Users/Biao/Documents/套卷/papers-original/试卷属性/高中化学.csv
-            String subject = tokens[0].trim();  // 学科
+            String[] tokens = info.split(",");  // 例如：高中政治, /Users/Biao/Documents/套卷/papers-original/试卷属性/高中化学.csv
+            String subject  = tokens[0].trim(); // 学科
             String metaFile = tokens[1].trim(); // 学科的元数据文件
 
             importService.updatePapersMeta(subject, metaFile); // 导入试卷的元数据

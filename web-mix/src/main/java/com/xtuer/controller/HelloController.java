@@ -16,11 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 @Controller
 public class HelloController {

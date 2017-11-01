@@ -1,27 +1,25 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Getter;
 import lombok.Setter;
-import org.jodconverter.JodConverter;
-import org.jodconverter.office.LocalOfficeManager;
-import org.jodconverter.office.LocalOfficeUtils;
-import org.jodconverter.office.OfficeManager;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.experimental.Accessors;
+import org.apache.commons.lang.StringUtils;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Test {
-    private Date date = new Date();
-
     public static void main(String[] args) throws Exception {
-        System.out.println(LocalDateTime.of(2017, 1, 1, 0, 0).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-        System.out.println(new Date(1483228800000L));
+        printBinary(lastNBits1(3));
+        printBinary(lastNBits1(8));
+        printBinary(lastNBits1(20));
+        printBinary(lastNBits1(31));
+    }
+
+    public static int lastNBits1(int n) {
+        return -1 ^ (-1 << n);
+    }
+
+    public static void printBinary(int n) {
+        String bs = Integer.toBinaryString(n);
+        System.out.println(StringUtils.leftPad(bs, 32, '0'));
     }
 }

@@ -10,7 +10,7 @@ buildscript {
     dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0' }
 }
 
-mainClassName = 'Main' // TODO: 如果不是可执行 jar 包，不需要
+mainClassName = 'PaperMetaImporter' // TODO: 如果不是可执行 jar 包，不需要
 
 jar {
     manifest { attributes 'Main-Class': mainClassName }

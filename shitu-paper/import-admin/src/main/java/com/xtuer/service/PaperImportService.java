@@ -94,7 +94,7 @@ public class PaperImportService {
             String paperFrom   = record.get("PaperFrom").trim();
             String paperType   = record.get("PaperType").trim();
             String description = record.get("memo").trim();
-            // String originalPaperId = record.get("FixPaperID").trim();
+            // String originalPaperId = record.get("FixPaperID").trim(); // 读取这一列会报错，没找到为啥
 
             Paper paper = new Paper();
             paper.setOriginalName(paperName + ".doc")

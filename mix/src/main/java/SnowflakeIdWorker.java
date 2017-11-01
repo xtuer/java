@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Snowflake 生成的 64 位 long 类型的 ID，结构如下:<br>
  * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000 <br>
@@ -137,7 +139,7 @@ public class SnowflakeIdWorker {
         for (int i = 0; i < 1000; i++) {
             long id = idWorker.nextId();
             System.out.println(id);
-            System.out.println(Long.toBinaryString(id));
+            System.out.println(StringUtils.leftPad(Long.toBinaryString(id), 64, "0"));
         }
     }
 }

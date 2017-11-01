@@ -1,10 +1,10 @@
-# 试卷元数据: 科目和此科目的元数据文件
+# 试卷元数据: 学科和此学科的元数据文件，以逗号分割
 paperMetaInfo:
     - 高中语文, /Users/Biao/Documents/套卷/papers-original/试卷属性/高中语文.csv
 
-# 试卷的信息: 学科和试卷所在文件夹
+# 试卷的信息: 学科和此学科试卷所在文件夹，以逗号分割
 paperInfo:
     - 高中语文, /Users/Biao/Documents/套卷/papers-original/高中语文（2804套）/GZYW033C
 
-# 试卷导入后保存到 paperDest 目录
+# 试卷导入后保存的目录
 paperDest: /Users/Biao/Documents/套卷/papers
