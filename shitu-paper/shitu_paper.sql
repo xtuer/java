@@ -31,8 +31,7 @@ CREATE TABLE paper (
     original_paper_id varchar(128) DEFAULT NULL COMMENT '乐教乐学中的试卷 id',
     created_time datetime DEFAULT NULL          COMMENT '乐教乐学中的试卷的创建时间',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY paper_id (paper_id)
+    PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 
@@ -52,8 +51,7 @@ CREATE TABLE paper_directory (
     tenant_code varchar(128) DEFAULT NULL                   COMMENT '电子书包中租户的 code',
     is_deleted tinyint(4) DEFAULT '0',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY paper_directory_id (paper_directory_id)
+    PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 
@@ -71,8 +69,7 @@ CREATE TABLE knowledge_point (
     tenant_code varchar(128) DEFAULT NULL                   COMMENT '电子书包中租户的 code',
     is_deleted tinyint(4) NOT NULL DEFAULT '0'              COMMENT '1 表示已经删除，0 为没有删除',
     modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY knowledge_point_id (knowledge_point_id)
+    PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 

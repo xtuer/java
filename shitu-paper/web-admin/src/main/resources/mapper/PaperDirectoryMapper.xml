@@ -61,7 +61,6 @@
             AND p.paper_id=pkpr.paper_id
             AND p.paper_directory_id=#{paperDirectoryId}
             AND p.is_deleted=0
-            AND pkpr.is_deleted=0
         ORDER BY name
     </select>
 

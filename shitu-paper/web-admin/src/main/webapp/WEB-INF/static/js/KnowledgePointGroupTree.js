@@ -108,6 +108,7 @@ EditableKnowledgePointGroupTree.prototype.init = function() {
 
         KnowledgePointDao.create(group, function(group) {
             group.isParent = true;
+            group.knowledgePointGroupId = group.knowledgePointId; // 当前节点的 ID
             self.tree.addNodes(parentNode, -1, group, false);
         });
     });

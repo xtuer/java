@@ -13,6 +13,10 @@ body {
     /*z-index: 1;*/
 }
 
+#knowledge-point-group-tree {
+    min-height: 200px;
+}
+
 .main {
     position: fixed;
     top: 0;
