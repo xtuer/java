@@ -84,19 +84,23 @@ public class PaperExportService {
             int passStatus = 1; // 导出已通过的试卷，status 为 1
 
             // [1] 导出所有知识点
+            logger.info("[1] 导出所有知识点");
             List<KnowledgePoint> knowledgePoints = knowledgePointMapper.getAllKnowledgePoints();
             saveToFile(knowledgePoints, exportDirectory, "knowledgePoints.json");
 
             // [2] 导出所有试卷目录
+            logger.info("[2] 导出所有试卷目录");
             List<PaperDirectory> paperDirectories = directoryMapper.getAllPaperDirectories();
             saveToFile(paperDirectories, exportDirectory, "paperDirectories.json");
 
             // [3] 导出目录下试卷用到的知识点关系
+            logger.info("[3] 导出目录下试卷用到的知识点关系");
             List<KnowledgePoint> paperKnowledgePointRelation = paperMapper.findPaperKnowledgePointsRelationInPaperDirectories(paperDirectoryIds, passStatus);
             saveToFile(paperKnowledgePointRelation, exportDirectory, "paperKnowledgePointRelation.json");
 
             // [4] 导出目录下试卷用到的知识点关系
             // [5] 复制文件
+            logger.info("[4] 导出目录下试卷用到的知识点关系");
             List<Paper> papers = paperMapper.findPapersInPaperDirectories(paperDirectoryIds, passStatus);
             savePapers(papers, exportDirectory, "papers.json");
         } catch (IOException e) {

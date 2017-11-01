@@ -57,7 +57,7 @@
     <select id="findPaperKnowledgePointsRelationInPaperDirectories" resultType="KnowledgePoint">
         SELECT paper_id AS paperId, knowledge_point_id AS knowledgePointId
         FROM paper_knowledge_point_relation
-        WHERE is_deleted=0 AND paper_id IN (
+        WHERE paper_id IN (
             SELECT paper_id FROM paper WHERE status=#{status} AND is_deleted=0 AND paper_directory_id IN (
                 <foreach collection="paperDirectoryIds" item="directoryId" separator=",">
                     #{directoryId}
