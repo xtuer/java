@@ -3,7 +3,10 @@ package com.xtuer.controller;
 import com.xtuer.bean.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -30,5 +33,17 @@ public class RestController {
     @ResponseBody
     public Result delete() {
         return Result.ok("DELETE");
+    }
+
+    @PostMapping("/upload")
+    @ResponseBody
+    public Result uploadFile(@RequestParam("file") MultipartFile file,
+                             @RequestParam(required = false) String username,
+                             @RequestParam(required = false) String password) throws IOException {
+        System.out.println("Username: " + username + ", Password: " + password);
+        System.out.println(file.getOriginalFilename());
+        file.transferTo(new File("/Users/Biao/Desktop/" + System.currentTimeMillis() + "-" + file.getOriginalFilename()));
+
+        return Result.ok("OK", file.getOriginalFilename());
     }
 }
