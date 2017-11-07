@@ -67,6 +67,8 @@ public class HelloController {
         return "Cookie is wrote.";
     }
 
+    // http://www.xtuer.com/dot/biao.huang: 只能取到 biao，取不到 .huang，Spring 的 Bug
+    // https://stackoverflow.com/questions/16332092/spring-mvc-pathvariable-with-dot-is-getting-truncated
     @GetMapping("/dot/{name}")
     @ResponseBody
     public String dotName(@PathVariable String name) {
@@ -78,6 +80,14 @@ public class HelloController {
     @ResponseBody
     public String ip(HttpServletRequest request) {
         return getClientIp(request);
+    }
+
+    @GetMapping("/host")
+    @ResponseBody
+    public String host(HttpServletRequest request) {
+        System.out.println(request.getRequestURI());
+        System.out.println(request.getRemoteHost());
+        return request.getRequestURL().toString();
     }
 
     /**
