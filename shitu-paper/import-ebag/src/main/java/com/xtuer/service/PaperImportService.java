@@ -42,7 +42,7 @@ public class PaperImportService {
 
         // 每个 paper 是一行 json
         String tenantCode = getTenantCode();
-        List<String> jsons = FileUtils.readLines(new File(getPaperMetaDirectory(), PAPERS_FILE));
+        List<String> jsons = FileUtils.readLines(new File(getPaperMetaDirectory(), PAPERS_FILE), "UTF-8");
 
         for (String json : jsons) {
             if (!StringUtils.isBlank(json)) {
@@ -62,7 +62,7 @@ public class PaperImportService {
 
         // 所有的目录都放在一个数组里
         String tenantCode = getTenantCode();
-        String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), PAPER_DIRECTORIES_FILE));
+        String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), PAPER_DIRECTORIES_FILE), "UTF-8");
         List<PaperDirectory> directories = JSON.parseObject(json, new TypeReference<List<PaperDirectory>>(){});
 
         for (PaperDirectory directory : directories) {
@@ -79,7 +79,7 @@ public class PaperImportService {
         logger.info("开始导入知识点");
 
         String tenantCode = getTenantCode();
-        String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), KNOWLEDGE_POINTS_FILE));
+        String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), KNOWLEDGE_POINTS_FILE), "UTF-8");
         List<KnowledgePoint> points = JSON.parseObject(json, new TypeReference<List<KnowledgePoint>>(){});
 
         for (KnowledgePoint point : points) {
@@ -96,7 +96,7 @@ public class PaperImportService {
         logger.info("开始导入试卷知识点关系");
 
         String tenantCode = getTenantCode();
-        String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), PAPER_KNOWLEDGE_POINT_RELATION_FILE));
+        String json = FileUtils.readFileToString(new File(getPaperMetaDirectory(), PAPER_KNOWLEDGE_POINT_RELATION_FILE), "UTF-8");
         List<KnowledgePoint> relations = JSON.parseObject(json, new TypeReference<List<KnowledgePoint>>(){});
 
         for (KnowledgePoint relation : relations) {

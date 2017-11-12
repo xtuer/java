@@ -1,11 +1,11 @@
 #mysql
-mysql:
-    jdbc:
-        url: jdbc:mysql://localhost:3306
-        dirverClass: com.mysql.jdbc.Driver
-        username: root
-        password: root
+jdbc:
+    url: jdbc:mysql://localhost:3306
+    dirverClass: com.mysql.jdbc.Driver
+    username: root
+    password: root
+    port: 3306
 
 #redis
 username: Dr. Alice
-
+tenantCode: 123456

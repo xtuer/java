@@ -18,8 +18,10 @@ public class TestYamlPropertiesAndPropertiesConfig {
 
     @Test
     public void testYamlProperties() {
-        System.out.println(yamlProperties.getProperty("mysql.jdbc.url"));
+        System.out.println(yamlProperties.getProperty("jdbc.url"));
+        System.out.println(yamlProperties.getProperty("jdbc.port"));
         System.out.println(yamlProperties.getProperty("username"));
+        System.out.println(yamlProperties.getProperty("tenantCode"));
     }
 
     @Test

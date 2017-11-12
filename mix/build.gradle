@@ -29,7 +29,7 @@ dependencies {
     compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
     compile 'org.projectlombok:lombok:1.16.18'
     compile 'org.springframework:spring-context:4.3.5.RELEASE'
-    compile 'org.yaml:snakeyaml:1.17'
+    compile 'org.yaml:snakeyaml:1.19'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'org.springframework.session:spring-session-data-redis:1.2.1.RELEASE'
     compile 'com.flowpowered:flow-noise:1.0.0'
