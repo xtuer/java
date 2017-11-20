@@ -1,4 +1,4 @@
-* 打包: `gradle clean shadowJar`，生成 `build/libs/import-admin.zip`
+* 打包: `gradle -Denv=production clean shadowJar`，生成 `build/libs/import-admin.zip`
 * 执行
   1. 解压 **import-admin.zip**
   2. 把试卷文件和试卷元数据文件复制到服务器
