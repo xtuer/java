@@ -1,6 +1,7 @@
 .gradle/
 *.log
 log.txt
+*.tags
 dump.rdb
 out/
 build/
