@@ -150,8 +150,9 @@
             <div class="ui column">
                 <!-- 搜索得到的试卷 -->
                 <div class="ui segment" :class="segmentClass(index)" v-for="(paper, index) in papers">
-                    <div class="ui checkbox">
-                        <input type="checkbox" v-model="paper.checked">
+                    <div class="ui checkbox" @click="selectPaper(paper)">
+                        <!-- <input type="checkbox" v-model="paper.checked"> v-model 有 bug -->
+                        <input type="checkbox">
                         <label v-html="paper.name"></label>
                     </div>
                 </div>

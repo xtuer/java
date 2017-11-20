@@ -92,9 +92,16 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
                     return 'ui attached segment';
                 }
             },
+            // 选中或则取消选中试卷
+            selectPaper: function(paper) {
+                paper.checked = !paper.checked;
+            },
             // 使用学科和试卷名字的部分查找试卷
             findPapers: function() {
                 PaperDao.search(this.subject, this.nameFilter, function(papers) {
+                    for (var i=0; i < papers.length; ++i) {
+                        papers[i].checked = false;
+                    }
                     // 1. Vue 更新试卷的数据，Vue 会同时更新试卷的 DOM
                     // 2. Vue 更新完试卷的 DOM 后调用 checkbox() 使得新的 checkbox 支持完全的功能
                     window.vueChoosePapers.papers = papers;
