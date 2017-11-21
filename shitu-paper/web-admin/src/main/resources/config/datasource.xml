@@ -19,7 +19,7 @@
         <property name="timeBetweenEvictionRunsMillis" value="60000"/>
         <property name="minEvictableIdleTimeMillis"    value="300000"/>
 
-        <property name="validationQuery" value="select NOW()"/>
+        <property name="validationQuery" value="select 1 from dual"/>
         <property name="testWhileIdle"   value="true"/>
         <property name="testOnBorrow"    value="false"/>
         <property name="testOnReturn"    value="false"/>
