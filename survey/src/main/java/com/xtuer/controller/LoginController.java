@@ -3,10 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.util.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class LoginController {
@@ -21,7 +18,7 @@ public class LoginController {
      * @param model
      * @return
      */
-    @RequestMapping(value = UriViewConstants.URI_LOGIN, method = RequestMethod.GET)
+    @GetMapping(UriViewConstants.URI_LOGIN)
     public String handleLogin(@RequestParam(required = false) String error,
                               @RequestParam(required = false) String logout,
                               ModelMap model) {
@@ -43,7 +40,7 @@ public class LoginController {
         return UriViewConstants.VIEW_LOGIN;
     }
 
-    @RequestMapping(UriViewConstants.URI_DENY)
+    @GetMapping(UriViewConstants.URI_DENY)
     @ResponseBody
     public String handleDeny() {
         return "权限不够!";

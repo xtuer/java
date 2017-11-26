@@ -2,16 +2,23 @@ package com.xtuer.bean;
 
 import java.util.List;
 
-/**
- * 问题定义类.
- *
- * type 的值为 1, 2, 3, 4:
- *   1: 单选题
- *   2: 多选题
- *   3: 建议
- *   4: 描述
- */
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Getter
+@Setter
+@Accessors(chain = true)
 public class Question {
+    /**
+     * 问题定义类.
+     *
+     * type 的值为 1, 2, 3, 4:
+     *   1: 单选题
+     *   2: 多选题
+     *   3: 建议
+     *   4: 描述
+     */
     public static final int TYPE_SINGLE      = 1;
     public static final int TYPE_MULTIPLE    = 2;
     public static final int TYPE_SUGGESTION  = 3;
@@ -32,54 +39,6 @@ public class Question {
         this.topicId = topicId;
         this.type = type;
         this.content = content;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getTopicId() {
-        return topicId;
-    }
-
-    public void setTopicId(int topicId) {
-        this.topicId = topicId;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public List<QuestionItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<QuestionItem> items) {
-        this.items = items;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override

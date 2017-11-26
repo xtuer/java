@@ -1,5 +1,12 @@
 package com.xtuer.bean;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Getter
+@Setter
+@Accessors(chain = true)
 public class Gift {
     private int id;
     private String name;
@@ -13,38 +20,6 @@ public class Gift {
         this.id = id;
         this.name = name;
         this.info = info;
-        this.code = code;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
         this.code = code;
     }
 

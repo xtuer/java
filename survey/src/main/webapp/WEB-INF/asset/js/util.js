@@ -19,19 +19,19 @@ function Utils() {
  */
 Utils.restGet = function(url, data, successCallback, failCallback, completeCallback) {
     Utils.ajax(url, data, 'GET', successCallback, failCallback, completeCallback);
-}
+};
 
 Utils.restCreate = function(url, data, successCallback, failCallback, completeCallback) {
     Utils.ajax(url, JSON.stringify(data), 'POST', successCallback, failCallback, completeCallback);
-}
+};
 
 Utils.restUpdate = function(url, data, successCallback, failCallback, completeCallback) {
     Utils.ajax(url, JSON.stringify(data), 'PUT', successCallback, failCallback, completeCallback);
-}
+};
 
 Utils.restDelete = function(url, data, successCallback, failCallback, completeCallback) {
     Utils.ajax(url, JSON.stringify(data), 'DELETE', successCallback, failCallback, completeCallback);
-}
+};
 
 /**
  * 执行 Ajax 请求.
@@ -71,7 +71,7 @@ Utils.ajax = function(url, data, httpMethod, successCallback, failCallback, comp
             completeCallback();
         }
     });
-}
+};
 
 /**
  * 判断函数是否存在
@@ -87,7 +87,7 @@ Utils.isFunctionExist = function(functionName) {
     } catch(e) {}
 
     return false;
-}
+};
 
 /**
  * 判断变量是否存在
@@ -105,7 +105,7 @@ Utils.isVariableExist = function(variableName) {
     } catch(e) {}
 
     return false;
-}
+};
 
 /**
  * 选中输入框中下标为 start 到 end 的部分(不包含 end)
@@ -129,7 +129,7 @@ Utils.selectInputText = function(input, start, end) {
         range.moveStart("character", start);
         range.select();
     }
-}
+};
 
 /**
  * 扩展了 String 类型，给其添加格式化的功能，替换字符串中 {placeholder} 或者 {0}, {1} 等模式部分为参数中传入的字符串
@@ -145,7 +145,7 @@ Utils.selectInputText = function(input, start, end) {
 String.prototype.format = function(replacements) {
     replacements = (typeof replacements === 'object') ? replacements : Array.prototype.slice.call(arguments, 0);
     return formatString(this, replacements);
-}
+};
 
 /**
  * 替换字符串中 {placeholder} 或者 {0}, {1} 等模式部分为参数中传入的字符串
@@ -185,9 +185,9 @@ Utils.showConfirm = function(title, message, callback) {
             }
         }
     });
-}
+};
 
 Utils.showError = function(errorMessage) {
     console.log(errorMessage);
     BootstrapDialog.show({title: '错误', message: errorMessage, type: BootstrapDialog.TYPE_DANGER});
-}
+};

@@ -23,48 +23,48 @@ public class QuestionController {
      * 访问管理 topic 的 questions 的页面
      * @return
      */
-    @RequestMapping(UriViewConstants.URI_ADMIN_QUESTIONS)
+    @GetMapping(UriViewConstants.URI_ADMIN_QUESTIONS)
     public String adminQuestionsPage() {
         return UriViewConstants.VIEW_ADMIN_QUESTIONS;
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS, method = RequestMethod.GET)
+    @GetMapping(UriViewConstants.REST_QUESTIONS)
     @ResponseBody
     public List<Question> selectQuestionsByTopicId(@PathVariable int topicId) {
         return questionService.selectQuestionsByTopicId(topicId);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_WITH_ID, method = RequestMethod.GET)
+    @GetMapping(UriViewConstants.REST_QUESTIONS_WITH_ID)
     @ResponseBody
     public Question selectQuestion(@PathVariable int questionId) {
         return questionService.selectQuestion(questionId);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS, method = RequestMethod.POST)
+    @PostMapping(UriViewConstants.REST_QUESTIONS)
     @ResponseBody
     public Result insertQuestion(@RequestBody Question question) {
         return questionService.insertQuestion(question);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_WITH_ID, method = RequestMethod.PUT)
+    @PutMapping(UriViewConstants.REST_QUESTIONS_WITH_ID)
     @ResponseBody
     public Result updateQuestion(@RequestBody Question question) {
         return questionService.updateQuestion(question);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_WITH_ID, method = RequestMethod.DELETE)
+    @DeleteMapping(UriViewConstants.REST_QUESTIONS_WITH_ID)
     @ResponseBody
     public Result deleteQuestion(@PathVariable int questionId) {
         return questionService.deleteQuestion(questionId);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_ORDERS, method = RequestMethod.PUT)
+    @PutMapping(UriViewConstants.REST_QUESTIONS_ORDERS)
     @ResponseBody
     public Result updateQuestionOrders(@RequestBody List<Map<String, Integer>> map) {
         return questionService.updateQuestionOrders(map);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_ANSWERS_SUGGESTIONS, method = RequestMethod.GET)
+    @GetMapping(value = UriViewConstants.REST_QUESTIONS_ANSWERS_SUGGESTIONS)
     @ResponseBody
     public List<String> selectQuestionAnswerInputs(@PathVariable int questionId,
                                                    @PathVariable int questionItemId,

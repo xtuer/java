@@ -23,7 +23,7 @@ public class TopicController {
      * 访问管理所有 topics 的页面
      * @return
      */
-    @RequestMapping(UriViewConstants.URI_ADMIN_TOPICS)
+    @GetMapping(UriViewConstants.URI_ADMIN_TOPICS)
     public String adminTopicsPage() {
         return UriViewConstants.VIEW_ADMIN_TOPICS;
     }
@@ -32,7 +32,7 @@ public class TopicController {
      * 获取所有 topics 的 JSON 表示字符串
      * @return 所有 topics 的 JSON 字符串
      */
-    @RequestMapping(UriViewConstants.REST_TOPICS)
+    @GetMapping(UriViewConstants.REST_TOPICS)
     @ResponseBody
     public List<Topic> selectAllTopics() {
         return topicService.selectAllTopics();
@@ -43,7 +43,7 @@ public class TopicController {
      * @param topicId topic 的 id
      * @return topic 的 JSON 字符串
      */
-    @RequestMapping(value = UriViewConstants.REST_TOPICS_WITH_ID, method = RequestMethod.GET)
+    @GetMapping(UriViewConstants.REST_TOPICS_WITH_ID)
     @ResponseBody
     public Topic selectTopic(@PathVariable int topicId) {
         return topicService.selectTopicById(topicId);
@@ -54,7 +54,7 @@ public class TopicController {
      * @param topic 要创建的 topic 对象
      * @return 创建结果的 Result 的表示, 自动的转换为 JSON
      */
-    @RequestMapping(value = UriViewConstants.REST_TOPICS, method = RequestMethod.POST)
+    @PostMapping(UriViewConstants.REST_TOPICS)
     @ResponseBody
     public Result insertTopic(@RequestBody Topic topic) {
         return topicService.insertTopic(topic);
@@ -65,7 +65,7 @@ public class TopicController {
      * @param topic 要更新的 topic 对象
      * @return 更新结果的 Result 的表示, 自动的转换为 JSON
      */
-    @RequestMapping(value = UriViewConstants.REST_TOPICS_WITH_ID, method = RequestMethod.PUT)
+    @PutMapping(UriViewConstants.REST_TOPICS_WITH_ID)
     @ResponseBody
     public Result updateTopic(@RequestBody Topic topic) {
         return topicService.updateTopic(topic);
@@ -76,13 +76,13 @@ public class TopicController {
      * @param topicId topic 的 id
      * @return 删除结果的 Result 的表示, 自动的转换为 JSON
      */
-    @RequestMapping(value = UriViewConstants.REST_TOPICS_WITH_ID, method = RequestMethod.DELETE)
+    @DeleteMapping(UriViewConstants.REST_TOPICS_WITH_ID)
     @ResponseBody
     public Result deleteTopic(@PathVariable int topicId) {
         return topicService.deleteTopic(topicId);
     }
 
-    @RequestMapping(value = UriViewConstants.REST_TOPICS_ORDERS, method = RequestMethod.PUT)
+    @PutMapping(UriViewConstants.REST_TOPICS_ORDERS)
     @ResponseBody
     public Result updateTopicsOrders(@RequestBody List<Map<String, Integer>> ordersMap) {
         return topicService.updateTopicOrders(ordersMap);
@@ -92,7 +92,7 @@ public class TopicController {
      * 取得 topic 下每个问题回答的个数
      * @return
      */
-    @RequestMapping(value = UriViewConstants.REST_QUESTIONS_ANSWERS_STATISTICS, method = RequestMethod.GET)
+    @GetMapping(value = UriViewConstants.REST_QUESTIONS_ANSWERS_STATISTICS)
     @ResponseBody
     public List<Map<String, String>> topicAnswersStatistic(@PathVariable int topicId) {
         return topicService.topicAnswersStatistic(topicId);

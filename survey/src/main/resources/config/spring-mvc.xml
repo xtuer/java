@@ -18,23 +18,50 @@
          都会⾃动的生成一个对象存储到 Spring Container ⾥
     -->
     <context:component-scan base-package="com.xtuer.controller"/>
-    <context:component-scan base-package="com.xtuer.service"/>
 
     <!-- 默认的注解映射支持 -->
     <!--<mvc:annotation-driven/>-->
+
+    <!-- 注解映射支持 -->
     <mvc:annotation-driven>
+        <!--enableMatrixVariables="true">-->
         <mvc:message-converters register-defaults="true">
+            <!-- StringHttpMessageConverter 编码为 UTF-8，防止乱码 -->
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <constructor-arg value="UTF-8" />
+                <constructor-arg value="UTF-8"/>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <bean class="org.springframework.http.MediaType">
+                            <constructor-arg index="0" value="text"/>
+                            <constructor-arg index="1" value="plain"/>
+                            <constructor-arg index="2" value="UTF-8"/>
+                        </bean>
+                        <bean class="org.springframework.http.MediaType">
+                            <constructor-arg index="0" value="*"/>
+                            <constructor-arg index="1" value="*"/>
+                            <constructor-arg index="2" value="UTF-8"/>
+                        </bean>
+                    </list>
+                </property>
             </bean>
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="objectMapper">
-                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
-                        <property name="dateFormat">
-                            <bean class="java.text.SimpleDateFormat">
-                                <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
-                            </bean>
+            <!-- FastJson -->
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+                <property name="fastJsonConfig">
+                    <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
+                        <property name="features">
+                            <list>
+                                <value>AllowArbitraryCommas</value>
+                                <value>AllowUnQuotedFieldNames</value>
+                                <value>DisableCircularReferenceDetect</value>
+                            </list>
                         </property>
+                        <property name="dateFormat" value="yyyy-MM-dd HH:mm:ss"/>
                     </bean>
                 </property>
             </bean>

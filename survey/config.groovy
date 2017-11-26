@@ -1,20 +1,24 @@
 environments {
     development {
-        jdbc {
+        database {
             driverClassName = 'com.mysql.jdbc.Driver'
-            url = 'jdbc:mysql://localhost:3306/survey?useUnicode=true&amp;characterEncoding=UTF-8'
+            url = 'jdbc:mysql://localhost:3306/survey?useUnicode=true&characterEncoding=UTF-8'
             username = 'root'
             password = 'root'
         }
+
+        logDir = '/temp/logs'
     }
 
     production {
-        jdbc {
+        database {
             driverClassName = 'com.mysql.jdbc.Driver'
-            url = 'jdbc:mysql://localhost:3306/survey?useUnicode=true&amp;characterEncoding=UTF-8'
+            url = 'jdbc:mysql://localhost:3306/survey?useUnicode=true&characterEncoding=UTF-8'
             username = 'root'
             password = 'huaxia-123'
         }
+
+        logDir = '/temp/logs'
     }
 }
 

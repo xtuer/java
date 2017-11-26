@@ -1,7 +1,7 @@
 package com.xtuer.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.xtuer.bean.Answer;
 import com.xtuer.bean.Question;
 import com.xtuer.bean.Result;
@@ -40,7 +40,7 @@ public class SurveyController {
      * @param modal
      * @return
      */
-    @RequestMapping(UriViewConstants.URI_SURVEYS)
+    @GetMapping(UriViewConstants.URI_SURVEYS)
     public String surveyPage(@PathVariable int surveyId, ModelMap modal) {
         Topic topic = topicService.selectTopicById(surveyId);
 
@@ -67,7 +67,7 @@ public class SurveyController {
      * 处理调查问卷的提交
      * @return
      */
-    @RequestMapping(value = UriViewConstants.URI_SURVEYS_SUBMIT, method = RequestMethod.POST)
+    @PostMapping(UriViewConstants.URI_SURVEYS_SUBMIT)
     public String submitSurvey(@RequestParam("answers") String answersString) throws IOException {
         logger.debug("Answers: {}", answersString);
 
@@ -79,8 +79,7 @@ public class SurveyController {
         }
 
         // 反序列化 Json 表示的 Answer list
-        ObjectMapper mapper = new ObjectMapper();
-        List<Answer> answers = mapper.readValue(answersString, new TypeReference<List<Answer>>(){});
+        List<Answer> answers = JSON.parseObject(answersString, new TypeReference<List<Answer>>() {});
 
         // 2. 没有答案, 只是提示保存成功
         if (answers == null || answers.size() == 0) {
@@ -107,7 +106,7 @@ public class SurveyController {
         }
     }
 
-    @RequestMapping(UriViewConstants.URI_ADMIN_SURVEYS_RESULT)
+    @GetMapping(UriViewConstants.URI_ADMIN_SURVEYS_RESULT)
     public String surveyResultPage(@PathVariable int surveyId, ModelMap modal) {
         Topic topic = topicService.selectTopicById(surveyId);
 
