@@ -1,5 +1,7 @@
-// gradle -Denv=production clean build
+// 打包命令: gradle -Denv=production clean build
+
 environments {
+    // 开发环境配置
     development {
         database {
             driverClassName = 'com.mysql.jdbc.Driver'
@@ -21,6 +23,7 @@ environments {
         thymeleafCacheable = false
     }
 
+    // 线上环境配置
     production {
         database {
             driverClassName = 'com.mysql.jdbc.Driver'

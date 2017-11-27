@@ -50,11 +50,11 @@ Utils.restDelete = function(url, data, successCallback, failCallback, completeCa
  */
 Utils.ajax = function(url, data, httpMethod, successCallback, failCallback, completeCallback) {
     $.ajax({
-        url: url,
-        type: httpMethod,
-        dataType: 'json',
+        url        : url,
+        type       : httpMethod,
+        dataType   : 'json',
         contentType: 'application/json',
-        data: data
+        data       : data
     })
     .done(function(result) {
         if (Utils.isFunctionExist(successCallback)) {
@@ -71,6 +71,14 @@ Utils.ajax = function(url, data, httpMethod, successCallback, failCallback, comp
             completeCallback();
         }
     });
+};
+
+/**
+ * 返回网址的主页网址，例如 http://survey.edu-edu.com.cn, http://localhost:8080
+ * @return {[type]} [description]
+ */
+Utils.homeUrl = function() {
+    return window.location.protocol + '//' + window.location.host;
 };
 
 /**

@@ -92,7 +92,7 @@ processResources {
 ////////////////////////////////////////////////////////////////////////////////
 remotes {
     server {
-        host = '192.168.82.133'
+        host = '192.168.82.100'
         user = 'root'
         // password = 'xxx'
         identity = file("${System.properties['user.home']}/.ssh/id_rsa")

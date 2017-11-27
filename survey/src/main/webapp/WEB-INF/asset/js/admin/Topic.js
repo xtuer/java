@@ -29,8 +29,8 @@ Topic.prototype.showInTopicList = function() {
     }
 
     var adminQuestionUrl = Urls.ADMIN_QUESTIONS.format({topicId: this.id});
-    var surveyUrl = Urls.SURVEYS.format({surveyId: this.id});
-    var surveyResultUrl = Urls.SURVEYS_RESULT.format({surveyId: this.id});
+    var surveyUrl        = Utils.homeUrl() + Urls.SURVEYS.format({surveyId: this.id});
+    var surveyResultUrl  = Utils.homeUrl() + Urls.SURVEYS_RESULT.format({surveyId: this.id});
 
     $topic.attr('data-topic-id', this.id);
     $topic.attr('data-topic-url', this.url);
