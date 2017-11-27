@@ -22,8 +22,8 @@ public interface Urls {
     String FILE_ERROR = "error.html";
 
     // 案例展示
-    String PAGE_DEMO = "/page/demo";
-    String FILE_DEMO = "demo/demo.html";
+    String PAGE_DEMO_REST   = "/page/demo/rest";
+    String FILE_DEMO_REST   = "demo/rest.html";
     String FORM_DEMO_UPLOAD = "/form/demo/upload";
     String API_DEMO_MYBATIS = "/api/demo/mybatis/{id}";
 

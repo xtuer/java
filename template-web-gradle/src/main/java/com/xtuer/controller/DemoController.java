@@ -42,16 +42,16 @@ public class DemoController {
         return "首页";
     }
 
-    // URL: http://localhost:8080/demo
-    @RequestMapping(Urls.PAGE_DEMO)
+    // URL: http://localhost:8080/page/demo/rest
+    @RequestMapping(Urls.PAGE_DEMO_REST)
     public String toHelloPage(ModelMap map) {
         map.put("action", "access demo page");
-        return Urls.FILE_DEMO;
+        return Urls.FILE_DEMO_REST;
     }
 
     /**
      * 访问数据库
-     * URL: http://localhost:8080/demo/mybatis/{id}
+     * URL: http://localhost:8080/api/demo/mybatis/{id}
      *
      * @param id
      * @return
@@ -64,7 +64,6 @@ public class DemoController {
 
     //////////////////////////////////////////////////////////////////////////////////////
     //                                         REST 用法                                //
-    //                                                                                 //
     // 读取: GET                                                                        //
     // 创建: POST                                                                       //
     // 更新: PUT                                                                        //
@@ -73,14 +72,14 @@ public class DemoController {
 
     /**
      * REST 读取
-     * URL: http://localhost:8080/rest/{id}
+     * URL: http://localhost:8080/demo/rest/{id}
      *
      * @param id
      * @param name
      * @param map
      * @return
      */
-    @GetMapping("/rest/{id}")
+    @GetMapping("/demo/rest/{id}")
     @ResponseBody
     public Result restGet(@PathVariable int id, @RequestParam String name, ModelMap map) {
         map.addAttribute("id", id);
@@ -96,7 +95,7 @@ public class DemoController {
      * @param name
      * @return
      */
-    @GetMapping("/rest")
+    @GetMapping("/demo/rest")
     @ResponseBody
     public Result restGet(@RequestParam String name) {
         return Result.ok("GET handled", name);
@@ -104,12 +103,12 @@ public class DemoController {
 
     /**
      * REST 创建
-     * URL: http://localhost:8080/rest
+     * URL: http://localhost:8080/demo/rest
      * 参数: 无
      *
      * @return
      */
-    @PostMapping("/rest")
+    @PostMapping("/demo/rest")
     @ResponseBody
     public Result restPost() {
         return new Result(true, "CREATE handled");
@@ -124,7 +123,7 @@ public class DemoController {
      * @param age
      * @return
      */
-    @PutMapping("/rest")
+    @PutMapping("/demo/rest")
     @ResponseBody
     public Result restPut(@RequestParam String name, @RequestParam int age) {
         return new Result(true, "UPDATE handled", name + " : " + age);
@@ -137,7 +136,7 @@ public class DemoController {
      *
      * @return
      */
-    @DeleteMapping("/rest")
+    @DeleteMapping("/demo/rest")
     @ResponseBody
     public Result restDelete() {
         return new Result(true, "DELETE handled");
@@ -150,7 +149,7 @@ public class DemoController {
      *
      * @return
      */
-    @PostMapping("/rest/requestBody")
+    @PostMapping("/demo/rest/requestBody")
     @ResponseBody
     public Result restPostJsonRequestBody(@RequestBody String content) {
         return new Result(true, "CREATE requestBody handled: " + content);
@@ -158,12 +157,12 @@ public class DemoController {
 
     /**
      * REST 更新，处理 application/json 的请求
-     * URL: http://localhost:8080/rest/requestBody
+     * URL: http://localhost:8080/demo/rest/requestBody
      * 参数: name
      *
      * @return
      */
-    @PutMapping("/rest/requestBody")
+    @PutMapping("/demo/rest/requestBody")
     @ResponseBody
     public Result restUpdateJsonRequestBody(@RequestBody String content) {
         return new Result(true, "UPDATE requestBody handled: " + content);
@@ -171,12 +170,12 @@ public class DemoController {
 
     /**
      * REST 删除，处理 application/json 的请求
-     * URL: http://localhost:8080/rest/requestBody
+     * URL: http://localhost:8080/demo/rest/requestBody
      * 参数: name
      *
      * @return
      */
-    @DeleteMapping("/rest/requestBody")
+    @DeleteMapping("/demo/rest/requestBody")
     @ResponseBody
     public Result restDeleteJsonRequestBody(@RequestBody String content) {
         return new Result(true, "DELETE requestBody handled: " + content);
@@ -233,7 +232,7 @@ public class DemoController {
     // http://localhost:8080/demo/validate
     // http://localhost:8080/demo/validate?id=2
     // http://localhost:8080/demo/validate?id=2&info=amazing
-    @GetMapping("demo/validate")
+    @GetMapping("/demo/validate")
     @ResponseBody
     public Result validateDemo(@Valid Demo demo, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端

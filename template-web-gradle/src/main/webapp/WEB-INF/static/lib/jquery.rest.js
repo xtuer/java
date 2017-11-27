@@ -10,35 +10,39 @@
      *
      * 默认使用 contentType 为 application/x-www-form-urlencoded 的方式提交请求，只能传递简单的 key/value，
      * 就是普通的 form 表单提交，如果想要向服务器传递复杂的 json 对象，可以使用 contentType 为 application/json 的格式，
-     * 只要设置请求的参数 jsonRequestBody 为 true 即可，例如
+     * 此时只要设置请求的参数 jsonRequestBody 为 true 即可，例如
      *      $.rest.update({url: '/rest', data: {name: 'Alice'}, jsonRequestBody: true, success: function(result) {
      *          console.log(result);
      *      }});
      *
-     * 调用例子:
+     * 调用示例:
+     *      // 异步请求
      *      $.rest.get({url: '/rest', data: {name: 'Alice'}, success: function(result) {
      *          console.log(result);
      *      }});
      *
-     *      $.rest.syncGet({url: '/rest', data: {name: 'Alice'}, success: function(result) { // 同步请求
+     *      // 同步请求
+     *      $.rest.syncGet({url: '/rest', data: {name: 'Alice'}, success: function(result) {
      *          console.log(result);
      *      }});
      *
+     *      // url 中的 bookId 会被替换为 urlParams 中的 bookId
      *      $.rest.update({url: '/rest/books/{bookId}', urlParams: {bookId: 23}, data: {name: 'C&S'}, success: function(result) {
      *          console.log(result);
      *      }}, fail: function(failResponse) {});
      */
     $.rest = {
         /**
-         * 使用 Ajax 的方式执行 REST 的 GET 请求(服务器响应的数据根据 REST 的规范，必须是 Json 对象，否则浏览器端会解析出错).
+         * 使用 Ajax 的方式执行 REST 的 GET 请求(服务器响应的数据根据 REST 的规范，必须是 Json 对象，否则浏览器端会解析出错)，如果没有
+         * 设置 fail 的回调函数，则默认会把错误信息打印到控制台，如有需要，可以在 112 行处修改为在弹窗中显示错误等。
          * 以下几个 REST 的函数 $.rest.create(), $.rest.update(), $.rest.remove() 只是请求的 HTTP 方法和 data 处理不一样，
-         * 其他的都是相同的，所以就不再重复注释了。
+         * 其他的都是相同的，所以就不再重复注释说明了。
          *
          * @param {Json} options 有以下几个选项:
          *               {String}   url       请求的 URL        (必选)
-         *               {Json}     urlParams URL 中的变量，例如 /rest/users/{id}，其中 {id} 为要被 urlParams.id 替换的部分 (可选)
+         *               {Json}     urlParams URL 中的变量，例如 /rest/users/{id}，其中 {id} 为要被 urlParams.id 替换的部分(可选)
          *               {Json}     data      请求的参数         (可选)
-         *               {Boolean}  jsonRequestBody 是否使用 application/json 的方式进行请求，默认为 false (可选)
+         *               {Boolean}  jsonRequestBody 是否使用 application/json 的方式进行请求，默认为 false 不使用(可选)
          *               {Function} success   请求成功时的回调函数(可选)
          *               {Function} fail      请求失败时的回调函数(可选)
          *               {Function} complete  请求完成后的回调函数(可选)
@@ -92,7 +96,7 @@
          *               {Json}     urlParams  URL 中的变量      (可选)
          *               {Json}     data       请求的参数        (可选)
          *               {Boolean}  async      默认为异步方式     (可选)
-         *               {Boolean}  jsonRequestBody 是否使用 application/json 的方式进行请求，默认为 false (可选)
+         *               {Boolean}  jsonRequestBody 是否使用 application/json 的方式进行请求，默认为 false 不使用(可选)
          *               {Function} success    请求成功时的回调函数(可选)
          *               {Function} fail       请求失败时的回调函数(可选)
          *               {Function} complete   请求完成后的回调函数(可选)
@@ -100,13 +104,13 @@
         sendRequest: function(options) {
             // 默认设置
             var defaults = {
-                data: {},
-                async: true,
+                data           : {},
+                async          : true,
                 jsonRequestBody: false,
-                contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
-                success: function() {},
-                fail: function(error) { console.error(error) }, // 默认把错误打印到控制台
-                complete: function() {}
+                contentType    : 'application/x-www-form-urlencoded;charset=UTF-8',
+                success        : function() {},
+                fail           : function(error) { console.error(error) }, // 默认把错误打印到控制台
+                complete       : function() {}
             };
 
             // 使用 jQuery.extend 合并用户传递的 options 和 defaults
@@ -129,7 +133,7 @@
                 }
             }
 
-            // 替换路径中的变量，例如 /rest/users/{id}, 其中 {id} 为要被 settings.urlParams.id 替换的部分
+            // 替换 url 中的变量，例如 /rest/users/{id}, 其中 {id} 为要被 settings.urlParams.id 替换的部分
             if (settings.urlParams) {
                 settings.url = settings.url.replace(/\{\{|\}\}|\{(\w+)\}/g, function(m, n) {
                     // m 是正则中捕捉的组 $0，n 是 $1，function($0, $1, $2, ...)
@@ -145,10 +149,10 @@
                 data       : settings.data,
                 async      : settings.async,
                 type       : settings.httpMethod,
-                dataType   : 'json',
+                dataType   : 'json', // 服务器的响应使用 JSON 格式
                 contentType: settings.contentType,
                 // 服务器抛异常时，有时 Windows 的 Tomcat 环境下竟然取不到 header X-Requested-With, Mac 下没问题，
-                // 正常请求时是好的，手动添加 X-Requested-With 后正常和异常时都能取到了
+                // 正常请求时都是好的，手动添加 X-Requested-With 为 XMLHttpRequest 后所有环境下正常和异常时都能取到了
                 headers: {'X-Requested-With': 'XMLHttpRequest'}
             })
             .done(function(data, textStatus, jqXHR) {

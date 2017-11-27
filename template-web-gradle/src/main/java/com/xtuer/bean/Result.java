@@ -30,16 +30,16 @@ public final class Result {
         return new Result(true, message);
     }
 
+    public static Result ok(String message, Object data) {
+        return new Result(true, message, data);
+    }
+
     public static Result fail() {
         return new Result(false, "fail");
     }
 
     public static Result fail(String message) {
         return new Result(false, message);
-    }
-
-    public static Result ok(String message, Object data) {
-        return new Result(true, message, data);
     }
 
     public static Result fail(String message, Object data) {

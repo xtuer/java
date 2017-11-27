@@ -397,6 +397,7 @@ public class XHttpSessionSecurityContextRepository implements SecurityContextRep
                 return null;
             }
 
+            // Added: TokenAuthenticationFilter.isAllowSessionCreation(): 从 ThreadLocal 中判断是否创建 session
             if (!allowSessionCreation || !TokenAuthenticationFilter.isAllowSessionCreation()) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("The HttpSession is currently null, and the "
