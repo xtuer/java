@@ -33,8 +33,9 @@
      */
     $.rest = {
         /**
-         * 使用 Ajax 的方式执行 REST 的 GET 请求(服务器响应的数据根据 REST 的规范，必须是 Json 对象，否则浏览器端会解析出错)，如果没有
-         * 设置 fail 的回调函数，则默认会把错误信息打印到控制台，如有需要，可以在 112 行处修改为在弹窗中显示错误等。
+         * 使用 Ajax 的方式执行 REST 的 GET 请求(服务器响应的数据根据 REST 的规范，必须是 Json 对象，否则浏览器端会解析出错)。
+         * 如果没有设置 fail 的回调函数，则默认会把错误信息打印到控制台，可自定义 $.rest.defaultFail 函数例如使用弹窗显示错误信息。
+         *
          * 以下几个 REST 的函数 $.rest.create(), $.rest.update(), $.rest.remove() 只是请求的 HTTP 方法和 data 处理不一样，
          * 其他的都是相同的，所以就不再重复注释说明了。
          *
@@ -86,6 +87,10 @@
             options.async = false;
             this.remove(options);
         },
+        // 默认把错误打印到控制台，可以
+        defaultFail: function(error) {
+            console.error(error.responseText);
+        },
 
         /**
          * 执行 Ajax 请求，不推荐直接调用这个方法.
@@ -102,6 +107,8 @@
          *               {Function} complete   请求完成后的回调函数(可选)
          */
         sendRequest: function(options) {
+            var self = this;
+
             // 默认设置
             var defaults = {
                 data           : {},
@@ -109,7 +116,7 @@
                 jsonRequestBody: false,
                 contentType    : 'application/x-www-form-urlencoded;charset=UTF-8',
                 success        : function() {},
-                fail           : function(error) { console.error(error) }, // 默认把错误打印到控制台
+                fail           : function(error) { self.defaultFail(error); },
                 complete       : function() {}
             };
 
