@@ -36,12 +36,6 @@ public class DemoController {
     @Autowired
     private FilterChainProxy filterChainProxy;
 
-    @RequestMapping("/")
-    @ResponseBody
-    public String index() {
-        return "首页";
-    }
-
     // URL: http://localhost:8080/page/demo/rest
     @RequestMapping(Urls.PAGE_DEMO_REST)
     public String toHelloPage(ModelMap map) {
@@ -58,7 +52,7 @@ public class DemoController {
      */
     @RequestMapping(Urls.API_DEMO_MYBATIS)
     @ResponseBody
-    public Result queryDemoFromDatabase(@PathVariable int id) {
+    public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
         return Result.ok("", demoMapper.findDemoById(id));
     }
 
@@ -89,7 +83,7 @@ public class DemoController {
 
     /**
      * REST 读取
-     * URL: http://localhost:8080/rest
+     * URL: http://localhost:8080/demo/rest?name=Alice
      * 参数: name
      *
      * @param name
@@ -116,7 +110,7 @@ public class DemoController {
 
     /**
      * REST 的更新
-     * URL: http://localhost:8080/rest
+     * URL: http://localhost:8080/demo/rest
      * 参数: name, age
      *
      * @param name
@@ -131,7 +125,7 @@ public class DemoController {
 
     /**
      * REST 删除
-     * URL: http://localhost:8080/rest
+     * URL: http://localhost:8080/demo/rest
      * 参数: 无
      *
      * @return
@@ -144,7 +138,7 @@ public class DemoController {
 
     /**
      * REST 创建，处理 application/json 的请求
-     * URL: http://localhost:8080/rest/requestBody
+     * URL: http://localhost:8080/demo/rest/requestBody
      * 参数: name
      *
      * @return
@@ -207,7 +201,7 @@ public class DemoController {
      */
     @GetMapping("/demo/string-to-date")
     @ResponseBody
-    public Result stringToDate(@RequestParam("date") Date date) {
+    public Result<Date> stringToDate(@RequestParam("date") Date date) {
         return Result.ok("日期转换", date);
     }
 
@@ -234,7 +228,7 @@ public class DemoController {
     // http://localhost:8080/demo/validate?id=2&info=amazing
     @GetMapping("/demo/validate")
     @ResponseBody
-    public Result validateDemo(@Valid Demo demo, BindingResult bindingResult) {
+    public Result<Demo> validateDemo(@Valid Demo demo, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
         if (bindingResult.hasErrors()) {
             return Result.fail(CommonUtils.getBindingMessage(bindingResult));
@@ -243,12 +237,14 @@ public class DemoController {
         return Result.ok("", demo);
     }
 
+    // URL: http://localhost:8080/demo/uniqueName?username=ali
     @GetMapping("/demo/uniqueName")
     @ResponseBody
     public Result uniqueName(@RequestParam String username) {
-        return new Result(!"ali".equals(username), "");
+        return Result.ok("", !"ali".equals(username));
     }
 
+    // URL: http://localhost:8080/demo/jsonp-test
     @GetMapping(value="/demo/jsonp-test", produces= Urls.JSONP_CONTENT_TYPE)
     @ResponseBody
     public String jsonpTest(@RequestParam String callback) {
