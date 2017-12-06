@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
     public User findUserByUsername(String username) {
         if ("admin".equals(username)) {
-            return new User("admin", "admin", "ROLE_ADMIN");
+            // Spring Security 5 使用密码的前缀决定使用哪个 Password Encoder，实现同时支持多种加密方式
+            // {noop}表示不加密密码，{bcrypt} 使用 bcrypt 加密
+            return new User("admin", "{noop}admin", "ROLE_ADMIN");
         } else if ("alice".equals(username)) {
-            return new User("alice", "alice", "ROLE_USER");
+            return new User("alice", "{noop}alice", "ROLE_USER");
         }
 
         return null;
