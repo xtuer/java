@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xtuer.bean.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,6 +21,8 @@ import java.util.TreeMap;
  * 如果过大，容易被截断导致 token 无效.
  */
 public class JwtUtils {
+    private static Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+
     /**
      * 使用 User 生成 token，由 2 部分组成，第一个部分为 payload 进行 Base64 编码的字符串，第二部分为签名.
      *
@@ -63,6 +67,7 @@ public class JwtUtils {
     public static boolean checkToken(String token, String secret, long duration) {
         // token 的格式: xxxxx.xxxxx，包含 0-9, a-z, A-Z, %
         if (token == null || !token.matches("[\\w%]+\\.[\\w]+")) {
+            logger.debug("Token 格式不对: {}", token);
             return false;
         }
 
@@ -77,6 +82,7 @@ public class JwtUtils {
             long signAt = json.getLongValue("signAt");
             long elapsed = System.currentTimeMillis() - signAt;
             if (elapsed > duration) {
+                logger.debug("Token 过期: {}", token);
                 return false;
             }
 
@@ -87,12 +93,13 @@ public class JwtUtils {
             params.put("roles",    json.getString("roles"));
             params.put("signAt",   json.getString("signAt"));
 
-            String calculatedSignString = sign(params, secret);
+            logger.debug("用户: {}", JSON.toJSONString(params));
 
             // 如果相等则签名没问题，不相等则签名被篡改，token 无效
+            String calculatedSignString = sign(params, secret);
             return signString.equals(calculatedSignString);
         } catch (Exception ex) {
-            ex.printStackTrace(); // JSON 转换可能出错
+            logger.warn("Token 无效，不能转换为 User 对象: {}", token); // JSON 转换可能出错
         }
 
         return false;
@@ -120,7 +127,7 @@ public class JwtUtils {
 
             return JSON.parseObject(json.toJSONString(), User.class);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            logger.warn("Token 无效，不能转换为 User 对象: {}", token); // JSON 转换可能出错
         }
 
         return null;

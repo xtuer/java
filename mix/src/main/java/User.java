@@ -8,7 +8,6 @@ import java.util.List;
 
 @Getter
 @Setter
-
 public class User {
     private int id;
     private String username;
@@ -19,7 +18,6 @@ public class User {
     public User() {
     }
 
-    @Builder
     public User(int id, String username, String email, String... roles) {
         this.id = id;
         this.email = email;
@@ -31,7 +29,7 @@ public class User {
     }
 
     public static void main(String[] args) {
-        User user = User.builder().id(6).username("Alice").email("alice@gmail.com").build();
+        User user = new User();
         System.out.println(JSON.toJSONString(user));
     }
 }

@@ -1,50 +1,76 @@
 package com.xtuer.bean;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.security.core.authority.AuthorityUtils;
 
+import java.util.*;
+
+/**
+ * 用户类型，根据 userdetails.User 的设计，roles, authorities, enabled, expired 等状态不能修改，
+ * 只能是创建用户对象的时候传入进来。
+ */
 @Getter
 @Setter
 public class User extends org.springframework.security.core.userdetails.User {
-    private Long id;
+    private Long   id;
     private String username;
     private String password;
-    private Set<String> roles = new HashSet<>();
     private String mail;
+    private boolean enabled;
+    private Set<String> roles = new HashSet<>(); // 用户的角色
 
     public User() {
         // 父类不允许空的用户名、密码和权限，所以给个默认的，这样就可以用默认的构造函数创建 User 对象。
-        super("non-exist-username", "", new HashSet<GrantedAuthority>());
+        super("non-exist-username", "", new HashSet<>());
     }
 
+    /**
+     * 使用账号、密码、角色创建用户
+     *
+     * @param username 账号
+     * @param password 密码
+     * @param roles    角色
+     */
     public User(String username, String password, String... roles) {
-        super(username, password, buildAuthorities(roles));
+        this(username, password, true, roles);
+    }
+
+    /**
+     * 使用账号、密码、是否禁用、角色创建用户
+     *
+     * @param username 账号
+     * @param password 密码
+     * @param enabled  是否禁用
+     * @param roles    角色
+     */
+    public User(String username, String password, boolean enabled, String... roles) {
+        super(username, password, enabled, true, true, true, AuthorityUtils.createAuthorityList(roles));
         this.username = username;
         this.password = password;
+        this.enabled  = enabled;
         this.roles.addAll(Arrays.asList(roles));
     }
 
     /**
-     * 使用 new User() 创建的对象，或者 username、password 和 roles 改变后没有在父类中更新对应数据，
-     * 可以使用这个方法重新构造一个正确的 User 对象，这个对象是为了和 Spring Security 一起使用。
+     * 用户信息修改后，例如角色修改后不会更新到父类的 authorities 中，需要重新创建一个用户对象才行
+     *
+     * @param user 已有用户对象
+     * @return 新的用户对象，权限等信息更新到了父类的 authorities 中
      */
-    public static User userWithAuthorities(User user) {
-        return new User(user.getUsername(), user.getPassword(), user.getRoles().toArray(new String[0]));
+    public static User userForSpringSecurity(User user) {
+        return new User(user.username, user.password, user.enabled, user.getRoles().toArray(new String[0]));
     }
 
-    /**
-     * 使用字符串数组的 roles 创建 GrantedAuthority 的 Set。
-     */
-    public static Set<GrantedAuthority> buildAuthorities(String... roles) {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role));
-        }
-        return authorities;
+    public static void main(String[] args) {
+        User user1 = new User();
+        System.out.println(JSON.toJSONString(user1));
+        System.out.println(user1.getRoles());
+
+        User user2 = new User("Bob", "Passw0rd", "ROLE_USER", "ROLE_ADMIN");
+        System.out.println(JSON.toJSONString(user2));
+        System.out.println(user2.getRoles());
     }
 }

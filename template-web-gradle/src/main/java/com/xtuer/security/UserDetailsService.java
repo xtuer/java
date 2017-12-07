@@ -11,6 +11,12 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Autowired
     private UserService userService;
 
+    /**
+     * 使用 username 加载用户的信息，如密码，权限等
+     * @param username 登陆表单中用户输入的用户名
+     * @return 返回查找到的用户对象
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findUserByUsername(username);
