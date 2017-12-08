@@ -2,39 +2,60 @@
 <beans:beans
         xmlns="http://www.springframework.org/schema/security"
         xmlns:beans="http://www.springframework.org/schema/beans"
-        xmlns:context="http://www.springframework.org/schema/context"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/security
-            http://www.springframework.org/schema/security/spring-security.xsd
-            http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:annotation-config/>
+            http://www.springframework.org/schema/security/spring-security.xsd">
+    <beans:bean id="loginSuccessHandler" class="com.xtuer.security.LoginSuccessHandler"/>
 
-    <http auto-config="true">
-        <intercept-url pattern="/login" access="permitAll"/>
-        <intercept-url pattern="/admin" access="hasRole('ADMIN')"/>
+    <http security="none" pattern="/static/**"/>
+    <http auto-config="true" use-expressions="false" access-decision-manager-ref="accessDecisionManager">
+        <intercept-url pattern="/admin" access="ROLE_ADMIN"/>
+        <intercept-url pattern="/hello" access="ROLE_USER"/>
+        <!--<intercept-url pattern="/login" access="permitAll"/>-->
 
         <form-login login-page="/login"
                     login-processing-url="/login"
-                    default-target-url  ="/hello"
-                    authentication-failure-url="/login?error=1"
+                    default-target-url  ="/"
+                    authentication-success-handler-ref="loginSuccessHandler"
+                    authentication-failure-url="/login?error"
                     username-parameter="username"
                     password-parameter="password"/>
         <access-denied-handler error-page="/deny" />
-        <logout logout-url="/logout" logout-success-url="/login?logout=1" />
 
+        <logout logout-url="/logout" logout-success-url="/login?logout" />
         <csrf disabled="true"/>
-        <remember-me key="uniqueAndSecret" token-validity-seconds="2592000"/>
+
+        <session-management>
+            <concurrency-control max-sessions="1"/>
+        </session-management>
     </http>
 
-    <beans:bean id="securityUtils" class="com.xtuer.security.SecurityUtils"/>
-    <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
-    <beans:bean id="userDetailsService" class="com.xtuer.security.MyUserDetailsService"/>
-    <beans:bean id="authenticationProvider" class="com.xtuer.security.MyAuthenticationProvider"/>
-
-    <authentication-manager alias="authenticationManager">
-        <authentication-provider ref="authenticationProvider"/>
+    <beans:bean id="userDetailsService" class="com.xtuer.security.UserDetailsService"/>
+    <authentication-manager>
+        <authentication-provider user-service-ref="userDetailsService"/>
     </authentication-manager>
+
+    <!-- 自己定义 AccessDecisionManager 对应的 bean，实现角色继承 -->
+    <beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+        <beans:constructor-arg>
+            <beans:list>
+                <beans:ref bean="roleVoter"/>
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean>
+    <beans:bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+        <beans:constructor-arg ref="roleHierarchy"/>
+    </beans:bean>
+
+    <beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+        <beans:property name="hierarchy">
+            <beans:value>
+                ROLE_ADMIN > ROLE_USER
+                ROLE_STAFF > ROLE_USER
+                ROLE_USER  > ROLE_GUEST
+            </beans:value>
+        </beans:property>
+    </beans:bean>
 </beans:beans>

@@ -4,26 +4,20 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="
-       http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-
-    <!-- ⾃自动扫描的包名:
-         在包名 com.xtuer.controller 下的标记为 @Controller, @Service, @Component 的类
-         都会⾃动的生成一个对象存储到 Spring Container ⾥
-    -->
-    <context:component-scan base-package="com.xtuer.service"/>
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 控制器 -->
     <context:component-scan base-package="com.xtuer.controller"/>
 
-    <!-- 默认的注解映射支持 -->
-    <!--<mvc:annotation-driven/>-->
+    <!-- 注解映射支持 -->
     <mvc:annotation-driven>
         <!--enableMatrixVariables="true">-->
         <mvc:message-converters register-defaults="true">
-            <!-- StringHttpMessageConverter 编码为UTF-8，防止乱码 -->
+            <!-- StringHttpMessageConverter 编码为 UTF-8，防止乱码 -->
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <constructor-arg value="UTF-8"/>
                 <property name="supportedMediaTypes">
@@ -65,28 +59,28 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <!-- Freemarker 视图解析器 -->
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-        <property name="prefix" value=""/>
-        <property name="order" value="0"/>
-        <property name="cache" value="true"/>
-        <property name="contentType" value="text/html; charset=UTF-8"/>
+    <!-- 使用 thymeleaf 模版 -->
+    <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix"       value="/WEB-INF/page/"/>
+        <property name="templateMode" value="HTML"/>
+        <property name="cacheable"    value="false"/>
     </bean>
 
-    <!-- Freemarker 文件放在目录 WEB-INF/view/ 下 -->
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPath" value="/WEB-INF/view/"/>
-        <property name="freemarkerSettings">
-            <props>
-                <prop key="defaultEncoding">UTF-8</prop>
-            </props>
-        </property>
+    <bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver"/>
     </bean>
 
-    <!-- 对静态资源的访问，如 js, css, jpg, png -->
-    <!-- 如 HTML 里访问 /js/jquery.js, 则实际访问的是 /WEB-INF/asset/js/jquery.js -->
+    <bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="templateEngine"    ref="templateEngine"/>
+        <property name="characterEncoding" value="UTF-8"/>  <!--解决中文乱码-->
+    </bean>
+
+    <!-- 静态资源的访问，如 js, css, jpg, png -->
+    <!-- 如 HTML 里访问 /static/js/jquery.js, 则实际访问的是 /WEB-INF/static/js/jquery.js -->
     <mvc:resources mapping="/static/js/**"   location="/WEB-INF/static/js/"   cache-period="31556926"/>
     <mvc:resources mapping="/static/css/**"  location="/WEB-INF/static/css/"  cache-period="31556926"/>
     <mvc:resources mapping="/static/img/**"  location="/WEB-INF/static/img/"  cache-period="31556926"/>
+    <mvc:resources mapping="/static/lib/**"  location="/WEB-INF/static/lib/"  cache-period="31556926"/>
     <mvc:resources mapping="/static/html/**" location="/WEB-INF/static/html/" cache-period="31556926"/>
+    <mvc:resources mapping="/favicon.ico"    location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
 </beans>
