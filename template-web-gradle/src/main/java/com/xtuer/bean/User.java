@@ -3,10 +3,11 @@ package com.xtuer.bean;
 import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 用户类型，根据 userdetails.User 的设计，roles, authorities, enabled, expired 等状态不能修改，

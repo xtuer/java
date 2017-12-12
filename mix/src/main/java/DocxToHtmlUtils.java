@@ -34,6 +34,6 @@ public class DocxToHtmlUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        convertDocxToHtml("/Users/Biao/Desktop/paper/[中学联盟]四川省宜宾市第一中学2015-2016学年高一上学期期末复习迎考数学试题（一）.docx", "/Users/Biao/Desktop/doc/y.html");
+        convertDocxToHtml("/Users/Biao/Desktop/y.docx", "/Users/Biao/Desktop/doc/y.html");
     }
 }

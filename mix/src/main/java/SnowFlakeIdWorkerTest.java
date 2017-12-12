@@ -28,7 +28,7 @@ public class SnowFlakeIdWorkerTest {
     public static void main(String[] args) {
         Set<Long> set = new HashSet<>();
 
-        // 要单例：多个线程使用同一个 idWorker 不会生成重复的 ID
+        // 单例：多个线程使用同一个 idWorker 不会生成重复的 ID
         final SnowflakeIdWorker idWorker = new SnowflakeIdWorker(1, 1);
 
         for(int x=0; x<500; x++){
