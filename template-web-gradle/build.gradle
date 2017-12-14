@@ -65,7 +65,6 @@ dependencies {
             "org.springframework.security:spring-security-config:${versions.springSecurity}",
             "org.springframework.session:spring-session-data-redis:${versions.springSession}",
             "com.alibaba:fastjson:${versions.fastjson}",
-            "org.thymeleaf:thymeleaf:${versions.thymeleaf}",
             "org.thymeleaf:thymeleaf-spring5:${versions.thymeleaf}",
             "mysql:mysql-connector-java:${versions.mysql}",
             "org.springframework:spring-jdbc:${versions.spring}",
