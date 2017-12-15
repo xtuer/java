@@ -47,7 +47,7 @@ dependencies {
     compile 'org.jodconverter:jodconverter-local:4.1.0'
     compile 'org.dom4j:dom4j:2.1.0'
     compile 'net.coobird:thumbnailator:0.4.8'
-
+    compile 'org.jsoup:jsoup:1.11.2'
 
 
     testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1'

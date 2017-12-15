@@ -297,4 +297,19 @@ public class DemoController {
 
         return filterChains;
     }
+
+    /**
+     * URL 里有参数，POST 的 body 里也有参数
+     * URL: http://localhost:8080/demo/post-with-params?username=Biao
+     * Params: password=1234
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    @PostMapping("/demo/post-with-params")
+    @ResponseBody
+    public String postWithParams(@RequestParam String username, @RequestParam String password) {
+        return username + ", " + password;
+    }
 }
