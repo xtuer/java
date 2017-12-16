@@ -66,7 +66,7 @@ public class DemoController {
 
     /**
      * REST 读取
-     * URL: http://localhost:8080/demo/rest/{id}
+     * URL: http://localhost:8080/demo/rest/{id}?name=Alice
      *
      * @param id
      * @param name
