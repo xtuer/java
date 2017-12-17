@@ -1,7 +1,7 @@
 plugins {
     id 'war'
     id 'java'
-    id 'org.hidetake.ssh' version '2.9.0'
+    id 'org.hidetake.ssh'   version '2.9.0'
     id 'org.akhikhl.gretty' version '2.0.0'
 }
 
@@ -14,6 +14,9 @@ gretty {
     debugSuspend = false
     managedClassReload      = true
     recompileOnSourceChange = true
+
+    // 升级 gretty 自带的 springloaded
+    jvmArgs = ["-javaagent:${project.projectDir}/../springloaded-1.2.8.RELEASE.jar", '-noverify']
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,25 +38,27 @@ ext {
 }
 
 ext.versions = [
-    spring   : '4.3.10.RELEASE',
-    servlet  : '3.1.0',
-    fastjson : '1.2.24',
-    thymeleaf: '3.0.7.RELEASE',
+    spring   : '5.0.2.RELEASE',
+    servlet  : '4.0.0',
+    fastjson : '1.2.41',
+    thymeleaf: '3.0.9.RELEASE',
+    lombok   : '1.16.18',
     junit    : '4.12'
 ]
 
 dependencies {
     compile(
-            "org.springframework:spring-webmvc:$versions.spring", // Spring MVC
-            "org.springframework:spring-context-support:$versions.spring",
-            "com.alibaba:fastjson:$versions.fastjson",  // JSON
-            "org.thymeleaf:thymeleaf:$versions.thymeleaf",
-            "org.thymeleaf:thymeleaf-spring4:$versions.thymeleaf"
+            "org.springframework:spring-webmvc:${versions.spring}", // Spring MVC
+            "org.springframework:spring-context-support:${versions.spring}",
+            "com.alibaba:fastjson:${versions.fastjson}",  // JSON
+            "org.thymeleaf:thymeleaf:${versions.thymeleaf}",
+            "org.thymeleaf:thymeleaf-spring5:${versions.thymeleaf}"
     )
 
-    compileOnly("javax.servlet:javax.servlet-api:$versions.servlet")
-    testCompile("org.springframework:spring-test:$versions.spring")
-    testCompile("junit:junit:$versions.junit")
+    compileOnly("org.projectlombok:lombok:${versions.lombok}")
+    compileOnly("javax.servlet:javax.servlet-api:${versions.servlet}")
+    testCompile("org.springframework:spring-test:${versions.spring}")
+    testCompile("junit:junit:${versions.junit}")
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +101,7 @@ task deploy(dependsOn: war) {
                     source /root/.bash_profile;
                     /usr/local/tomcat/bin/shutdown.sh;
                     rm -rf ${targetDir}/ROOT;
-                    unzip  ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
+                    unzip -u ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
                     /usr/local/tomcat/bin/startup.sh;
                     rm -rf ${targetDir}/${war.archiveName};
                 """

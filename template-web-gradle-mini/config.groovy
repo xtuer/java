@@ -1,7 +1,7 @@
 // gradle clean build -Denv=production
 environments {
     development {
-        jdbc {
+        database {
             driverClassName = 'com.mysql.jdbc.Driver'
             url = 'jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8'
             username = 'root'
@@ -14,7 +14,7 @@ environments {
     }
 
     production {
-        jdbc {
+        database {
             driverClassName = 'com.mysql.jdbc.Driver'
             url = 'jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8'
             username = 'root'

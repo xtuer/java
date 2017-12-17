@@ -14,6 +14,8 @@ gretty {
     debugSuspend = false
     managedClassReload      = true
     recompileOnSourceChange = true
+
+    // 升级 gretty 自带的 springloaded
     jvmArgs = ["-javaagent:${project.projectDir}/springloaded-1.2.8.RELEASE.jar", '-noverify']
 }
 
@@ -83,7 +85,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${versions.lombok}")
     compileOnly("javax.servlet:javax.servlet-api:${versions.servlet}")
     testCompile("org.springframework:spring-test:${versions.spring}")
-    testCompile("junit:junit:$versions.junit")
+    testCompile("junit:junit:${versions.junit}")
 }
 
 ////////////////////////////////////////////////////////////////////////////////
