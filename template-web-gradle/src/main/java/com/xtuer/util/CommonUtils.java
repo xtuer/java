@@ -4,9 +4,10 @@ import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.io.*;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -79,22 +80,22 @@ public final class CommonUtils {
     }
 
     /**
-     * 对字符串 text 进行 URL Safe 的 Base64 编码, +, /, = 被置换，只包含 0-9, a-z, A-Z, %
+     * 对字符串 text 进行 URL Safe 的 Base64 编码: +, /, = 被置换 为 -, _, *，只包含 65 个 URL safe 的字符: 0-9, a-z, A-Z, -, _, *
+     * 注意: Base64.getUrlEncoder() 编码后还有 =，不能使用
      *
      * 系统中有一些值使用 BASE64 编码后存储在 COOKIE 中, 当编码后的字符串最后有一个或者两个等号(=)时,
-     * 使用 Request.getCookies().getValue() 会丢失等号, 再 BASE64 解码时产生错误.
+     * 使用 Request.getCookies().getValue() 会丢失等号, 再用 BASE64 解码时产生错误.
      *
      * @param text 要进行编码的字符串
      * @return 返回使用 URL Safe Base64 编码后的字符串
      */
     public static String base64UrlSafe(String text) {
         String base64Text = CommonUtils.base64(text);
+        base64Text = base64Text.replace('+', '-');
+        base64Text = base64Text.replace('/', '_');
+        base64Text = base64Text.replace('=', '*');
 
-        try {
-            return URLEncoder.encode(base64Text, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return base64Text;
     }
 
     /**
@@ -104,12 +105,11 @@ public final class CommonUtils {
      * @return 返回源字符串
      */
     public static String unbase64UrlSafe(String urlBase64Text) {
-        try {
-            String base64Text = URLDecoder.decode(urlBase64Text, "UTF-8");
-            return CommonUtils.unbase64(base64Text);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        urlBase64Text = urlBase64Text.replace('-', '+');
+        urlBase64Text = urlBase64Text.replace('_', '/');
+        urlBase64Text = urlBase64Text.replace('*', '=');
+
+        return CommonUtils.unbase64(urlBase64Text);
     }
 
     /**
@@ -119,6 +119,16 @@ public final class CommonUtils {
      */
     public static String uuid() {
         return UUID.randomUUID().toString().toUpperCase();
+    }
+
+    public static void main(String[] args) {
+        String text = "如果要编码的字节数不能被3整除，最后会多出1个或2个字节.";
+        String encrypt    = base64(text);
+        String encryptUrl = base64UrlSafe(text);
+        System.out.println(encrypt);
+        System.out.println(encryptUrl);
+        System.out.println(unbase64(encrypt));
+        System.out.println(unbase64UrlSafe(encryptUrl));
     }
 }
 

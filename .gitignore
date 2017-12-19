@@ -9,7 +9,6 @@ logs/
 @logDir@/
 @logsDir@/
 /**/.DS_Store
-paper-suite/src/main/webapp/WEB-INF/static/preview/
 
 ### STS ###
 .apt_generated
