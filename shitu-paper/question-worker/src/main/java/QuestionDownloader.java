@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 下载乐教乐学的试题
+ */
 public class QuestionDownloader {
     public static final String BASE_URL = "http://192.168.10.243/Exe/makingpaper.dll?CMD_ShowProblemContent&";// strSubject=GSZH030C&strProblemID=030C014553
 

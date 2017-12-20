@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.annotation.JSONType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -8,35 +9,16 @@ import java.util.List;
 
 /**
  * 知识点的树，节点的父子关系使用 node.code 建立。
- * 节点的 code 固定为 3 位的字符串，根节点为 000，
+ * 节点的顺序不重要，节点的 code 固定为 3 位的字符串，根节点为 000，
  * 父节点比子节点多一个或多个 0，以最近的优先，例如 110 是 112, 113 的父节点。
  */
+
+@Getter
+@Setter
+@Accessors(chain = true)
 public class KnowledgePointTree {
     List<Node> nodes = new LinkedList<>();
-
-    public static void main(String[] args) {
-        // 节点的顺序不重要
-        KnowledgePointTree tree = new KnowledgePointTree();
-        tree.addNode(new Node("000", "Root"));
-        tree.addNode(new Node("100", "100"));
-        tree.addNode(new Node("110", "110"));
-        tree.addNode(new Node("111", "111"));
-        tree.addNode(new Node("112", "112"));
-        tree.addNode(new Node("113", "113"));
-        tree.addNode(new Node("120", "120"));
-        tree.addNode(new Node("121", "121"));
-        tree.addNode(new Node("122", "122"));
-        tree.addNode(new Node("123", "123"));
-        tree.addNode(new Node("200", "200"));
-        tree.addNode(new Node("210", "210"));
-        tree.addNode(new Node("211", "211"));
-        tree.addNode(new Node("212", "212"));
-        tree.addNode(new Node("abc", "abc"));
-
-        tree.build();
-        tree.walk();
-        // System.out.println(JSON.toJSONString(tree.nodes.get(0)));
-    }
+    SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
 
     /**
      * 添加节点
@@ -74,10 +56,13 @@ public class KnowledgePointTree {
     }
 
     private void walk(Node node, int index) {
-        System.out.println(StringUtils.repeat(" ", index*3) + node.code); // 插入数据库
+        System.out.println(StringUtils.repeat(" ", index*3) + node.code + "-" + node.name); // 插入数据库
+
+        node.id = idWorker.nextId(); // 生成 ID
 
         List<Node> children = node.children;
         for (Node child : children) {
+            child.parentId = node.id;
             walk(child, index+1);
         }
     }
@@ -127,14 +112,23 @@ public class KnowledgePointTree {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @JSONType(ignores = {"children"})
     public static class Node {
-        String code;
-        String name;
+        String code; // 知识点的编码
+        String name; // 知识点
+        String subject;     // 科目，例如物理
+        String subjectCode; // 科目对应的编码，例如 GZWL061B
+
+        Long   id = 0L;
+        Long   parentId = 0L;
+
         List<Node> children = new LinkedList<>();
 
-        Node(String code, String name) {
+        Node(String code, String name, String subject, String subjectCode) {
             this.code = code;
             this.name = name;
+            this.subject = subject;
+            this.subjectCode = subjectCode;
         }
     }
 }
