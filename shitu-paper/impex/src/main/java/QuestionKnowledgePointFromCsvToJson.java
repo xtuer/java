@@ -24,8 +24,7 @@ public class QuestionKnowledgePointFromCsvToJson {
 
         String csvKpDir  = config.getProperty("csvKpDir");  // csv  知识点文的目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
         String jsonKpDir = config.getProperty("jsonKpDir"); // json 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
-        String[] extensions = {"csv"};
-        Collection<File> files = FileUtils.listFiles(new File(csvKpDir), extensions, false);
+        Collection<File> files = FileUtils.listFiles(new File(csvKpDir), new String[]{"csv"}, false);
 
         // 遍历处理所有的知识点文件
         for (File file : files) {
