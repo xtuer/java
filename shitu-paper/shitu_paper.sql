@@ -106,3 +106,19 @@ AS SELECT
 FROM paper_knowledge_point_relation pkpr
 LEFT JOIN knowledge_point kp ON pkpr.knowledge_point_id = kp.knowledge_point_id
 WHERE kp.is_deleted=0;
+
+# ------------------------------------------------------------
+# 单题的知识点
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `question_knowledge_point`;
+
+CREATE TABLE `question_knowledge_point` (
+  `id` bigint(11) unsigned NOT NULL   COMMENT '知识点的 id',
+  `parent_id` bigint(11) DEFAULT NULL COMMENT '父知识点的 id',
+  `name` varchar(1024) DEFAULT NULL   COMMENT '知识点的名字',
+  `code` varchar(1024) DEFAULT NULL   COMMENT '知识点的编码',
+  `subject_name` varchar(1024) DEFAULT NULL COMMENT '所属学科的名字',
+  `subject_code` varchar(1024) DEFAULT NULL COMMENT '所属学科的编码',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;

@@ -59,7 +59,7 @@ public class QuestionDownloader {
      */
     public static void downloadQuestions(String subject, String idFile, String saveDir) throws IOException {
         // 读取试题的 ID
-        List<String> questionIds = new LinkedList<>(FileUtils.readLines(new File(idFile)));
+        List<String> questionIds = new LinkedList<>(FileUtils.readLines(new File(idFile), "UTF-8"));
 
         // 下载试题的逻辑:
         // 0. 如果 questionIds 不为空则进行下载

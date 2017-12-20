@@ -1,3 +1,4 @@
+import bean.KnowledgePoint;
 import bean.KnowledgePointTree;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.csv.CSVFormat;
@@ -19,9 +20,9 @@ public class KnowledgePointFromCsvToJson {
     public static void main(String[] args) throws IOException {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         Properties config = context.getBean("config", Properties.class);
+
         String csvKpDir  = config.getProperty("csvKpDir");  // csv  知识点文的目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
         String jsonKpDir = config.getProperty("jsonKpDir"); // json 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
-
         File dir = new File(csvKpDir);
         File[] files = dir.listFiles((d, name) -> name.endsWith(".csv")); // 只列出 csv 的文件
 
@@ -31,7 +32,7 @@ public class KnowledgePointFromCsvToJson {
             String path = file.getAbsolutePath();
             String subjectName = Utils.getKpSubjectName(file.getName());
             String subjectCode = Utils.getKpSubjectCode(file.getName());
-            List<KnowledgePointTree.Node> nodes = readKnowledgePoints(path, subjectName, subjectCode, "GB2312");
+            List<KnowledgePoint> nodes = readKnowledgePoints(path, subjectName, subjectCode, "GB2312");
 
             // 构建知识点树，然后调用 walk() 生成 ID 和 Parent ID
             KnowledgePointTree tree = new KnowledgePointTree();
@@ -54,13 +55,13 @@ public class KnowledgePointFromCsvToJson {
      * @return 返回知识点的 list
      * @throws IOException
      */
-    public static List<KnowledgePointTree.Node> readKnowledgePoints(String path, String subjectName, String subjectCode, String encoding) throws IOException {
+    public static List<KnowledgePoint> readKnowledgePoints(String path, String subjectName, String subjectCode, String encoding) throws IOException {
         InputStream in = new FileInputStream(path);
         Reader reader = new InputStreamReader(in, encoding);
         Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(reader);
 
-        List<KnowledgePointTree.Node> nodes = new LinkedList<>();
-        nodes.add(new KnowledgePointTree.Node("000", subjectName + "-" + subjectCode, subjectName, subjectCode)); // 根结点
+        List<KnowledgePoint> nodes = new LinkedList<>();
+        nodes.add(new KnowledgePoint("000", subjectName + "-" + subjectCode, subjectName, subjectCode)); // 根结点
 
         for (CSVRecord record : records) {
             try {
@@ -68,7 +69,7 @@ public class KnowledgePointFromCsvToJson {
                 String name = record.get("KPName");
 
                 if ("----".equals(code)) { continue; }
-                nodes.add(new KnowledgePointTree.Node(code, name, subjectName, subjectCode));
+                nodes.add(new KnowledgePoint(code, name, subjectName, subjectCode));
             } catch (Exception ex) {
                 System.out.println(record.toString());
             }

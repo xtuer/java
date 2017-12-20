@@ -20,7 +20,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class KnowledgePointTree {
-    List<Node> nodes = new LinkedList<>();
+    List<KnowledgePoint> nodes = new LinkedList<>();
     SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
 
     /**
@@ -28,7 +28,7 @@ public class KnowledgePointTree {
      *
      * @param node 树的节点
      */
-    public void addNode(Node node) {
+    public void addNode(KnowledgePoint node) {
         if (node == null) { return; } // 忽略 null 节点
 
         nodes.add(node);
@@ -39,7 +39,7 @@ public class KnowledgePointTree {
      *
      * @return 返回根节点
      */
-    public Node getRoot() {
+    public KnowledgePoint getRoot() {
         return nodes.get(0);
     }
 
@@ -47,12 +47,12 @@ public class KnowledgePointTree {
      * 设置好节点数据后构建节点之间的父子关系
      */
     public void build() {
-        for (Node node : nodes) {
+        for (KnowledgePoint node : nodes) {
             if (isRoot(node.code)) {
                 continue;
             }
 
-            Node parent = findParentNode(node.code);
+            KnowledgePoint parent = findParentNode(node.code);
 
             if (parent != null) {
                 parent.children.add(node);
@@ -67,20 +67,20 @@ public class KnowledgePointTree {
         walk(nodes.get(0), 0);
     }
 
-    private void walk(Node node, int index) {
+    private void walk(KnowledgePoint node, int index) {
         System.out.println(StringUtils.repeat(" ", index*3) + node.code + "-" + node.name); // 插入数据库
 
         node.id = idWorker.nextId(); // 生成 ID
 
-        List<Node> children = node.children;
-        for (Node child : children) {
+        List<KnowledgePoint> children = node.children;
+        for (KnowledgePoint child : children) {
             child.parentId = node.id;
             walk(child, index+1);
         }
     }
 
-    private Node findNode(String nodeCode) {
-        for (Node node : nodes) {
+    private KnowledgePoint findNode(String nodeCode) {
+        for (KnowledgePoint node : nodes) {
             if (node.code.equals(nodeCode)) {
                 return node;
             }
@@ -89,10 +89,10 @@ public class KnowledgePointTree {
         return null;
     }
 
-    private Node findParentNode(String nodeCode) {
+    private KnowledgePoint findParentNode(String nodeCode) {
         do {
             String parentCode = getParentCode(nodeCode);
-            Node parent = findNode(parentCode);
+            KnowledgePoint parent = findNode(parentCode);
 
             if (parent != null) {
                 return parent;
@@ -119,33 +119,6 @@ public class KnowledgePointTree {
 
     public static boolean isRoot(String nodeCode) {
         return nodeCode.matches("0+");
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JSONType(ignores = {"children"})
-    public static class Node {
-        String code; // 知识点编码
-        String name; // 知识点名称
-        String subjectName; // 科目名称，例如物理
-        String subjectCode; // 科目编码，例如 GZWL061B
-
-        Long   id = 0L;
-        Long   parentId = 0L;
-
-        List<Node> children = new LinkedList<>();
-
-        public Node() {
-
-        }
-
-        public Node(String code, String name, String subjectName, String subjectCode) {
-            this.code = code;
-            this.name = name;
-            this.subjectName = subjectName;
-            this.subjectCode = subjectCode;
-        }
     }
 }
 
