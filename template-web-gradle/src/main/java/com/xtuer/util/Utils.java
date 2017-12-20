@@ -11,7 +11,10 @@ import java.io.InputStream;
 import java.util.Base64;
 import java.util.UUID;
 
-public final class CommonUtils {
+/**
+ * 常用功能的工具类，例如计算 MD5, Base64，UUID 等
+ */
+public final class Utils {
     /**
      * BindingResult 中的错误信息很多，对用户不够友好，使用 getBindingMessage()
      * 提取对用户阅读友好的定义验证规则 message.
@@ -90,7 +93,7 @@ public final class CommonUtils {
      * @return 返回使用 URL Safe Base64 编码后的字符串
      */
     public static String base64UrlSafe(String text) {
-        String base64Text = CommonUtils.base64(text);
+        String base64Text = Utils.base64(text);
         base64Text = base64Text.replace('+', '-');
         base64Text = base64Text.replace('/', '_');
         base64Text = base64Text.replace('=', '*');
@@ -109,11 +112,11 @@ public final class CommonUtils {
         urlBase64Text = urlBase64Text.replace('_', '/');
         urlBase64Text = urlBase64Text.replace('*', '=');
 
-        return CommonUtils.unbase64(urlBase64Text);
+        return Utils.unbase64(urlBase64Text);
     }
 
     /**
-     * 生成 UUID.
+     * 生成 UUID，格式为 1E87E000-92C0-4660-B00D-FF92B37B0A7B
      *
      * @return 返回 UUID
      */

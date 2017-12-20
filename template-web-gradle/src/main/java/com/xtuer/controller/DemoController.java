@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
-import com.xtuer.util.CommonUtils;
+import com.xtuer.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,7 +245,7 @@ public class DemoController {
     public Result<Demo> validateDemo(@Valid Demo demo, BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
         if (bindingResult.hasErrors()) {
-            return Result.fail(CommonUtils.getBindingMessage(bindingResult));
+            return Result.fail(Utils.getBindingMessage(bindingResult));
         }
 
         return Result.ok("", demo);

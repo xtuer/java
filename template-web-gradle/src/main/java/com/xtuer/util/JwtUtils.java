@@ -51,7 +51,7 @@ public class JwtUtils {
 
         // 使用 Url Safe Base64 进行编码是因为等号 = 会影响读取 cookie 中的值
         // 而 token 有可能放在 cookie, header, url 中
-        return CommonUtils.base64UrlSafe(payload) + "." + signString;
+        return Utils.base64UrlSafe(payload) + "." + signString;
     }
 
     /**
@@ -74,7 +74,7 @@ public class JwtUtils {
         try {
             // 从 token 中得到用户信息的字符串和签名字符串
             int pos = token.indexOf(".");
-            String payload = CommonUtils.unbase64UrlSafe(token.substring(0, pos));
+            String payload = Utils.unbase64UrlSafe(token.substring(0, pos));
             String signString = token.substring(pos+1);
             JSONObject json = JSON.parseObject(payload);
 
@@ -120,7 +120,7 @@ public class JwtUtils {
 
         try {
             int pos = token.indexOf(".");
-            String payload = CommonUtils.unbase64UrlSafe(token.substring(0, pos));
+            String payload = Utils.unbase64UrlSafe(token.substring(0, pos));
             JSONObject json = JSON.parseObject(payload);
             JSONArray roles = JSON.parseArray(json.getString("roles"));
             json.put("roles", roles); // 注意: json 中的 roles 是字符串，需要转换为数组
@@ -137,6 +137,6 @@ public class JwtUtils {
      * 签名计算
      */
     public static String sign(Map<String, String> params, String secret) {
-        return CommonUtils.md5(JSON.toJSONString(params) + secret);
+        return Utils.md5(JSON.toJSONString(params) + secret);
     }
 }
