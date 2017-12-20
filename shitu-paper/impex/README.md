@@ -13,13 +13,13 @@
     * `csvKpDir`: 知识点的 CSV 文件存放目录
     * `jsonKpDir`: 知识点的 JSON 文件保存目录
 
-  * 运行 `java -Dfile.encoding=UTF-8 KnowledgePointFromCsvToJson`
+  * 运行 `java -Dfile.encoding=UTF-8 QuestionKnowledgePointFromCsvToJson`
 
     > -Dfile.encoding=UTF-8 指定运行时的编码为 UTF-8，避免使用系统默认编码(Windows 为 GB2312，Mac 为 UTF-8)
-* 插入 JSON 知识点到数据库
+* 导入知识点到数据库
   * 配置
     * `jsonKpDir`: 知识点的 JSON 文件保存目录
-  * 运行 `java -Dfile.encoding=UTF-8 ImportKnowledgePointToDb`
+  * 运行 `java -Dfile.encoding=UTF-8 ImportQuestionKnowledgePoint`
 * 下载题目的 HTML 文件和图片
   * 运行 `java -Dfile.encoding=UTF-8 QuestionDownloader`
 

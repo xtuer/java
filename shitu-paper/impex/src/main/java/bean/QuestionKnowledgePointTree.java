@@ -1,6 +1,5 @@
 package bean;
 
-import com.alibaba.fastjson.annotation.JSONType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -19,8 +18,8 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class KnowledgePointTree {
-    List<KnowledgePoint> nodes = new LinkedList<>();
+public class QuestionKnowledgePointTree {
+    List<QuestionKnowledgePoint> nodes = new LinkedList<>();
     SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
 
     /**
@@ -28,7 +27,7 @@ public class KnowledgePointTree {
      *
      * @param node 树的节点
      */
-    public void addNode(KnowledgePoint node) {
+    public void addNode(QuestionKnowledgePoint node) {
         if (node == null) { return; } // 忽略 null 节点
 
         nodes.add(node);
@@ -39,7 +38,7 @@ public class KnowledgePointTree {
      *
      * @return 返回根节点
      */
-    public KnowledgePoint getRoot() {
+    public QuestionKnowledgePoint getRoot() {
         return nodes.get(0);
     }
 
@@ -47,12 +46,12 @@ public class KnowledgePointTree {
      * 设置好节点数据后构建节点之间的父子关系
      */
     public void build() {
-        for (KnowledgePoint node : nodes) {
+        for (QuestionKnowledgePoint node : nodes) {
             if (isRoot(node.code)) {
                 continue;
             }
 
-            KnowledgePoint parent = findParentNode(node.code);
+            QuestionKnowledgePoint parent = findParentNode(node.code);
 
             if (parent != null) {
                 parent.children.add(node);
@@ -67,20 +66,20 @@ public class KnowledgePointTree {
         walk(nodes.get(0), 0);
     }
 
-    private void walk(KnowledgePoint node, int index) {
+    private void walk(QuestionKnowledgePoint node, int index) {
         System.out.println(StringUtils.repeat(" ", index*3) + node.code + "-" + node.name); // 插入数据库
 
         node.id = idWorker.nextId(); // 生成 ID
 
-        List<KnowledgePoint> children = node.children;
-        for (KnowledgePoint child : children) {
+        List<QuestionKnowledgePoint> children = node.children;
+        for (QuestionKnowledgePoint child : children) {
             child.parentId = node.id;
             walk(child, index+1);
         }
     }
 
-    private KnowledgePoint findNode(String nodeCode) {
-        for (KnowledgePoint node : nodes) {
+    private QuestionKnowledgePoint findNode(String nodeCode) {
+        for (QuestionKnowledgePoint node : nodes) {
             if (node.code.equals(nodeCode)) {
                 return node;
             }
@@ -89,10 +88,10 @@ public class KnowledgePointTree {
         return null;
     }
 
-    private KnowledgePoint findParentNode(String nodeCode) {
+    private QuestionKnowledgePoint findParentNode(String nodeCode) {
         do {
             String parentCode = getParentCode(nodeCode);
-            KnowledgePoint parent = findNode(parentCode);
+            QuestionKnowledgePoint parent = findNode(parentCode);
 
             if (parent != null) {
                 return parent;

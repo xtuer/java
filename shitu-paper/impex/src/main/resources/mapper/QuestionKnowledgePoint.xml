@@ -5,9 +5,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
-<mapper namespace="mapper.KnowledgePointMapper">
+<mapper namespace="mapper.QuestionKnowledgePointMapper">
     <!--插入试题的知识点: ON DUPLICATE KEY: 判断主键和 Unique 列，id 是 unique 的 -->
-    <insert id="insertKnowledgePoint" parameterType="KnowledgePoint">
+    <insert id="insertKnowledgePoint" parameterType="QuestionKnowledgePoint">
         INSERT INTO question_knowledge_point(id, parent_id, name, code, subject_name, subject_code)
         VALUES(#{id}, #{parentId}, #{name}, #{code}, #{subjectName}, #{subjectCode})
         ON DUPLICATE KEY UPDATE name=#{name}
