@@ -14,8 +14,10 @@ task appStart(type:JavaExec) {
 }
 
 // [2] 打包命令: gradle clean shadowJar
+mainClassName = 'Test' // 可执行 jar 包的入口类
+
 jar {
-    manifest { attributes 'Main-Class': 'Test' } // TODO: 如果不是可执行 jar 包，Main-Class 不需要
+    manifest { attributes 'Main-Class': mainClassName }
 }
 shadowJar {
     mergeServiceFiles('META-INF/spring.*')

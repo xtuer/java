@@ -10,3 +10,7 @@
 
 ## 线上环境
 
+运行 `java -jar -Dfile.encoding=UTF-8 impex.jar` 或者解压，运行 `java -Dfile.encoding=UTF-8 Foo`
+
+> -Dfile.encoding=UTF-8 指定运行时的编码为 UTF-8，避免使用系统默认编码(Windows 为 GB2312，Mac 为 UTF-8)
+
