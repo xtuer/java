@@ -1,6 +1,6 @@
 ## 开发环境
 
-* 运行: 执行类 Foo 的 main 函数 `gradle clean appStart -DmainClass=Foo`
+* 运行: 执行类 Foo 的 main 函数 `gradle run -DmainClass=Foo`
 
   > 为什么不在 IDE 中运行呢？因为未打包前配置在 config.groovy 中，直接从 IDEA 中运行 main 函数不会把配置自动替换到 application.properties 文件里，有可能因为找不到配置而运行失败
 
