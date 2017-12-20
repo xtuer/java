@@ -14,6 +14,13 @@
 
     <script>
         $(document).ready(function() {
+            // [0] 参数转对象
+            $.rest.create({url: '/api/demo/object', data: {id: 123, info: 'Hello Demo'}, jsonRequestBody: false, success: function(result) {
+                console.log(result);
+            }, fail: function(e) {
+                console.log(e);
+            }});
+
             // [1] 服务器端的 GET 需要启用 UTF-8 才不会乱吗
             $.rest.get({url: '/demo/rest', data: {name: 'Alice'}, success: function(result) {
                 console.log(result);

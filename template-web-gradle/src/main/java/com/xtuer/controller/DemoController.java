@@ -44,6 +44,20 @@ public class DemoController {
     }
 
     /**
+     * 参数自动转换为对象
+     * URL: http://localhost:8080/api/demo/object
+     * 参数: {"id": 12, "info": "Hello Demo"}
+     *
+     * @param demo
+     * @return
+     */
+    @PostMapping("/api/demo/object")
+    @ResponseBody
+    public Demo paramsToObject(@Valid Demo demo) {
+        return demo;
+    }
+
+    /**
      * 访问数据库
      * URL: http://localhost:8080/api/demo/mybatis/{id}
      *

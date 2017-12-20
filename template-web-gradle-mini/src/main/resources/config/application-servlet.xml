@@ -31,7 +31,7 @@
             </bean>
 
             <!-- FastJson -->
-            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4">
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>
                         <value>text/html;charset=UTF-8</value>

@@ -1,3 +1,5 @@
+package util;
+
 public class Constants {
     public static final String QUESTION_START = "<p align=\"center\">---------------------*<font size=\"2px\">题文部分</font>*---------------------</p>";
     public static final String ANSWER_START   = "<p align=\"center\">---------------------*<font size=\"2px\">答案部分</font>*---------------------</p>";

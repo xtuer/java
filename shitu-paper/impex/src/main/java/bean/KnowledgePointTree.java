@@ -1,8 +1,11 @@
+package bean;
+
 import com.alibaba.fastjson.annotation.JSONType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+import util.SnowflakeIdWorker;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +32,15 @@ public class KnowledgePointTree {
         if (node == null) { return; } // 忽略 null 节点
 
         nodes.add(node);
+    }
+
+    /**
+     * 获取知识点树的根节点
+     *
+     * @return 返回根节点
+     */
+    public Node getRoot() {
+        return nodes.get(0);
     }
 
     /**
@@ -114,20 +126,24 @@ public class KnowledgePointTree {
     @Accessors(chain = true)
     @JSONType(ignores = {"children"})
     public static class Node {
-        String code; // 知识点的编码
-        String name; // 知识点
-        String subject;     // 科目，例如物理
-        String subjectCode; // 科目对应的编码，例如 GZWL061B
+        String code; // 知识点编码
+        String name; // 知识点名称
+        String subjectName; // 科目名称，例如物理
+        String subjectCode; // 科目编码，例如 GZWL061B
 
         Long   id = 0L;
         Long   parentId = 0L;
 
         List<Node> children = new LinkedList<>();
 
-        Node(String code, String name, String subject, String subjectCode) {
+        public Node() {
+
+        }
+
+        public Node(String code, String name, String subjectName, String subjectCode) {
             this.code = code;
             this.name = name;
-            this.subject = subject;
+            this.subjectName = subjectName;
             this.subjectCode = subjectCode;
         }
     }
