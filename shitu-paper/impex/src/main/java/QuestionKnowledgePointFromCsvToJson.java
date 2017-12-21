@@ -15,14 +15,20 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 处理数据库导出的 csv 的知识点，建立父子关系构建一颗知识点的树，保存到为 json 格式文件
+ * 处理数据库导出的 csv 的知识点，建立父子关系构建一颗知识点的树，保存到为 json 格式文件:
+ * 1. 每个学科的知识点信息保存到一个 csv 文件中，遍历知识点 csv 文件
+ * 2. 从知识点 csv 文件名上分离出学科名字和学科编码
+ * 3. 从知识点 csv 文件中读取知识点创建 QuestionKnowledgePoint 对象，添加到知识点树的节点中
+ * 4. 遍历知识点树的节点构建树，建立父子知识点的关系: tree.build()
+ * 5. 遍历知识点树的节点，为每个知识点生成 ID 和设置父知识点的 ID: tree.walk()
+ * 6. 把知识点树保存为 json 格式的文件，便于后期使用，例如导入到数据库
  */
 public class QuestionKnowledgePointFromCsvToJson {
     public static void main(String[] args) throws IOException {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         Properties config = context.getBean("config", Properties.class);
 
-        String csvKpDir  = config.getProperty("csvKpDir");  // csv  知识点文的目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
+        String csvKpDir  = config.getProperty("csvKpDir");  // csv  知识点文件目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
         String jsonKpDir = config.getProperty("jsonKpDir"); // json 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
         Collection<File> files = FileUtils.listFiles(new File(csvKpDir), new String[]{"csv"}, false);
 

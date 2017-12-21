@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 导入单题的 JSON 知识点到数据库
+ * 导入单题的 JSON 知识点到数据库:
+ * 1. 遍历知识点文件所在目录读取 json 格式的知识点文件
+ * 2. 读取 json 格式的知识点，转换为知识点的列表
+ * 3. 遍历知识点列表，把知识点插入数据库(因为知识点的名字、ID、父节点 ID 等关系都是构建好的，所以直接插入到数据库即可)
  */
 public class ImportQuestionKnowledgePoint {
     public static void main(String[] args) throws IOException {

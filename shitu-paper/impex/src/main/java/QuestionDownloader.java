@@ -12,7 +12,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 下载乐教乐学的试题
+ * 下载乐教乐学的试题:
+ * 1. 遍历题目 ID 文件，按行读取得到题目的 ID
+ * 2. 使用题目的 ID 构建访问题目的 URL
+ * 3. 使用 URL 下载题目的网页源码和图片，下载失败的题目添加到最后面尝试重新下载，最多重试 5 次
+ * 4. 题目按照学科和数据库名字分文件夹保存
  */
 public class QuestionDownloader {
     public static final String BASE_URL = "http://192.168.10.243/Exe/makingpaper.dll?CMD_ShowProblemContent&";// strSubject=GSZH030C&strProblemID=030C014553

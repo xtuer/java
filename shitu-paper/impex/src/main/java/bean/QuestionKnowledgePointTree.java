@@ -63,7 +63,7 @@ public class QuestionKnowledgePointTree {
      * 遍历树的所有节点
      */
     public void walk() {
-        walk(nodes.get(0), 0);
+        walk(getRoot(), 0);
     }
 
     private void walk(QuestionKnowledgePoint node, int index) {
