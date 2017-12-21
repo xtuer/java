@@ -28,9 +28,9 @@ public class QuestionKnowledgePointFromCsvToJson {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         Properties config = context.getBean("config", Properties.class);
 
-        String csvKpDir  = config.getProperty("csvKpDir");  // csv  知识点文件目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
-        String jsonKpDir = config.getProperty("jsonKpDir"); // json 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
-        Collection<File> files = FileUtils.listFiles(new File(csvKpDir), new String[]{"csv"}, false);
+        String kpCsvDir  = config.getProperty("kpCsvDir");  // CSV  知识点文件目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
+        String kpJsonDir = config.getProperty("kpJsonDir"); // JSON 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
+        Collection<File> files = FileUtils.listFiles(new File(kpCsvDir), new String[]{"csv"}, false);
 
         // 遍历处理所有的知识点文件
         for (File file : files) {
@@ -48,7 +48,7 @@ public class QuestionKnowledgePointFromCsvToJson {
 
             // 保存 json 格式的知识点文件
             String fileName = subjectName + "-" + subjectCode + ".json";
-            FileUtils.writeStringToFile(new File(jsonKpDir, fileName), JSON.toJSONString(tree.getNodes(), true), "UTF-8");
+            FileUtils.writeStringToFile(new File(kpJsonDir, fileName), JSON.toJSONString(tree.getNodes(), true), "UTF-8");
         }
     }
 

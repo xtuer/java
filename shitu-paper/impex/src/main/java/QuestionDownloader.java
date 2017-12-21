@@ -109,7 +109,7 @@ public class QuestionDownloader {
      * @throws IOException
      */
     public static void downloadQuestionPage(String subject, String questionId, String saveDir) throws IOException {
-        saveDir = saveDir + "/" + Math.abs(questionId.hashCode() % 100);
+        // saveDir = saveDir + "/" + Math.abs(questionId.hashCode() % 100);
 
         // 下载网页
         String url = BASE_URL + "strSubject=" + subject + "&strProblemID=" + questionId;

@@ -24,8 +24,8 @@ public class ImportQuestionKnowledgePoint {
         Properties config = context.getBean("config", Properties.class);
         QuestionKnowledgePointMapper mapper = context.getBean("questionKnowledgePointMapper", QuestionKnowledgePointMapper.class);
 
-        String jsonKpDir = config.getProperty("jsonKpDir"); // json 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
-        Collection<File> files = FileUtils.listFiles(new File(jsonKpDir), new String[]{"json"}, false);
+        String kpJsonDir = config.getProperty("kpJsonDir"); // json 知识点保存目录，知识点文件的名字规范: 高中语文-GYWT033C.json
+        Collection<File> files = FileUtils.listFiles(new File(kpJsonDir), new String[]{"json"}, false);
 
         for (File file : files) {
             String json = FileUtils.readFileToString(file, "UTF-8");
