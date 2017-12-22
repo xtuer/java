@@ -9,7 +9,13 @@ kpJsonDir: /Users/Biao/Documents/套卷/知识点/json
 # html/GDLT030C
 questionHtmlDir: /Users/Biao/Desktop/question/html
 
+# 题目信息的 XML 文件夹，保存了题目的答案，难度，分值等数据
+# info/GYWT033C
+# info/GDLT030C
+questionInfoDir: /Users/Biao/Desktop/question/info
+
 # 题目的 JSON 文件夹，此文件夹下题目按照科目编码存放
 # json/GYWT033C
 # json/GDLT030C
 questionJsonDir: /Users/Biao/Desktop/question/json
+

@@ -42,6 +42,7 @@ dependencies {
     compile 'com.alibaba:fastjson:1.2.41'
     compile 'ch.qos.logback:logback-classic:1.1.2'
     compile 'org.yaml:snakeyaml:1.18'
+    compile 'org.dom4j:dom4j:2.1.0'
 
     compileOnly 'org.projectlombok:lombok:1.16.18'
     testCompile 'junit:junit:4.12'

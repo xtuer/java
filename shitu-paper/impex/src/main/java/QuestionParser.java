@@ -10,14 +10,15 @@ import org.jsoup.select.Elements;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import util.SnowflakeIdWorker;
+import util.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
 /**
- * 解析题目信息保存为 json 文件:
+ * 根据题目的 HTML 文件和 XML 信息文件，解析题目信息保存为 json 文件:
  * 1. 遍历题目 HTML 文件
  * 2. 使用 Jsoup 读取 HTML 文件
  * 3. 抽取题目题干
@@ -45,7 +46,7 @@ public class QuestionParser {
         Question q = new Question();
         q.setId(idWorker.nextId());
         q.setContent(getQuestionContent());
-        q.setAnalysis(getQuestionContent());
+        q.setAnalysis(getQuestionAnalysis());
         q.setSubjectCode(subjectCode);
 
         return q;
@@ -99,12 +100,15 @@ public class QuestionParser {
         return doc.body().html();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
         Properties config = context.getBean("config", Properties.class);
 
         String questionHtmlDir = config.getProperty("questionHtmlDir"); // 题目的 HTML 文件夹
+        String questionInfoDir = config.getProperty("questionInfoDir"); // 题目信息的 XML 文件夹
         String questionJsonDir = config.getProperty("questionJsonDir"); // 题目的 JSON 文件夹
+
+        Map<String, Question> info = Utils.prepareQuestionInfo(questionInfoDir); // 题目的信息
         File[] subjectDirs = new File(questionHtmlDir).listFiles((d) -> d.isDirectory()); // 科目文件夹
 
         // 按科目遍历题目
@@ -116,12 +120,23 @@ public class QuestionParser {
                 System.out.println(subjectCode + ": " + questionFile.getName());
 
                 // 读取题目并解析
-                String questionText = FileUtils.readFileToString(questionFile, "GB2312");
-                Question question = new QuestionParser(questionText, subjectCode).parse();
+                String questionOriginalId = FilenameUtils.getBaseName(questionFile.getName()); // 题目原始 ID
+                String questionText = FileUtils.readFileToString(questionFile, "GB2312"); // 读取题目内容
+                Question question   = new QuestionParser(questionText, subjectCode).parse();
+                question.setOriginalId(questionOriginalId);
+
+                // 设置题目的额外信息，例如答案、分值等
+                Question infoQ = info.get(subjectCode + "-" + questionOriginalId);
+                if (infoQ != null) {
+                    question.setAnswer(infoQ.getAnswer()).setDemand(infoQ.getDemand())
+                            .setKnowledgePointCode(infoQ.getKnowledgePointCode())
+                            .setType(infoQ.getType()).setScore(infoQ.getScore())
+                            .setDifficulty(infoQ.getDifficulty());
+                }
 
                 // 保存 question 到文件
                 File jsonSubjectDir = new File(questionJsonDir, subjectCode);
-                String filename = FilenameUtils.getBaseName(questionFile.getName()) + ".json";
+                String filename = questionOriginalId + ".json";
                 FileUtils.writeStringToFile(new File(jsonSubjectDir, filename), JSON.toJSONString(question, true), "UTF-8");
             }
         }
