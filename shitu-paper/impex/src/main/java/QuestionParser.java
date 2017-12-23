@@ -1,5 +1,6 @@
 import bean.Constants;
 import bean.Question;
+import bean.QuestionKnowledgePoint;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -19,12 +20,14 @@ import java.util.Properties;
 
 /**
  * 根据题目的 HTML 文件和 XML 信息文件，解析题目信息保存为 json 文件:
+ * 0. 从文件读取创建知识点和题目的额外信息
  * 1. 遍历题目 HTML 文件
  * 2. 使用 Jsoup 读取 HTML 文件
  * 3. 抽取题目题干
  * 4. 修改题干中的图片路径: /question-image/科目编码/图片名字.jpg，例如 /question-image/GDLT030C/GDLT030C_030C000927_Aimage002.jpg
  * 5. 抽取题目解析
- * 6. 上面得到的信息保存为 json 文件: 题目ID.json
+ * 6. 设置题目的额外信息和知识点 ID
+ * 7. 上面得到的信息保存为 json 文件: 题目ID.json
  */
 public class QuestionParser {
     private static final SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
@@ -107,8 +110,10 @@ public class QuestionParser {
         String questionHtmlDir = config.getProperty("questionHtmlDir"); // 题目的 HTML 文件夹
         String questionInfoDir = config.getProperty("questionInfoDir"); // 题目信息的 XML 文件夹
         String questionJsonDir = config.getProperty("questionJsonDir"); // 题目的 JSON 文件夹
+        String kpJsonDir       = config.getProperty("kpJsonDir");       // 知识点的 JSON 文件夹
 
         Map<String, Question> info = Utils.prepareQuestionInfo(questionInfoDir); // 题目的信息
+        Map<String, QuestionKnowledgePoint> kps = Utils.prepareQuestionKnowledgePoint(kpJsonDir); // 知识点
         File[] subjectDirs = new File(questionHtmlDir).listFiles((d) -> d.isDirectory()); // 科目文件夹
 
         // 按科目遍历题目
@@ -132,6 +137,12 @@ public class QuestionParser {
                             .setKnowledgePointCode(infoQ.getKnowledgePointCode())
                             .setType(infoQ.getType()).setScore(infoQ.getScore())
                             .setDifficulty(infoQ.getDifficulty());
+                }
+
+                // 设置题目的知识点
+                QuestionKnowledgePoint kp = kps.get(subjectCode + "-" + question.getKnowledgePointCode());
+                if (kp != null) {
+                    question.setKnowledgePointId(kp.getId());
                 }
 
                 // 保存 question 到文件

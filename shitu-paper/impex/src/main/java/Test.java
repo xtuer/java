@@ -1,19 +1,20 @@
-import org.apache.commons.io.FileUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import bean.QuestionKnowledgePoint;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import util.Utils;
 
-import java.io.File;
+import java.util.Map;
+import java.util.Properties;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        // String subjectCode = "GZWL061A";
-        Document doc = Jsoup.parseBodyFragment(FileUtils.readFileToString(new File("/Users/Biao/Desktop/question/info/GZWL061A.xml"), "GB2312"));
-        Elements elems = doc.select("root > i");
+        ApplicationContext context = new ClassPathXmlApplicationContext("config/application.xml");
+        Properties config = context.getBean("config", Properties.class);
+        String kpJsonDir = config.getProperty("kpJsonDir");
 
-        for (Element elem : elems) {
-            System.out.println(elem.attr("I_VCP").isEmpty());
-        }
+        Map<String, QuestionKnowledgePoint> kps = Utils.prepareQuestionKnowledgePoint(kpJsonDir);
+        kps.forEach((key, value) -> {
+            System.out.println(key);
+        });
     }
 }

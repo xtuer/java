@@ -25,12 +25,19 @@
 * 下载题目的 HTML 文件和图片
   * 运行 `java -Dfile.encoding=UTF-8 QuestionDownloader`
 
-* 根据题目的 HTML 文件和 XML 信息文件，解析题目信息保存为 JSON 文件
+* 根据题目的 HTML 文件、知识点的 JSON 文件和 XML 信息文件，解析题目信息保存为完整题目的 JSON 文件
 
   * 配置
     * `questionHtmlDir`: 题目的 HTML 文件夹，此文件夹下题目按照科目编码存放
     * `questionInfoDir`: 题目信息的 XML 文件夹，保存了题目的答案，难度，分值等数据
     * `questionJsonDir`: 题目的 JSON 文件夹，此文件夹下题目按照科目编码存放
+    * `kpJsonDir`: 知识点的 JSON 文件目录
   * 运行 `java -Dfile.encoding=UTF-8 QuestionParser`
 
+* 从完整题目的 JSON 文件解析出题目，然后导入数据库
+
+  * 配置
+    * `config/application.properties` 中的数据库访问信息
+    * `questionJsonDir`: 题目的 JSON 文件夹，此文件夹下题目按照科目编码存放
+  * 运行 `java -Dfile.encoding=UTF-8 ImportQuestion`
 

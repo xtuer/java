@@ -1,8 +1,8 @@
 # 知识点的 CSV 文件目录，知识点文件的名字规范: 高中语文-GYWT033C.csv
-kpCsvDir: /Users/Biao/Documents/套卷/知识点/csv
+kpCsvDir: /Users/Biao/Documents/乐教乐学试题/题目/知识点/csv
 
 # 知识点的 JSON 文件目录，知识点文件的名字规范: 高中语文-GYWT033C.json
-kpJsonDir: /Users/Biao/Documents/套卷/知识点/json
+kpJsonDir: /Users/Biao/Documents/乐教乐学试题/题目/知识点/json
 
 # 题目的 HTML 文件夹，此文件夹下题目按照科目编码存放
 # html/GYWT033C

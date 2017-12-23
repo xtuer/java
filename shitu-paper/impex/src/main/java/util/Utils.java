@@ -1,7 +1,9 @@
 package util;
 
 import bean.Question;
-import org.apache.commons.csv.CSVRecord;
+import bean.QuestionKnowledgePoint;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
@@ -12,6 +14,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class Utils {
@@ -113,5 +116,31 @@ public final class Utils {
         }
 
         return info;
+    }
+
+    /**
+     * 读取知识点的 JSON 文件，文件名为科目名称-科目编码.json，如 高中化学-GZHX062A，为每一个知识点创建一个 Map 的项:
+     *     key   为 subjectCode+code
+     *     value 为 QuestionKnowledgePoint 的对象
+     *
+     * @param dir 知识点的 JSON 文件所在目录
+     * @return 知识点的 map
+     * @throws Exception 读取 JSON 文件出错时抛出异常
+     */
+    public static Map<String, QuestionKnowledgePoint> prepareQuestionKnowledgePoint(String dir) throws Exception {
+        Map<String, QuestionKnowledgePoint> map = new HashMap<>();
+        Collection<File> files = FileUtils.listFiles(new File(dir), new String[] {"json"}, false);
+
+        for (File file : files) {
+            System.out.println(file.getName());
+            String json = FileUtils.readFileToString(file, "UTF-8");
+            List<QuestionKnowledgePoint> kps = JSON.parseObject(json, new TypeReference<List<QuestionKnowledgePoint>>(){});
+
+            for (QuestionKnowledgePoint kp : kps) {
+                map.put(kp.getSubjectCode()+"-"+kp.getCode(), kp);
+            }
+        }
+
+        return map;
     }
 }
