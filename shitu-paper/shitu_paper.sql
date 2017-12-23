@@ -114,11 +114,32 @@ WHERE kp.is_deleted=0;
 DROP TABLE IF EXISTS `question_knowledge_point`;
 
 CREATE TABLE `question_knowledge_point` (
-  `id` bigint(11) unsigned NOT NULL   COMMENT '知识点的 id',
-  `parent_id` bigint(11) DEFAULT NULL COMMENT '父知识点的 id',
-  `name` varchar(1024) DEFAULT NULL   COMMENT '知识点的名字',
-  `code` varchar(1024) DEFAULT NULL   COMMENT '知识点的编码',
-  `subject_name` varchar(1024) DEFAULT NULL COMMENT '所属学科的名字',
-  `subject_code` varchar(1024) DEFAULT NULL COMMENT '所属学科的编码',
-  PRIMARY KEY (`id`)
+    `id` bigint(20) unsigned NOT NULL   COMMENT '知识点的 id',
+    `parent_id` bigint(20) DEFAULT NULL COMMENT '父知识点的 id',
+    `name` varchar(1024) DEFAULT NULL   COMMENT '知识点的名字',
+    `code` varchar(1024) DEFAULT NULL   COMMENT '知识点的编码',
+    `subject_name` varchar(1024) DEFAULT NULL COMMENT '所属学科的名字',
+    `subject_code` varchar(1024) DEFAULT NULL COMMENT '所属学科的编码',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+# ------------------------------------------------------------
+# 单题
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `question`;
+CREATE TABLE `question` (
+    `id` bigint(20) unsigned NOT NULL COMMENT '题目的 id',
+    `type` varchar(8) DEFAULT NULL    COMMENT '题目的类型',
+    `content` text  COMMENT '题目的内容：题干+选项',
+    `analysis` text COMMENT '题目的解析',
+    `answer` text   COMMENT '题目的答案',
+    `demand` varchar(32) DEFAULT NULL COMMENT '教学要求',
+    `score` int(11) DEFAULT NULL      COMMENT '题目的分值',
+    `difficulty` int(11) DEFAULT NULL COMMENT '题目的难度',
+    `original_id` varchar(64) DEFAULT NULL  COMMENT '题目的在乐教乐学数据库中的 ID',
+    `subject_code` varchar(64) DEFAULT NULL COMMENT '题目的科目编码',
+    `knowledge_point_code` varchar(8) DEFAULT '' COMMENT '题目的知识点编码',
+    `knowledge_point_id` bigint(20) DEFAULT '0'  COMMENT '题目的知识点 ID',
+    `is_marked` tinyint(4) DEFAULT '0'           COMMENT '是否被标记过，0 为未标记，1 为已标记',
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

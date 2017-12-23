@@ -9,6 +9,8 @@ public class XmlRead {
         // <book>
         //     <author name="'Biao' &amp; Alice &quot;Nio&quot; &lt;Goo&gt;" />
         // </book>
+
+        // XML 的特殊字符: <>&"
         SAXReader reader = new SAXReader();
         Document document = reader.read(new FileReader("/Users/Biao/Desktop/x.xml"));
         Element author = (Element)document.selectSingleNode("//book/author");
