@@ -21,6 +21,8 @@ public class Demo {
     @NotBlank(message="Info 不能为空")
     private String info;
 
+    private boolean marked;
+
     public Demo() {
     }
 
