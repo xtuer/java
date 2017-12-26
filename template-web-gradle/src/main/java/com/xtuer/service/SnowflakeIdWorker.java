@@ -60,16 +60,17 @@ public class SnowflakeIdWorker {
     /**
      * 使用工作机器 ID 和数据中心 ID 创建一个 ID 生成器
      *
-     * @param workerId     工作机器 ID (0~31)
      * @param datacenterId 数据中心 ID (0~31)
+     * @param workerId     工作机器 ID (0~31)
      */
-    public SnowflakeIdWorker(long workerId, long datacenterId) {
+    public SnowflakeIdWorker(long datacenterId, long workerId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("Worker ID can't be greater than %d or less than 0", maxWorkerId));
         }
         if (datacenterId > maxDatacenterId || datacenterId < 0) {
             throw new IllegalArgumentException(String.format("Datacenter ID can't be greater than %d or less than 0", maxDatacenterId));
         }
+
         this.workerId = workerId;
         this.datacenterId = datacenterId;
     }
