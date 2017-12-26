@@ -1,4 +1,4 @@
-package com.xtuer.util;
+package com.xtuer.service;
 
 import org.apache.commons.lang3.StringUtils;
 
