@@ -7,8 +7,8 @@
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="mapper.QuestionMapper">
     <insert id="insertQuestion" parameterType="Question">
-        INSERT INTO question(id, type, content, analysis, answer, demand, score, difficulty, original_id, subject_code, knowledge_point_code, is_marked)
-        VALUES(#{id}, #{type}, #{content}, #{analysis}, #{answer}, #{demand}, #{score}, #{difficulty}, #{originalId}, #{subjectCode}, #{knowledgePointCode}, 0)
+        INSERT INTO question(id, type, content, analysis, answer, demand, score, difficulty, original_id, subject_code, knowledge_point_id, knowledge_point_code, is_marked)
+        VALUES(#{id}, #{type}, #{content}, #{analysis}, #{answer}, #{demand}, #{score}, #{difficulty}, #{originalId}, #{subjectCode}, #{knowledgePointId}, #{knowledgePointCode}, 0)
         ON DUPLICATE KEY UPDATE content=#{content}
     </insert>
 </mapper>

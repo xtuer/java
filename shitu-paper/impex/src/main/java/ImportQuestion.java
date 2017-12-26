@@ -22,8 +22,9 @@ public class ImportQuestion {
         for (File file : questionFiles) {
             String json = FileUtils.readFileToString(file, "UTF-8");
             Question question = JSON.parseObject(json, Question.class);
-            // System.out.println(JSON.toJSONString(question));
             mapper.insertQuestion(question);
+
+            System.out.println(question.getId() + ": " + question.getKnowledgePointId());
         }
     }
 }

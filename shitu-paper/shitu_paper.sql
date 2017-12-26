@@ -130,8 +130,8 @@ DROP TABLE IF EXISTS `question`;
 CREATE TABLE `question` (
     `id` bigint(20) unsigned NOT NULL COMMENT '题目的 id',
     `type` varchar(8) DEFAULT NULL    COMMENT '题目的类型',
-    `content` text  COMMENT '题目的内容：题干+选项',
-    `analysis` text COMMENT '题目的解析',
+    `content` mediumtext  COMMENT '题目的内容：题干+选项',
+    `analysis` mediumtext COMMENT '题目的解析',
     `answer` text   COMMENT '题目的答案',
     `demand` varchar(32) DEFAULT NULL COMMENT '教学要求',
     `score` int(11) DEFAULT NULL      COMMENT '题目的分值',
