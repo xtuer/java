@@ -17,5 +17,5 @@ questionInfoDir: /Users/Biao/Desktop/question/info
 # 题目的 JSON 文件夹，此文件夹下题目按照科目编码存放
 # json/GYWT033C
 # json/GDLT030C
-questionJsonDir: /Users/Biao/Desktop/question/json
+questionJsonDir: /Users/Biao/Documents/乐教乐学试题/单题/json
 

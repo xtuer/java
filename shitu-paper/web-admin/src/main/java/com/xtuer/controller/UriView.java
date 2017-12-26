@@ -66,4 +66,13 @@ public interface UriView {
     // 知识点分类
     String REST_KNOWLEDGE_POINT_GROUPS       = "/rest/knowledgePointGroups";
     String REST_KNOWLEDGE_POINT_GROUPS_BY_ID = "/rest/knowledgePointGroups/{knowledgePointGroupId}";
+
+    // 单题知识点
+    String REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID = "/rest/questionKnowledgePoints/{parentId}/children";
+
+    // 单题知识点下的题目
+    String REST_QUESTIONS_UNDER_KNOWLEDGE_POINT = "/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions";
+
+    String REST_MARK_QUESTION       = "/rest/questions/{questionId}/mark"; // 标记题目
+    String REST_MARKED_QUESTION_IDS = "/rest/questionIds/marked"; // 被标记过的题目原始 ID
 }

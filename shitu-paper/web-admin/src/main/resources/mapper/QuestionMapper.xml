@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 使用视图 view_paper_knowledge_point 可以简化试卷的查询 -->
+<mapper namespace="com.xtuer.mapper.QuestionMapper">
+    <!-- 查找知识点 -->
+    <select id="findQuestionKnowledgePointsByParentId" parameterType="long" resultType="QuestionKnowledgePoint">
+        SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode
+        FROM question_knowledge_point
+        WHERE parent_id=#{parentId}
+    </select>
+
+    <!-- 查找知识点下的单题 -->
+    <select id="findQuestionsUnderQuestionKnowledgePoint" parameterType="long" resultType="Question">
+        SELECT id, type, content, analysis, answer, demand, score, difficulty,
+            original_id AS originalId, subject_code AS subjectCode,
+            knowledge_point_code AS knowledgePointCode, knowledge_point_id AS knowledgePointId, is_marked AS marked
+        FROM question
+        WHERE knowledge_point_id=#{questionKnowledgePointId}
+    </select>
+
+    <!-- 查找所有被标记过的题目的原始 ID -->
+    <select id="findMarkedQuestionOriginalIds" resultType="string">
+        SELECT original_id FROM question WHERE is_marked=1
+    </select>
+
+    <!-- 标记题目，检查题目的时候发现题目有问题，标记起来，为了后期批量导出 -->
+    <update id="markQuestion" parameterType="long">
+        UPDATE question SET is_marked=1 WHERE id=#{questionId}
+    </update>
+</mapper>

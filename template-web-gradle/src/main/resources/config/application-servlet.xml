@@ -37,7 +37,6 @@
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>
-                        <value>text/html;charset=UTF-8</value>
                         <value>application/json;charset=UTF-8</value>
                     </list>
                 </property>
@@ -99,7 +98,7 @@
 
     <!-- 启用跨域请求 -->
     <mvc:cors>
-        <mvc:mapping path="/**"/>
+        <mvc:mapping path="/**" allowed-methods="*"/>
     </mvc:cors>
 
     <!-- 静态资源的访问，如 js, css, jpg, png -->
