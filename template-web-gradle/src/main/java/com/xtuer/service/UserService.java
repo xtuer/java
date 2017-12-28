@@ -10,10 +10,10 @@ public class UserService {
         // 不需要给 authentication-provider 配置 PasswordEncoder
         // {noop}表示不加密密码，{bcrypt} 使用 bcrypt 加密
         if ("admin".equals(username)) {
-            return new User("admin", "{noop}admin", "ROLE_ADMIN");
+            return new User(1L, "admin", "{noop}admin", "ROLE_ADMIN");
         } else if ("alice".equals(username)) {
             // 密码是: password
-            return new User("alice", "{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG", "ROLE_USER");
+            return new User(2L, "alice", "{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG", "ROLE_USER");
         }
 
         return null;

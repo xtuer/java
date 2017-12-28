@@ -48,6 +48,7 @@ dependencies {
     compile 'org.dom4j:dom4j:2.1.0'
     compile 'net.coobird:thumbnailator:0.4.8'
     compile 'org.jsoup:jsoup:1.11.2'
+    compile 'com.auth0:java-jwt:3.3.0'
 
 
     testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1'

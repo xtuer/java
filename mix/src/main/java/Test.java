@@ -1,14 +1,17 @@
-import org.apache.commons.io.FileUtils;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Date;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        for (int i = 0; i < 100000; ++i) {
-            FileUtils.writeStringToFile(new File("/Users/Biao/Desktop/xyz/" + i + ".json"), "" + i, "UTF-8");
-            System.out.println(i);
+        for (int i = 0; i < 10; ++i) {
+            System.out.println(System.currentTimeMillis());
+            String token = JWT.create().withClaim("username", "黄彪").withClaim("password", "Passw0rd")
+                    .withExpiresAt(new Date()).withIssuedAt(new Date())
+                    .withKeyId("MAGIC").sign(Algorithm.HMAC256("Secret"));
+            System.out.println(token);
         }
     }
 }

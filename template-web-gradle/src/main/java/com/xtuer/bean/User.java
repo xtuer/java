@@ -28,15 +28,21 @@ public class User extends org.springframework.security.core.userdetails.User {
         super("non-exist-username", "", new HashSet<>());
     }
 
+    public User(String username, String password, String... roles) {
+        this(null, username, password, roles);
+    }
+
     /**
      * 使用账号、密码、角色创建用户
      *
+     * @param id 用户的 ID
      * @param username 账号
      * @param password 密码
      * @param roles    角色
      */
-    public User(String username, String password, String... roles) {
+    public User(Long id, String username, String password, String... roles) {
         this(username, password, true, roles);
+        this.id = id;
     }
 
     /**
