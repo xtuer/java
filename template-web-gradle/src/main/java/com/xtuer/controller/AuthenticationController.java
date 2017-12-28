@@ -1,5 +1,6 @@
 package com.xtuer.controller;
 
+import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.security.TokenService;
 import com.xtuer.service.UserService;
@@ -9,10 +10,7 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,17 +62,40 @@ public class AuthenticationController {
 
     /**
      * 使用用户名和密码请求 token.
+     * URL: http://localhost:8080/api/login/tokens
      *
      * @param username 用户名
      * @param password 密码
      */
     @PostMapping(Urls.API_LOGIN_TOKENS)
     @ResponseBody
-    public String loginToken(@RequestParam String username, @RequestParam String password) {
+    public Result<String> loginToken(@RequestParam String username, @RequestParam String password) {
         User user = userService.findUserByUsernamePassword(username, password);
-        String token = tokenService.generateToken(user);
 
-        return token;
+        if (user == null) {
+            return Result.fail("用户名或密码不正确");
+        }
+
+        String token = tokenService.generateToken(user);
+        return Result.ok("success", token);
+    }
+
+    /**
+     * 用已有的 token 交换一个新的 token.
+     * URL: http://localhost:8080/api/login/tokens
+     *
+     * @param token JWT token
+     */
+    @PutMapping(Urls.API_LOGIN_TOKENS)
+    @ResponseBody
+    public Result<String> refreshToken(@RequestParam String token) {
+        if (!tokenService.checkToken(token)) {
+            return Result.fail("Token is invalid");
+        }
+
+        User user = tokenService.extractUser(token);
+        token = tokenService.generateToken(user);
+        return Result.ok("success", token);
     }
 
     /**
