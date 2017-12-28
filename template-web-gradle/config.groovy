@@ -19,7 +19,6 @@ environments {
         }
 
         logDir = '/temp/logs'
-        staticPath = ''
         thymeleafCacheable = false
     }
 
@@ -41,7 +40,6 @@ environments {
         }
 
         logDir = '/temp/logs'
-        staticPath = ''
         thymeleafCacheable = true
     }
 }
