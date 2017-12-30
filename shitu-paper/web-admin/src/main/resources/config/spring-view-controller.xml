@@ -11,4 +11,5 @@
     <mvc:view-controller path="/404"   view-name="404.html"/>
     <mvc:view-controller path="/adminPapers" view-name="adminPapers.html"/>
     <mvc:view-controller path="/adminKnowledgePoints" view-name="adminKnowledgePoints.html"/>
+    <mvc:view-controller path="/adminQuestions" view-name="adminQuestions.html"/>
 </beans>

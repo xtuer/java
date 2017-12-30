@@ -15,7 +15,8 @@ require.config({
         paperDirectory     : '/js/PaperDirectory',
         paperDirectoryTree : '/js/PaperDirectoryTree',
         knowledgePoint     : '/js/KnowledgePoint',
-        knowledgePointGroupTree: '/js/KnowledgePointGroupTree'
+        knowledgePointGroupTree: '/js/KnowledgePointGroupTree',
+        question: '/js/Question'
     },
     shim: {
         layer: {

@@ -20,6 +20,10 @@ environments {
             previewDirectory = '/Users/Biao/Documents/套卷/preview'
         }
 
+        question {
+            imageDirectory = '/Users/Biao/Documents/乐教乐学试题/单题/question-img'
+        }
+
         baseUrl = ''
         logDir = "/temp/shitu.edu-edu.com/logs"
     }
@@ -42,6 +46,10 @@ environments {
             paperDirectory = '/data/shitu.edu-edu.com/papers'
             exportDirectory = '/data/shitu.edu-edu.com/export'
             previewDirectory = '/data/shitu.edu-edu.com/preview'
+        }
+
+        question {
+            imageDirectory = '/data/shitu.edu-edu.com/question-data/question-img'
         }
 
         baseUrl = ''

@@ -16,12 +16,12 @@ import java.util.List;
 @Accessors(chain = true)
 @JSONType(ignores = {"children"})
 public class QuestionKnowledgePoint {
-    Long   id = 0L;
-    Long   parentId = 0L;
-    String code; // 知识点编码
-    String name; // 知识点名称
-    String subjectName; // 科目名称，例如物理
-    String subjectCode; // 科目编码，例如 GZWL061B
+    private Long   id = 0L;
+    private Long   parentId = 0L;
+    private String code; // 知识点编码
+    private String name; // 知识点名称
+    private String subjectName; // 科目名称，例如物理
+    private String subjectCode; // 科目编码，例如 GZWL061B
 
     List<QuestionKnowledgePoint> children = new LinkedList<>();
 

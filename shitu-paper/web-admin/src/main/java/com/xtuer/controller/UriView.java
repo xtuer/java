@@ -73,6 +73,6 @@ public interface UriView {
     // 单题知识点下的题目
     String REST_QUESTIONS_UNDER_KNOWLEDGE_POINT = "/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions";
 
-    String REST_MARK_QUESTION       = "/rest/questions/{questionId}/mark"; // 标记题目
+    String REST_TOGGLE_QUESTION_MARK = "/rest/questions/{questionId}/toggleMark"; // 标记和取消标记题目
     String REST_MARKED_QUESTION_IDS = "/rest/questionIds/marked"; // 被标记过的题目原始 ID
 }

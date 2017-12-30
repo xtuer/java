@@ -10,11 +10,11 @@
     <select id="findQuestionKnowledgePointsByParentId" parameterType="long" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode
         FROM question_knowledge_point
-        WHERE parent_id=#{parentId}
+        WHERE parent_id=#{parentId} ORDER BY name
     </select>
 
     <!-- 查找知识点下的单题 -->
-    <select id="findQuestionsUnderQuestionKnowledgePoint" parameterType="long" resultType="Question">
+    <select id="findQuestionsByQuestionKnowledgePointId" parameterType="long" resultType="Question">
         SELECT id, type, content, analysis, answer, demand, score, difficulty,
             original_id AS originalId, subject_code AS subjectCode,
             knowledge_point_code AS knowledgePointCode, knowledge_point_id AS knowledgePointId, is_marked AS marked
@@ -27,8 +27,13 @@
         SELECT original_id FROM question WHERE is_marked=1
     </select>
 
-    <!-- 标记题目，检查题目的时候发现题目有问题，标记起来，为了后期批量导出 -->
-    <update id="markQuestion" parameterType="long">
-        UPDATE question SET is_marked=1 WHERE id=#{questionId}
+    <!-- 知识点相关的题目数量 -->
+    <select id="questionCountOfQuestionKnowledgePoint" resultType="map">
+        SELECT knowledge_point_id AS knowledgePointId, COUNT(id) AS count FROM question GROUP BY knowledge_point_id
+    </select>
+
+    <!-- Toggle 标记题目，检查题目的时候发现题目有问题，标记起来，为了后期批量导出 -->
+    <update id="toggleQuestionMark" parameterType="long">
+        UPDATE question SET is_marked=IF(is_marked=0, 1, 0) WHERE id=#{questionId}
     </update>
 </mapper>

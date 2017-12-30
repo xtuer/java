@@ -34,7 +34,7 @@ ReadOnlyKnowledgePointGroupTree.prototype.getSettings = function() {
             keep: {
                 parent: true
             }
-        },view: {
+        }, view: {
             selectedMulti: false, // [*] 为 true 时可选择多个节点，为 false 只能选择一个，默认为 true
             showIcon: false
         },

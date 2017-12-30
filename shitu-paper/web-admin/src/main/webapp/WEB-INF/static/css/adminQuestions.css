@@ -1,0 +1,46 @@
+body {
+    font-family: "微软雅黑", Helvetica, Arial, sans-serif;
+}
+
+.question-knowledge-point-tree-sidebar {
+    position: fixed;
+    top: 0;
+    left: 90px;
+    width: 250px;
+    bottom: 0;
+    border-right: 1px solid #DADADA;
+    overflow: auto;
+}
+
+.main {
+    position: fixed;
+    top: 0;
+    left: 340px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#vue-questions .question .content {
+    max-height: 300px;
+    overflow: auto;
+}
+
+#vue-questions .question .analysis {
+    max-height: 200px;
+    overflow: auto;
+}
+
+#vue-questions .question .analysis h4 {
+    text-align: center;
+}
+
+#vue-questions .icon.thumbs.down {
+    font-size: 18px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+#vue-question .ui.label {
+    border-radius: 0 !important;
+}

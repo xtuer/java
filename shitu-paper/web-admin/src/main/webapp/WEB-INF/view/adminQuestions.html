@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>知识点管理</title>
+    <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
+    <link rel="stylesheet" href="/css/adminQuestions.css">
+</head>
+
+<body>
+    <!-- [1] 菜单栏 -->
+    <div class="ui left vertical inverted visible sidebar labeled icon menu">
+        <a class="item" href="/adminPapers"><i class="share alternate square icon"></i> 套卷</a>
+        <a class="item" href="/adminKnowledgePoints"><i class="sitemap icon"></i> 知识点</a>
+        <a class="item" href="/adminQuestions"><i class="sitemap icon"></i> 单题</a>
+    </div>
+
+    <!-- [2] 单题的知识点树 -->
+    <div class="question-knowledge-point-tree-sidebar">
+        <ul id="question-knowledge-point-tree" class="ztree"></ul>
+    </div>
+
+    <!-- [3] 网页的主要部分 -->
+    <div class="main ui">
+        <!-- 工具栏 -->
+        <!-- <div class="ui grid" id="toolbar">
+            <div class="ui column" v-show="knowledgePointGroupId!==0">
+                <div class="ui labeled icon button" @click="create()"><i class="icon plus"></i>添加知识点</div>
+            </div>
+        </div> -->
+
+        <!-- 知识点列表 -->
+        <div class="ui sixteen wide column">
+            <div id="vue-questions" data-knowledge-point-id="0" style="padding: 10px;">
+                <div class="ui segments question" v-for="question in questions" :key="question.idText">
+                    <div class="ui segment content">
+                        <p v-html="question.content"></p>
+                    </div>
+                    <div class="ui secondary segment answer">
+                        <div class="ui horizontal label" style="border-radius: 0;">标准答案:</div>
+                        <span v-html="question.answer"></span>
+                    </div>
+                    <div class="ui secondary segment analysis">
+                        <div class="ui horizontal label" style="border-radius: 0;">答案解析:</div><br><br>
+                        <p v-html="question.analysis"></p>
+                    </div>
+                    <div class="mark">
+                        <div class="ui horizontal label" style="border-radius: 0;">乐教乐学题号: {{question.originalId}}</div>
+                        <i class="thumbs down icon" :class="{outline: !question.marked}" @click="toggleQuestionMark(question)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/require.js"></script>
+    <script src="/js/requireConfig.js"></script>
+    <script src="/js/adminQuestions.js" charset="utf-8"></script>
+</body>
+
+</html>

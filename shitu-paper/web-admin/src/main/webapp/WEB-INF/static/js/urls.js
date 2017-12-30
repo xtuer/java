@@ -32,5 +32,10 @@ var Urls = {
     REST_PAPERS_PREVIEW               : '/rest/papers/{paperId}/preview',
     REST_PAPERS_DOWNLOAD              : '/rest/papers/{paperId}/download',
     REST_EXPORT_PAPERS                : '/rest/exportPapers',
-    REST_EXPORT_PAPERS_STATUS         : '/rest/exportPapers/status'
+    REST_EXPORT_PAPERS_STATUS         : '/rest/exportPapers/status',
+
+    // 单题
+    REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID: '/rest/questionKnowledgePoints/{parentId}/children',
+    REST_QUESTIONS_UNDER_KNOWLEDGE_POINT       : '/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions',
+    REST_TOGGLE_QUESTION_MARK                  : '/rest/questions/{questionId}/toggleMark'
 };
