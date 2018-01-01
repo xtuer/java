@@ -1,6 +1,9 @@
 # ------------------------------------------------------------
 # 无意义自增 ID 是为了 MySQL 存储时能够使用索引，提高效率
 # 为了能够分布式同步数据，数据的 ID 使用 UUID，UUID 36 的长度就足够了
+#
+# 或者使用 Snowflack 实现的 Long ID，这样基本有序还能保证分布式唯一
+#
 # 表没有指定 encoding，是为了能够使用数据库的 encoding
 #
 # is_deleted: 1 表示已经删除，0 为没有删除，有些敏感数据不希望直接从数据库删除，故使用 is_deleted 来标记是否已经删除
@@ -120,6 +123,7 @@ CREATE TABLE `question_knowledge_point` (
     `code` varchar(1024) DEFAULT NULL   COMMENT '知识点的编码',
     `subject_name` varchar(1024) DEFAULT NULL COMMENT '所属学科的名字',
     `subject_code` varchar(1024) DEFAULT NULL COMMENT '所属学科的编码',
+    `count` int(11) NOT NULL DEFAULT '0'      COMMENT '知识点下的题目数量',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

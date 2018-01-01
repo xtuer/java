@@ -117,4 +117,19 @@ public class QuestionController {
     public Result<List<Map<Long, Integer>>> questionCountOfQuestionKnowledgePoint() {
         return Result.ok("success", questionMapper.questionCountOfQuestionKnowledgePoint());
     }
+
+    /**
+     * 更新知识点下的题目数量
+     * URL: http://localhost:8080/rest/questionKnowledgePoints/count
+     */
+    @PutMapping(UriView.REST_QUESTION_KNOWLEDGE_POINTS_COUNT)
+    @ResponseBody
+    public Result updateQuestionCount() {
+        // 1. 先设置 count 为 0
+        // 2. 题目表使用知识点 ID 分组，统计每个分组下有多少个题目，然后更新到知识点表
+        questionMapper.cleanQuestionCount();
+        questionMapper.updateQuestionCount();
+
+        return Result.ok();
+    }
 }

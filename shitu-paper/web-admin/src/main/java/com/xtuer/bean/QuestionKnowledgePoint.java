@@ -22,6 +22,7 @@ public class QuestionKnowledgePoint {
     private String name; // 知识点名称
     private String subjectName; // 科目名称，例如物理
     private String subjectCode; // 科目编码，例如 GZWL061B
+    private int    count; // 知识点下的题目数量
 
     List<QuestionKnowledgePoint> children = new LinkedList<>();
 

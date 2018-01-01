@@ -6,20 +6,20 @@
 
 <!-- 使用视图 view_paper_knowledge_point 可以简化试卷的查询 -->
 <mapper namespace="com.xtuer.mapper.QuestionMapper">
-    <!-- 查找知识点 -->
+    <!-- 查找知识点: 按照科目编码、code 排序 -->
     <select id="findQuestionKnowledgePointsByParentId" parameterType="long" resultType="QuestionKnowledgePoint">
-        SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode
-        FROM question_knowledge_point
-        WHERE parent_id=#{parentId} ORDER BY name
+        SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
+        FROM   question_knowledge_point
+        WHERE  parent_id=#{parentId} ORDER BY name
     </select>
 
     <!-- 查找知识点下的单题 -->
     <select id="findQuestionsByQuestionKnowledgePointId" parameterType="long" resultType="Question">
         SELECT id, type, content, analysis, answer, demand, score, difficulty,
-            original_id AS originalId, subject_code AS subjectCode,
-            knowledge_point_code AS knowledgePointCode, knowledge_point_id AS knowledgePointId, is_marked AS marked
-        FROM question
-        WHERE knowledge_point_id=#{questionKnowledgePointId}
+               original_id AS originalId, subject_code AS subjectCode,
+               knowledge_point_code AS knowledgePointCode, knowledge_point_id AS knowledgePointId, is_marked AS marked
+        FROM   question
+        WHERE  knowledge_point_id=#{questionKnowledgePointId}
     </select>
 
     <!-- 查找所有被标记过的题目的原始 ID -->
@@ -35,5 +35,18 @@
     <!-- Toggle 标记题目，检查题目的时候发现题目有问题，标记起来，为了后期批量导出 -->
     <update id="toggleQuestionMark" parameterType="long">
         UPDATE question SET is_marked=IF(is_marked=0, 1, 0) WHERE id=#{questionId}
+    </update>
+
+    <!-- 清除知识点下的题目数量: 全设置为 0 -->
+    <update id="cleanQuestionCount">
+        UPDATE question_knowledge_point SET count=0
+    </update>
+
+    <!-- 更新知识点下的题目数量 -->
+    <update id="updateQuestionCount">
+        UPDATE question_knowledge_point qkp
+        JOIN   (SELECT knowledge_point_id AS id, COUNT(id) AS count FROM question GROUP BY knowledge_point_id) AS t
+        ON     qkp.id=t.id
+        SET    qkp.count=t.count
     </update>
 </mapper>

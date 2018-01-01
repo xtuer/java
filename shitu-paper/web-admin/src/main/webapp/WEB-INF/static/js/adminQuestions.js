@@ -27,6 +27,7 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
                     for (var i = 0; i < kps.length; i++) {
                         var kp = kps[i];
                         kp.isParent = true;
+                        kp.name = kp.name + '-(' + kp.count + ')';
                     }
                 }
                 return kps;

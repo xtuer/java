@@ -44,4 +44,14 @@ public interface QuestionMapper {
      * @return key 为知识点 ID，value 为此知识点下的题目数量
      */
     List<Map<Long, Integer>> questionCountOfQuestionKnowledgePoint();
+
+    /**
+     * 清除知识点下的题目数量: 全设置为 0
+     */
+    void cleanQuestionCount();
+
+    /**
+     * 更新知识点下的题目数量
+     */
+    void updateQuestionCount();
 }

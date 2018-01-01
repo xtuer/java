@@ -69,6 +69,7 @@ public interface UriView {
 
     // 单题知识点
     String REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID = "/rest/questionKnowledgePoints/{parentId}/children";
+    String REST_QUESTION_KNOWLEDGE_POINTS_COUNT        = "/rest/questionKnowledgePoints/count"; // 知识点下的题目
 
     // 单题知识点下的题目
     String REST_QUESTIONS_UNDER_KNOWLEDGE_POINT = "/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions";
