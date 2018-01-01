@@ -29,11 +29,11 @@
     <!-- [3] 网页的主要部分 -->
     <div class="main ui">
         <!-- 工具栏 -->
-        <!-- <div class="ui grid" id="toolbar">
-            <div class="ui column" v-show="knowledgePointGroupId!==0">
-                <div class="ui labeled icon button" @click="create()"><i class="icon plus"></i>添加知识点</div>
+        <div class="ui grid" id="tool-bar" style="padding: 1em; padding-bottom: 0;">
+            <div class="ui column">
+                <button class="ui right floated circular basic button" id="export-marked-questions-button">导出标记过的题目信息</button>
             </div>
-        </div> -->
+        </div>
 
         <!-- 知识点列表 -->
         <div class="ui sixteen wide column">
@@ -55,6 +55,14 @@
                         <i class="thumbs down icon" :class="{outline: !question.marked}" @click="toggleQuestionMark(question)"></i>
                     </div>
                 </div>
+
+                <center v-show="questions.length==0">没有题目</center>
+
+                <!-- 分页插件 -->
+                <center v-show="pageCount > 1">
+                    <!-- 分页组件，inline-block 是为了居中显示 -->
+                    <div id="paginator" style="display: inline-block;"></div>
+                </center>
             </div>
         </div>
     </div>

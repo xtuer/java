@@ -4,16 +4,14 @@ import com.xtuer.bean.Question;
 import com.xtuer.bean.QuestionKnowledgePoint;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.QuestionMapper;
+import com.xtuer.util.PageUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -74,14 +72,18 @@ public class QuestionController {
 
     /**
      * 查找知识点下的单题
-     * URL: http://localhost:8080/rest/questionKnowledgePoints/128344304602054663/questions
+     * URL: http://localhost:8080/rest/questionKnowledgePoints/128344304602054663/questions?pageNumber=2&pageSize=30
+     * 参数: 页码
      *
      * @param questionKnowledgePointId 知识点的 ID
      */
     @GetMapping(UriView.REST_QUESTIONS_UNDER_KNOWLEDGE_POINT)
     @ResponseBody
-    public Result<List<Question>> findQuestionsByQuestionKnowledgePointId(@PathVariable Long questionKnowledgePointId) {
-        return Result.ok("success", questionMapper.findQuestionsByQuestionKnowledgePointId(questionKnowledgePointId));
+    public Result<List<Question>> findQuestionsByQuestionKnowledgePointId(@PathVariable Long questionKnowledgePointId,
+                                                                          @RequestParam(defaultValue="1") int pageNumber,
+                                                                          @RequestParam(defaultValue="30") int pageSize) {
+        int offset = PageUtils.offset(pageNumber, pageSize);
+        return Result.ok("success", questionMapper.findQuestionsByQuestionKnowledgePointId(questionKnowledgePointId, offset, pageSize));
     }
 
     /**
@@ -102,9 +104,22 @@ public class QuestionController {
      * URL: http://localhost:8080/rest/questionIds/marked
      */
     @GetMapping(UriView.REST_MARKED_QUESTION_IDS)
-    @ResponseBody
-    public Result<List<String>> findMarkedQuestionOriginalIds() {
-        return Result.ok("success", questionMapper.findMarkedQuestionOriginalIds());
+    public void exportMarkedQuestionOriginalIds(HttpServletResponse response) {
+        OutputStream out = null;
+        try {
+            // You must tell the browser the file type you are going to send
+            // for example application/pdf, text/plain, text/html, image/jpg
+            response.setContentType("application/octet-stream"); // 以流的形式下载文件
+            response.setHeader("Content-Disposition", "attachment;filename=question-ids.txt"); // 下载保存时的文件名
+            // response.setContentLength(length); // [可选] 设置文件的大小，浏览器就能够知道下载进度条了
+            out = response.getOutputStream();
+            IOUtils.writeLines(questionMapper.findMarkedQuestionOriginalIds(), "\n", out);
+        } catch (Exception ex) {
+            logger.warn(ex.getMessage());
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+
     }
 
     /**
@@ -136,10 +151,20 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/rest/questionCountOfQuestionKnowledgePoint")
+    /**
+     * 获取某个知识点下题目的页数
+     * URL: http://localhost:8080/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions/count?pageSize=30
+     * 参数: pageSize，如果没有，默认为 30
+     *
+     * @param questionKnowledgePointId
+     */
+    @GetMapping(UriView.REST_QUESTIONS_PAGE_COUNT_UNDER_KNOWLEDGE_POINT)
     @ResponseBody
-    public Result<List<Map<Long, Integer>>> questionCountOfQuestionKnowledgePoint() {
-        return Result.ok("success", questionMapper.questionCountOfQuestionKnowledgePoint());
+    public Result<Integer> questionPageCountOfQuestionKnowledgePoint(@PathVariable Long questionKnowledgePointId,
+                                                                     @RequestParam(defaultValue = "30") int pageSize) {
+        int recordCount = questionMapper.questionCountByQuestionKnowledgePointId(questionKnowledgePointId);
+        int pageCount = PageUtils.pageCount(recordCount, pageSize);
+        return Result.ok("success",pageCount );
     }
 
     /**

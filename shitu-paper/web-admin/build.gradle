@@ -51,7 +51,7 @@ ext {
     // 部署 gradle deploy
     //     gradle -Denv=production deploy
     environment = System.getProperty("env", "development")
-    war.archiveName = 'paper-shitu.war'
+    war.archiveName = 'paper-shitu.zip'
 }
 
 ext.versions = [
@@ -149,7 +149,8 @@ task deploy {
                     source /root/.bash_profile;
                     /usr/local/edu/tomcat/bin/shutdown.sh;
                     rm -rf /data/shitu.edu-edu.com/ROOT;
-                    unzip  /data/shitu.edu-edu.com/${war.archiveName} -d /data/shitu.edu-edu.com/ROOT;
+                    unzip -u /data/shitu.edu-edu.com/${war.archiveName} -d /data/shitu.edu-edu.com/ROOT;
+                    kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \$2}'`
                     /usr/local/edu/tomcat/bin/startup.sh;
                     rm -rf /data/shitu.edu-edu.com/${war.archiveName}
                 """

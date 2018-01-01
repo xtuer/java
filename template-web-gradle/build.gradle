@@ -129,6 +129,7 @@ task deploy(dependsOn: war) {
                     /usr/local/tomcat/bin/shutdown.sh;
                     rm -rf ${targetDir}/ROOT;
                     unzip -u ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
+                    kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \\\$2}'`
                     /usr/local/tomcat/bin/startup.sh;
                     rm -rf ${targetDir}/${war.archiveName};
                 """

@@ -3,8 +3,8 @@ require(['jquery', 'vue', 'layer', 'semanticUi', 'semanticUiCalendar', 'ztree', 
     Util.activateSidebarItem(0);
     new EditablePaperDirectoryTree('directory-tree'); // 左侧的目录树
 
-    window.pageSize = 20;   // 每页显示的试卷数量
-    window.pageNumber = 1; // 要加载的页码
+    window.pageSize   = 20; // 每页显示的试卷数量
+    window.pageNumber = 1;  // 要加载的页码
 
     // 设置当前页
     window.setPageNumber = function(pageNumber) {

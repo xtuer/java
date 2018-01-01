@@ -36,7 +36,9 @@ public interface QuestionMapper {
      * @param questionKnowledgePointId 知识点的 ID
      * @return 单题的列表
      */
-    List<Question> findQuestionsByQuestionKnowledgePointId(long questionKnowledgePointId);
+    List<Question> findQuestionsByQuestionKnowledgePointId(@Param("questionKnowledgePointId") long questionKnowledgePointId,
+                                                           @Param("offset") int offset,
+                                                           @Param("size") int size);
 
     /**
      * 查找所有被标记过的题目的原始 ID
@@ -54,10 +56,8 @@ public interface QuestionMapper {
 
     /**
      * 知识点相关的题目数量
-     *
-     * @return key 为知识点 ID，value 为此知识点下的题目数量
      */
-    List<Map<Long, Integer>> questionCountOfQuestionKnowledgePoint();
+    int questionCountByQuestionKnowledgePointId(long knowledgePointId);
 
     /**
      * 清除知识点下的题目数量: 全设置为 0
