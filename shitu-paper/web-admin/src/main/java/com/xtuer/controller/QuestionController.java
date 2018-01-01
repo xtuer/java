@@ -36,6 +36,17 @@ public class QuestionController {
     private QuestionMapper questionMapper;
 
     /**
+     * 取得所有的知识点
+     * URL: http://localhost:8080/rest/questionKnowledgePoints
+     */
+    @GetMapping(UriView.REST_QUESTION_KNOWLEDGE_POINTS)
+    @ResponseBody
+    public Result<List<QuestionKnowledgePoint>> findAllQuestionKnowledgePoints() {
+        List<QuestionKnowledgePoint> kps = questionMapper.findAllQuestionKnowledgePoints();
+        return Result.ok("success", kps);
+    }
+
+    /**
      * 查找知识点
      * URL: http://localhost:8080/rest/questionKnowledgePoints/128344304878878720/children
      *
@@ -45,6 +56,19 @@ public class QuestionController {
     @ResponseBody
     public Result<List<QuestionKnowledgePoint>> findQuestionKnowledgePointsByParentId(@PathVariable Long parentId) {
         List<QuestionKnowledgePoint> kps = questionMapper.findQuestionKnowledgePointsByParentId(parentId);
+        return Result.ok("success", kps);
+    }
+
+    /**
+     * 查找科目下的知识点
+     * URL: http://localhost:8080/rest/subjectCodes/GYYK034C/questionKnowledgePoints
+     *
+     * @param subjectCode 知识点的科目编码
+     */
+    @GetMapping(UriView.REST_QUESTION_KNOWLEDGE_POINTS_BY_SUBJECT_CODE)
+    @ResponseBody
+    public Result<List<QuestionKnowledgePoint>> findQuestionKnowledgePointsBySubjectCode(@PathVariable String subjectCode) {
+        List<QuestionKnowledgePoint> kps = questionMapper.findQuestionKnowledgePointsBySubjectCode(subjectCode);
         return Result.ok("success", kps);
     }
 

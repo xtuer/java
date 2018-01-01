@@ -26,6 +26,8 @@ public interface UriView {
     String URI_DENY   = "/deny";     // 无权访问页面的 URL
     String VIEW_LOGIN = "login.html"; // 登陆页面
 
+    String REST_EMPTY = "/api/empty";
+
     // RESTful 风格获取资源的 URI 格式，变量名以 REST_ 开头，URI 放在 rest 下
     // 获取或修改 topic, question 资源的 RESTful 风格的 URL, 资源都用复数形式方便式统一管理 URL
 
@@ -68,8 +70,10 @@ public interface UriView {
     String REST_KNOWLEDGE_POINT_GROUPS_BY_ID = "/rest/knowledgePointGroups/{knowledgePointGroupId}";
 
     // 单题知识点
-    String REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID = "/rest/questionKnowledgePoints/{parentId}/children";
-    String REST_QUESTION_KNOWLEDGE_POINTS_COUNT        = "/rest/questionKnowledgePoints/count"; // 知识点下的题目
+    String REST_QUESTION_KNOWLEDGE_POINTS                 = "/rest/questionKnowledgePoints";
+    String REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID    = "/rest/questionKnowledgePoints/{parentId}/children";
+    String REST_QUESTION_KNOWLEDGE_POINTS_BY_SUBJECT_CODE = "/rest/subjectCodes/{subjectCode}/questionKnowledgePoints"; // 科目下的知识点
+    String REST_QUESTION_KNOWLEDGE_POINTS_COUNT           = "/rest/questionKnowledgePoints/count"; // 知识点下的题目
 
     // 单题知识点下的题目
     String REST_QUESTIONS_UNDER_KNOWLEDGE_POINT = "/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions";

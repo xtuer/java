@@ -209,4 +209,10 @@ public class DemoController {
     public Result testUrl(HttpServletRequest request) throws URISyntaxException {
         return Result.ok(new URI(request.getRequestURL().toString()).getHost());
     }
+
+    @GetMapping(UriView.REST_EMPTY)
+    @ResponseBody
+    public Result empty() {
+        return Result.ok();
+    }
 }

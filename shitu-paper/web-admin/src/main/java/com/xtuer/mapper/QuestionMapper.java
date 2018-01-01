@@ -9,12 +9,26 @@ import java.util.Map;
 
 public interface QuestionMapper {
     /**
+     * 取得所有的知识点
+     *
+     * @return 知识点的列表
+     */
+    List<QuestionKnowledgePoint> findAllQuestionKnowledgePoints();
+    /**
      * 查找知识点
      *
      * @param parentId 父知识点的 ID
      * @return 知识点的列表
      */
     List<QuestionKnowledgePoint> findQuestionKnowledgePointsByParentId(long parentId);
+
+    /**
+     * 查找科目下的知识点
+     *
+     * @param subjectCode 知识点的科目编码，例如 GYYK034C
+     * @return 知识点的列表
+     */
+    List<QuestionKnowledgePoint> findQuestionKnowledgePointsBySubjectCode(String subjectCode);
 
     /**
      * 查找知识点下的单题

@@ -21,6 +21,11 @@
         <ul id="question-knowledge-point-tree" class="ztree"></ul>
     </div>
 
+    <!-- 目录树的右键菜单 -->
+    <ul id="question-knowledge-point-tree-menu">
+        <li id="menu-item-expand-all">全部展开</li>
+    </ul>
+
     <!-- [3] 网页的主要部分 -->
     <div class="main ui">
         <!-- 工具栏 -->
@@ -46,7 +51,7 @@
                         <p v-html="question.analysis"></p>
                     </div>
                     <div class="mark">
-                        <div class="ui horizontal label" style="border-radius: 0;">乐教乐学题号: {{question.originalId}}</div>
+                        <div class="ui horizontal label" style="border-radius: 0;">乐教乐学题号: {{question.subjectCode}}-{{question.originalId}}</div>
                         <i class="thumbs down icon" :class="{outline: !question.marked}" @click="toggleQuestionMark(question)"></i>
                     </div>
                 </div>

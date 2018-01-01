@@ -38,6 +38,19 @@
     width:100px;
  }
 
+.ztree li span.button.ico_close,
+.ztree li span.button.ico_open,
+.ztree li span.button.center_docu,
+.ztree li span.button.bottom_docu {
+    display: none;
+}
+
+.ztree li span.button.ico_docu::before,
+.ztree li span.button.center_docu::before,
+.ztree li span.button.bottom_docu::before {
+    content: "\f068";
+}
+
 .ztree li span.button.root_close::before {
     content: "\f054";
 }
@@ -61,9 +74,12 @@
     content: "\f067";
 }
 
-/* 去掉叶节点前的图标 */
+/* 叶节点前的图标 */
+.ztree li span.button.ico_docu {
+    margin-right: 5px;
+}
 .ztree li span.button.ico_docu::before {
-    content: "";
+    content: "\f19d";
 }
 
 /* checkbox 选择框 */

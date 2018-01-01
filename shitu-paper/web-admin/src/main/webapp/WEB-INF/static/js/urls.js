@@ -1,4 +1,6 @@
 var Urls = {
+    REST_EMPTY: '/api/empty', // 啥都不返回，为了某些特殊情况使用
+
     // 试卷目录
     REST_PAPER_SUBDIRECTORIES     : '/rest/paperDirectories/{paperDirectoryId}/paperSubdirectories',
     REST_PAPER_DIRECTORIES        : '/rest/paperDirectories',
@@ -35,7 +37,9 @@ var Urls = {
     REST_EXPORT_PAPERS_STATUS         : '/rest/exportPapers/status',
 
     // 单题
-    REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID: '/rest/questionKnowledgePoints/{parentId}/children',
-    REST_QUESTIONS_UNDER_KNOWLEDGE_POINT       : '/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions',
-    REST_TOGGLE_QUESTION_MARK                  : '/rest/questions/{questionId}/toggleMark'
+    REST_QUESTION_KNOWLEDGE_POINTS                : '/rest/questionKnowledgePoints',
+    REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID   : '/rest/questionKnowledgePoints/{parentId}/children',
+    REST_QUESTION_KNOWLEDGE_POINTS_BY_SUBJECT_CODE: '/rest/subjectCodes/{subjectCode}/questionKnowledgePoints',
+    REST_QUESTIONS_UNDER_KNOWLEDGE_POINT          : '/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions',
+    REST_TOGGLE_QUESTION_MARK                     : '/rest/questions/{questionId}/toggleMark'
 };

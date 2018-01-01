@@ -44,3 +44,28 @@ body {
 #vue-question .ui.label {
     border-radius: 0 !important;
 }
+
+#question-knowledge-point-tree-menu {
+    position:absolute;
+    top:0;
+    display: none;
+    margin: 0;
+    padding: 6px 0;
+    text-align: left;
+    border: 1px solid #BFBFBF;
+    border-radius: 3px;
+    background-color: #EEE;
+    box-shadow: 0 0 10px #AAA;
+    z-index: 100000;
+}
+
+#question-knowledge-point-tree-menu li {
+    padding: 2px 15px;
+	list-style: none outside none;
+	cursor: default;
+    color: #666;
+}
+#question-knowledge-point-tree-menu li:hover {
+    color: #EEE;
+    background-color: #666;
+}

@@ -5,14 +5,13 @@ function QuestionDao() {
 }
 
 /**
- * 加载指定单题知识点下的子知识点.
+ * 加载所有知识点.
  *
- * @param  {String}   parentKnowledgePointId 父知识点的 ID
- * @param  {Function} callback               成功加载的回调函数，参数是知识点数组
+ * @param  {Function} callback 成功加载的回调函数，参数是知识点数组
  * @return 无返回值
  */
-QuestionDao.loadQuestionKnowledgePoints = function(parentKnowledgePointId, callback) {
-    $.rest.get({url: Urls.REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID, urlParams: {parentId: parentKnowledgePointId},
+QuestionDao.loadQuestionKnowledgePoints = function(callback) {
+    $.rest.get({url: Urls.REST_QUESTION_KNOWLEDGE_POINTS,
         success: function(result) {
             if (!result.success) {
                 layer.msg(result.message);
