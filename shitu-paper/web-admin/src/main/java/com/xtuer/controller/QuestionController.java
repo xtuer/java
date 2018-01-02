@@ -189,7 +189,7 @@ public class QuestionController {
      */
     @GetMapping(UriView.REST_NO_KNOWLEDGE_POINT_QUESTIONS_PAGE_COUNT_UNDER_SUBJECT)
     @ResponseBody
-    public Result<Integer> noKnowledgePointQuestionsCountBySubjectCode(@PathVariable String subjectCode,
+    public Result<Integer> noKnowledgePointQuestionsPageCountBySubjectCode(@PathVariable String subjectCode,
                                                                        @RequestParam(defaultValue = "30") int pageSize) {
         int recordCount = questionMapper.noKnowledgePointQuestionsCountBySubjectCode(subjectCode);
         int pageCount = PageUtils.pageCount(recordCount, pageSize);

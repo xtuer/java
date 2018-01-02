@@ -75,7 +75,7 @@ QuestionDao.loadQuestionsUnderQuestionKnowledgePoint = function(questionKnowledg
  * @param  {Function} callback    成功的回调函数，参数是题目的数量
  * @return 无返回值
  */
-QuestionDao.noKnowledgePointQuestionsCountBySubjectCode = function(subjectCode, pageSize, callback) {
+QuestionDao.noKnowledgePointQuestionsPageCountBySubjectCode = function(subjectCode, pageSize, callback) {
     $.rest.get({
         url: Urls.REST_NO_KNOWLEDGE_POINT_QUESTIONS_PAGE_COUNT_UNDER_SUBJECT,
         urlParams: {subjectCode: subjectCode},

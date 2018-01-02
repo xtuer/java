@@ -86,8 +86,8 @@ function loadQuestionsUnderQuestionKnowledgePoint() {
 }
 
 // 加载无知识点的题目分页
-function noKnowledgePointQuestionsCountBySubjectCode() {
-    QuestionDao.noKnowledgePointQuestionsCountBySubjectCode(window.vueQuestions.subjectCode,
+function noKnowledgePointQuestionsPageCountBySubjectCode() {
+    QuestionDao.noKnowledgePointQuestionsPageCountBySubjectCode(window.vueQuestions.subjectCode,
         window.vueQuestions.pageSize, function(pageCount) {
             window.setPageCount(pageCount);
             window.setPageNumber(1);
@@ -223,7 +223,7 @@ KPTree.prototype.getSettings = function() {
                 window.vueQuestions.loadMode = (treeNode.type === window.noKp) ? window.noKp : null;
 
                 if (window.vueQuestions.loadMode === window.noKp) {
-                    noKnowledgePointQuestionsCountBySubjectCode(); // 加载分页
+                    noKnowledgePointQuestionsPageCountBySubjectCode(); // 加载分页
                     loadNoKnowledgePointQuestionsBySubjectCode();  // 加载没有知识点的题目
                 } else {
                     questionsPageCountOfQuestionKnowledgePoint(); // 加载分页
