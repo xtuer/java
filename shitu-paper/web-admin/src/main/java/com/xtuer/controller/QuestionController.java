@@ -180,4 +180,36 @@ public class QuestionController {
 
         return Result.ok();
     }
+
+    /**
+     * 查找科目下没有知识点的题目数量
+     *
+     * @param subjectCode 科目的编码
+     * @param pageSize    每页的数量
+     */
+    @GetMapping(UriView.REST_NO_KNOWLEDGE_POINT_QUESTIONS_PAGE_COUNT_UNDER_SUBJECT)
+    @ResponseBody
+    public Result<Integer> noKnowledgePointQuestionsCountBySubjectCode(@PathVariable String subjectCode,
+                                                                       @RequestParam(defaultValue = "30") int pageSize) {
+        int recordCount = questionMapper.noKnowledgePointQuestionsCountBySubjectCode(subjectCode);
+        int pageCount = PageUtils.pageCount(recordCount, pageSize);
+        return Result.ok("success",pageCount );
+    }
+
+    /**
+     * 查找科目下没有知识点的题目
+     *
+     * @param subjectCode 科目的编码
+     * @param pageNumber  第几页
+     * @param pageSize    每页的数量
+     */
+    @GetMapping(UriView.REST_NO_KNOWLEDGE_POINT_QUESTIONS_UNDER_SUBJECT)
+    @ResponseBody
+    public Result<List<Question>> findNoKnowledgePointQuestionsBySubjectCode(@PathVariable String subjectCode,
+                                                                             @RequestParam(defaultValue="1") int pageNumber,
+                                                                             @RequestParam(defaultValue="30") int pageSize) {
+        int offset = PageUtils.offset(pageNumber, pageSize);
+        List<Question> questions = questionMapper.findNoKnowledgePointQuestionsBySubjectCode(subjectCode, offset, pageSize);
+        return Result.ok("success", questions);
+    }
 }

@@ -40,8 +40,13 @@ var Urls = {
     REST_QUESTION_KNOWLEDGE_POINTS                : '/rest/questionKnowledgePoints',
     REST_QUESTION_KNOWLEDGE_POINTS_BY_PARENT_ID   : '/rest/questionKnowledgePoints/{parentId}/children',
     REST_QUESTION_KNOWLEDGE_POINTS_BY_SUBJECT_CODE: '/rest/subjectCodes/{subjectCode}/questionKnowledgePoints',
+    // 知识点下的题目
     REST_QUESTIONS_UNDER_KNOWLEDGE_POINT          : '/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions',
-    REST_TOGGLE_QUESTION_MARK                     : '/rest/questions/{questionId}/toggleMark',
     REST_QUESTIONS_PAGE_COUNT_UNDER_KNOWLEDGE_POINT: '/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions/pageCount',
-    REST_MARKED_QUESTION_IDS: '/rest/questionIds/marked'
+    REST_MARKED_QUESTION_IDS  : '/rest/questionIds/marked',
+    REST_TOGGLE_QUESTION_MARK : '/rest/questions/{questionId}/toggleMark',
+    // 科目下没有知识点的题目
+    REST_NO_KNOWLEDGE_POINT_QUESTIONS_UNDER_SUBJECT           : '/rest/subjects/{subjectCode}/noKnowledgePointQuestions',
+    REST_NO_KNOWLEDGE_POINT_QUESTIONS_PAGE_COUNT_UNDER_SUBJECT: '/rest/subjects/{subjectCode}/noKnowledgePointQuestions/pageCount'
+
 };

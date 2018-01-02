@@ -1,5 +1,6 @@
 // 变量定义
 window.vueQuestions = null;
+window.noKp = 'NO_KP'; // 无知识点
 
 require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls', 'question', 'pagination'], function($, Vue) {
     Util.activateSidebarItem(2);
@@ -9,8 +10,10 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
     window.vueQuestions = new Vue({
         el: '#vue-questions',
         data: {
-            questions: [], // 题目
-            knowledgePointId: 0, // 题目的知识点 ID
+            subjectCode: null,   // 科目的编码
+            knowledgePointId: 0, // 知识点的 ID
+            questions: [],       // 题目
+            loadMode : null,     // 为 window.noKp 时加载无知识点的题目，否则加载知识点下的题目
 
             pageSize  : 20, // 每页显示的题目数量
             pageNumber: 1,  // 要加载的页码
@@ -36,7 +39,12 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
         onPageClick: function(pageNumber) {
             // 加载知识点下第 pageNumber 页的题目
             window.vueQuestions.pageNumber = pageNumber;
-            loadQuestionsUnderQuestionKnowledgePoint();
+
+            if (window.vueQuestions.loadMode === window.noKp) {
+                loadNoKnowledgePointQuestionsBySubjectCode(); // 加载没有知识点的题目
+            } else {
+                loadQuestionsUnderQuestionKnowledgePoint(); // 加载知识点下第一页的题目
+            }
         }
     });
 
@@ -49,6 +57,20 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
     });
 });
 
+/*-----------------------------------------------------------------------------|
+ |                                     加载题目                                 |
+ |----------------------------------------------------------------------------*/
+// 加载知识点下题目的页数，恢复分页的初始状态
+function questionsPageCountOfQuestionKnowledgePoint() {
+    QuestionDao.questionsPageCountOfQuestionKnowledgePoint(window.vueQuestions.knowledgePointId,
+        window.vueQuestions.pageSize, function(pageCount) {
+            window.setPageCount(pageCount);
+            window.setPageNumber(1);
+            window.vueQuestions.pageCount = pageCount;
+        }
+    );
+}
+
 // 加载知识点下第 pageNumber 页的题目，每页有 pageSize 个题目
 function loadQuestionsUnderQuestionKnowledgePoint() {
     window.vueQuestions.questions = [];
@@ -59,6 +81,30 @@ function loadQuestionsUnderQuestionKnowledgePoint() {
                 window.vueQuestions.questions = questions;
             }, 50);
 
+        }
+    );
+}
+
+// 加载无知识点的题目分页
+function noKnowledgePointQuestionsCountBySubjectCode() {
+    QuestionDao.noKnowledgePointQuestionsCountBySubjectCode(window.vueQuestions.subjectCode,
+        window.vueQuestions.pageSize, function(pageCount) {
+            window.setPageCount(pageCount);
+            window.setPageNumber(1);
+            window.vueQuestions.pageCount = pageCount;
+        }
+    );
+}
+
+// 加载科目下没有知识点、第 pageNumber 页的题目，每页有 pageSize 个题目
+function loadNoKnowledgePointQuestionsBySubjectCode() {
+    window.vueQuestions.questions = [];
+    QuestionDao.findNoKnowledgePointQuestionsBySubjectCode(window.vueQuestions.subjectCode,
+        window.vueQuestions.pageNumber, window.vueQuestions.pageSize,
+        function(questions) {
+            setTimeout(function() {
+                window.vueQuestions.questions = questions;
+            }, 50);
         }
     );
 }
@@ -92,7 +138,18 @@ KPTree.prototype.init = function() {
     QuestionDao.loadQuestionKnowledgePoints(function(kps) {
         for (var i = 0; i < kps.length; ++i) {
             var kp = kps[i];
-            kp.name = kp.name + ' [' + kp.count + ']';
+
+            // 名字上加上题目数量
+            if (!kp.type) {
+                kp.name = kp.name + ' [' + kp.count + ']';
+            }
+
+            // 给顶级知识点加一个 "无知识点的节点"
+            if (kp.parentId === 0) {
+                var index = kp.name.indexOf('-');
+                var name = kp.name.substring(0, index) + '(未分知识点)';
+                kps.push({id: 1, parentId: kp.id, name: name, subjectCode: kp.subjectCode, type: window.noKp});
+            }
         }
 
         // self.tree = $.fn.zTree.init($("#question-knowledge-point-tree"), setting, kps);
@@ -159,19 +216,19 @@ KPTree.prototype.getSettings = function() {
         }, callback: {
             onClick: function(event, treeId, treeNode) {
                 console.log(treeNode.subjectCode, treeNode.code, treeNode.id);
-                var questionKnowledgePointId = treeNode.id;
-                window.vueQuestions.knowledgePointId = questionKnowledgePointId; // 保存点击的知识点 ID
+
+                window.vueQuestions.subjectCode = treeNode.subjectCode;
+                window.vueQuestions.knowledgePointId = treeNode.id; // 保存点击的知识点 ID
                 window.vueQuestions.pageNumber = 1;
+                window.vueQuestions.loadMode = (treeNode.type === window.noKp) ? window.noKp : null;
 
-                // 加载知识点下第一页的题目
-                loadQuestionsUnderQuestionKnowledgePoint();
-
-                // 加载知识点下题目的页数，恢复分页的初始状态
-                QuestionDao.questionPageCountOfQuestionKnowledgePoint(questionKnowledgePointId, window.vueQuestions.pageSize, function(pageCount) {
-                    window.setPageCount(pageCount);
-                    window.setPageNumber(1);
-                    window.vueQuestions.pageCount = pageCount;
-                });
+                if (window.vueQuestions.loadMode === window.noKp) {
+                    noKnowledgePointQuestionsCountBySubjectCode(); // 加载分页
+                    loadNoKnowledgePointQuestionsBySubjectCode();  // 加载没有知识点的题目
+                } else {
+                    questionsPageCountOfQuestionKnowledgePoint(); // 加载分页
+                    loadQuestionsUnderQuestionKnowledgePoint();   // 加载知识点下第一页的题目
+                }
             },
             onRightClick: function(event, treeId, treeNode) {
                 // 在右键位置出弹出菜单
