@@ -11,7 +11,7 @@ public interface UriView {
     String URI_DEMO_UPLOAD   = "/demo/upload";
     String VIEW_DEMO_UPLOAD  = "demo/upload.html";
     String URI_DEMO_VALIDATE = "/demo/validate";
-    String URI_ADMIN_PAPERS = "/adminPapers";
+    String URI_ADMIN_PAPERS  = "/adminPapers";
 
     // 通用 URI 和 VIEW
     String FORWARD    = "forward:";
@@ -75,9 +75,13 @@ public interface UriView {
     String REST_QUESTION_KNOWLEDGE_POINTS_BY_SUBJECT_CODE = "/rest/subjectCodes/{subjectCode}/questionKnowledgePoints"; // 科目下的知识点
     String REST_QUESTION_KNOWLEDGE_POINTS_COUNT           = "/rest/questionKnowledgePoints/count"; // 知识点下的题目数量
 
-    // 单题知识点下的题目
+    // 单题
+    // 知识点下的题目
     String REST_QUESTIONS_UNDER_KNOWLEDGE_POINT            = "/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions";
     String REST_QUESTIONS_PAGE_COUNT_UNDER_KNOWLEDGE_POINT = "/rest/questionKnowledgePoints/{questionKnowledgePointId}/questions/pageCount";
+    // 科目下没有知识点的题目
+    String REST_NO_KNOWLEDGE_POINT_QUESTIONS_UNDER_SUBJECT            = "/rest/subjects/{subjectCode}/noKnowledgePointQuestions";
+    String REST_NO_KNOWLEDGE_POINT_QUESTIONS_PAGE_COUNT_UNDER_SUBJECT = "/rest/subjects/{subjectCode}/noKnowledgePointQuestions/pageCount";
 
     String REST_TOGGLE_QUESTION_MARK = "/rest/questions/{questionId}/toggleMark"; // 标记和取消标记题目
     String REST_MARKED_QUESTION_IDS = "/rest/questionIds/marked"; // 被标记过的题目原始 ID

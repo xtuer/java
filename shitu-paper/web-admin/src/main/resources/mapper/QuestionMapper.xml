@@ -6,45 +6,62 @@
 
 <!-- 使用视图 view_paper_knowledge_point 可以简化试卷的查询 -->
 <mapper namespace="com.xtuer.mapper.QuestionMapper">
-    <!-- 取得所有的知识点 -->
+    <sql id="questionColumns">
+        id, type, content, analysis, answer, demand, score, difficulty,
+        original_id AS originalId, subject_code AS subjectCode,
+        knowledge_point_code AS knowledgePointCode, knowledge_point_id AS knowledgePointId, is_marked AS marked
+    </sql>
+
+    <!-- [0] 取得所有的知识点 -->
     <select id="findAllQuestionKnowledgePoints" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
         FROM   question_knowledge_point
         ORDER BY code, name
     </select>
 
-    <!-- 查找知识点的子知识点 -->
+    <!-- [0] 查找知识点的子知识点 -->
     <select id="findQuestionKnowledgePointsByParentId" parameterType="long" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
         FROM   question_knowledge_point
         WHERE  parent_id=#{parentId} ORDER BY code, name
     </select>
 
-    <!-- 查找科目下的知识点 -->
+    <!-- [0] 查找科目下的知识点 -->
     <select id="findQuestionKnowledgePointsBySubjectCode" parameterType="string" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
         FROM   question_knowledge_point
         WHERE  subject_code=#{subjectCode} ORDER BY code, name
     </select>
 
-    <!-- 查找知识点下的单题 -->
+    <!-- [A] 查找知识点下的题目数量 -->
+    <select id="questionsCountByQuestionKnowledgePointId" parameterType="long" resultType="int">
+        SELECT COUNT(1) FROM question WHERE knowledge_point_id=#{knowledgePointId}
+    </select>
+
+    <!-- [A] 查找知识点下的题目 -->
     <select id="findQuestionsByQuestionKnowledgePointId" resultType="Question">
-        SELECT id, type, content, analysis, answer, demand, score, difficulty,
-               original_id AS originalId, subject_code AS subjectCode,
-               knowledge_point_code AS knowledgePointCode, knowledge_point_id AS knowledgePointId, is_marked AS marked
+        SELECT <include refid="questionColumns"/>
         FROM   question
-        WHERE  knowledge_point_id=#{questionKnowledgePointId}
+        WHERE  knowledge_point_id=#{knowledgePointId}
+        LIMIT  ${offset}, ${size}
+    </select>
+
+    <!-- [B] 查找科目下没有知识点的题目数量 -->
+    <select id="noKnowledgePointQuestionsCountBySubjectCode" parameterType="string" resultType="int">
+        SELECT COUNT(1) FROM question WHERE subject_code=#{subjectCode} AND knowledge_point_id IS NULL
+    </select>
+
+    <!-- [B] 查找科目下没有知识点的题目 -->
+    <select id="findNoKnowledgePointQuestionsBySubjectCode" resultType="Question">
+        SELECT <include refid="questionColumns"/>
+        FROM   question
+        WHERE  subject_code=#{subjectCode} AND knowledge_point_id IS NULL
         LIMIT  ${offset}, ${size}
     </select>
 
     <!-- 查找所有被标记过的题目的原始 ID -->
     <select id="findMarkedQuestionOriginalIds" resultType="string">
         SELECT CONCAT(subject_code, '-', original_id) FROM question WHERE is_marked=1
-    </select>
-
-    <!-- 知识点相关的题目数量 -->
-    <select id="questionCountByQuestionKnowledgePointId" parameterType="long" resultType="int">
-        SELECT COUNT(id) AS count FROM question WHERE knowledge_point_id=#{knowledgePointId}
     </select>
 
     <!-- Toggle 标记题目，检查题目的时候发现题目有问题，标记起来，为了后期批量导出 -->

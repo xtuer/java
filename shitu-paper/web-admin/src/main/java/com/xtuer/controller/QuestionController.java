@@ -20,7 +20,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 @Controller
@@ -162,7 +161,7 @@ public class QuestionController {
     @ResponseBody
     public Result<Integer> questionPageCountOfQuestionKnowledgePoint(@PathVariable Long questionKnowledgePointId,
                                                                      @RequestParam(defaultValue = "30") int pageSize) {
-        int recordCount = questionMapper.questionCountByQuestionKnowledgePointId(questionKnowledgePointId);
+        int recordCount = questionMapper.questionsCountByQuestionKnowledgePointId(questionKnowledgePointId);
         int pageCount = PageUtils.pageCount(recordCount, pageSize);
         return Result.ok("success",pageCount );
     }
