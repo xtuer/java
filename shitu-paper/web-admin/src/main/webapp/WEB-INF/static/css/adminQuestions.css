@@ -6,7 +6,7 @@ body {
     position: fixed;
     top: 0;
     left: 90px;
-    width: 250px;
+    width: 360px;
     bottom: 0;
     border-right: 1px solid #DADADA;
     overflow: auto;
@@ -15,7 +15,7 @@ body {
 .main {
     position: fixed;
     top: 0;
-    left: 340px;
+    left: 450px;
     right: 0;
     bottom: 0;
     overflow: auto;
@@ -37,8 +37,11 @@ body {
 
 #vue-questions .icon.thumbs.down {
     font-size: 18px;
-    margin: 10px;
-    margin-left: 0px;
+    margin-top: 10px;
+}
+
+#vue-questions .icon.thumbs.down:hover {
+    color: #AA0000;
 }
 
 #vue-question .ui.label {

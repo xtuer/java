@@ -1,6 +1,4 @@
 // 变量定义
-window.pageSize   = 20; // 每页显示的试卷数量
-window.pageNumber = 1;  // 要加载的页码
 window.vueQuestions = null;
 
 require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls', 'question', 'pagination'], function($, Vue) {
@@ -13,7 +11,10 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
         data: {
             questions: [], // 题目
             knowledgePointId: 0, // 题目的知识点 ID
-            pageCount: 1 // 知识点的页数
+
+            pageSize  : 20, // 每页显示的题目数量
+            pageNumber: 1,  // 要加载的页码
+            pageCount : 1   // 知识点的页数
         },
         methods: {
             // 取消或者标记题目
@@ -33,13 +34,9 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
         nextText: '下一页',
         cssStyle: 'compact-theme',
         onPageClick: function(pageNumber) {
-            // 加载知识点下第 page 页的题目
-            QuestionDao.loadQuestionsUnderQuestionKnowledgePoint(window.vueQuestions.knowledgePointId, pageNumber, window.pageSize,
-                function(questions) {
-                    window.vueQuestions.questions = [];
-                    window.vueQuestions.questions = questions;
-                }
-            );
+            // 加载知识点下第 pageNumber 页的题目
+            window.vueQuestions.pageNumber = pageNumber;
+            loadQuestionsUnderQuestionKnowledgePoint();
         }
     });
 
@@ -52,18 +49,18 @@ require(['jquery', 'vue', 'semanticUi', 'ztree', 'layer', 'rest', 'util', 'urls'
     });
 });
 
-function scrollToTop(callback) {
-    if ($('html').scrollTop()) {
-        $('html').animate({ scrollTop: 0 }, callback);
-        return;
-    }
+// 加载知识点下第 pageNumber 页的题目，每页有 pageSize 个题目
+function loadQuestionsUnderQuestionKnowledgePoint() {
+    window.vueQuestions.questions = [];
+    QuestionDao.loadQuestionsUnderQuestionKnowledgePoint(window.vueQuestions.knowledgePointId,
+        window.vueQuestions.pageNumber, window.vueQuestions.pageSize,
+        function(questions) {
+            setTimeout(function() {
+                window.vueQuestions.questions = questions;
+            }, 50);
 
-    if ($('body').scrollTop()) {
-        $('body').animate({ scrollTop: 0 }, callback);
-        return;
-    }
-
-    callback();
+        }
+    );
 }
 
 // 设置当前页
@@ -76,6 +73,9 @@ window.setPageCount = function(pageCount) {
     $('#paginator').pagination('updateItems', pageCount);
 };
 
+/*-----------------------------------------------------------------------------|
+ |                                 知识点树 KPTree                              |
+ |----------------------------------------------------------------------------*/
 function KPTree(treeElementId) {
     this.treeElementId = treeElementId; // 树的元素 id
     this.tree = null;
@@ -106,22 +106,30 @@ KPTree.prototype.init = function() {
     });
 };
 
+/**
+ * 显示菜单
+ *
+ * @param  {Integer} x        菜单左上角的 x 坐标
+ * @param  {Integer} y        菜单左上角的 y 坐标
+ * @param  {Object} treeNode  被右键点击的树节点
+ * @return 无返回值
+ */
 KPTree.prototype.showMenu = function(x, y, treeNode) {
     var self = this;
-    var type = '';
 
     if (!treeNode) {
-        type = 'root';
         self.tree.cancelSelectedNode();
     } else if (treeNode && !treeNode.noR) { // noR 属性为 true 表示禁止右键菜单
         self.tree.selectNode(treeNode);
     }
 
+    // 绝对定位显示菜单
     $('#question-knowledge-point-tree-menu').css({left: x+'px', top: y+'px'}).show();
 
+    // 给 document 添加鼠标点击事件，点击非菜单地方时隐藏菜单
     $(document).on('mousedown', function(event) {
-        if (!(event.target.id == 'question-knowledge-point-tree-menu'
-            || $(event.target).parents('#question-knowledge-point-tree-menu').length>0)) {
+        if (!(event.target.id == 'question-knowledge-point-tree-menu' ||
+            $(event.target).parents('#question-knowledge-point-tree-menu').length>0)) {
             self.hideMenu();
         }
     });
@@ -150,18 +158,16 @@ KPTree.prototype.getSettings = function() {
             }
         }, callback: {
             onClick: function(event, treeId, treeNode) {
-                console.log(treeNode.id, treeNode.code, treeNode.subjectCode);
+                console.log(treeNode.subjectCode, treeNode.code, treeNode.id);
                 var questionKnowledgePointId = treeNode.id;
                 window.vueQuestions.knowledgePointId = questionKnowledgePointId; // 保存点击的知识点 ID
+                window.vueQuestions.pageNumber = 1;
 
                 // 加载知识点下第一页的题目
-                QuestionDao.loadQuestionsUnderQuestionKnowledgePoint(questionKnowledgePointId, 1, window.pageSize, function(questions) {
-                    window.vueQuestions.questions = [];
-                    window.vueQuestions.questions = questions;
-                });
+                loadQuestionsUnderQuestionKnowledgePoint();
 
-                // 加载知识点下题目的页数
-                QuestionDao.questionPageCountOfQuestionKnowledgePoint(questionKnowledgePointId, window.pageSize, function(pageCount) {
+                // 加载知识点下题目的页数，恢复分页的初始状态
+                QuestionDao.questionPageCountOfQuestionKnowledgePoint(questionKnowledgePointId, window.vueQuestions.pageSize, function(pageCount) {
                     window.setPageCount(pageCount);
                     window.setPageNumber(1);
                     window.vueQuestions.pageCount = pageCount;

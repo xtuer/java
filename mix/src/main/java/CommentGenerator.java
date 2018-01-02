@@ -2,7 +2,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CommentGenerator {
     public static void main(String[] args) {
-        String[] texts = {"Test random"};
+        String[] texts = {"知识点树 KPTree"};
         System.out.println(generateComment1(texts));
         System.out.println(generateComment2(texts));
     }

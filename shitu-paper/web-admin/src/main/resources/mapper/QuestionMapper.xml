@@ -10,21 +10,21 @@
     <select id="findAllQuestionKnowledgePoints" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
         FROM   question_knowledge_point
-        ORDER BY name
+        ORDER BY code, name
     </select>
 
-    <!-- 查找知识点 -->
+    <!-- 查找知识点的子知识点 -->
     <select id="findQuestionKnowledgePointsByParentId" parameterType="long" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
         FROM   question_knowledge_point
-        WHERE  parent_id=#{parentId} ORDER BY name
+        WHERE  parent_id=#{parentId} ORDER BY code, name
     </select>
 
     <!-- 查找科目下的知识点 -->
     <select id="findQuestionKnowledgePointsBySubjectCode" parameterType="string" resultType="QuestionKnowledgePoint">
         SELECT id, parent_id AS parentId, name, code, subject_name AS subjectName, subject_code AS subjectCode, count
         FROM   question_knowledge_point
-        WHERE  subject_code=#{subjectCode} ORDER BY name
+        WHERE  subject_code=#{subjectCode} ORDER BY code, name
     </select>
 
     <!-- 查找知识点下的单题 -->
