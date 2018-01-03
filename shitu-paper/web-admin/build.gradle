@@ -150,7 +150,7 @@ task deploy {
                     /usr/local/edu/tomcat/bin/shutdown.sh;
                     rm -rf /data/shitu.edu-edu.com/ROOT;
                     unzip -u /data/shitu.edu-edu.com/${war.archiveName} -d /data/shitu.edu-edu.com/ROOT;
-                    kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \$2}'`
+                    kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \$2}'`;
                     /usr/local/edu/tomcat/bin/startup.sh;
                     rm -rf /data/shitu.edu-edu.com/${war.archiveName}
                 """
