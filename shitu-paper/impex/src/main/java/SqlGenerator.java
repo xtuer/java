@@ -2,11 +2,11 @@ import util.Utils;
 
 public class SqlGenerator {
     public static void main(String[] args) {
-        generateAnswerSqls();
+        generateQuestionIdSqls();
     }
 
     /**
-     * 生成导出题目信息的 SQL
+     * 生成导出题目信息的 SQL 语句
      */
     public static void generateAnswerSqls() {
         Utils.subjects.forEach((key, value) -> {
@@ -20,8 +20,19 @@ public class SqlGenerator {
     public static void generateKnowledgePointSqls() {
         // sqlcmd -S localhost -d GYWT033C -E -o "C:/kp/高中语文-GYWT033C.csv" -Q "select * from KPVCPInfo" -W -w 999 -s ","
         Utils.subjects.forEach((key, value) -> {
-            System.out.printf("sqlcmd -S localhost -d %s -E -o \"C:/kp/%s.csv\" -Q \"select * from KPVCPInfo\" -W -w 999 -s \",\"\n",
+            System.out.printf("sqlcmd -S localhost -d %s -E -o \"C:/kp/%s.csv\" -Q \"set nocount on; select * from KPVCPInfo\" -W -w 999 -s \",\"\n",
                     key, value + "-" + key);
+        });
+    }
+
+    /**
+     * 导出题目 ID 的 SQL 语句
+     */
+    public static void generateQuestionIdSqls() {
+        // sqlcmd -S localhost -d GYWT033C -E -o "C:/kp/高中语文-GYWT033C.csv" -Q "select * from KPVCPInfo" -W -w 999 -s ","
+        Utils.subjects.forEach((key, value) -> {
+            System.out.printf("sqlcmd -S localhost -d %s -E -o \"C:/qids/%s.csv\" -Q \"set nocount on; select PC_ProblemID from ProbContent\" -h-1 -W -w 999 -s \",\"\n",
+                    key, key);
         });
     }
 }
