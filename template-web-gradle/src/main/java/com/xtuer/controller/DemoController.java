@@ -5,9 +5,12 @@ import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
 import com.xtuer.util.Utils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,7 @@ import javax.servlet.Filter;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Controller
@@ -325,5 +329,27 @@ public class DemoController {
     @ResponseBody
     public String postWithParams(@RequestParam String username, @RequestParam String password) {
         return username + ", " + password;
+    }
+
+    /**
+     * 读取资源文件夹下的文件
+     * URL: http://localhost:8080/demo/readFile
+     *
+     * @throws IOException
+     */
+    @GetMapping("/demo/readFile")
+    @ResponseBody
+    public Result readFile() throws IOException {
+        File file = new File(getClass().getClassLoader().getResource("logback.xml").getFile());
+        String content = FileUtils.readFileToString(file);
+        System.out.println(content);
+
+        ClassPathResource resource = new ClassPathResource("logback.xml");
+        InputStream in = resource.getInputStream();
+        content = IOUtils.toString(in);
+        System.out.println(content);
+        IOUtils.closeQuietly(resource.getInputStream());
+
+        return Result.ok();
     }
 }
