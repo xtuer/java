@@ -57,24 +57,24 @@ public final class Utils {
     public static Map<String, String> subjects = new HashMap<>();
 
     static {
-        subjects.put("GYWT033C", "高中语文");
-        subjects.put("GDLT030C", "高中地理");
-        subjects.put("GLST033C", "高中历史");
-        subjects.put("GZSX060B", "高中数学");
-        subjects.put("GZYW033C", "高中语文");
-        subjects.put("GZLS033C", "高中历史");
-        subjects.put("GDLZ033C", "高中地理");
-        subjects.put("GZSW033C", "高中生物");
-        subjects.put("GYYK034C", "高中英语");
-        subjects.put("GZDL033C", "高中地理");
-        subjects.put("GZHX062A", "高中化学");
-        subjects.put("GZYY033C", "高中英语");
-        subjects.put("GSZH030C", "高中数学");
-        subjects.put("GZZZ033C", "高中政治");
-        subjects.put("GZWL061A", "高中物理");
-        subjects.put("GZWL061B", "高中物理");
-        subjects.put("GSWT033C", "高中生物");
-        subjects.put("ZSWZ033C", "高中生物");
+        subjects.put("GYWT033C", "高中语文库(经典)");
+        subjects.put("GDLT030C", "高中地理同步库(经典)");
+        subjects.put("GLST033C", "高中历史库(经典)");
+        subjects.put("GZSX060B", "高中数学库(经典)");
+        subjects.put("GZYW033C", "中学高中语文");
+        subjects.put("GZLS033C", "中学高中历史");
+        subjects.put("GDLZ033C", "高中地理综合库(经典)");
+        subjects.put("GZSW033C", "中学高中生物");
+        subjects.put("GYYK034C", "高中英语库(经典)");
+        subjects.put("GZDL033C", "中学高中地理");
+        subjects.put("GZHX062A", "中学高中化学");
+        subjects.put("GZYY033C", "中学高中英语");
+        subjects.put("GSZH030C", "中学高中数学");
+        subjects.put("GZZZ033C", "中学高中政治");
+        subjects.put("GZWL061A", "中学高中物理");
+        subjects.put("GZWL061B", "高中物理库(经典)");
+        subjects.put("GSWT033C", "高中生物同步库(经典)");
+        subjects.put("ZSWZ033C", "高中生物综合库(经典)");
     }
 
     /**
