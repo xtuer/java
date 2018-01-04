@@ -145,7 +145,7 @@ KPTree.prototype.init = function() {
                 kp.name = kp.name + ' [' + kp.count + ']';
             }
 
-            // 2. 给顶级知识点加一个 "无知识点的节点"
+            // 2. 给顶级知识点加一个 "未分知识点“的节点
             if (kp.parentId === 0) {
                 var index = kp.name.indexOf('-');
                 var name = kp.name.substring(0, index) + '(未分知识点)';

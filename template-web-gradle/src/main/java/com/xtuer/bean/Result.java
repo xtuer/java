@@ -35,8 +35,8 @@ public final class Result<T> {
         return new Result<>(true, "success");
     }
 
-    public static <T> Result<T> ok(String message) {
-        return new Result<>(true, message);
+    public static <T> Result<T> ok(Object data) {
+        return new Result<>(true, "success", data);
     }
 
     public static <T> Result<T> ok(String message, Object data) {
@@ -47,8 +47,8 @@ public final class Result<T> {
         return new Result<>(false, "fail");
     }
 
-    public static <T> Result<T> fail(String message) {
-        return new Result<>(false, message);
+    public static <T> Result<T> fail(Object data) {
+        return new Result<>(false, "fail", data);
     }
 
     public static <T> Result<T> fail(String message, Object data) {

@@ -76,6 +76,19 @@
                     console.log(a);
                 }
             });
+
+            // [6] 测试给后端发送 undefined 和 null 参数
+            var x;
+            $.rest.get({
+                url: '/demo/undefined-null',
+                data: {
+                    un: x,
+                    nu: null
+                },
+                success: function(result) {
+                    console.log(result);
+                }
+            });
         });
     </script>
 </body>

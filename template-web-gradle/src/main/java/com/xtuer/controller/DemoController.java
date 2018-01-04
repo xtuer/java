@@ -352,4 +352,22 @@ public class DemoController {
 
         return Result.ok();
     }
+
+    /**
+     * 测试前端传 undefined and null(可以使用 Chrome 查看请求的 Headers)，服务器端都认为没有传，会使用默认值:
+     *     undefined 的参数不会放到 header 中: 没有默认值，抛异常
+     *     null 的参数会传空: 没有默认值则认为是空字符串
+     *
+     * URL: http://localhost:8080/demo/undefined-null
+     *
+     * @param un
+     * @param nu
+     */
+    @GetMapping("/demo/undefined-null")
+    @ResponseBody
+    public Result undefinedNull(@RequestParam(defaultValue="Default-For-Undefined") String un,
+                                @RequestParam(defaultValue="Default-For-Null") String nu) {
+        System.out.println(un + ", " + nu);
+        return Result.ok();
+    }
 }
