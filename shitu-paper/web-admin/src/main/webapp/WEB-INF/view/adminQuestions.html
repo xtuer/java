@@ -44,18 +44,18 @@
                         <span v-html="question.content"></span>
                     </div>
                     <div class="ui secondary segment answer">
-                        <div class="ui horizontal label" style="border-radius: 0;">标准答案:</div>
+                        <div class="ui horizontal label">标准答案:</div>
                         <span v-html="question.answer"></span>
                     </div>
                     <div class="ui secondary segment analysis">
-                        <div class="ui horizontal label" style="border-radius: 0;">答案解析:</div><br><br>
+                        <div class="ui horizontal label">答案解析:</div><br><br>
                         <p v-html="question.analysis"></p>
                     </div>
                     <div class="mark">
-                        <div class="ui horizontal label" style="border-radius: 0;">乐教乐学题号: {{question.subjectCode}}-{{question.originalId}}</div>
-                        <div class="ui horizontal label" style="border-radius: 0;">教学要求: {{question.demand}}</div>
-                        <div class="ui horizontal label" style="border-radius: 0;">难度: {{question.difficulty}}</div>
-                        <div class="ui horizontal label" style="border-radius: 0;">分值: {{question.score}}</div>
+                        <div class="ui horizontal label">乐教乐学题号: {{question.subjectCode}}-{{question.originalId}}</div>
+                        <div class="ui horizontal label">教学要求: {{question.demand}}</div>
+                        <div class="ui horizontal label">难度: {{question.difficulty}}</div>
+                        <div class="ui horizontal label">分值: {{question.score}}</div>
                         <i class="thumbs down icon" :class="{outline: !question.marked}" @click="toggleQuestionMark(question)"></i>
                     </div>
                 </div>
