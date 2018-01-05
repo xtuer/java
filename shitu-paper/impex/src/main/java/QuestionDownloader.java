@@ -24,24 +24,25 @@ public class QuestionDownloader {
     public static void main(String[] args) throws IOException {
         String[][] meta = {
                 // subject, idFile, saveDir
-                {"GSZH030C", "F:/题目ID/数学/GSZH030C.csv", "F:/题目/数学/GSZH030C"},
-                {"GZSX060B", "F:/题目ID/数学/GZSX060B.csv", "F:/题目/数学/GZSX060B"},
-                {"GZLS033C", "F:/题目ID/历史/GZLS033C.csv", "F:/题目/历史/GZLS033C"},
-                {"GLST033C", "F:/题目ID/历史/GLST033C.csv", "F:/题目/历史/GLST033C"},
-                {"GZHX062A", "F:/题目ID/化学/GZHX062A.csv", "F:/题目/化学/GZHX062A"},
-                {"GYWT033C", "F:/题目ID/语文/GYWT033C.csv", "F:/题目/语文/GYWT033C"},
-                {"GZYW033C", "F:/题目ID/语文/GZYW033C.csv", "F:/题目/语文/GZYW033C"},
-                {"GZZZ033C", "F:/题目ID/政治/GZZZ033C.csv", "F:/题目/政治/GZZZ033C"},
-                {"GZYY033C", "F:/题目ID/英语/GZYY033C.csv", "F:/题目/英语/GZYY033C"},
-                {"GYYK034C", "F:/题目ID/英语/GYYK034C.csv", "F:/题目/英语/GYYK034C"},
-                {"GDLZ033C", "F:/题目ID/地理/GDLZ033C.csv", "F:/题目/地理/GDLZ033C"},
-                {"GDLT030C", "F:/题目ID/地理/GDLT030C.csv", "F:/题目/地理/GDLT030C"},
-                {"GZDL033C", "F:/题目ID/地理/GZDL033C.csv", "F:/题目/地理/GZDL033C"},
-                {"ZSWZ033C", "F:/题目ID/生物/ZSWZ033C.csv", "F:/题目/生物/ZSWZ033C"},
-                {"GZSW033C", "F:/题目ID/生物/GZSW033C.csv", "F:/题目/生物/GZSW033C"},
-                {"GSWT033C", "F:/题目ID/生物/GSWT033C.csv", "F:/题目/生物/GSWT033C"},
-                {"GZWL061B", "F:/题目ID/物理/GZWL061B.csv", "F:/题目/物理/GZWL061B"},
-                {"GZWL061A", "F:/题目ID/物理/GZWL061A.csv", "F:/题目/物理/GZWL061A"},
+                // {"GSZH030C", "F:/题目ID/数学/GSZH030C.csv", "F:/题目/数学/GSZH030C"},
+                // {"GZSX060B", "F:/题目ID/数学/GZSX060B.csv", "F:/题目/数学/GZSX060B"},
+                // {"GZLS033C", "F:/题目ID/历史/GZLS033C.csv", "F:/题目/历史/GZLS033C"},
+                // {"GLST033C", "F:/题目ID/历史/GLST033C.csv", "F:/题目/历史/GLST033C"},
+                // {"GZHX062A", "F:/题目ID/化学/GZHX062A.csv", "F:/题目/化学/GZHX062A"},
+                // {"GYWT033C", "F:/题目ID/语文/GYWT033C.csv", "F:/题目/语文/GYWT033C"},
+                // {"GZYW033C", "F:/题目ID/语文/GZYW033C.csv", "F:/题目/语文/GZYW033C"},
+                // {"GZZZ033C", "F:/题目ID/政治/GZZZ033C.csv", "F:/题目/政治/GZZZ033C"},
+                // {"GZYY033C", "F:/题目ID/英语/GZYY033C.csv", "F:/题目/英语/GZYY033C"},
+                // {"GYYK034C", "F:/题目ID/英语/GYYK034C.csv", "F:/题目/英语/GYYK034C"},
+                // {"GDLZ033C", "F:/题目ID/地理/GDLZ033C.csv", "F:/题目/地理/GDLZ033C"},
+                // {"GDLT030C", "F:/题目ID/地理/GDLT030C.csv", "F:/题目/地理/GDLT030C"},
+                // {"GZDL033C", "F:/题目ID/地理/GZDL033C.csv", "F:/题目/地理/GZDL033C"},
+                // {"ZSWZ033C", "F:/题目ID/生物/ZSWZ033C.csv", "F:/题目/生物/ZSWZ033C"},
+                // {"GZSW033C", "F:/题目ID/生物/GZSW033C.csv", "F:/题目/生物/GZSW033C"},
+                // {"GSWT033C", "F:/题目ID/生物/GSWT033C.csv", "F:/题目/生物/GSWT033C"},
+                // {"GZWL061B", "F:/题目ID/物理/GZWL061B.csv", "F:/题目/物理/GZWL061B"},
+                // {"GZWL061A", "F:/题目ID/物理/GZWL061A.csv", "F:/题目/物理/GZWL061A"},
+                {"GZHX062B", "/Users/Biao/Desktop/GZHX062B.csv", "/Users/Biao/Desktop/questions/html/GZHX062B"},
         };
 
         for (int i = 0; i < meta.length; ++i) {
@@ -127,7 +128,7 @@ public class QuestionDownloader {
         }
 
         String html = doc.toString();
-        FileUtils.writeStringToFile(new File(saveDir + "/" + questionId + ".html"), html, "UTF-8");
+        FileUtils.writeStringToFile(new File(saveDir + "/" + questionId + ".html"), html, "GBK");
     }
 
     /**

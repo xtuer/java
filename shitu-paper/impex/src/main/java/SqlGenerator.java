@@ -2,7 +2,7 @@ import util.Utils;
 
 public class SqlGenerator {
     public static void main(String[] args) {
-        generateQuestionCountSqls();
+        generateAnswerSqls();
     }
 
     /**
@@ -43,6 +43,17 @@ public class SqlGenerator {
         // sqlcmd -S localhost -d GYWT033C -E -o "C:/kp/高中语文-GYWT033C.csv" -Q "select * from KPVCPInfo" -W -w 999 -s ","
         Utils.subjects.forEach((key, value) -> {
             System.out.printf("sqlcmd -S localhost -d %s -E -o \"C:/qids/%s.csv\" -Q \"set nocount on; select count(PC_ProblemID) from ProbContent\" -h-1 -W -w 999 -s \",\"\n",
+                    key, key);
+        });
+    }
+
+    /**
+     * 导出套卷 ID 数量的 SQL 语句
+     */
+    public static void generatePaperCountSqls() {
+        // sqlcmd -S localhost -d GYWT033C -E -o "C:/kp/高中语文-GYWT033C.csv" -Q "select * from KPVCPInfo" -W -w 999 -s ","
+        Utils.subjects.forEach((key, value) -> {
+            System.out.printf("sqlcmd -S localhost -d %s -E -o \"C:/ps/%s.csv\" -Q \"set nocount on; select count(FixPaperID) from FixPaper\" -h-1 -W -w 999 -s \",\"\n",
                     key, key);
         });
     }

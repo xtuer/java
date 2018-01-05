@@ -12,12 +12,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class Utils {
+    /**
+     * 生成 UUID
+     * @return 返回 UUID
+     */
+    public static String uuid() {
+        return UUID.randomUUID().toString().toUpperCase();
+    }
+
     /**
      * 从 CSV 的知识点文件的名字中提取知识点的科目名称
      * 文件名格式为: 高中语文-GYWT033C.csv
@@ -75,6 +80,7 @@ public final class Utils {
         subjects.put("GZWL061B", "高中物理库(经典)");
         subjects.put("GSWT033C", "高中生物同步库(经典)");
         subjects.put("ZSWZ033C", "高中生物综合库(经典)");
+        subjects.put("GZHX062B", "高中化学库(经典)");
     }
 
     /**
