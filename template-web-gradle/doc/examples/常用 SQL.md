@@ -40,7 +40,7 @@ SELECT * FROM question WHERE subject_code='XXX' LIMIT 0, 30
 
 ## 保存更新
 
-保存时发现唯一键已经存在就进行更新，否则进行插入:
+查看 UNIQUE 索引或 PRIMARY KEY 对应的行是否存在，存在则更新(执行 ON DUPLICATE KEY UPDATE 后面的语句)，不存在则插入新行
 
 ```sql
 # id 是唯一主键
