@@ -26,4 +26,10 @@
             </list>
         </property>
     </bean>
+
+    <!-- 分布式唯一 ID 生成器 -->
+    <bean id="idWorker" class="com.xtuer.service.SnowflakeIdWorker">
+        <constructor-arg value="${idWorker.workerId}"/>
+        <constructor-arg value="${idWorker.workerId}"/>
+    </bean>
 </beans>

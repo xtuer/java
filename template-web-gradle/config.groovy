@@ -18,6 +18,11 @@ environments {
             timeout  = 2000
         }
 
+        idWorker {
+            datacenterId = 0
+            workerId = 0
+        }
+
         logDir = '/temp/logs'
         thymeleafCacheable = false
     }
@@ -37,6 +42,11 @@ environments {
             password = ''
             database = 0
             timeout  = 2000
+        }
+
+        idWorker {
+            datacenterId = 0
+            workerId = 0
         }
 
         logDir = '/temp/logs'

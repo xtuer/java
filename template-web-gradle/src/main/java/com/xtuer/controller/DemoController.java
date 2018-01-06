@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
+import com.xtuer.service.SnowflakeIdWorker;
 import com.xtuer.util.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,6 +34,9 @@ public class DemoController {
 
     @Autowired
     private DemoMapper demoMapper;
+
+    @Autowired
+    private SnowflakeIdWorker idWorker;
 
     @Resource(name = "config")
     private Properties config;
@@ -369,5 +373,11 @@ public class DemoController {
                                 @RequestParam(defaultValue="Default-For-Null") String nu) {
         System.out.println(un + ", " + nu);
         return Result.ok();
+    }
+
+    @GetMapping("/demo/new-id")
+    @ResponseBody
+    public Result newId() {
+        return Result.ok(idWorker.nextId());
     }
 }
