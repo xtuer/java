@@ -64,4 +64,43 @@ public final class NetUtils {
 
         return null;
     }
+
+    /**
+     * 获取客户端的 IP
+     *
+     * @param  request Http 请求对象
+     * @return 客户端的 IP
+     */
+    public static String getClientIp(HttpServletRequest request) {
+        final String UNKNOWN = "unknown";
+        String ip = request.getHeader("X-Forwarded-For");
+
+        // 有多个 Proxy 的情况: X-Forwarded-For: client, proxy1, proxy2 是一串 IP，第一个 IP 是客户端的 IP
+        // 只有 1 个 Proxy 时取到的就是客户端的 IP
+        if (!(ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip))) {
+            String[] ips = ip.split(",");
+            return ips[0];
+        }
+
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr(); // 没有使用 Proxy 时是客户端的 IP, 使用 Proxy 时是最近的 Proxy 的 IP
+        }
+
+        return ip;
+    }
 }
