@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Student implements Serializable {
+public class Student {
     private long id;
 
     @Excel(name = "学生姓名")

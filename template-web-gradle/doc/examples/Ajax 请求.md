@@ -1,3 +1,31 @@
+## 服务器
+
+处理 Ajax 请求的函数返回 **Result** 类型:
+
+```java
+@GetMapping(UriView.REST_KNOWLEDGE_POINTS)
+@ResponseBody
+public Result<List<KnowledgePoint>> knowledgePoints() {
+    List<KnowledgePoint> kps = questionMapper.knowledgePoints();
+    return Result.ok(kps);
+}
+```
+
+```java
+@PutMapping(UriView.REST_QUESTIONS_COUNT)
+@ResponseBody
+public Result updateQuestionsCount() {
+    // 1. 先设置 count 为 0
+    // 2. 题目表使用知识点 ID 分组，统计每个分组下有多少个题目，然后更新到知识点表
+    questionMapper.cleanQuestionsCount();
+    questionMapper.updateQuestionsCount();
+
+    return Result.ok();
+}
+```
+
+## 浏览器
+
 使用 jQuery 的 Rest 插件 **jquery.rest.js** 进行 Ajax 请求:
 
 * `获取数据` 使用 GET，前端调用 `$.rest.get()`，后端使用 `@GetMapping`
