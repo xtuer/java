@@ -1,10 +1,9 @@
-// 打包命令: gradle -Denv=production clean build
+// 打包命令: gradle clean build -Denv=production
 
 environments {
     // 开发环境配置
     development {
         database {
-            driverClassName = 'com.mysql.jdbc.Driver'
             url = 'jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8'
             username = 'root'
             password = 'root'
@@ -30,7 +29,6 @@ environments {
     // 线上环境配置
     production {
         database {
-            driverClassName = 'com.mysql.jdbc.Driver'
             url = 'jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8'
             username = 'root'
             password = 'huaxia-123'
