@@ -28,35 +28,34 @@ repositories {
 
 ext {
     // 运行和打包的环境选择, 默认是开发环境
-    // 获取 gradle 参数中 env 的值: gradle -Denv=production clean build
-    // 构建 gradle clean build
-    //     gradle -Denv=production clean build
-    // 部署 gradle clean deploy
-    //     gradle -Denv=production clean deploy
-    environment = System.getProperty("env", "development")
-    war.archiveName = 'ROOT.zip' // 打包的文件名
+    // 构建: gradle clean build
+    //       gradle clean build -Denv=production
+    // 部署: gradle clean deploy
+    //       gradle clean deploy -Denv=production
+    environment = System.getProperty("env", "development") // 获取 gradle 参数中 env 的值，选择环境
+    war.archiveName = 'Fox.zip' // 打包的文件名，不用 war 包自动解压的话，用 .zip 会更好一些
 }
 
 ext.versions = [
-    spring        : '5.0.2.RELEASE',
-    springSecurity: '5.0.0.RELEASE',
-    springSession : '1.3.1.RELEASE',
-    servlet       : '4.0.0',
-    lombok        : '1.16.18',
-    fastjson      : '1.2.41',
-    thymeleaf     : '3.0.9.RELEASE',
-    mysql         : '5.1.21',
-    mybatis       : '3.4.5',
-    mybatisSpring : '1.3.1',
-    druid         : '1.1.5',
-    validator     : '6.0.5.Final',
-    commonsLang   : '3.7',
-    commonsFileupload: '1.3.3',
-    snakeyaml     : '1.19',
-    easyOkHttp    : '1.1.3',
-    logback       : '1.2.3',
-    junit         : '4.12',
-    jclOverSlf4j  : '1.7.25'
+        spring        : '5.0.2.RELEASE',
+        springSecurity: '5.0.0.RELEASE',
+        springSession : '1.3.1.RELEASE',
+        servlet       : '4.0.0',
+        lombok        : '1.16.18',
+        fastjson      : '1.2.41',
+        thymeleaf     : '3.0.9.RELEASE',
+        mysql         : '5.1.21',
+        mybatis       : '3.4.5',
+        mybatisSpring : '1.3.1',
+        druid         : '1.1.5',
+        validator     : '6.0.5.Final',
+        commonsLang   : '3.7',
+        commonsFileupload: '1.3.3',
+        snakeyaml     : '1.19',
+        easyOkHttp    : '1.1.3',
+        logback       : '1.2.3',
+        junit         : '4.12',
+        jclOverSlf4j  : '1.7.25'
 ]
 
 dependencies {
@@ -109,6 +108,7 @@ remotes {
     server {
         host = '192.168.82.133'
         user = 'root'
+        // password 和 identity 只用其中一个
         // password = 'xxx'
         identity = file("${System.properties['user.home']}/.ssh/id_rsa")
     }
