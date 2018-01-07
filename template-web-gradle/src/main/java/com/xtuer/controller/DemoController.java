@@ -348,11 +348,9 @@ public class DemoController {
         String content = FileUtils.readFileToString(file);
         System.out.println(content);
 
-        ClassPathResource resource = new ClassPathResource("logback.xml");
-        InputStream in = resource.getInputStream();
-        content = IOUtils.toString(in);
+        file = new File(new ClassPathResource("logback.xml").getURI());
+        content = FileUtils.readFileToString(file);
         System.out.println(content);
-        IOUtils.closeQuietly(resource.getInputStream());
 
         return Result.ok();
     }
