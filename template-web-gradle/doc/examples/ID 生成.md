@@ -3,7 +3,7 @@
 > datacenterId 的值为 [0, 31]
 > workerId 的值为 [0, 31]
 >
-> 可以保证 1024 台服务器生成的 ID 在 70 年内是唯一的，理论请参考 [分布式 ID 生成算法 Snowflake](http://qtdebug.com/java-snowflake/)
+> 可以保证 1024(32*32) 台服务器生成的 ID 在 70 年内是唯一的，理论请参考 [分布式 ID 生成算法 Snowflake](http://qtdebug.com/java-snowflake/)
 >
 > ![](http://qtdebug.com/img/java/snowflake.png)
 

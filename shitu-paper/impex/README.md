@@ -45,3 +45,22 @@
 
 ## 处理套卷
 
+* 生成试卷的第一次 JSON
+  * 配置 `paperXmlDir`
+  * 配置 `paperJsonDir`
+  * 执行 `gradle clean run -DmainClass=PaperXmlToJson`
+* 生成目录的 JSON
+  * 配置 `paperDocDir`
+  * 配置 `paperDirectoryJson`
+  * 执行 `gradle clean run -DmainClass=PaperDirectoryToJson`
+* 生成试卷的最终 JSON
+  * 配置 `paperDocDir`
+  * 配置 `paperDirectoryJson`
+  * 配置 `paperJsonDir`
+  * 配置 `paperJson`
+  * 配置 `paperDocFinalDir`
+  * 执行 `gradle clean run -DmainClass=PaperToJson`
+* 导入目录到数据库
+  * 配置 `paperDirectoryJson`
+* 导入试卷到数据库
+  * 配置 `paperJson`

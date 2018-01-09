@@ -2,7 +2,7 @@ import util.Utils;
 
 public class SqlGenerator {
     public static void main(String[] args) {
-        generateAnswerSqls();
+        generatePaperSqls();
     }
 
     /**
@@ -55,6 +55,12 @@ public class SqlGenerator {
         Utils.subjects.forEach((key, value) -> {
             System.out.printf("sqlcmd -S localhost -d %s -E -o \"C:/ps/%s.csv\" -Q \"set nocount on; select count(FixPaperID) from FixPaper\" -h-1 -W -w 999 -s \",\"\n",
                     key, key);
+        });
+    }
+
+    public static void generatePaperSqls() {
+        Utils.subjects.forEach((key, value) ->{
+            System.out.printf("bcp \"SELECT FixPaperID,FixPaperName,CreateTime,CreateOwner,memo,FileName,PaperYear,PaperRegion,PaperFrom,PaperType FROM [%s].[dbo].[FixPaper] p FOR XML AUTO, ROOT('Root')\" queryout C:/papers/%s.xml -S(local) -T -r -c\n", key, key);
         });
     }
 }
