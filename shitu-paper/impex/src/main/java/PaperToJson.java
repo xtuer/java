@@ -44,6 +44,7 @@ public class PaperToJson {
             for (File doc : FileUtils.listFiles(new File(realDirectory), new String[] {"doc"}, false)) {
                 String paperName = FilenameUtils.getBaseName(doc.getName()).trim();
                 // System.out.println(paperName);
+                // 生成试卷的基础信息
                 String uuid = idWorker.nextId() + "";
                 Paper paper = new Paper();
                 paper.setName(paperName);
@@ -51,8 +52,10 @@ public class PaperToJson {
                 paper.setPaperDirectoryId(directory.getPaperDirectoryId());
                 paper.setPaperId(uuid);
                 paper.setUuidName(uuid + ".doc");
+                paper.setSubject(subject);
                 papers.add(paper);
 
+                // 完善试卷的数据库信息
                 Paper temp = paperInfo.get(paperName);
                 if (temp != null) {
                     paper.setOriginalPaperId(temp.getOriginalPaperId());
@@ -63,7 +66,7 @@ public class PaperToJson {
                 }
 
                 // 复制 doc 文件到指定目录 paper.getUuidName()
-                FileUtils.copyFile(doc, new File(paperDocFinalDir + "/" + paper.getUuidName()));
+                // FileUtils.copyFile(doc, new File(paperDocFinalDir + "/" + paper.getUuidName()));
             }
         }
 

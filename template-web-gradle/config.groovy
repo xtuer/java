@@ -17,10 +17,7 @@ environments {
             timeout  = 2000
         }
 
-        idWorker {
-            datacenterId = 0
-            workerId = 0
-        }
+        idWorker = 0
 
         logDir = '/temp/logs'
         thymeleafCacheable = false
@@ -42,10 +39,7 @@ environments {
             timeout  = 2000
         }
 
-        idWorker {
-            datacenterId = 0
-            workerId = 0
-        }
+        idWorker = 0
 
         logDir = '/temp/logs'
         thymeleafCacheable = true

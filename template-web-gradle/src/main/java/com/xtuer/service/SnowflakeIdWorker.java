@@ -24,10 +24,10 @@ public class SnowflakeIdWorker {
     /** 数据标识 ID 所占的位数 */
     private final long datacenterIdBits = 5L;
 
-    /** 支持的最大机器 ID，结果是 31 */
+    /** 支持的最大机器 ID，结果是 31: 0B11111 */
     private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
 
-    /** 支持的最大数据中心 ID，结果是 31 */
+    /** 支持的最大数据中心 ID，结果是 31: 0B11111 */
     private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
 
     /** 序列在 ID 中占的位数 */
@@ -58,7 +58,23 @@ public class SnowflakeIdWorker {
     private long lastTimestamp = -1L;
 
     /**
-     * 使用工作机器 ID 和数据中心 ID 创建一个 ID 生成器
+     * 创建 ID 生成器的方式一: 使用工作机器的序号，范围是 [0, 1023]，优点是方便给机器编号
+     *
+     * @param workerId 工作机器 ID
+     */
+    public SnowflakeIdWorker(long workerId) {
+        long maxMachineId = (maxDatacenterId+1) * (maxWorkerId+1) - 1; // 1023
+
+        if (workerId < 0 || workerId > maxMachineId) {
+            throw new IllegalArgumentException(String.format("Worker ID can't be greater than %d or less than 0", maxMachineId));
+        }
+
+        this.datacenterId = (workerId >> workerIdBits) & maxDatacenterId;
+        this.workerId = workerId & maxWorkerId;
+    }
+
+    /**
+     * 创建 ID 生成器的方式二: 使用工作机器 ID 和数据中心 ID，优点是方便分数据中心管理
      *
      * @param datacenterId 数据中心 ID (0~31)
      * @param workerId     工作机器 ID (0~31)

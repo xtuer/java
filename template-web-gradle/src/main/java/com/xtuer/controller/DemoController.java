@@ -373,6 +373,9 @@ public class DemoController {
         return Result.ok();
     }
 
+    /**
+     * URL: http://localhost:8080/demo/new-id
+     */
     @GetMapping("/demo/new-id")
     @ResponseBody
     public Result newId() {
