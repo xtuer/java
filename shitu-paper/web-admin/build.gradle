@@ -50,6 +50,7 @@ ext {
     //     gradle -Denv=production clean build
     // 部署 gradle deploy
     //     gradle -Denv=production deploy
+    //     gradle -Denv=production :web-admin:clean :web-admin:deploy
     environment = System.getProperty("env", "development")
     war.archiveName = 'paper-shitu.zip'
 }

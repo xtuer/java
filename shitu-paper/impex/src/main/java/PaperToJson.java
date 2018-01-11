@@ -41,9 +41,11 @@ public class PaperToJson {
             // System.out.println(subject);
 
             // 获取此目录下的所有试卷 doc 文件
-            for (File doc : FileUtils.listFiles(new File(realDirectory), new String[] {"doc"}, false)) {
+            for (File doc : FileUtils.listFiles(new File(realDirectory), new String[] {"doc", "docx"}, false)) {
                 String paperName = FilenameUtils.getBaseName(doc.getName()).trim();
-                // System.out.println(paperName);
+                String extension = FilenameUtils.getExtension(doc.getName());
+                System.out.println(paperName);
+
                 // 生成试卷的基础信息
                 String uuid = idWorker.nextId() + "";
                 Paper paper = new Paper();
@@ -51,7 +53,7 @@ public class PaperToJson {
                 paper.setOriginalName(paperName);
                 paper.setPaperDirectoryId(directory.getPaperDirectoryId());
                 paper.setPaperId(uuid);
-                paper.setUuidName(uuid + ".doc");
+                paper.setUuidName(uuid + "." + extension);
                 paper.setSubject(subject);
                 papers.add(paper);
 
@@ -66,11 +68,12 @@ public class PaperToJson {
                 }
 
                 // 复制 doc 文件到指定目录 paper.getUuidName()
-                // FileUtils.copyFile(doc, new File(paperDocFinalDir + "/" + paper.getUuidName()));
+                FileUtils.copyFile(doc, new File(paperDocFinalDir + "/" + paper.getUuidName()));
             }
         }
 
         FileUtils.writeStringToFile(new File(paperJson), JSON.toJSONString(papers), "UTF-8");
+        System.out.println("处理文件共: " + papers.size());
     }
 
     public static Map<String, Paper> paperInfo(String paperJsonDir) throws IOException {

@@ -63,11 +63,11 @@ public class PaperService {
      * @return 返回试卷预览文件的 URL
      */
     public String getPaperPreviewUrl(Paper paper) {
-        String realDirectory = paper.getRealDirectoryName(); // 试卷的上一级目录
+        // String realDirectory = paper.getRealDirectoryName(); // 试卷的上一级目录
         String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
         String paperBaseName = FilenameUtils.getBaseName(paperName); // 试卷文件基础名，不包含后缀
 
-        return "/preview/" + realDirectory + "/" + paperBaseName + "/index.html";
+        return "/preview/" + paperBaseName + "/index.html";
     }
 
     /**
@@ -77,9 +77,9 @@ public class PaperService {
      * @return 返回试卷文件
      */
     public File getPaperFile(Paper paper) {
-        String realDir = paper.getRealDirectoryName(); // 试卷的上一级目录
+        // String realDir = paper.getRealDirectoryName(); // 试卷的上一级目录
         String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
-        String paperDir = config.getProperty("paper.paperDirectory") + "/" + realDir; // 试卷的所在目录
+        String paperDir = config.getProperty("paper.paperDirectory"); // 试卷的所在目录
 
         return new File(paperDir, paperName); // 试卷文件
     }
@@ -94,8 +94,8 @@ public class PaperService {
         return new File(getPaperPreviewDirectory(paper), "index.html"); // 预览文件
     }
 
-    public File getPaperPreviewIndex(String realDirectory, String paperBaseName) {
-        return new File(getPaperPreviewDirectory(realDirectory, paperBaseName), "index.html");
+    public File getPaperPreviewIndex(String paperBaseName) {
+        return new File(getPaperPreviewDirectory(paperBaseName), "index.html");
     }
 
     /**
@@ -109,32 +109,29 @@ public class PaperService {
         String paperName = paper.getUuidName(); // 试卷文件名字，包含后缀
         String paperBaseName = FilenameUtils.getBaseName(paperName); // 试卷文件基础名，不包含后缀
 
-        return getPaperPreviewDirectory(realDir, paperBaseName);
+        return getPaperPreviewDirectory(paperBaseName);
     }
 
     /**
      * 取得试卷预览目录
      *
-     * @param paperRealDirectory 试卷所在目录
      * @param paperBaseName 试卷名字，不包含后缀
      * @return
      */
-    public File getPaperPreviewDirectory(String paperRealDirectory, String paperBaseName) {
-        String paperPreviewDir = config.getProperty("paper.previewDirectory")
-                + "/" + paperRealDirectory + "/" + paperBaseName; // 预览文件所在目录
+    public File getPaperPreviewDirectory(String paperBaseName) {
+        String paperPreviewDir = config.getProperty("paper.previewDirectory") + "/" + paperBaseName; // 预览文件所在目录
         return new File(paperPreviewDir);
     }
 
     /**
      * 取得试卷预览的图片
      *
-     * @param paperRealDirectory
      * @param paperBaseName
      * @param imageName
      * @return
      */
-    public File getPaperPreviewImage(String paperRealDirectory, String paperBaseName, String imageName) {
-        File previewDirectory = getPaperPreviewDirectory(paperRealDirectory, paperBaseName);
+    public File getPaperPreviewImage(String paperBaseName, String imageName) {
+        File previewDirectory = getPaperPreviewDirectory(paperBaseName);
         File imageDirectory = new File(previewDirectory, "img");
         return new File(imageDirectory, imageName);
     }

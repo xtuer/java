@@ -136,8 +136,8 @@ public class PaperExportService {
             IOUtils.write(json, out);
 
             // 复制试卷到导出目录
-            File src = new File(new File(paperDir, paper.getRealDirectoryName()), paper.getUuidName());
-            File dst = new File(exportDir, paper.getRealDirectoryName());
+            File src = new File(paperDir, paper.getUuidName());
+            File dst = exportDir;
 
             try {
                 FileUtils.copyFileToDirectory(src, dst);

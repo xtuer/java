@@ -38,7 +38,7 @@
             <div class="ui column">
                 <button class="ui right floated circular basic button" id="open-export-dialog-button">导出</button>
                 <div class="toggle-buttons">
-                    <div class="ui labeled icon button" id="popup-choose-papers-dialog-button"><i class="icon plus"></i>添加试卷</div>
+                    <!--<div class="ui labeled icon button" id="popup-choose-papers-dialog-button"><i class="icon plus"></i>添加试卷</div>-->
                     <div class="ui labeled icon button" id="show-konwledge-points"><i class="icon tags"></i>所有知识点</div>
                 </div>
             </div>
@@ -133,15 +133,15 @@
                 <!-- 选择学科 -->
                 <div class="ui left action input" style="width: 100%;">
                     <select class="ui compact selection dropdown" v-model="subject">
-                        <option value="高中语文">高中语文</option>
-                        <option value="高中数学">高中数学</option>
-                        <option value="高中英语">高中英语</option>
-                        <option value="高中政治">高中政治</option>
-                        <option value="高中物理">高中物理</option>
-                        <option value="高中化学">高中化学</option>
-                        <option value="高中历史">高中历史</option>
-                        <option value="高中地理">高中地理</option>
-                        <option value="高中生物">高中生物</option>
+                        <option value="语文">语文</option>
+                        <option value="数学">数学</option>
+                        <option value="英语">英语</option>
+                        <option value="政治">政治</option>
+                        <option value="物理">物理</option>
+                        <option value="化学">化学</option>
+                        <option value="历史">历史</option>
+                        <option value="地理">地理</option>
+                        <option value="生物">生物</option>
                     </select>
                     <input type="text" placeholder="搜索……" v-model.trim="nameFilter" @keyup.enter="findPapers()" style="border-radius: 0;">
                     <div type="submit" class="ui button" @click="findPapers()" style="border-radius: 0 .28571429rem .28571429rem 0;">搜索</div>

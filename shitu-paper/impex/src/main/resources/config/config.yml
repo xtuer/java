@@ -22,20 +22,20 @@ questionJsonDir: /Users/Biao/Desktop/question/json
 # 试卷信息的 xml 文件夹
 # xml/GYWT033C.xml
 # xml/GDLT030C.xml
-paperXmlDir: /Users/Biao/Documents/乐教乐学试题/套卷/paper-info/xml
+paperXmlDir: /Users/Biao/Documents/乐学乐教试题/套卷/paper-info/xml
 
 # 试卷信息的 json 文件夹
 # json/GYWT033C.json
 # json/GDLT030C.json
-paperJsonDir:  /Users/Biao/Documents/乐教乐学试题/套卷/paper-info/json
+paperJsonDir:  /Users/Biao/Documents/乐学乐教试题/套卷/paper-info/json
 
 # 试卷 doc 文件存储位置
 # doc/地理，第一级为学科
-paperDocDir: /Users/Biao/Documents/乐教乐学试题/套卷/doc
-paperDirectoryJson: /Users/Biao/Documents/乐教乐学试题/套卷/directory.json
+paperDocDir: /Users/Biao/Documents/乐学乐教试题/套卷/doc
+paperDirectoryJson: /Users/Biao/Documents/乐学乐教试题/套卷/directory.json
 
 # 试卷的最终 JSON 文件
-paperJson: /Users/Biao/Documents/乐教乐学试题/套卷/paper.json
+paperJson: /Users/Biao/Documents/乐学乐教试题/套卷/paper.json
 
 # 试卷最终保存的目录
-paperDocFinalDir: /Users/Biao/Documents/乐教乐学试题/套卷/doc-final
+paperDocFinalDir: /Users/Biao/Documents/乐学乐教试题/套卷/doc-final

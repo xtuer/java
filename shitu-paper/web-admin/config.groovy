@@ -15,9 +15,9 @@ environments {
         }
 
         paper {
-            paperDirectory = '/Users/Biao/Documents/套卷/papers'
-            exportDirectory = '/Users/Biao/Documents/套卷/export'
-            previewDirectory = '/Users/Biao/Documents/套卷/preview'
+            paperDirectory   = '/Users/Biao/Documents/乐学乐教试题/套卷/doc-final'
+            exportDirectory  = '/Users/Biao/Documents/乐学乐教试题/套卷/temp/export'
+            previewDirectory = '/Users/Biao/Documents/乐学乐教试题/套卷/temp/preview'
         }
 
         question {
@@ -43,13 +43,13 @@ environments {
         }
 
         paper {
-            paperDirectory = '/data/shitu.edu-edu.com/papers'
-            exportDirectory = '/data/shitu.edu-edu.com/export'
-            previewDirectory = '/data/shitu.edu-edu.com/preview'
+            paperDirectory   = '/data/shitu.edu-edu.com/data/paper'
+            exportDirectory  = '/data/shitu.edu-edu.com/temp/export'
+            previewDirectory = '/data/shitu.edu-edu.com/temp/preview'
         }
 
         question {
-            imageDirectory = '/data/shitu.edu-edu.com/question-data/question-img'
+            imageDirectory = '/data/shitu.edu-edu.com/data/question-img'
         }
 
         baseUrl = ''

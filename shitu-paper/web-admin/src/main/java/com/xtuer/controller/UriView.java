@@ -55,8 +55,8 @@ public interface UriView {
     String REST_PAPERS_SEARCH_IN_DIRECTORY       = "/rest/paperDirectories/{paperDirectoryId}/papers/search";
     String REST_PAPERS_COUNT_SEARCH_IN_DIRECTORY = "/rest/paperDirectories/{paperDirectoryId}/papers/countAsSearch";
 
-    String PAPER_PREVIEW_INDEX = "/preview/{realDirectory}/{paperBaseName}/index.html";
-    String PAPER_PREVIEW_IMAGE = "/preview/{realDirectory}/{paperBaseName}/img/{imageName:.+}";
+    String PAPER_PREVIEW_INDEX = "/preview/{paperBaseName}/index.html";
+    String PAPER_PREVIEW_IMAGE = "/preview/{paperBaseName}/img/{imageName:.+}";
 
     // 知识点
     String REST_KNOWLEDGE_POINTS           = "/rest/knowledgePoints";

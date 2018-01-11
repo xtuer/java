@@ -244,8 +244,9 @@ public class PaperController {
 
         try {
             Paper paper = paperMapper.findPaperByPaperId(paperId);
+            String extension = FilenameUtils.getExtension(paper.getUuidName());
 
-            String filename = new String(paper.getOriginalName().getBytes("UTF-8"), "ISO8859_1"); // 解决乱码问题
+            String filename = new String(paper.getOriginalName().getBytes("UTF-8"), "ISO8859_1") + "." + extension; // 解决乱码问题
             response.setContentType("application/octet-stream"); // 以流的形式下载文件
             response.setHeader("Content-Disposition", "attachment;filename=" + filename);
 
@@ -263,18 +264,17 @@ public class PaperController {
     /**
      * 试卷预览 html 页面
      *
-     * @param realDirectory
      * @param paperBaseName
      * @param response
      */
     @GetMapping(UriView.PAPER_PREVIEW_INDEX)
-    public void paperPreviewIndex(@PathVariable String realDirectory, @PathVariable String paperBaseName, HttpServletResponse response) {
+    public void paperPreviewIndex(@PathVariable String paperBaseName, HttpServletResponse response) {
         InputStream in = null;
         OutputStream out = null;
 
         try {
             response.setContentType("text/html;charset=UTF-8"); // 返回 html
-            in = new FileInputStream(paperService.getPaperPreviewIndex(realDirectory, paperBaseName));
+            in = new FileInputStream(paperService.getPaperPreviewIndex(paperBaseName));
             out = response.getOutputStream();
             IOUtils.copy(in, out);
         } catch (Exception ex) {
@@ -288,13 +288,12 @@ public class PaperController {
     /**
      * 试卷预览页的图片
      *
-     * @param realDirectory
      * @param paperBaseName
      * @param imageName
      * @param response
      */
     @GetMapping(UriView.PAPER_PREVIEW_IMAGE)
-    public void paperPreviewImage(@PathVariable String realDirectory, @PathVariable String paperBaseName,
+    public void paperPreviewImage(@PathVariable String paperBaseName,
                                   @PathVariable String imageName, HttpServletResponse response) {
         InputStream in = null;
         OutputStream out = null;
@@ -302,7 +301,7 @@ public class PaperController {
         try {
             String imageExt = FilenameUtils.getExtension(imageName); // 图片文件名的后缀
             response.setContentType(ContentType.getContentType(imageExt)); // 返回图片
-            in = new FileInputStream(paperService.getPaperPreviewImage(realDirectory, paperBaseName, imageName));
+            in = new FileInputStream(paperService.getPaperPreviewImage(paperBaseName, imageName));
             out = response.getOutputStream();
             IOUtils.copy(in, out);
         } catch (Exception ex) {

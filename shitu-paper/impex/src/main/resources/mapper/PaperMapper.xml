@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="mapper.PaperMapper">
+    <insert id="insertPaper" parameterType="Paper">
+        INSERT INTO paper(paper_id, name, uuid_name, original_name, paper_directory_id,
+                          subject, publish_year, region, paper_from, paper_type,
+                          original_paper_id, status, is_deleted, created_time, tenant_code)
+        VALUES(#{paperId}, #{name}, #{uuidName}, #{originalName}, #{paperDirectoryId},
+               #{subject}, #{publishYear}, #{region}, #{paperFrom}, #{paperType},
+               #{originalPaperId}, 0, 0, now(), 'default')
+        ON DUPLICATE KEY UPDATE name=#{name}
+    </insert>
+</mapper>
