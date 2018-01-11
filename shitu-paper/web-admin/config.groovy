@@ -24,6 +24,7 @@ environments {
             imageDirectory = '/Users/Biao/Documents/乐教乐学试题/单题/question-img'
         }
 
+        idWorker = 0
         baseUrl = ''
         logDir = "/temp/shitu.edu-edu.com/logs"
     }
@@ -52,6 +53,7 @@ environments {
             imageDirectory = '/data/shitu.edu-edu.com/data/question-img'
         }
 
+        idWorker = 0
         baseUrl = ''
         logDir = "/data/shitu.edu-edu.com/logs"
     }

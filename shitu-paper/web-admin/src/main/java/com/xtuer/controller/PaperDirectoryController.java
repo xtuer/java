@@ -4,6 +4,7 @@ import com.xtuer.bean.KnowledgePoint;
 import com.xtuer.bean.PaperDirectory;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.PaperDirectoryMapper;
+import com.xtuer.service.SnowflakeIdWorker;
 import com.xtuer.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,9 @@ import java.util.Map;
 
 @Controller
 public class PaperDirectoryController {
+    @Autowired
+    private SnowflakeIdWorker idWorker;
+
     @Autowired
     private PaperDirectoryMapper directoryMapper;
 
@@ -61,7 +65,7 @@ public class PaperDirectoryController {
             return Result.fail(CommonUtils.getBindingMessage(bindingResult));
         }
 
-        paperDirectory.setPaperDirectoryId(CommonUtils.uuid());
+        paperDirectory.setPaperDirectoryId(idWorker.nextId() + "");
         directoryMapper.createPaperDirectory(paperDirectory);
 
         return Result.ok("", paperDirectory);

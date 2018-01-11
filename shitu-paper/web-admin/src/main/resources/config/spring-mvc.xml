@@ -21,6 +21,10 @@
             </list>
         </property>
     </bean>
+    <!-- 分布式唯一 ID 生成器 -->
+    <bean id="idWorker" class="com.xtuer.service.SnowflakeIdWorker">
+        <constructor-arg value="@idWorker@"/>
+    </bean>
 
     <!-- 静态的文件的 URL 映射 -->
     <import resource="classpath:config/spring-view-controller.xml"/>

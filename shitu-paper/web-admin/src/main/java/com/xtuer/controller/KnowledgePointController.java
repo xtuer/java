@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.KnowledgePoint;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.KnowledgePointMapper;
+import com.xtuer.service.SnowflakeIdWorker;
 import com.xtuer.util.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @Controller
 public class KnowledgePointController {
+    @Autowired
+    private SnowflakeIdWorker idWorker;
+
     @Autowired
     private KnowledgePointMapper mapper;
 
@@ -76,7 +80,7 @@ public class KnowledgePointController {
             return Result.fail(CommonUtils.getBindingMessage(bindingResult));
         }
 
-        knowledgePoint.setKnowledgePointId(CommonUtils.uuid());
+        knowledgePoint.setKnowledgePointId(idWorker.nextId() + "");
         knowledgePoint.setName(knowledgePoint.getName().trim());
         mapper.createKnowledgePoint(knowledgePoint);
 
