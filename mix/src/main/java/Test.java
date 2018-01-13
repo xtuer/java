@@ -2,9 +2,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Test {
     public static void main(String[] args) {
-        for (int i = 0; i < 1024; ++i) {
-            foo(i);
-        }
+        System.out.println(System.currentTimeMillis());
+        System.out.println(Long.toBinaryString(System.currentTimeMillis()));
+        System.out.println(Long.MAX_VALUE);
+        System.out.println((0xFFFFFFFFFFL*2+1) / 1000.0 / 3600.0 / 24.0 / 365);
+        System.out.println(Math.pow(2, 41) / 1000.0 / 3600.0 / 24.0 / 365);
     }
 
     public static void foo(long machineId) {

@@ -33,6 +33,11 @@ public class Student {
 }
 ```
 
+> 比较有意思的是 `replace`，格式可以理解为 `ExcelValue_JavaValue`: **JavaValue** 为代码中的值，**ExcelValue** 为 Excel 文件中的值:
+>
+> * 导出时 **JavaValue** 会被替换为 **ExcelValue** 保存到 Excel 文件中
+> * 导入时 Excel 文件里的 **ExcelValue** 会被替换为 **JavaValue** 来设置代码中的值
+
 ## 执行导出
 
 使用 `ExcelExportUtil.exportExcel()` 执行导出
@@ -69,6 +74,33 @@ public class Test {
 | 计算机一班学生 |      |            |      |
 | ------- | ---- | ---------- | ---- |
 | 学生姓名    | 性别   | 出生日期       | 入学日期 |
-| 无底      | 男生   | 2018-01-06 |      |
-| 黄彪      | 男生   | 2018-01-06 |      |
-| 雷雷      | 女生   | 2018-01-06 |      |
+| 无名      | 男生   | 2018-01-06 |      |
+| 杜非      | 男生   | 2018-01-06 |      |
+| 小白      | 女生   | 2018-01-06 |      |
+
+## 执行导入
+
+使用 `ExcelExportUtil.importExcel()` 执行导出，导入上面导出得到的 Excel
+
+```java
+package poi;
+
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import com.alibaba.fastjson.JSON;
+
+import java.io.File;
+import java.util.List;
+
+public class Test {
+    public static void main(String[] args) throws Exception {
+        ImportParams params = new ImportParams();
+        params.setTitleRows(1); // 注意这里，大多数时候用 0
+        params.setHeadRows(1);
+        List<Student> students = ExcelImportUtil.importExcel(new File("/Users/Biao/Desktop/x.xls"),Student.class, params);
+        System.out.println(JSON.toJSONString(students));
+    }
+}
+```
+
+> `titleRows`: 一般导入的 Excel 第一行就是列名，此时 titleRows 使用 0，上面的程序使用 1 是因为导入的文件的第一行增加了一个标题，第二行才是列名。
