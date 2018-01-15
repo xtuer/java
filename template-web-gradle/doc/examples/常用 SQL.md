@@ -1,3 +1,5 @@
+[TOC]
+
 ## 建表语句
 
 ```sql
@@ -129,4 +131,63 @@ SELECT CAST(id AS CHAR) AS id FROM question
 ```sql
 SELECT CONCAT(subject_code, '-', original_id) FROM question WHERE is_marked=1
 ```
+
+## 添加索引
+
+* 唯一索引
+
+  ```sql
+  ALTER TABLE `table_name` ADD UNIQUE (`column`)
+  ```
+
+* 普通索引
+
+  ```sql
+  ALTER TABLE `table_name` ADD INDEX index_name (`column`)
+  ```
+
+* 多列索引
+
+  ```sql
+  ALTER TABLE `table_name` ADD INDEX index_name (`column1`, `column2`, `column3`)
+  ```
+
+* 建表时用 `KEY` 创建
+
+  ```sql
+  CREATE TABLE `demo` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `info` text COLLATE utf8_unicode_ci NOT NULL,
+      `is_marked` tinyint(11) DEFAULT '0',
+      `count` int(11) DEFAULT NULL,
+      `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`),
+      KEY `idx_modified_at` (`modified_at`),
+      KEY `idx_count` (`count`)
+  ) ENGINE=InnoDB
+  ```
+
+## 删除索引
+
+```sql
+ALTER TABLE table_name DROP INDEX index_name
+```
+
+## 创建视图
+
+```sql
+DROP VIEW IF EXISTS view_paper_knowledge_point;
+
+CREATE VIEW view_paper_knowledge_point
+AS SELECT
+    pkpr.paper_id AS paper_id,
+    kp.knowledge_point_id AS knowledge_point_id,
+    kp.name AS name,
+    kp.tenant_code AS tenant_code
+FROM paper_knowledge_point_relation pkpr
+LEFT JOIN knowledge_point kp ON pkpr.knowledge_point_id = kp.knowledge_point_id
+WHERE kp.is_deleted=0;
+```
+
+
 
