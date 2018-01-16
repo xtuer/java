@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 @Service
@@ -14,15 +15,29 @@ public class RedisService {
     private StringRedisTemplate redisTemplate;
 
     /**
-     * 缓存优先读取 JavaBean
+     * 缓存优先读取 JavaBean，如果缓存中没有，则从数据库查询并保存到缓存
      *
      * @param redisKey key
-     * @param clazz 实体类型
+     * @param clazz    实体类型
      * @param supplier 缓存失败时的数据提供器， supplier == null 时 return null
-     * @param <T>   类型约束
+     * @param <T>      类型约束
      * @return 实体对象
      */
     public <T> T get(String redisKey, Class<T> clazz, Supplier<T> supplier) {
+        return get(redisKey, clazz, supplier, Long.MAX_VALUE);
+    }
+
+    /**
+     * 缓存优先读取 JavaBean，如果缓存中没有，则从数据库查询并保存到缓存
+     *
+     * @param redisKey       key
+     * @param clazz          实体类型
+     * @param supplier       缓存失败时的数据提供器， supplier == null 时 return null
+     * @param timeoutSeconds 缓存超时时间，单位为秒
+     * @param <T>            类型约束
+     * @return 实体对象
+     */
+    public <T> T get(String redisKey, Class<T> clazz, Supplier<T> supplier, long timeoutSeconds) {
         T d = null;
         String json = redisTemplate.opsForValue().get(redisKey);
 
@@ -39,7 +54,7 @@ public class RedisService {
             d = supplier.get();
             // 这里需要考虑，null 对象如果不放缓存，如果这个对象被大量访问，会导致缓存穿透，增加数据库的压力
             if (d != null) {
-                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(d));
+                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(d), timeoutSeconds, TimeUnit.SECONDS);
             }
         }
 
@@ -47,15 +62,29 @@ public class RedisService {
     }
 
     /**
-     * 缓存优先读取 Collections Or Map
+     * 缓存优先读取 Collections Or Map，如果缓存中没有，则从数据库查询并保存到缓存
      *
-     * @param redisKey key
+     * @param redisKey      key
      * @param typeReference 反序列化集合时 FastJson 需要用 TypeReference 来指定类型，例如类型为 List<Demo>
-     * @param supplier 缓存失败时的数据提供器，supplier == null 时 return null
-     * @param <T>   类型约束
+     * @param supplier      缓存失败时的数据提供器，supplier == null 时 return null
+     * @param <T>           类型约束
      * @return 实体对象
      */
     public <T> T get(String redisKey, TypeReference<T> typeReference, Supplier<T> supplier) {
+        return get(redisKey, typeReference, supplier, Long.MAX_VALUE);
+    }
+
+    /**
+     * 缓存优先读取 Collections Or Map，如果缓存中没有，则从数据库查询并保存到缓存
+     *
+     * @param redisKey       key
+     * @param typeReference  反序列化集合时 FastJson 需要用 TypeReference 来指定类型，例如类型为 List<Demo>
+     * @param supplier       缓存失败时的数据提供器，supplier == null 时 return null
+     * @param timeoutSeconds 缓存超时时间，单位为秒
+     * @param <T>            类型约束
+     * @return 实体对象
+     */
+    public <T> T get(String redisKey, TypeReference<T> typeReference, Supplier<T> supplier, long timeoutSeconds) {
         T d = null;
         String json = redisTemplate.opsForValue().get(redisKey);
 
@@ -72,7 +101,7 @@ public class RedisService {
             d = supplier.get();
             // 这里需要考虑，null 对象如果不放缓存，如果这个对象被大量访问，会导致缓存穿透，增加数据库的压力
             if (d != null) {
-                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(d));
+                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(d), timeoutSeconds, TimeUnit.SECONDS);
             }
         }
 
