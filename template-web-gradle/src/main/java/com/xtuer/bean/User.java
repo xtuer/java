@@ -64,7 +64,7 @@ public class User extends org.springframework.security.core.userdetails.User {
     }
 
     /**
-     * 用户是直接从数据库查询生成的，或者用户信息修改后，例如角色修改后不会更新到父类的 authorities 中，需要重新创建一个用户对象才行
+     * 用户是直接从数据库查询生成的，或者用户信息修改后，例如角色、可用状态修改后不会更新到父类的 authorities 中，需要重新创建一个用户对象才行
      *
      * @param user 已有用户对象
      * @return 新的用户对象，权限等信息更新到了父类的 authorities 中
@@ -84,5 +84,8 @@ public class User extends org.springframework.security.core.userdetails.User {
         User user2 = new User("Bob", "Passw0rd", "ROLE_USER", "ROLE_ADMIN");
         System.out.println(JSON.toJSONString(user2));
         System.out.println(user2.getRoles());
+
+        user2.setEnabled(false);
+        System.out.println(JSON.toJSONString(user2));
     }
 }
