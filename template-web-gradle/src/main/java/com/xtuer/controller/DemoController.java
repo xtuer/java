@@ -1,13 +1,14 @@
 package com.xtuer.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
+import com.xtuer.service.RedisService;
 import com.xtuer.service.SnowflakeIdWorker;
 import com.xtuer.util.Utils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import javax.servlet.Filter;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 @Controller
@@ -37,6 +37,9 @@ public class DemoController {
 
     @Autowired
     private SnowflakeIdWorker idWorker;
+
+    @Autowired
+    private RedisService redis;
 
     @Resource(name = "config")
     private Properties config;
@@ -75,7 +78,20 @@ public class DemoController {
     @RequestMapping(Urls.API_DEMO_MYBATIS)
     @ResponseBody
     public Result<Demo> queryDemoFromDatabase(@PathVariable int id) {
-        return Result.ok("", demoMapper.findDemoById(id));
+        String redisKey = "demo_" + id; // 对象在 Redis 中的 key
+        Demo d = redis.get(redisKey, Demo.class, () -> demoMapper.findDemoById(id));
+
+        return Result.ok(d);
+    }
+
+    /**
+     * URL: http://localhost:8080/api/demo/mybatis
+     */
+    @RequestMapping("/api/demo/mybatis")
+    @ResponseBody
+    public Result<List<Demo>> demos() {
+        List<Demo> demos = redis.get("demos", new TypeReference<List<Demo>>(){}, () -> demoMapper.allDemos());
+        return Result.ok(demos);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
