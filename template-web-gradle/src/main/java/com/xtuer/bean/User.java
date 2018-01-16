@@ -41,20 +41,22 @@ public class User extends org.springframework.security.core.userdetails.User {
      * @param roles    角色
      */
     public User(Long id, String username, String password, String... roles) {
-        this(username, password, true, roles);
+        this(id, username, password, true, roles);
         this.id = id;
     }
 
     /**
      * 使用账号、密码、是否禁用、角色创建用户
      *
+     * @param id 用户的 ID
      * @param username 账号
      * @param password 密码
      * @param enabled  是否禁用
      * @param roles    角色
      */
-    public User(String username, String password, boolean enabled, String... roles) {
+    public User(Long id, String username, String password, boolean enabled, String... roles) {
         super(username, password, enabled, true, true, true, AuthorityUtils.createAuthorityList(roles));
+        this.id = id;
         this.username = username;
         this.password = password;
         this.enabled  = enabled;
@@ -62,13 +64,16 @@ public class User extends org.springframework.security.core.userdetails.User {
     }
 
     /**
-     * 用户信息修改后，例如角色修改后不会更新到父类的 authorities 中，需要重新创建一个用户对象才行
+     * 用户是直接从数据库查询生成的，或者用户信息修改后，例如角色修改后不会更新到父类的 authorities 中，需要重新创建一个用户对象才行
      *
      * @param user 已有用户对象
      * @return 新的用户对象，权限等信息更新到了父类的 authorities 中
      */
     public static User userForSpringSecurity(User user) {
-        return new User(user.username, user.password, user.enabled, user.getRoles().toArray(new String[0]));
+        User newUser = new User(user.id, user.username, user.password, user.enabled, user.getRoles().toArray(new String[0]));
+        newUser.mail = user.mail;
+
+        return newUser;
     }
 
     public static void main(String[] args) {
