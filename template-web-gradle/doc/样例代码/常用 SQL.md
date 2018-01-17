@@ -1,36 +1,5 @@
 [TOC]
 
-## 建表语句
-
-```sql
-#-------------------------------------------
-# 表名：question
-# 作者：二狗
-# 日期：2018-04-01
-# 版本：1.0
-# 描述：保存题目
-#------------------------------------------
-DROP TABLE IF EXISTS question;
-
-CREATE TABLE question (
-    id bigint(20) unsigned NOT NULL COMMENT '题目 ID',
-    type varchar(8) DEFAULT ''      COMMENT '题目类型',
-    content mediumtext              COMMENT '题目内容：题干+选项',
-    analysis mediumtext             COMMENT '题目解析',
-    answer text                     COMMENT '题目答案',
-    demand varchar(32) DEFAULT ''   COMMENT '教学要求',
-    score int(11) DEFAULT 0         COMMENT '题目分值',
-    difficulty int(11) DEFAULT 0    COMMENT '题目难度',
-    original_id varchar(64) DEFAULT  ''        COMMENT '题目在乐教乐学数据库中的 ID',
-    subject_code varchar(64) DEFAULT ''        COMMENT '题目的科目编码',
-    knowledge_point_code varchar(8) DEFAULT '' COMMENT '题目的知识点编码',
-    knowledge_point_id bigint(20) DEFAULT 0    COMMENT '题目的知识点 ID',
-    is_marked tinyint(4) DEFAULT 0             COMMENT '是否被标记过，0 为未标记，1 为已标记',
-    created_time datetime DEFAULT NULL         COMMENT '创建时间',
-    updated_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-```
 
 ## 分页查询
 
@@ -46,8 +15,7 @@ SELECT * FROM question WHERE subject_code='XXX' LIMIT 0, 30
 
 ```sql
 # id 是唯一主键
-INSERT INTO question(id, type, content)
-VALUES(#{id}, #{type}, #{content})
+INSERT INTO question (id, type, content) VALUES (#{id}, #{type}, #{content})
 ON DUPLICATE KEY UPDATE content=#{content}
 ```
 
@@ -130,6 +98,50 @@ SELECT CAST(id AS CHAR) AS id FROM question
 
 ```sql
 SELECT CONCAT(subject_code, '-', original_id) FROM question WHERE is_marked=1
+```
+
+## 返回布尔值
+
+JDBC 标准中，`0 表示 false，1 表示 true`，大于 1 和小于 0 的数没有定义，MySQL 的 JDBC Driver 中 <=0 表示 false，>=1 表示 true，为了保险起见，使用 EXISTS 来查询返回布尔值
+
+```sql
+SELECT EXISTS (
+    SELECT 1 FROM paper WHERE paper_id=#{paperId}
+)
+```
+
+## 建表语句
+
+建表语句中需要有足够的注释描述每一列的作用，便于维护
+
+```sql
+#-------------------------------------------
+# 表名：question
+# 作者：公孙二狗
+# 日期：2018-04-01
+# 版本：1.0
+# 描述：保存题目
+#------------------------------------------
+DROP TABLE IF EXISTS question;
+
+CREATE TABLE question (
+    id bigint(20) unsigned NOT NULL COMMENT '题目 ID',
+    type varchar(8) DEFAULT ''      COMMENT '题目类型',
+    content mediumtext              COMMENT '题目内容：题干+选项',
+    analysis mediumtext             COMMENT '题目解析',
+    answer text                     COMMENT '题目答案',
+    demand varchar(32) DEFAULT ''   COMMENT '教学要求',
+    score int(11) DEFAULT 0         COMMENT '题目分值',
+    difficulty int(11) DEFAULT 0    COMMENT '题目难度',
+    original_id varchar(64) DEFAULT  ''        COMMENT '题目在乐教乐学数据库中的 ID',
+    subject_code varchar(64) DEFAULT ''        COMMENT '题目的科目编码',
+    knowledge_point_code varchar(8) DEFAULT '' COMMENT '题目的知识点编码',
+    knowledge_point_id bigint(20) DEFAULT 0    COMMENT '题目的知识点 ID',
+    is_marked tinyint(4) DEFAULT 0             COMMENT '是否被标记过，0 为未标记，1 为已标记',
+    created_time datetime DEFAULT NULL         COMMENT '创建时间',
+    updated_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB COMMENT '存储题目的表';
 ```
 
 ## 添加索引
