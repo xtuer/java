@@ -5,7 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
-import com.xtuer.service.RedisService;
+import com.xtuer.service.RedisDao;
 import com.xtuer.service.SnowflakeIdWorker;
 import com.xtuer.util.Utils;
 import org.apache.commons.io.FileUtils;
@@ -39,7 +39,7 @@ public class DemoController {
     private SnowflakeIdWorker idWorker;
 
     @Autowired
-    private RedisService redis;
+    private RedisDao redis;
 
     @Resource(name = "config")
     private Properties config;
