@@ -71,8 +71,9 @@ public final class Result<T> {
 
     // 测试
     public static void main(String[] args) {
+        // JSON
         Result<User> r1 = Result.ok();
-        Result<User> r2 = Result.ok("Yes", new User("Alice", "Passw0rd"));
+        Result<User> r2 = Result.ok(new User("Alice", "Passw0rd"));
         Result<User> r3 = Result.ok("Yes", new Demo(123456L, "Physics"));
 
         System.out.println(JSON.toJSONString(r1));
@@ -80,5 +81,8 @@ public final class Result<T> {
         System.out.println(JSON.toJSONString(r3));
 
         System.out.println(r3.getData());
+
+        // JSONP
+        System.out.println(Result.jsonp("callback", Result.ok("Hello")));
     }
 }

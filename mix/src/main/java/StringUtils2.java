@@ -1,6 +1,6 @@
 import java.io.UnsupportedEncodingException;
 
-public class StringUtils {
+public class StringUtils2 {
     protected static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
 
     public static String bytesToHex(byte[] bytes) {
