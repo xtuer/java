@@ -14,11 +14,9 @@
          ├── paperDirectories.json
          ├── paperKnowledgePointRelation.json
          ├── papers
-         │   ├── 61
+         │   ├── docs
          │   │   └── 7147825F-91F2-42A8-9CDB-854E1BD9F6C1.doc
-         │   ├── 73
          │   │   └── AE0E4D19-45EE-4EE9-AA8A-BC89913C2D52.doc
-         │   └── 74
          │       └── F358C958-BE6A-489E-B9F5-081AA331BB27.doc
          └── papers.json
      ```
@@ -31,6 +29,6 @@
        * url: JDBC 连接字符串，注意修改 `数据库名` 和 `字符集` (电子书包里字符集修改为 GB2312)
        * 用户名和密码
 
-  4. 导入试卷: `java Main`
+  4. 导入试卷: `java -Dfile.encoding=UTF-8 Main`
 
 
