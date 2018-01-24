@@ -31,4 +31,6 @@
 
   4. 导入试卷: `java -Dfile.encoding=UTF-8 Main`
 
+  5. 把试卷文件目录 papers 复制到指定的目录，以便电子书包里能够访问
+
 
