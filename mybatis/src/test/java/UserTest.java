@@ -16,4 +16,9 @@ public class UserTest {
     public void findUsers() {
         System.out.println(JSON.toJSONString(mapper.users(), true));
     }
+
+    @Test
+    public void findUserByNameAndCountry() {
+        System.out.println(JSON.toJSONString(mapper.userByNameAndCountry("Biao", "china"), true));
+    }
 }
