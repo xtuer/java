@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+CREATE TABLE `user` (
+    `name` varchar(256) DEFAULT NULL,
+    `email` varchar(256) DEFAULT NULL,
+    `country` varchar(256) DEFAULT NULL,
+    `province` varchar(256) DEFAULT NULL,
+    `street` varchar(256) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-->
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.xtuer.mapper.UserMapper">
+    <select id="userByName" parameterType="string" resultMap="userResultMap">
+        SELECT name, email, country, province, street FROM user WHERE name=#{name}
+    </select>
+
+    <resultMap id="userResultMap" type="User">
+        <!-- 使用 <id> 时把 name 相同的行作为一个对象，然后进行 collection 映射，如果把 <id> 换为 <result>，有多个 name 相同的行时报错 -->
+        <id property="name" column="name"/>
+        <result property="email" column="email"/>
+        <collection property="addresses" resultMap="addressResultMap"/>
+    </resultMap>
+
+    <resultMap id="addressResultMap" type="Address">
+        <result property="country" column="country"/>
+        <result property="province" column="province"/>
+        <result property="street" column="street"/>
+    </resultMap>
+</mapper>
