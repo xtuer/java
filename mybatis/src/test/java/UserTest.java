@@ -1,5 +1,4 @@
 import com.alibaba.fastjson.JSON;
-import com.xtuer.bean.User;
 import com.xtuer.mapper.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +13,7 @@ public class UserTest {
     private UserMapper mapper;
 
     @Test
-    public void findUser() {
-        User user = mapper.userByName("biao");
-        System.out.println(JSON.toJSONString(user, true));
+    public void findUsers() {
+        System.out.println(JSON.toJSONString(mapper.users(), true));
     }
 }

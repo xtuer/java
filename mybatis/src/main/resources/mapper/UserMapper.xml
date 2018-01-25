@@ -16,12 +16,12 @@ CREATE TABLE `user` (
 
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.UserMapper">
-    <select id="userByName" parameterType="string" resultMap="userResultMap">
-        SELECT name, email, country, province, street FROM user WHERE name=#{name}
+    <select id="users" resultMap="userResultMap">
+        SELECT name, email, country, province, street FROM user
     </select>
 
     <resultMap id="userResultMap" type="User">
-        <!-- 使用 <id> 时把 name 相同的行作为一个对象，然后进行 collection 映射，如果把 <id> 换为 <result>，有多个 name 相同的行时报错 -->
+        <!-- 使用 <id> 时把 name 相同的行作为一个对象，然后进行 collection 映射，如果把 <id> 换为 <result>，name 相同的行不会归类为同一个对象 -->
         <id property="name" column="name"/>
         <result property="email" column="email"/>
         <collection property="addresses" resultMap="addressResultMap"/>
