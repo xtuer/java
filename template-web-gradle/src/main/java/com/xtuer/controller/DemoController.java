@@ -249,12 +249,14 @@ public class DemoController {
     // URL: http://localhost:8080/form/demo/upload
     @PostMapping(Urls.FORM_DEMO_UPLOAD)
     @ResponseBody
-    public Result uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public Result uploadFile(@RequestParam("file") MultipartFile file,
+                             @RequestParam String username,
+                             @RequestParam String password) throws IOException {
         logger.debug(file.getOriginalFilename());
         // 不会自动创建文件夹，没有就报错，为了简单，可以使用 IOUtils 来处理
         // 会覆盖同名文件
-        file.transferTo(new File("/Users/Biao/Desktop/x/" + file.getOriginalFilename()));
-        return Result.ok("OK", file.getOriginalFilename());
+        file.transferTo(new File("/Users/Biao/Desktop/" + file.getOriginalFilename()));
+        return Result.ok("Username: " + username + ", Password: " + password + ", File: " + file.getOriginalFilename());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
