@@ -82,13 +82,15 @@ dependencies {
 }
 
 ext {
-    // 运行和打包的环境选择, 默认是开发环境
-    // 构建: gradle clean build
-    //       gradle clean build -Denv=production
-    // 部署: gradle clean deploy
-    //       gradle clean deploy -Denv=production
-    environment = System.getProperty("env", "development") // 获取 gradle 参数中 env 的值，选择环境
     war.archiveName = 'Fox.zip' // 打包的文件名，不用 war 包自动解压的话，用 .zip 会更好一些
+
+    // 运行、打包以及部署的环境选择, 默认是开发环境(即命令没有 -Denv 参数)
+    // 运行: gradle clean appStart
+    // 构建: gradle clean build,  gradle clean build  -Denv=production
+    // 部署: gradle clean deploy, gradle clean deploy -Denv=production
+    environment = System.getProperty("env", "development") // 获取 gradle 参数中 env 的值，选择环境
+    props = new ConfigSlurper(environment).parse(file('config.groovy').toURI().toURL()).toProperties()
+    println "加载配置用于环境: ${environment}"
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +98,6 @@ ext {
 ////////////////////////////////////////////////////////////////////////////////
 processResources {
     // src/main/resources 下的文件中 @key@ 的内容使用 config.groovy 里对应的进行替换
-    println "==> Load configuration for '${environment}'"
-    def configFile = file('config.groovy') // 配置文件
-    def props = new ConfigSlurper(environment).parse(configFile.toURI().toURL()).toProperties()
-
     from(sourceSets.main.resources.srcDirs) {
         filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: props)
     }
@@ -110,11 +108,13 @@ processResources {
 ////////////////////////////////////////////////////////////////////////////////
 remotes {
     server {
-        host = '192.168.82.133'
-        user = 'root'
+        host     = props.getProperty('deploy.hostname')
+        user     = props.getProperty('deploy.username')
+        password = props.getProperty('deploy.password')
+
         // password 和 identity 只用其中一个
         // password = 'xxx'
-        identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+        // identity = file("${System.properties['user.home']}/.ssh/id_rsa")
     }
 }
 
