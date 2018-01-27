@@ -89,16 +89,17 @@ public class Jwt {
     }
 
     private static String sign(Map<String, String> params, String appKey) {
-        // 初始化用来计算签名的字符串 toSignedText 为 appKey，
+        // 初始化计算签名的字符串 signedText 为 appKey，
         // 然后按照 params 中 key 的字母序遍历 params，value 挨个的加在到 toSignedText 后面
+        // 对
         Map<String, String> sortedMap = new TreeMap<>(params);
-        StringBuilder toSignedText = new StringBuilder(appKey);
+        StringBuilder signedText = new StringBuilder(appKey);
 
         for (Map.Entry<String, String> entry : sortedMap.entrySet()) {
-            toSignedText.append(entry.getValue());
+            signedText.append(entry.getValue());
         }
 
-        return Utils.md5(toSignedText.toString());
+        return Utils.md5(signedText.toString());
     }
 
     /**
@@ -156,10 +157,10 @@ public class Jwt {
          * 使用 appId, appKey, signedAt [, expiredAt], params 生成 token.
          * 生成算法为:
          *     1. 添加 appId, signedAt[, 如果 expiredAt 不为 null 也加入] 到 params 中
-         *     2. 初始化用来计算签名的字符串 toSignedText 为 appKey
-         *     3. 按照 params 中 key 的字母序遍历 params，value 挨个的加在到 toSignedText 后面
-         *     4. signature = MD5(toSignedText)
-         *     5. 把 params 转换为 JSON 字符串并使用 URL Save 的 BASE64 对其进行编码得到 payload
+         *     2. 初始化计算签名的字符串 signedText 为 appKey
+         *     3. 按照 params 中 key 的字母序遍历 params，value 挨个的加在到 signedText 后面
+         *     4. signature = MD5(signedText)
+         *     5. 把 params 转换为 JSON 字符串并使用 URL Safe 的 BASE64 对其进行编码得到 payload
          *     6. 最后得到的签名结果为 payload.signature
          *
          * @return 返回使用 JWT 签名的字符串
