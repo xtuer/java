@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,6 +33,9 @@ import java.util.*;
 public class DemoController {
     private static Logger logger = LoggerFactory.getLogger(DemoController.class.getName());
 
+    @Value("${maxUploadSize}")
+    private long size;
+
     @Autowired
     private DemoMapper demoMapper;
 
@@ -40,9 +44,6 @@ public class DemoController {
 
     @Autowired
     private RedisDao redis;
-
-    @Resource(name = "config")
-    private Properties config;
 
     @Autowired
     private FilterChainProxy filterChainProxy;
@@ -297,21 +298,9 @@ public class DemoController {
     // URL: http://localhost:8080/demo/properties
     @GetMapping("/demo/properties")
     @ResponseBody
-    public String properties() {
-        System.out.println(config.getProperty("jdbc.driverClassName"));
-        System.out.println(config.getProperty("jdbc.url"));
-        System.out.println(config.getProperty("jdbc.password"));
-        System.out.println(config.getProperty("urls[0]"));
-
-        Enumeration en = config.propertyNames();
-        while (en.hasMoreElements()) {
-            String key = en.nextElement().toString();
-            String value = config.getProperty(key);
-
-            System.out.println(key + " : " + value);
-        }
-
-        return config.getProperty("jdbc.password");
+    public Result properties() {
+        System.out.println("Size: " + size);
+        return Result.ok(size);
     }
 
     /**
