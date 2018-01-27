@@ -72,7 +72,7 @@
 
     <!-- 使用 thymeleaf 模版 -->
     <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
-        <property name="prefix"       value="/WEB-INF/page/"/>
+        <property name="prefix"       value="/WEB-INF/page-x/"/>
         <property name="templateMode" value="HTML"/>
         <property name="cacheable"    value="${thymeleafCacheable}"/>
     </bean>
@@ -86,7 +86,7 @@
 
     <!-- 上传文件 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="50000000"/> <!-- 单位为 Byte -->
+        <property name="maxUploadSize" value="${maxUploadSize}"/> <!-- 单位为 Byte -->
     </bean>
 
     <!-- 自定义异常处理器 -->
@@ -106,10 +106,15 @@
 
     <!-- 静态资源的访问，如 js, css, jpg, png -->
     <!-- 如 HTML 里访问 /static/js/jquery.js, 则实际访问的是 /WEB-INF/static/js/jquery.js -->
-    <mvc:resources mapping="/static/js/**"   location="/WEB-INF/static/js/"   cache-period="31556926"/>
-    <mvc:resources mapping="/static/css/**"  location="/WEB-INF/static/css/"  cache-period="31556926"/>
-    <mvc:resources mapping="/static/img/**"  location="/WEB-INF/static/img/"  cache-period="31556926"/>
-    <mvc:resources mapping="/static/lib/**"  location="/WEB-INF/static/lib/"  cache-period="31556926"/>
-    <mvc:resources mapping="/static/html/**" location="/WEB-INF/static/html/" cache-period="31556926"/>
-    <mvc:resources mapping="/favicon.ico"    location="/WEB-INF/static/img/favicon.ico" cache-period="31556926"/>
+    <mvc:resources mapping="/static/js/**"     location="/WEB-INF/static/js/"     cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static/css/**"    location="/WEB-INF/static/css/"    cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static/img/**"    location="/WEB-INF/static/img/"    cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static/lib/**"    location="/WEB-INF/static/lib/"    cache-period="${cachePeriod}"/>
+
+    <mvc:resources mapping="/static-x/js/**"   location="/WEB-INF/static-x/js/"   cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static-x/css/**"  location="/WEB-INF/static-x/css/"  cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static-x/img/**"  location="/WEB-INF/static-x/img/"  cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static-x/lib/**"  location="/WEB-INF/static-x/lib/"  cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/static-x/html/**" location="/WEB-INF/static-x/html/" cache-period="${cachePeriod}"/>
+    <mvc:resources mapping="/favicon.ico"      location="/WEB-INF/static/img/favicon.ico" cache-period="${cachePeriod}"/>
 </beans>

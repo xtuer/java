@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/login.css" rel="stylesheet">
+    <link href="/static-x/css/login.css" rel="stylesheet">
 
     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -37,7 +37,7 @@
 
 <script type="text/javascript">
 $(function(){
-    $('.avatar').css({ "background-image": "url('/static/img/admin-offline.png')" });
+    $('.avatar').css({ "background-image": "url('/static-x/img/admin-offline.png')" });
     var status = $('#status').text();
 
     if ('login-success' == status) {
@@ -45,7 +45,7 @@ $(function(){
         $('input').hide();
         $('form').attr('action', '/logout');
         $('#login').html("注销").removeClass("btn-info").addClass("btn-default");
-        $('.avatar').css({ "background-image": "url('/static/img/admin-online.png')" });
+        $('.avatar').css({ "background-image": "url('/static-x/img/admin-online.png')" });
     } else if ('login-error' == status) {
         // 登录失败
         $("#output").removeClass('alert alert-success');
