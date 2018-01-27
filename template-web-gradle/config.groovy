@@ -25,8 +25,6 @@ environments {
         }
 
         idWorker = 0
-
-        logDir = '/temp/logs'
         thymeleafCacheable = false
     }
 
@@ -53,8 +51,6 @@ environments {
         }
 
         idWorker = 0
-
-        logDir = '/temp/logs'
         thymeleafCacheable = true
     }
 }

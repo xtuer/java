@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <configuration scan="true" scanPeriod="30 seconds">
-    <property name="logDir" value="@logDir@"/>
+    <property name="logDir" value="/temp/logs"/>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
