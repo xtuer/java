@@ -26,16 +26,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    // 运行和打包的环境选择, 默认是开发环境
-    // 构建: gradle clean build
-    //       gradle clean build -Denv=production
-    // 部署: gradle clean deploy
-    //       gradle clean deploy -Denv=production
-    environment = System.getProperty("env", "development") // 获取 gradle 参数中 env 的值，选择环境
-    war.archiveName = 'Fox.zip' // 打包的文件名，不用 war 包自动解压的话，用 .zip 会更好一些
-}
-
 ext.versions = [
         spring        : '5.0.2.RELEASE',
         springSecurity: '5.0.0.RELEASE',
@@ -89,6 +79,16 @@ dependencies {
     compileOnly("javax.servlet:javax.servlet-api:${versions.servlet}")
     testCompile("org.springframework:spring-test:${versions.spring}")
     testCompile("junit:junit:${versions.junit}")
+}
+
+ext {
+    // 运行和打包的环境选择, 默认是开发环境
+    // 构建: gradle clean build
+    //       gradle clean build -Denv=production
+    // 部署: gradle clean deploy
+    //       gradle clean deploy -Denv=production
+    environment = System.getProperty("env", "development") // 获取 gradle 参数中 env 的值，选择环境
+    war.archiveName = 'Fox.zip' // 打包的文件名，不用 war 包自动解压的话，用 .zip 会更好一些
 }
 
 ////////////////////////////////////////////////////////////////////////////////
