@@ -11,7 +11,7 @@
            http://www.springframework.org/schema/mvc
            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <!-- 加载配置 -->
-    <context:property-placeholder location="classpath:config/application.properties"/>
+    <context:property-placeholder location="classpath:config/application.properties" file-encoding="UTF-8"/>
 
     <!-- 静态文件的 URL 映射 -->
     <import resource="classpath:config/spring-view-controller.xml"/>

@@ -24,7 +24,7 @@ public class RedisDao {
      * @return 实体对象
      */
     public <T> T get(String redisKey, Class<T> clazz, Supplier<T> supplier) {
-        return get(redisKey, clazz, supplier, Long.MAX_VALUE);
+        return get(redisKey, clazz, supplier, Integer.MAX_VALUE-10);
     }
 
     /**
@@ -71,7 +71,7 @@ public class RedisDao {
      * @return 实体对象
      */
     public <T> T get(String redisKey, TypeReference<T> typeReference, Supplier<T> supplier) {
-        return get(redisKey, typeReference, supplier, Long.MAX_VALUE);
+        return get(redisKey, typeReference, supplier, Integer.MAX_VALUE-10);
     }
 
     /**
