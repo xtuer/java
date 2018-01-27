@@ -111,10 +111,6 @@ remotes {
         host     = props.getProperty('deploy.hostname')
         user     = props.getProperty('deploy.username')
         password = props.getProperty('deploy.password')
-
-        // password 和 identity 只用其中一个
-        // password = 'xxx'
-        // identity = file("${System.properties['user.home']}/.ssh/id_rsa")
     }
 }
 
@@ -149,6 +145,6 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
-tasks.withType(JavaCompile) {
+compileJava {
     options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 }
