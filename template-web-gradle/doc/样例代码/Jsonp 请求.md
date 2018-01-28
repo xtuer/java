@@ -14,6 +14,12 @@ public String jsonpTest(@RequestParam String callback) {
 ## 浏览器
 
 ```js
+// 1. 使用 jquery.rest.js 中自定义插件
+$.jsonp('http://127.0.0.1:8080/demo/jsonp-test', function(data) {
+    console.log(data);
+});
+
+// 2. 使用 jQuery 的 ajax 函数
 $.ajax({
     url     : 'http://127.0.0.1:8080/demo/jsonp-test',
     type    : 'GET',

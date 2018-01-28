@@ -174,4 +174,22 @@
             });
         }
     };
+
+    /**
+     * 执行 Jsonp 请求，服务器端访问回调函数名使用 key 为 'callback'
+     * 
+     * @param  {String}   url      请求的 URL
+     * @param  {Function} callback 请求成功的回调函数，参数为服务器端返回的结果
+     * @return 无返回值
+     */
+    $.jsonp = function(url, callback) {
+        $.ajax({
+            url     : url,
+            type    : 'GET',
+            dataType: 'jsonp',
+            success : function(data) {
+                callback && callback(data);
+            }
+        });
+    };
 })(jQuery);

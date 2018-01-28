@@ -68,12 +68,16 @@
             }});
 
             // [5] JSONP
+            $.jsonp('http://127.0.0.1:8080/demo/jsonp-test', function(data) {
+                console.log('jsonp-1: ' + JSON.stringify(data));
+            });
+
             $.ajax({
                 url     : 'http://127.0.0.1:8080/demo/jsonp-test',
                 type    : 'GET',
                 dataType: 'jsonp', // 表示要用 JSONP 进行跨域访问
                 success : function(a) { // 随机生成回调函数名
-                    console.log(a);
+                    console.log('jsonp-2: ' + JSON.stringify(a));
                 }
             });
 

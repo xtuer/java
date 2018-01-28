@@ -1,6 +1,6 @@
 ## 服务器
 
-处理 Ajax 请求的函数返回 **Result** 类型:
+处理 Ajax 请求的函数返回类型规定为 **Result**，统一返回格式，减少不必要的混乱:
 
 ```java
 @GetMapping(UriView.REST_KNOWLEDGE_POINTS)
@@ -26,7 +26,7 @@ public Result updateQuestionsCount() {
 
 ## 浏览器
 
-使用 jQuery 的 Rest 插件 **jquery.rest.js** 进行 Ajax 请求:
+使用 jQuery 的 Rest 插件 **jquery.rest.js** 进行 Ajax 请求，使用 RESTful 风格:
 
 * `获取数据` 使用 GET，前端调用 `$.rest.get()`，后端使用 `@GetMapping`
 
@@ -60,6 +60,8 @@ public Result updateQuestionsCount() {
   }});
   ```
 
+## 更多示例
+
 使用方法参考 <http://qtdebug.com/fe-rest/>，下面列举了一些例子:
 
 ```html
@@ -77,6 +79,13 @@ public Result updateQuestionsCount() {
         $.rest.get({url: '/rest', data: {name: 'Alice'}, success: function(result) {
             console.log(result);
         }});
+ 
+        // url 中可以使用 {name} 的参数占位符，然后使用 urlParams 中的属性替换
+        $.rest.get({url: '/api/users/{userId}', urlParams: {userId: 23}, data: {name: 'Alice'}, 
+            success: function(result) {
+                console.log(result);
+            }
+        });
       
         // [2] 普通 form 表单提交 rest Ajax 请求
         $.rest.create({url: '/rest', success: function(result) {
