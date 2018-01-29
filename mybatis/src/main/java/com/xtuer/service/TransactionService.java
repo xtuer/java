@@ -18,7 +18,7 @@ public class TransactionService {
 
     private int demoId = 3;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateData() {
         String info = System.currentTimeMillis() + "";
         System.out.println("1. Before Update: " + info);
@@ -28,8 +28,25 @@ public class TransactionService {
         demo.setInfo(info);
         mapper.updateDemo(demo);
 
+        try {
+            // updateDataRollback();
+        } catch (Exception ex) {
+
+        }
         selectData(); // 调用同一个对象的方法，所以 selectData() 没有开启新的事务
         service2.selectData(); // 因为是不同对象，故开启新事务
+
+        // throw new RuntimeException("MyBatis rollback");
+    }
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void updateDataRollback() {
+        Demo demo = new Demo();
+        demo.setId(demoId);
+        demo.setInfo("for rollback");
+        mapper.updateDemo(demo);
+
+        throw new RuntimeException("MyBatis rollback");
     }
 
     @Transactional(propagation= Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)

@@ -17,6 +17,7 @@
     <!-- 匹配的 URL 不进行身份验证 -->
     <http security="none" pattern="/page/login"/>
     <http security="none" pattern="/static/**"/>
+    <http security="none" pattern="/static-x/**"/>
 
     <http auto-config="true" use-expressions="false"
             access-decision-manager-ref="accessDecisionManager"

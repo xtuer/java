@@ -1,6 +1,6 @@
 URI 规范和变量名 :
 
-1. 返回数据的 URL 要使用 **Restful** 风格，最直接的好处是 1 个 URL 可以有 4 种功能，方便管理，还符合流行技术
+1. 返回数据的 URL 要使用 **RESTful** 风格，最直接的好处是 1 个 URL 可以有 4 种功能，方便管理，还符合流行技术
 
    > 可阅读 [RESTful API 设计最佳实践](https://segmentfault.com/a/1190000011516151)
 
@@ -10,7 +10,7 @@ URI 规范和变量名 :
 
 4. 普通 FORM 表单处理 URI 的变量名以 `FORM_` 开头，此 URI 以 `/form` 开头
 
-5. 操作资源的 api 变量名以 `API_` 开头，此 URI 以 `/api` 开头，使用 RESTful 风格
+5. 操作资源的 API 变量名以 `API_` 开头，此 URI 以 `/api` 开头，使用 RESTful 风格
 
 ```java
 String PAGE_LOGIN       = "/page/login";  // 登陆
