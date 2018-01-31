@@ -33,10 +33,10 @@ public class TransactionService {
         } catch (Exception ex) {
 
         }
-        selectData(); // 调用同一个对象的方法，所以 selectData() 没有开启新的事务
-        service2.selectData(); // 因为是不同对象，故开启新事务
+        // selectData(); // 调用同一个对象的方法，所以 selectData() 没有开启新的事务
+        // service2.selectData(); // 因为是不同对象，故开启新事务
 
-        // throw new RuntimeException("MyBatis rollback");
+        throw new RuntimeException("MyBatis rollback");
     }
 
     @Transactional(propagation= Propagation.REQUIRES_NEW, rollbackFor = Exception.class)

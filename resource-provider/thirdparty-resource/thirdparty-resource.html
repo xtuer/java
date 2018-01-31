@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://cdn.staticfile.org/zTree.v3/3.5.28/css/zTreeStyle/zTreeStyle.min.css">
+
+    <style media="screen">
+        body, hmtl {
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar {
+            position: absolute;
+            width: 200px;
+            min-height: 500px;
+            border-right: 1px solid gray;
+        }
+
+        .main {
+            position: absolute;
+            left: 200px;
+            right: 0;
+            min-height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="sidebar">
+            <!-- 第三方资源提供方列表 -->
+            <ul id="providers">
+                <!--<li class="provider">华夏大地教育网</li>-->
+            </ul>
+        </div>
+
+        <div class="main">
+            <button id="collect-button">收藏到云盘</button>
+
+            <!-- zTree 的 DOM -->
+            <ul id="resource-tree" class="ztree"></ul>
+        </div>
+    </div>
+
+    <script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://cdn.staticfile.org/zTree.v3/3.5.28/js/jquery.ztree.all.min.js"></script>
+    <script src="js/Resource.js"></script>
+    <script>
+        // [1] 页面加载时请求第三方资源提供方
+        requestResourceProviders();
+
+        // [2] 点击收藏按钮时得到选中的书的名字和 url
+        $('#collect-button').on('click', function() {
+            var books = window.tree.getCheckedNodes();
+            for (var i = 0; i < books.length; ++i) {
+                var bookName = books[i].name;
+                var bookUrl = books[i].url;
+
+                console.log(bookName, bookUrl); // TODO: 收藏到电子书包
+            }
+        });
+
+        /**
+         * 请求第三方资源提供方
+         *
+         * @return 无返回值
+         */
+        function requestResourceProviders() {
+            $.get('thirdparty-providers.xml', function(xml) {
+                $('providers > provider', xml).each(function() {
+                    var providerName = $(this).attr('name');
+                    var metadataUrl = $(this).attr('metadata-url');
+
+                    var $provider = $('<li>');
+                    $provider.text(providerName);
+                    $provider.attr('metadata-url', metadataUrl);
+                    $provider.appendTo($('#providers'));
+                    $provider.click(function() {
+                        requestAndShowResource(metadataUrl);
+                    });
+                });
+            }, 'xml');
+        }
+
+        /**
+         * 请求并显示资源
+         *
+         * @param  {String} metadataUrl 资源描述的文件路径
+         * @return 无返回值
+         */
+        function requestAndShowResource(metadataUrl) {
+            // 请求资源的 XML 描述文件，然后创建 zTree
+            $.get(metadataUrl, function(xml) {
+                // 如果已经存在则销毁掉
+                if (window.tree) {
+                    window.tree.destroy();
+                }
+
+                // 使用资源的 XML 描述文件的内存创建资源对象
+                var resource = new Resource(xml);
+                var setting = {
+                    check: {
+                        enable: true
+                    },
+                    view: {
+                        showIcon: true
+                    }
+                };
+
+                window.tree = $.fn.zTree.init($('#resource-tree'), setting, resource.nodes);
+            }, 'xml');
+        }
+    </script>
+</body>
+
+</html>

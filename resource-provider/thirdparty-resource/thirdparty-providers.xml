@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<providers>
+    <provider name="世界图书出版社" metadata-url="thirdparty-resources/resource-st.xml"/>
+    <provider name="华夏大地教育网" metadata-url="thirdparty-resources/resource-hxdd.xml"/>
+</providers>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+    <catalog name="教材信息">
+        <textbook_list>
+            <textbook url="http://www.ebag.com/hello.pdf">高中语文/人教课标版/高一/必修1梳理探究/优美的汉字</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中语文/人教课标版/高一/必修1梳理探究/奇妙的对联</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中语文/人教课标版/高一/必修1表达交流/“黄河九曲” 写事要有点波澜</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中语文/人教课标版/高一/必修1第一单元/2 诗两首</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中语文/人教课标版/高一/必修1第一单元/3 大堰河——我的保姆</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中语文/人教课标版/高一/必修1第二单元/6 赤壁赋</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中英语/人教课标版/高一/必修1 Unit 3 Travel journal</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中物理/人教课标版/高一/必修1第一章 运动的描述/1.质点 参考系和坐标系</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中物理/人教课标版/高一/必修1第一章 运动的描述/2.时间和位移</textbook>
+        </textbook_list>
+    </catalog>
+    <catalog name="学科与专题">
+        <textbook_list>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第二单元 列强武装侵略与中国人民的反抗/1.从鸦片战争到八国联军侵华</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第三单元 近代中国的民主革命/1.太平天国运动</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第三单元 近代中国的民主革命/2.辛亥革命</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第三单元 近代中国的民主革命/3.新民主主义革命的崛起</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第四单元 现代中国的政治建设与祖国统一/1.新中国的民主政治建设</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第四单元 现代中国的政治建设与祖国统一/2.民主政治建设的曲折发展</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第五单元 现代中国的对外关系/1.新中国初期的外交建树</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中历史/人教课标版/高一/必修1第五单元 现代中国的对外关系/3.改革开放以来的中国外交</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中地理/人教课标版/高一/必修1第一章 行星地球/第一节 宇宙中的地球</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中地理/人教课标版/高一/必修1第一章 行星地球/第二节 太阳对地球的影响</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中地理/人教课标版/高一/必修1第二章 地球上的大气/第一节 冷热不均引起大气运动</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中地理/人教课标版/高一/必修1第二章 地球上的大气/第二节 气压带和风带</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中地理/人教课标版/高一/必修1第三章 地球上的水/第一节 自然界的水循环</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中地理/人教课标版/高一/必修1第三章 地球上的水/第二节 大规模的海水运动</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中生物/人教课标版/高一/必修1第1章 走近细胞/第1节 从生物圈到细胞</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第1节 细胞中的元素和化合物</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第2节 生命活动的主要承担者――蛋白质</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第3节 遗传信息的携带者――核酸</textbook>
+            <textbook url="http://www.ebag.com/hello.pdf">高中生物/人教课标版/高一/必修1第3章 细胞的基本结构/第1节 细胞膜――系统的边界</textbook>
+        </textbook_list>
+    </catalog>
+</resource>

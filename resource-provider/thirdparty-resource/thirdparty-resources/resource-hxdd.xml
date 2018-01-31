@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+    <catalog name="课程标准">
+        <textbook_list>
+            <textbook url="http://www.baidu.com">高中思想政治/人教课标版/高一/必修1第七课 个人收入的分配/按劳分配为主体 多种分配方式并存</textbook>
+            <textbook url="http://www.baidu.com">高中思想政治/人教课标版/高一/必修1第八课 国家收入的分配/财政收入与支出</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第一章 集合与函数概念/1.1 集合</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第一章 集合与函数概念/1.2 函数及其表示</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第二章 基本初等函数/2.1 指数函数</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第二章 基本初等函数/2.2 对数函数</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第三章 函数的应用/3.1 函数与方程</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第一章 空间几何体/1.1 空间几何体的结构</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第一章 空间几何体/1.2 空间几何体的三视图和直观图</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第二章 点.直线.平面之间的位置关系/2.1 空间点.直线.平面之间的位置关系</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第二章 点.直线.平面之间的位置关系/2.2 直线.平面平行的判定及其性质</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第三章 直线与方程/3.1 直线的倾斜角与斜率</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第三章 直线与方程/3.2 直线的方程</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第四章 圆与方程/4.1 圆的方程</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第四章 圆与方程/4.2 直线.圆的位置关系</textbook>
+        </textbook_list>
+    </catalog>
+    <catalog name="学科与专题">
+        <textbook_list>
+            <textbook url="http://www.baidu.com">高中地理/人教课标版/高一/必修1第三章 地球上的水/第二节 大规模的海水运动</textbook>
+            <textbook url="http://www.baidu.com">高中生物/人教课标版/高一/必修1第1章 走近细胞/第1节 从生物圈到细胞</textbook>
+            <textbook url="http://www.baidu.com">高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第1节 细胞中的元素和化合物</textbook>
+            <textbook url="http://www.baidu.com">高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第2节 生命活动的主要承担者――蛋白质</textbook>
+            <textbook url="http://www.baidu.com">高中生物/人教课标版/高一/必修1第2章 组成细胞的分子/第3节 遗传信息的携带者――核酸</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第二章 基本初等函数/2.1 指数函数</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第二章 基本初等函数/2.2 对数函数</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修1第三章 函数的应用/3.1 函数与方程</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第一章 空间几何体/1.1 空间几何体的结构</textbook>
+            <textbook url="http://www.baidu.com">高中数学/人教课标版/高一/必修2第一章 空间几何体/1.2 空间几何体的三视图和直观图</textbook>
+            <textbook url="http://www.baidu.com">高中历史/人教课标版/高一/必修1第五单元 现代中国的对外关系/3.改革开放以来的中国外交</textbook>
+            <textbook url="http://www.baidu.com">高中地理/人教课标版/高一/必修1第一章 行星地球/第一节 宇宙中的地球</textbook>
+            <textbook url="http://www.baidu.com">高中地理/人教课标版/高一/必修1第一章 行星地球/第二节 太阳对地球的影响</textbook>
+            <textbook url="http://www.baidu.com">高中地理/人教课标版/高一/必修1第二章 地球上的大气/第一节 冷热不均引起大气运动</textbook>
+        </textbook_list>
+    </catalog>
+</resource>

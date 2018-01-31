@@ -8,19 +8,19 @@
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!-- Enable Transaction -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-
-    <!-- 使用 AspectJ 取代 Spring AOP 代理，注意: 好像回滚不生效 -->
-    <!-- Spring AOP 使用 CGLIB 生成代理，类名为 OriginalClassName$$EnhancerBySpringCGLIB -->
-    <!--<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>-->
     <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
         <!--<property name="dataSource" ref="dataSource"/>-->
     <!--</bean>-->
-    <!--<bean class="org.springframework.transaction.aspectj.AnnotationTransactionAspect" factory-method="aspectOf">-->
-        <!--<property name="transactionManager" ref="transactionManager"/>-->
-    <!--</bean>-->
+
+    <!-- 使用 AspectJ 取代 Spring AOP 代理，注意: 好像回滚不生效 -->
+    <!-- Spring AOP 使用 CGLIB 生成代理，类名为 OriginalClassName$$EnhancerBySpringCGLIB -->
+    <tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean class="org.springframework.transaction.aspectj.AnnotationTransactionAspect" factory-method="aspectOf">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
 </beans>
