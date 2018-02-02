@@ -34,7 +34,7 @@ public class JsonUtil {
     }
 
     public static void main(String[] args) throws IOException {
-        User user = new User(1, "Alice", "alice@gmail.com");
+        User user = new User(1L, "Alice", "alice@gmail.com");
 
         String json = JsonUtil.toJson(user);
         System.out.println(json);

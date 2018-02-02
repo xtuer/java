@@ -119,7 +119,7 @@ public class JwtUtils {
     }
 
     public static void main(String[] args) {
-        User user = new User(1234, "Biao", "biao.mac@icloud.com", "ROLE_ADMIN", "ROLE_USER");
+        User user = new User(1234L, "Biao", "biao.mac@icloud.com", "ROLE_ADMIN", "ROLE_USER");
 
         String token = generateToken(user);
         System.out.println(token);

@@ -2,14 +2,16 @@ import com.alibaba.fastjson.JSON;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class User {
-    private int id;
+    private Long id;
     private String username;
     private String email;
     private boolean isLast;
@@ -18,7 +20,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String username, String email, String... roles) {
+    public User(Long id, String username, String email, String... roles) {
         this.id = id;
         this.email = email;
         this.username = username;

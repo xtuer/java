@@ -10,7 +10,7 @@ public class UserEditor extends PropertyEditorSupport {
         String[] components = text.split(",");
 
         User user = new User();
-        user.setId(Integer.parseInt(components[0].trim()));
+        user.setId(Long.parseLong(components[0].trim()));
         user.setUsername(components[1].trim());
         user.setEmail(components[2].trim());
 
