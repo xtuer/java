@@ -1,5 +1,4 @@
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class Test {
     private static SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);

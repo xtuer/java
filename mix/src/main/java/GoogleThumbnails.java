@@ -8,7 +8,7 @@ import net.coobird.thumbnailator.Thumbnails;
 @Accessors(chain = true)
 public class GoogleThumbnails {
     public static void main(String[] args) throws Exception {
-        Thumbnails.of("/Users/Biao/Pictures/Rock_stars_by_vladstudio2.jpg")
+        Thumbnails.of("/Users/Biao/Pictures/bridge.jpg")
                 .size(300, 300).outputQuality(0.7)
                 .toFile("/Users/Biao/Desktop/x.jpg");
     }
