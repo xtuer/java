@@ -127,11 +127,11 @@ task deploy(dependsOn: war) {
                 execute """
                     source /root/.bash_profile;
                     /usr/local/tomcat/bin/shutdown.sh;
-                    rm -rf ${targetDir}/ROOT;
+                    rm -rf   ${targetDir}/ROOT;
                     unzip -u ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
+                    rm -rf   ${targetDir}/${war.archiveName};
                     kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \$2}'`;
                     /usr/local/tomcat/bin/startup.sh;
-                    rm -rf ${targetDir}/${war.archiveName};
                 """
             }
         }
