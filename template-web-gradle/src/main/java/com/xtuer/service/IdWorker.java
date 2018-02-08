@@ -3,18 +3,19 @@ package com.xtuer.service;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Snowflake 生成的 64 位 long 类型的 ID，结构如下:<br>
+ * 使用 Snowflake 算法生成的 64 位 long 类型的 ID，结构如下:<br>
  * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000 <br>
  * 1) 01 位标识，由于 long 在 Java 中是有符号的，最高位是符号位，正数是 0，负数是 1，ID 一般使用正数，所以最高位是 0<br>
  * 2) 41 位时间截(毫秒级)，注意，41 位时间截不是存储当前时间的时间截，而是存储时间截的差值(当前时间 - 开始时间)得到的值，
- *       开始时间截，一般是业务开始的时间，由我们程序来指定，如 SnowflakeIdWorker 中的 startTimestamp 属性。
+ *       开始时间截，一般是业务开始的时间，由我们程序来指定，如 IdWorker 中的 startTimestamp 属性。
  *       41 位的时间截，可以使用 70 年: (2^41)/(1000*60*60*24*365) = 69.7 年<br>
  * 3) 10 位的数据机器位，可以部署在 1024 个节点，包括 5 位 datacenterId 和 5 位 workerId<br>
  * 4) 12 位序列，毫秒内的计数，12 位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生 4096 个 ID 序号<br>
  *
- * SnowFlake 的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生 ID 碰撞(由数据中心 ID 和机器 ID 作区分)，并且效率较高，经测试，SnowFlake 每秒能够产生约 26 万个 ID。
+ * SnowFlake 的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生 ID 碰撞(由数据中心 ID 和机器 ID 作区分)，并且效率较高。
+ * 最多支持 1024 台机器，每台机器每毫秒能够生成最多 4096 个 ID，整个集群理论上每秒可以生成 1024 * 1000 * 4096 = 42 亿个 ID。
  */
-public class SnowflakeIdWorker {
+public class IdWorker {
     /** 开始时间截(2017-01-01)，单位毫秒 */
     private final long startTimestamp = 1483228800000L;
 
@@ -62,7 +63,7 @@ public class SnowflakeIdWorker {
      *
      * @param workerId 工作机器 ID
      */
-    public SnowflakeIdWorker(long workerId) {
+    public IdWorker(long workerId) {
         long maxMachineId = (maxDatacenterId+1) * (maxWorkerId+1) - 1; // 1023
 
         if (workerId < 0 || workerId > maxMachineId) {
@@ -79,7 +80,7 @@ public class SnowflakeIdWorker {
      * @param datacenterId 数据中心 ID (0~31)
      * @param workerId     工作机器 ID (0~31)
      */
-    public SnowflakeIdWorker(long datacenterId, long workerId) {
+    public IdWorker(long datacenterId, long workerId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("Worker ID can't be greater than %d or less than 0", maxWorkerId));
         }
@@ -153,7 +154,7 @@ public class SnowflakeIdWorker {
     }
 
     public static void main(String[] args) {
-        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        IdWorker idWorker = new IdWorker(0, 0);
 
         for (int i = 0; i < 1000; i++) {
             long id = idWorker.nextId();

@@ -6,7 +6,7 @@ import com.xtuer.bean.Demo;
 import com.xtuer.bean.Result;
 import com.xtuer.mapper.DemoMapper;
 import com.xtuer.service.RedisDao;
-import com.xtuer.service.SnowflakeIdWorker;
+import com.xtuer.service.IdWorker;
 import com.xtuer.util.Utils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -22,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.validation.Valid;
 import java.io.File;
@@ -40,7 +39,7 @@ public class DemoController {
     private DemoMapper demoMapper;
 
     @Autowired
-    private SnowflakeIdWorker idWorker;
+    private IdWorker idWorker;
 
     @Autowired
     private RedisDao redis;
