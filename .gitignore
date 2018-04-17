@@ -6,6 +6,7 @@ dump.rdb
 !template-vue-app/build/
 template-web-gradle/src/main/webapp/WEB-INF/page
 template-web-gradle/src/main/webapp/WEB-INF/static
+node_modules/
 
 ### Gradle ###
 build/

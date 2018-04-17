@@ -1,5 +1,5 @@
 import bean.Person;
-import com.xtuer.repository.PersonRepository;
+import repository.PersonRepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +12,7 @@ public class RepositoryTest {
         PersonRepository repository = context.getBean("personRepository", PersonRepository.class);
         // MongoTemplate template = context.getBean("mongoTemplate", MongoTemplate.class);
         // initData(repository);
-        testReconnect(repository);
+        // testReconnect(repository);
 
         // System.out.println(repository.findAll());
         System.out.println(repository.findByFirstName("Kelly"));

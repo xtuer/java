@@ -1,4 +1,4 @@
-package com.xtuer.repository;
+package repository;
 
 import bean.Person;
 import org.springframework.data.mongodb.repository.MongoRepository;

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
+import java.awt.Color;
 
 public class DrawSmoothCurve extends JPanel {
     private Point[] points = {
