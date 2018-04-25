@@ -125,7 +125,7 @@ public class PaperExportService {
         OutputStream out = new FileOutputStream(new File(directory, fileName), true); // 试卷 json 输出流
 
         File paperDir = new File(config.getProperty("paper.paperDirectory")); // 试卷文件的目录
-        File exportDir = new File(directory, "papers"); // 导出试卷的目录
+        File exportDir = new File(new File(directory, "papers"), "docs"); // 导出试卷的目录
 
         for (Paper paper : papers) {
             exporting(); // 因为写文件可能比较长，所以每写一次都写一次导出状态
