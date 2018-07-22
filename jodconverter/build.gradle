@@ -7,7 +7,7 @@ buildscript {
     dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0' }
 }
 
-mainClassName = 'Test' // TODO: 如果不是可执行 jar 包，不需要
+mainClassName = 'ConverterInSpring' // TODO: 如果不是可执行 jar 包，不需要
 
 jar {
     manifest { attributes 'Main-Class': mainClassName }
@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.jodconverter:jodconverter-spring:4.1.0'
+    compile 'org.jodconverter:jodconverter-spring:4.2.0'
     compile 'ch.qos.logback:logback-classic:1.1.2'
 }
 
