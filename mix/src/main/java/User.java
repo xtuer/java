@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -20,6 +21,11 @@ public class User {
     public User() {
     }
 
+    public User(long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     public User(Long id, String username, String email, String... roles) {
         this.id = id;
         this.email = email;
@@ -28,6 +34,19 @@ public class User {
         for (String role : roles) {
             this.roles.add(role);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 
     public static void main(String[] args) {

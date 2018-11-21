@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -96,5 +97,11 @@ public class HelloController {
     @ResponseBody
     public Result withDot(@PathVariable String withDot) {
         return Result.ok(withDot);
+    }
+
+    @GetMapping("/api/foo")
+    @ResponseBody
+    public Result foo(HttpServletRequest request) {
+        return Result.ok(request.getRequestURI() + ", " + request.getRequestURL());
     }
 }

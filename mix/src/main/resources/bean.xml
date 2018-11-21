@@ -7,10 +7,19 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder location="classpath:config.properties" file-encoding="UTF-8"/>
     <!-- 该 BeanPostProcessor 将自动对标注 @Autowired 的 Bean 进行注入 -->
     <!--<context:annotation-config/>-->
     <context:component-scan base-package="com.xtuer"/>
 
-    <bean id="admin" class="com.xtuer.bean.Admin"/>
-    <bean id="company" class="com.xtuer.bean.Company"/>
+    <bean id="tokenWhiteListService" class="com.xtuer.TokenWhiteListService"/>
+
+    <bean id="whiteList" class="java.util.HashSet">
+        <constructor-arg>
+            <set>
+                <value>/api/schools</value>
+                <value>/api/colors</value>
+            </set>
+        </constructor-arg>
+    </bean>
 </beans>

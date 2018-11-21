@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     compile 'org.mongodb:mongo-java-driver:3.6.3'
-    compile 'org.springframework.data:spring-data-mongodb:2.0.5.RELEASE'
+    compile 'org.springframework.data:spring-data-mongodb:2.1.2.RELEASE'
 
     compileOnly 'org.projectlombok:lombok:1.16.18'
     testCompile 'junit:junit:4.12'

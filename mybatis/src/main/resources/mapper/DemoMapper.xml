@@ -11,8 +11,8 @@ CREATE TABLE `demo` (
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.xtuer.mapper.DemoMapper">
     <!--使用 id 查找 Demo-->
-    <select id="findDemoById" parameterType="int" resultType="Demo">
-        SELECT id, info
+    <select id="findDemoById" parameterType="int" resultMap="demoResultMap">
+        SELECT id, info, is_marked
         FROM demo
         WHERE id=#{id}
     </select>
@@ -42,4 +42,18 @@ CREATE TABLE `demo` (
     <insert id="insertDemo" parameterType="Demo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO demo (info) VALUES (#{info})
     </insert>
+
+    <!--
+        1. Result Map 里属性名和 select 的字段名一样的可以不用写 result，MyBatis 会自动识别并设置查询到的值，
+           也就是说如果 select 和 bean 里的字段名都是一一对应的，result map 可以是空的，bean 的属性都会自动设置好，
+           下面的 id 和 info 都注释掉了，仍然被正确的设置了
+        2. select 中的字段可以比 result map 里的多或者少，例如下面多出来的 extra 没问题
+        3. select 中的字段 is_marked 在 Demo 中没有对应的属性，所以需要写对应的 result 才能正确设置
+    -->
+    <resultMap id="demoResultMap" type="Demo">
+        <!--<id     property="id"    column="id"/>-->
+        <!--<result property="info"  column="info"/>-->
+        <result property="marked" column="is_marked"/>
+        <result property="extra"  column="extra"/>
+    </resultMap>
 </mapper>
