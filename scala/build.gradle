@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'scala'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.3'
+}
+
+// [1] Scala 需要的依赖
+dependencies {
+    compile "org.scala-lang:scala-library:2.12.7"
+    compile "org.scala-lang:scala-compiler:2.12.7"
+    compile "org.scala-lang:scala-reflect:2.12.7"
+}
+
+// [2.1] 从命令行运行默认类: gradle run
+// [2.2] 从命令行运行某个类: gradle run -DmainClass=Foo
+ext {
+    project.mainClassName = System.getProperty("mainClass", "AppDemo")
+}
+
+// [3] 打包: gradle clean shadowJar [-DmainClass=Foo]
+shadowJar {
+    mergeServiceFiles('META-INF/spring.*')
+}

@@ -5,9 +5,17 @@ import java.util.Random;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        System.out.println(new File("abc").getAbsolutePath());
+        System.out.println(sum(4, 3, 1));
     }
 
+    /**
+     *
+     * @param w
+     * @param h
+     * @param refW
+     * @param refH
+     * @return
+     */
     public static Dimension scaleKeepAspectRatio(int w, int h, int refW, int refH) {
         // 1. 计算宽和高的比例
         // 2. 如果宽或高任意一个大于对应的参考宽或高, 则需要进行缩放
@@ -25,6 +33,24 @@ public class Test {
         }
 
         return new Dimension(resultW, resultH);
+    }
+
+    public static int pow(int x, int n, int t) {
+        if (n < 1) {
+            return t;
+        } else {
+            return pow(x, n-1, t*x);
+        }
+    }
+
+    public static int sum(int... items) {
+        int total = 0;
+
+        for (int item : items) {
+            total += item;
+        }
+
+        return total;
     }
 }
 

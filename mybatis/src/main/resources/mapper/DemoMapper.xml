@@ -17,11 +17,11 @@ CREATE TABLE `demo` (
         WHERE id=#{id}
     </select>
 
-    <select id="findDemosByInfo" parameterType="string" resultType="Demo">
+    <select id="findDemosByInfo" parameterType="string" resultType="Demo"><![CDATA[
         SELECT id, info
         FROM demo
         WHERE info=#{info}
-    </select>
+    ]]></select>
 
     <!--是否存在 Demo，返回 boolean 使用 SELECT EXISTS 判断-->
     <select id="hasDemo" resultType="boolean">
