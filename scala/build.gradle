@@ -7,9 +7,9 @@ plugins {
 
 // [1] Scala 需要的依赖
 dependencies {
-    compile "org.scala-lang:scala-library:2.12.7"
-    compile "org.scala-lang:scala-compiler:2.12.7"
-    compile "org.scala-lang:scala-reflect:2.12.7"
+    compile "org.scala-lang:scala-library:2.12.8"
+    compile "org.scala-lang:scala-compiler:2.12.8"
+    compile "org.scala-lang:scala-reflect:2.12.8"
 }
 
 // [2.1] 从命令行运行默认类: gradle run

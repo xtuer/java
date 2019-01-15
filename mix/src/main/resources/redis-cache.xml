@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/cache
+       http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"/>
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="poolConfig" ref="jedisPoolConfig"/>
+        <property name="usePool"    value="true"/>
+        <property name="database"   value="0"/>
+    </bean>
+
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+    </bean>
+
+    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg ref="redisTemplate"/>
+        <property name="defaultExpiration" value="3000"/>
+        <property name="transactionAware" value="true"/>
+        <property name="usePrefix" value="true"/>
+    </bean>
+
+    <!-- 启用缓存注解功能，这个是必须的，否则注解不会生效: 使用 cacheManager -->
+    <cache:annotation-driven/>
+
+    <bean id="redisUserService" class="com.xtuer.RedisUserService"/>
+</beans>

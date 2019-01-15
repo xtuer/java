@@ -53,6 +53,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.11.2'
     compile 'com.auth0:java-jwt:3.3.0'
     compile 'org.t-io:tio-websocket-server:2.4.0.v20180508-RELEASE'
+    compile 'net.bramp.ffmpeg:ffmpeg:0.6.2'
 
 
     testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1'
