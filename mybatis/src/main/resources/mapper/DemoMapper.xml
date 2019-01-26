@@ -49,6 +49,7 @@ CREATE TABLE `demo` (
            下面的 id 和 info 都注释掉了，仍然被正确的设置了
         2. select 中的字段可以比 result map 里的多或者少，例如下面多出来的 extra 没问题
         3. select 中的字段 is_marked 在 Demo 中没有对应的属性，所以需要写对应的 result 才能正确设置
+        4. extra 不是 bean 的属性也没问题
     -->
     <resultMap id="demoResultMap" type="Demo">
         <!--<id     property="id"    column="id"/>-->

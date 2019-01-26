@@ -1,11 +1,10 @@
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.io.IOException;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        System.out.println(NumberUtils.toLong("abc", 12));
+        for (int i = 1; i < 16; ++i) {
+            System.out.println(i * 23 + "px");
+        }
     }
 }
 

@@ -1,1 +1,23 @@
-Welcome <span th:text="${name}"></span> to SpringMVC!
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+
+<body>
+    Welcome <span th:text="${name}"></span> to SpringMVC!
+
+    <script src="/static/lib/jquery.min.js"></script>
+    <script src="/static/lib/jquery.rest.js"></script>
+    <script>
+        console.log($.rest.get);
+
+        $.rest.get({ url: '/api/files', data: { ids: [1, 2, 3, 4] }, success: function(result) {
+            console.log(result);
+        } });
+    </script>
+</body>
+
+</html>

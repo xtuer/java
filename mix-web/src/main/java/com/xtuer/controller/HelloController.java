@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,6 +32,13 @@ public class HelloController {
         model.put("name", "Biao");
 
         return "hello.html";
+    }
+
+    @GetMapping("/api/files")
+    @ResponseBody
+    public Object files(@RequestParam(name = "ids[]") List<String> ids) {
+        System.out.println(ids);
+        return ids;
     }
 
     /**

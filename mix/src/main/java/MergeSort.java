@@ -14,7 +14,7 @@ public class MergeSort {
                 int aFirst = i;
                 int aLast  = aFirst + n - 1;
                 int bFirst = aLast + 1;
-                int bLast  = bFirst + n - 1;
+                int bLast  = Math.min(bFirst+n-1, a.length-1);
                 int cFirst = aFirst;
 
                 merge(a, aFirst, aLast, a, bFirst, bLast, c, cFirst, a.length);
