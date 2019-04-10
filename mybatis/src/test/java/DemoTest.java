@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -26,8 +27,10 @@ public class DemoTest {
 
     @Test
     public void findDemo() {
-        Demo demo = mapper.findDemoById(1);
+        Demo demo = mapper.findDemoById(6);
         System.out.println(JSON.toJSONString(demo));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(format.format(demo.getCreatedAt()));
     }
 
     @Test

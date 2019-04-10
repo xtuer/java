@@ -12,7 +12,7 @@ CREATE TABLE `demo` (
 <mapper namespace="com.xtuer.mapper.DemoMapper">
     <!--使用 id 查找 Demo-->
     <select id="findDemoById" parameterType="int" resultMap="demoResultMap">
-        SELECT id, info, is_marked
+        SELECT id, info, is_marked, created_at AS instant, instant AS createdAt, local_date_time AS localDateTime
         FROM demo
         WHERE id=#{id}
     </select>
@@ -40,7 +40,7 @@ CREATE TABLE `demo` (
 
     <!--useGeneratedKeys="true" keyProperty="id": demo 的 id 在插入后被赋值为自动生成的 id-->
     <insert id="insertDemo" parameterType="Demo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO demo (info) VALUES (#{info})
+        INSERT INTO demo (info, created_at, instant, local_date_time) VALUES (#{info}, #{createdAt}, #{instant}, #{localDateTime})
     </insert>
 
     <!--

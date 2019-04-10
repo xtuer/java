@@ -3,10 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -112,5 +109,52 @@ public class HelloController {
     @ResponseBody
     public Result foo(HttpServletRequest request) {
         return Result.ok(request.getRequestURI() + ", " + request.getRequestURL());
+    }
+
+    /**
+     * POST 请求中 url 可以有 query 参数，同时 body 的 form 表单也能传参数，
+     * 这 2 种参数都是使用 @RequestParam 进行获取
+     *
+     * 网址: http://localhost:8080/api/postWithQuery?hash=1234
+     * 参数: name
+     */
+    @PostMapping("/api/postWithQuery")
+    @ResponseBody
+    public Result postWithQuery(@RequestParam String hash, @RequestParam String name) {
+        return Result.ok(hash + " -> " + name);
+    }
+
+    // @PostMapping("/api/login")
+    // @ResponseBody
+    // public String post(@RequestParam String username, @RequestParam String password) {
+    //     return "Username: " + username + ", Password: " + password;
+    // }
+
+    @GetMapping("/api/login")
+    @ResponseBody
+    public String get(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+        System.out.println(request.getContentType());
+        return "Username: " + username + ", Password: " + password;
+    }
+
+
+    @PostMapping("/api/login")
+    @ResponseBody
+    public String put(@RequestBody Map map) {
+        return map.toString();
+    }
+
+    @PutMapping("/api/login2")
+    @ResponseBody
+    public String put2(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+        System.out.println(request.getContentType());
+        return "Username: " + username + ", Password: " + password;
+    }
+
+    @PutMapping("/api/login3")
+    @ResponseBody
+    public String put3(HttpServletRequest request) {
+        System.out.println(request.getContentType());
+        return "ok";
     }
 }
