@@ -4,6 +4,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,7 +45,7 @@ tags: Index
 */
 public class HexoSitemapGenerator {
     // Hexo Blog 的默认目录
-    private static final String BLOG_DIR_PATH = "/Users/Biao/Documents/workspace/Blog/source/_posts";
+    private static final String DEFAULT_BLOG_DIR = "/Users/Biao/Documents/workspace/Blog/source/_posts";
 
     // Sitemap 的头部
     private static final String SITEMAP_HEADER = "---\n" +
@@ -51,40 +55,37 @@ public class HexoSitemapGenerator {
             "---\n\n";
 
     public static void main(String[] args) throws IOException {
-        // 1. 获取所有的 md 文件
-        // 2. 遍历每一个 md 文件，抽取 title 和 tags
+        // 1. 遍历 md 文件
+        // 2. 抽取 md 文件的 title 和 tags，创建 meta 对象
         // 3. 生成 sitemap.md
-        //    3.1 按 tag 分组
+        //    3.1 meta 按 tag 分组
         //    3.2 生成 sitemap.md 的内容
         //    3.3 保存 sitemap.md 到文件
 
-        final String blogDir = System.getProperty("dir", BLOG_DIR_PATH);
+        final String blogDir = System.getProperty("dir", DEFAULT_BLOG_DIR); // 博客的文件夹
+        Map<String, List<Meta>> tagMetas = new TreeMap<>(); // key 为 tag, value 为具有相同 tag 的 meta
 
-        // [1] 获取所有的 md 文件
-        File[] mds = new File(blogDir).listFiles((dir, name) -> name.toLowerCase().endsWith(".md"));
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(blogDir), "*.md")) {
+            stream.forEach(md -> {
+                // [1] 遍历 md 文件
+                // [2] 抽取 md 文件的 title 和 tags，创建 meta 对象
+                Meta meta = createMeta(md);
 
-        // [2] 遍历每一个 md 文件，抽取 title 和 tags
-        List<Meta> metas = new LinkedList<>();
-        for (File md : mds) {
-            metas.add(extractMeta(md));
-        }
-
-        // [3.1] 按 tag 分组
-        Map<String, List<Meta>> map = new TreeMap<>(); // key 为 tag, value 为具有相同 tag 的 meta
-        for (Meta meta : metas) {
-            for (String tag : meta.tags) {
-                map.putIfAbsent(tag, new LinkedList<>());
-                map.get(tag).add(meta);
-            }
+                // [3.1] meta 按 tag 分组
+                for (String tag : meta.tags) {
+                    tagMetas.putIfAbsent(tag, new LinkedList<>());
+                    tagMetas.get(tag).add(meta);
+                }
+            });
         }
 
         // [3.2] 生成 sitemap.md 的内容
         StringBuilder out = new StringBuilder(SITEMAP_HEADER);
-        map.forEach((tag, tagMetas) -> {
-            tagMetas.sort(Comparator.comparing(Meta::getTitle)); // 按照 title 对 metas 进行排序
+        tagMetas.forEach((tag, metas) -> {
+            metas.sort(Comparator.comparing(Meta::getTitle)); // 按照 title 对 metas 进行排序
 
-            out.append(String.format("## %s\n", tag));           // tag 作为二级标题, 把 Blog 分类排列
-            for (Meta meta : tagMetas) {
+            out.append(String.format("## %s\n", tag)); // tag 作为二级标题, 把 Blog 分类排列
+            for (Meta meta : metas) {                  // 每个 Blog 作为一个 bullet
                 out.append(String.format("* [%s](%s)\n", meta.title, meta.url));
             }
             out.append("\n");
@@ -95,40 +96,45 @@ public class HexoSitemapGenerator {
         FileUtils.writeStringToFile(new File(blogDir + "/sitemap.md"), out.toString(), "UTF-8");
     }
 
-    private static Meta extractMeta(File md) throws IOException {
-        // 访问前 10 行，提取 title 和 tag
-        Meta meta = new Meta(md);
-        int i = 0;
+    private static Meta createMeta(Path md) {
+        Meta meta = new Meta(md.toFile());
 
-        for (String line : FileUtils.readLines(md, "UTF-8")) {
-            int start = line.indexOf(':');
+        try {
+            // 访问前 10 行，提取 title 和 tag
+            int i = 0;
 
-            if (line.startsWith("title:")) {
-                meta.title = line.substring(start + 1).trim();
-            } else if (line.startsWith("tags:")) {
-                // a. 找到 tags: 后面的字符串
-                // b. 去掉 [ 和 ]
-                // c. 使用 , 拆分得到数组
-                // d. 去掉前后的空格
-                // e. 转为 set
-                meta.tags = Stream.of(line.substring(start + 1).replaceAll("[\\[\\]]", "").split(","))
-                        .map(String::trim)
-                        .collect(Collectors.toSet());
-                break;
+            for (String line : FileUtils.readLines(md.toFile(), "UTF-8")) {
+                int start = line.indexOf(':');
+
+                if (line.startsWith("title:")) {
+                    meta.title = line.substring(start + 1).trim();
+                } else if (line.startsWith("tags:")) {
+                    // a. 找到 tags: 后面的字符串
+                    // b. 去掉 [ 和 ]
+                    // c. 使用 , 拆分得到数组
+                    // d. 去掉前后的空格
+                    // e. 转为 set
+                    meta.tags = Stream.of(line.substring(start + 1).replaceAll("[\\[\\]]", "").split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toSet());
+                    break;
+                }
+
+                if (++i > 10) {
+                    break;
+                }
             }
 
-            if (++i > 10) {
-                break;
+            // 没有设置 tag，归类到 tag NoTag
+            if (meta.tags == null) {
+                meta.tags = new HashSet<>();
+                meta.tags.add("zz-NoTag");
             }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            return meta;
         }
-
-        // 没有设置 tag，归类到 tag NoTag
-        if (meta.tags == null) {
-            meta.tags = new HashSet<>();
-            meta.tags.add("zz-NoTag");
-        }
-
-        return meta;
     }
 
     // 博客的 md 文件的元数据
