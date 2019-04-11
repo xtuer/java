@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                [1] [2] 运行、打包                           //
+////////////////////////////////////////////////////////////////////////////////
+// [1.1] 从命令行运行默认类: gradle run
+// [1.2] 从命令行运行某个类: gradle run -DmainClass=Foo
+ext {
+    project.mainClassName = System.getProperty("mainClass", "HexoSitemapGenerator")
+}
+
+// [2] 打包: gradle clean shadowJar [-DmainClass=HexoSitemapGenerator]
+shadowJar {
+    mergeServiceFiles('META-INF/spring.*')
+    archiveName = 'sitemap.jar'
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                 [3] Maven 依赖                             //
+////////////////////////////////////////////////////////////////////////////////
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.commons:commons-lang3:3.4'
+
+    compileOnly 'org.projectlombok:lombok:1.16.18'
+    testCompile 'junit:junit:4.12'
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    JVM                                     //
+////////////////////////////////////////////////////////////////////////////////
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+}
