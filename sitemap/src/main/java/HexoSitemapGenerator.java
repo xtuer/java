@@ -1,5 +1,4 @@
 import lombok.Data;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -93,7 +92,7 @@ public class HexoSitemapGenerator {
         System.out.println(out);
 
         // [3.3] 保存 sitemap.md 到文件
-        FileUtils.writeStringToFile(new File(blogDir + "/sitemap.md"), out.toString(), "UTF-8");
+        Files.write(Paths.get(blogDir + "/sitemap.md"), out.toString().getBytes());
     }
 
     private static Meta createMeta(Path md) {
@@ -101,9 +100,7 @@ public class HexoSitemapGenerator {
 
         try {
             // 访问前 10 行，提取 title 和 tag
-            int i = 0;
-
-            for (String line : FileUtils.readLines(md.toFile(), "UTF-8")) {
+            Files.lines(md).limit(10).forEach(line -> {
                 int start = line.indexOf(':');
 
                 if (line.startsWith("title:")) {
@@ -117,15 +114,10 @@ public class HexoSitemapGenerator {
                     meta.tags = Stream.of(line.substring(start + 1).replaceAll("[\\[\\]]", "").split(","))
                             .map(String::trim)
                             .collect(Collectors.toSet());
-                    break;
                 }
+            });
 
-                if (++i > 10) {
-                    break;
-                }
-            }
-
-            // 没有设置 tag，归类到 tag NoTag
+            // 没有设置 tag，归类到 tag zz-NoTag
             if (meta.tags == null) {
                 meta.tags = new HashSet<>();
                 meta.tags.add("zz-NoTag");
