@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title th:text="|${school?.name} · 登录|"></title>
+
+    <link href="/static/css/global.css" rel="stylesheet" type="text/css"/>
+    <link href="/static-x/css/login.less" rel="stylesheet/less" type="text/css"/>
+</head>
+
+<body>
+    <!-- 动画背景 -->
+    <div id="particles-js"></div>
+
+    <div class="main">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="title">
+                <div class="logo"></div>
+                <div th:text="${school?.name}" class="title-text"></div>
+            </div>
+            <div class="download"><a href="/page/download"><img src="/static-x/img/download/download.png"><span>App 下载</span></a></div>
+        </div>
+
+        <div class="content">
+            <!-- 网站主题图 -->
+            <div class="theme-image"></div>
+            <!-- <div th:if="${school?.imageUrl}" th:style="|background-image: url(${school.imageUrl})|" class="theme-image"></div>
+            <div th:unless="${school?.imageUrl}" style="background-image: url(/static-x/img/theme-default.png)" class="theme-image"></div> -->
+
+            <!-- 登录框 -->
+            <div class="login-container">
+                <div id="status" th:text="${status}"></div>
+
+                <!-- 头像 -->
+                <div th:if="${avatar}" class="avatar" th:style="|background-image: url(${avatar})|"></div>
+                <div th:unless="${avatar}" class="avatar" style="background-image: url(/static-x/img/avatar-default.png)"></div>
+
+                <!-- 用户名密码和登录按钮 -->
+                <form action="/login" method="POST" class="form-box">
+                    <input name="username" type="text"     placeholder="账号">
+                    <input name="password" type="password" placeholder="密码">
+                    <button id="login" type="submit">登录</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 版权 -->
+        <div class="footer">
+            <!-- 版权 -->
+            <div class="copy-right">Copyright ©2000-2018 Cloudbag 教育云平台</div>
+        </div>
+    </div>
+
+    <script src="/static-x/lib/particles/particles.min.js"></script>
+    <script src="/static-x/lib/particles/app.js"></script>
+    <script src="/static-x/lib/less.min.js"></script>
+    <script src="/static-x/lib/jquery.min.js"></script>
+    <script src="/static-x/lib/jquery.browser.min.js"></script>
+    <script>
+        if ($.browser.webkit) {
+            // 正在使用 Chrome, Safari 访问本站
+        } else if ($.browser.mozilla) {
+            alert('您使用的是 Firefox, 推荐使用 Chrome 浏览器获得更好的体验');
+        } else {
+            alert('请使用 Chrome 浏览器进行访问');
+        }
+    </script>
+</body>
+
+</html>

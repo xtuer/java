@@ -3,10 +3,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Builder
@@ -16,7 +14,11 @@ public class Test {
     String name;
     int age;
 
-    public static void main(String[] args) throws IOException {
-        Files.lines(Paths.get("/Users/Biao/Documents/workspace/Java/mix/src/main/java/BTree.java")).limit(10).forEach(System.out::println);
+    public static void main(String[] args) throws Exception {
+        Map<Integer, String> map = new HashMap<>();
+        map.put(1, null);
+        map.put(2, "Two");
+
+        System.out.println(map);
     }
 }
