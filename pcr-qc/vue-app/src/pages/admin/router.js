@@ -10,16 +10,23 @@ export default new Router({
         redirect: 'bd',
     },
     {
+        path: '/main',
+        name: 'name',
+        component: () => import('./subpage/Main.vue'),
+        children: [
+            {
+                path: '/bd',
+                name: 'bd',
+                component: () => import(/* webpackChunkName: "bd" */ './subpage/BD.vue'),
+            }
+        ]
+    },
+    {
         path: '/about',
         name: 'about',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "about" */ './subpage/About.vue'),
-    },
-    {
-        path: '/bd',
-        name: 'bd',
-        component: () => import(/* webpackChunkName: "bd" */ './subpage/BD.vue'),
     }],
 });

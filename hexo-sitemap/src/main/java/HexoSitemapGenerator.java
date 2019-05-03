@@ -54,6 +54,19 @@ public class HexoSitemapGenerator {
             "---\n\n";
 
     public static void main(String[] args) throws IOException {
+        // 运行:
+        //     java -jar sitemap.jar --help: 查看帮助，--help 必须在 sitemap.jar 后
+        //     java -jar sitemap.jar
+        //     java -jar -Ddir=<mds_path> sitemap.jar: -D 必须在 sitemap.jar 前
+        for (String arg : args) {
+            if ("--help".equals(arg)) {
+                System.out.println("java -jar sitemap.jar                 : 默认目录 /Users/Biao/Documents/workspace/Blog/source/_posts");
+                System.out.println("java -jar -Ddir=<mds_path> sitemap.jar: 指定目录");
+
+                return;
+            }
+        }
+
         // 1. 遍历 md 文件
         // 2. 抽取 md 文件的 title 和 tags，创建 meta 对象
         // 3. 生成 sitemap.md
