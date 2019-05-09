@@ -1,15 +1,19 @@
 package com.xtuer.controller;
 
 import com.xtuer.bean.Result;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,22 +35,100 @@ public class HelloController {
         return "hello.html";
     }
 
-    @GetMapping("/api/files")
+    @GetMapping("/api/array")
     @ResponseBody
-    public Object files(@RequestParam(name = "ids[]") List<String> ids) {
+    public Object arrayGet(@RequestParam(name = "ids[]") List<String> ids) {
+        System.out.println(ids);
+        return ids;
+    }
+
+    @PostMapping("/api/array")
+    @ResponseBody
+    public Object arrayPost(@RequestParam(name = "ids[]") List<String> ids) {
         System.out.println(ids);
         return ids;
     }
 
     /**
-     * http://localhost:8080/api/json
+     * http://localhost:8080/api/rest
      */
-    @GetMapping("/api/json")
+    @GetMapping("/api/rest")
     @ResponseBody
-    public Object json() {
+    public Object restGet(@RequestParam(required = false, defaultValue = "Alice") String name,
+                          @RequestParam(required = false, defaultValue = "0") int value) {
         Map<String, String> map = new HashMap<>();
-        map.put("name", "Biao");
-        map.put("age", "23");
+        map.put("name", name);
+        map.put("attackDamage", value + "");
+        map.put("method", "GET");
+
+        return map;
+    }
+
+    /**
+     * http://localhost:8080/api/rest
+     */
+    @PostMapping("/api/rest")
+    @ResponseBody
+    public Object restPost(@RequestParam(required = false, defaultValue = "Alice") String name,
+                           @RequestParam(required = false, defaultValue = "0") int value) {
+        Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("attackDamage", value + "");
+        map.put("method", "POST");
+
+        return map;
+    }
+
+    /**
+     * http://localhost:8080/api/rest
+     */
+    @PutMapping("/api/rest")
+    @ResponseBody
+    public Object restPut(@RequestBody String json) {
+        return json;
+    }
+
+    /**
+     * http://localhost:8080/api/rest
+     */
+    @DeleteMapping("/api/rest")
+    @ResponseBody
+    public Object restDelete() throws InterruptedException {
+        Map<String, String> map = new HashMap<>();
+        map.put("method", "DELETE");
+
+        Thread.sleep(2000);
+
+        return map;
+    }
+
+    @PostMapping("/api/upload")
+    @ResponseBody
+    public Object uploadFile(@RequestParam MultipartFile file,
+                             @RequestParam(required = false, defaultValue = "Alice") String name) throws IOException {
+        FileUtils.copyInputStreamToFile(file.getInputStream(), new File("/Users/Biao/Desktop/" + file.getOriginalFilename()));
+
+        Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("filename", file.getOriginalFilename());
+
+        return map;
+    }
+
+    @PostMapping("/api/uploads")
+    @ResponseBody
+    public Object uploadFiles(@RequestParam(name = "files") List<MultipartFile> files,
+                              @RequestParam(required = false, defaultValue = "Alice") String name) throws IOException {
+        List<String> filenames = new LinkedList<>();
+
+        for (MultipartFile file : files) {
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File("/Users/Biao/Desktop/" + file.getOriginalFilename()));
+            filenames.add(file.getOriginalFilename());
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("filenames", filenames);
 
         return map;
     }
@@ -60,7 +142,7 @@ public class HelloController {
     @GetMapping("/api/file/{filename}")
     @ResponseBody
     public Result fox(@PathVariable String filename) {
-//    public Result fox() {
+        //    public Result fox() {
         System.out.println(filename);
         return Result.ok(filename);
     }

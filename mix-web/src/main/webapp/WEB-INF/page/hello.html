@@ -12,21 +12,13 @@
     <script src="/static/lib/jquery.min.js"></script>
     <script src="/static/lib/jquery.rest.js"></script>
     <script>
-        // $.rest.create({ url: '/api/postWithQuery?hash=12345678', data: { name: 'Biao' }, success: function(result) {
-        //     console.log(result);
-        // } });
+        $.rest.get({ url: '/api/array', data: { ids: [1, 2, 3] }, success: function(result) {
+            console.log(result);
+        } });
 
-        $.ajax({
-            method: "GET",
-            url: "/api/login",
-            // data: JSON.stringify({ username: "John", password: "Passw0rd" }),
-            data: { username: "John", password: "Passw0rd" },
-            // contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
-            contentType: 'application/json'
-        })
-        .done(function (msg) {
-            console.log(msg);
-        });
+        $.rest.create({ url: '/api/array', data: { ids: [1, 2, 3] }, success: function(result) {
+            console.log(result);
+        } });
     </script>
 </body>
 
