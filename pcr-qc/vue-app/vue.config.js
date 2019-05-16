@@ -1,5 +1,7 @@
 process.env.VUE_APP_VERSION = new Date().getTime();
 
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
+
 module.exports = {
     devServer: {
         port: 8888,
@@ -26,15 +28,15 @@ module.exports = {
     },
 
     productionSourceMap: false, // 不生成 map 文件
-    // configureWebpack: config => {
-    //     if (process.env.NODE_ENV === 'production') { // 生产环境启用 gzip 压缩
-    //         return {
-    //             plugins: [new CompressionWebpackPlugin({
-    //                 test: /\.(js|css)(\?.*)?$/i, // 需要压缩的文件正则
-    //                 threshold: 10240,            // 文件大小大于这个值时启用压缩
-    //                 deleteOriginalAssets: false, // 压缩后保留原文件
-    //             })]
-    //         };
-    //     }
-    // },
+    configureWebpack: config => {
+        if (process.env.NODE_ENV === 'production') { // 生产环境启用 gzip 压缩
+            return {
+                plugins: [new CompressionWebpackPlugin({
+                    test: /\.(js|css)(\?.*)?$/i, // 需要压缩的文件正则
+                    threshold: 10240,            // 文件大小大于这个值时启用压缩
+                    deleteOriginalAssets: false, // 压缩后保留原文件
+                })]
+            };
+        }
+    },
 };

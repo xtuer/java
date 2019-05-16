@@ -18,6 +18,11 @@ export default new Router({
                 path: '/bd',
                 name: 'bd',
                 component: () => import(/* webpackChunkName: "bd" */ './subpage/BD.vue'),
+            },
+            {
+                path: '/chip-store',
+                name: 'chip-store',
+                component: () => import(/* webpackChunkName: "bd" */ './subpage/ChipStore.vue'),
             }
         ]
     },

@@ -16,8 +16,8 @@
 var formatString = function (str, replacements) {
     replacements = (typeof replacements === 'object') ? replacements : Array.prototype.slice.call(arguments, 1);
     return str.replace(/\{\{|\}\}|\{(\w+)\}/g, function(m, n) {
-        if (m == '{{') { return '{'; }
-        if (m == '}}') { return '}'; }
+        if (m === '{{') { return '{'; }
+        if (m === '}}') { return '}'; }
         return replacements[n];
     });
 };
@@ -140,7 +140,7 @@ Date.prototype.format = function (fmt) {
         'q': Math.floor((this.getMonth() + 3) / 3), // 季度
         'w': this.getDay(),         // 星期，注意是0-6
         'H': this.getHours(),       // 24小时制
-        'h': this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, // 12小时制
+        'h': this.getHours() % 12 === 0 ? 12 : this.getHours() % 12, // 12小时制
         'm': this.getMinutes(),     // 分钟
         's': this.getSeconds(),     // 秒
         'S': this.getMilliseconds() // 毫秒
@@ -149,9 +149,9 @@ Date.prototype.format = function (fmt) {
     for (var i in obj) {
         fmt = fmt.replace(new RegExp(i + '+', 'g'), function (m) {
             var val = obj[i] + '';
-            if (i == 'w') return (m.length > 2 ? '星期' : '周') + week[val];
+            if (i === 'w') return (m.length > 2 ? '星期' : '周') + week[val];
             for (var j = 0, len = val.length; j < m.length - len; j++) val = '0' + val;
-            return m.length == 1 ? val : val.substring(val.length - m.length);
+            return m.length === 1 ? val : val.substring(val.length - m.length);
         });
     }
     return fmt;
@@ -447,7 +447,7 @@ Utils.locateCurrentCity = function(BMapAk, callback) {
         } else {
             Utils.warning('定位失败');
         }
-    }, { enableHighAccuracy: true} ); // 指示浏览器获取高精度的位置，默认false
+    }, { enableHighAccuracy: true }); // 指示浏览器获取高精度的位置，默认false
 };
 
 
@@ -598,9 +598,27 @@ Utils.canPreview = function({ uri, ready, progress, complete, timeout }) {
             }
         }, fail: () => {
             stopRequestPreviewInfo();
-        }});
+        } });
     }
 
     requestPreviewInfo(); // 立即执行请求
     timerId = window.setInterval(requestPreviewInfo, 3000); // 每 3 秒执行请求一次
+};
+
+/**
+ * 使用 dayjs 格式化时间范围，方便传递给后端服务器
+ *
+ * @param {Date} startDate 开始时间
+ * @param {Date} endDate   结束时间
+ * @return 开始和结束时间都是有效时间时返回时间范围对象 { start: "2019-05-23 00:00:00", end: "2019-05-25 23:59:59" }，否则返回 null
+ */
+Utils.dateTimeRange = function(startDate, endDate) {
+    if (dayjs(startDate).isValid() && dayjs(endDate).isValid()) {
+        return {
+            start: dayjs(startDate).format('YYYY-MM-DD 00:00:00'),
+            end  : dayjs(endDate).format('YYYY-MM-DD 23:59:59'),
+        };
+    } else {
+        return null;
+    }
 };

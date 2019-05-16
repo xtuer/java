@@ -1,4 +1,4 @@
-const QuestionTypes = {
+const QUESTION_TYPES = {
     BASE_TYPE_SINGLE_CHOICE     : 1, // 单选题单选题
     BASE_TYPE_MULTI_CHOICE      : 2, // 多选题多选题
     BASE_TYPE_TFNG              : 3, // 判断题判断题: true(是), false(否), not given(未提及)
@@ -20,3 +20,5 @@ const PROVINCES = ['北京', '上海', '天津', '重庆', '河北', '辽宁', '
     '江苏', '江西', '广东', '福建', '海南', '河南', '湖北', '湖南', '四川', '云南', '贵州', '陕西', '甘肃',
     '青海', '内蒙古', '广西', '西藏', '新疆', '香港', '澳门', '台湾',
 ];
+
+const CHIP_TYPES = ['TP-6', 'TP-7'];

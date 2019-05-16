@@ -19,6 +19,7 @@
         "@vue/cli-service": "^3.0.5",
         "@vue/eslint-config-airbnb": "^4.0.0",
         "babel-eslint": "^10.0.1",
+        "compression-webpack-plugin": "^2.0.0",
         "eslint": "^5.8.0",
         "eslint-plugin-vue": "^5.0.0-0",
         "node-sass": "^4.9.0",
@@ -39,7 +40,10 @@
             "vue/no-reserved-keys": "warning",
             "vue/no-parsing-error": 0,
             "import/extensions": 0,
-            "indent": ["error", 4],
+            "indent": [
+                "error",
+                4
+            ],
             "no-multi-spaces": 0,
             "key-spacing": 0,
             "spaced-comment": 0,

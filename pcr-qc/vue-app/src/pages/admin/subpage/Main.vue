@@ -15,9 +15,9 @@
                     <template slot="title">
                         <Icon type="ios-basket"></Icon>库存备件
                     </template>
-                    <MenuItem name="2-1">备件入库登记</MenuItem>
-                    <MenuItem name="2-2">备件出库登记</MenuItem>
-                    <MenuItem name="2-2">库存备件查询</MenuItem>
+                    <MenuItem name="chip-store">备件入库</MenuItem>
+                    <MenuItem name="2-2">备件出库</MenuItem>
+                    <MenuItem name="2-2">库存备件</MenuItem>
                 </Submenu>
                 <Submenu name="3">
                     <template slot="title">
