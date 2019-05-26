@@ -58,8 +58,9 @@ public class HelloController {
                           @RequestParam(required = false, defaultValue = "0") int value) {
         Map<String, String> map = new HashMap<>();
         map.put("name", name);
-        map.put("attackDamage", value + "");
+        map.put("value", value + "");
         map.put("method", "GET");
+        System.out.println(name);
 
         return map;
     }
@@ -73,8 +74,9 @@ public class HelloController {
                            @RequestParam(required = false, defaultValue = "0") int value) {
         Map<String, String> map = new HashMap<>();
         map.put("name", name);
-        map.put("attackDamage", value + "");
+        map.put("value", value + "");
         map.put("method", "POST");
+        System.out.println(name);
 
         return map;
     }
@@ -84,8 +86,15 @@ public class HelloController {
      */
     @PutMapping("/api/rest")
     @ResponseBody
-    public Object restPut(@RequestBody String json) {
-        return json;
+    public Object restPut(@RequestParam(required = false, defaultValue = "Alice") String name,
+                          @RequestParam(required = false, defaultValue = "0") int value) {
+        Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("value", value + "");
+        map.put("method", "PUT");
+        System.out.println(name);
+
+        return map;
     }
 
     /**
@@ -93,12 +102,49 @@ public class HelloController {
      */
     @DeleteMapping("/api/rest")
     @ResponseBody
-    public Object restDelete() throws InterruptedException {
+    public Object restDelete(@RequestParam(required = false, defaultValue = "Alice") String name,
+                             @RequestParam(required = false, defaultValue = "0") int value) {
         Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("value", value + "");
         map.put("method", "DELETE");
+        System.out.println(name);
 
-        Thread.sleep(2000);
+        return map;
+    }
 
+
+
+    /**
+     * http://localhost:8080/api/rest1
+     */
+    @PostMapping("/api/rest1")
+    @ResponseBody
+    public Object restPost(@RequestBody Map map) {
+        map.put("method", "POST");
+        System.out.println(map);
+        return map;
+    }
+
+    /**
+     * http://localhost:8080/api/rest1
+     */
+    @PutMapping("/api/rest1")
+    @ResponseBody
+    public Object restPut(@RequestBody Map map) {
+        map.put("method", "PUT");
+        System.out.println(map);
+        return map;
+    }
+
+    /**
+     * http://localhost:8080/api/rest1
+     */
+    @DeleteMapping("/api/rest1")
+    @ResponseBody
+    public Object restDelete(@RequestBody Map map) {
+        map.put("method", "DELETE");
+        System.out.println(map);
         return map;
     }
 
@@ -238,5 +284,11 @@ public class HelloController {
     public String put3(HttpServletRequest request) {
         System.out.println(request.getContentType());
         return "ok";
+    }
+
+    @PostMapping("/api/exception")
+    @ResponseBody
+    public String exception() {
+        throw new RuntimeException("NoNoNo");
     }
 }

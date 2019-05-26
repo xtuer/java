@@ -39,4 +39,11 @@ module.exports = {
             };
         }
     },
+
+    // 打包时不自动打开报告
+    pluginOptions: {
+        webpackBundleAnalyzer: {
+            openAnalyzer: false
+        }
+    }
 };

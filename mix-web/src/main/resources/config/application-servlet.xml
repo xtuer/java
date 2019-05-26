@@ -71,6 +71,16 @@
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
+    <!-- 自定义异常处理器 -->
+    <bean id="compositeExceptionResolver" class="org.springframework.web.servlet.handler.HandlerExceptionResolverComposite">
+        <property name="exceptionResolvers">
+            <list>
+                <bean class="com.xtuer.exception.HandlerExceptionResolver"/>
+            </list>
+        </property>
+        <property name="order" value="0"/>
+    </bean>
+
     <!-- 静态资源的访问，如 js, css, jpg, png -->
     <!-- 如 HTML 里访问 /static/js/foo.js, 则实际访问的是 /WEB-INF/static/js/foo.js -->
     <mvc:resources mapping="/static/js/**"   location="/WEB-INF/static/js/"   cache-period="31556926"/>
