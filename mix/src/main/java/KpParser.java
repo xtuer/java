@@ -297,7 +297,7 @@ public class KpParser {
         String name = "";
         String code = "";
         String info = "";
-        String parentCode = "";
+        String parentCode   = "";
         String originalCode = "";
         Set<Kp> children = new TreeSet<>(Comparator.comparing(Kp::getCode)); // 子节点按 code 升序排序
 
@@ -336,15 +336,16 @@ public class KpParser {
 
     public static void main(String[] args) throws Exception {
         // 知识点的文件路径和保存文件夹路径
-        String excel = System.getProperty("excel", "/Users/Biao/Desktop/code.xlsx");
-        String dir   = System.getProperty("dir", "/Users/Biao/Desktop");
+        // java -jar -Dexcel=xxx -DsaveDir=yyy KpParser.jar
+        String excel   = System.getProperty("excel", "/Users/Biao/Desktop/code.xlsx");
+        String saveDir = System.getProperty("saveDir", "/Users/Biao/Desktop");
 
         System.out.println("读取知识点: " + excel);
-        System.out.println("保存知识点: " + dir + "/kp-tree.json");
+        System.out.println("保存知识点: " + saveDir + "/kp-tree.json");
 
         KpParser parser = new KpParser(excel); // 知识点解析器
-        parser.parse();   // 开始解析
-        parser.save(dir); // 输出知识点树
+        parser.parse();       // 开始解析
+        parser.save(saveDir); // 输出知识点树
     }
 }
 
