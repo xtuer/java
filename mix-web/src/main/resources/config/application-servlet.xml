@@ -81,6 +81,11 @@
         <property name="order" value="0"/>
     </bean>
 
+    <!-- 启用跨域请求 -->
+    <mvc:cors>
+        <mvc:mapping path="/**" allowed-methods="GET, POST" allowed-origins="http://127.0.0.1:8081, http://192.168.10.35:8081, " allow-credentials="true"/>
+    </mvc:cors>
+
     <!-- 静态资源的访问，如 js, css, jpg, png -->
     <!-- 如 HTML 里访问 /static/js/foo.js, 则实际访问的是 /WEB-INF/static/js/foo.js -->
     <mvc:resources mapping="/static/js/**"   location="/WEB-INF/static/js/"   cache-period="31556926"/>

@@ -1,5 +1,6 @@
 package com.xtuer.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Result;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
@@ -290,5 +291,25 @@ public class HelloController {
     @ResponseBody
     public String exception() {
         throw new RuntimeException("NoNoNo");
+    }
+
+    @GetMapping("/cws/home/couresware/runtime/record/init")
+    @ResponseBody
+    public Map<String, String> requestRecord(@CookieValue(value="name", defaultValue="") String name) {
+        Map<String, String> record = new HashMap<>();
+        record.put("scoId", "ch_01_03");
+
+        System.out.println("cookie: " + name);
+
+        return record;
+    }
+
+    @PostMapping("/cws/home/couresware/runtime/record/save")
+    @ResponseBody
+    public String saveRecord2(@CookieValue(value="name", defaultValue="") String name, HttpServletRequest request) {
+        System.out.println("cookie: " + name);
+        System.out.println(JSON.toJSONString(request.getParameterMap()));
+
+        return "ok";
     }
 }
