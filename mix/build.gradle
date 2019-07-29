@@ -26,7 +26,6 @@ dependencies {
     compile 'org.apache.poi:poi-scratchpad:3.15-beta1'
     compile 'org.apache.poi:poi:3.15-beta1'
     compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
-    compile 'org.projectlombok:lombok:1.16.18'
     compile 'org.springframework:spring-context:5.0.2.RELEASE'
     compile 'org.springframework:spring-webmvc:5.0.2.RELEASE'
     compile 'org.yaml:snakeyaml:1.19'
@@ -69,4 +68,7 @@ dependencies {
             "org.slf4j:jul-to-slf4j:1.7.25",           // redirect jdk util logging
             "org.slf4j:log4j-over-slf4j:1.7.25",       // redirect log4j
     )
+
+    compile 'org.projectlombok:lombok:1.16.18'
+    annotationProcessor "org.projectlombok:lombok:1.16.18"
 }
