@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<configuration scan="true" scanPeriod="3 seconds">
+    <property name="log.base" value="/temp/logs/spring-core"/>
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%L-%F-%M\\(\\)] - %msg%n"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.base}/log.txt</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.base}/log_%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="stdout"/>
+    </root>
+
+    <logger name="org.mybatis" level="info"/>
+    <logger name="org.springframework" level="info"/>
+    <logger name="com.eduedu.edu.mapper" level="debug"/>
+</configuration>
