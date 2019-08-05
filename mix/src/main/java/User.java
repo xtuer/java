@@ -16,7 +16,7 @@ public class User {
     private String username;
     private String email;
     private boolean isLast;
-    private List<String> roles = new LinkedList();
+    private List<String> roles = new LinkedList<>();
 
     public User() {
     }

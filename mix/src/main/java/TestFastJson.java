@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestFastJson {
     public static void main(String[] args) {
         Box box = new Box("Foo");

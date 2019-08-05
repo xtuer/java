@@ -95,7 +95,7 @@ public class LangDemo {
     public void systemUtilsDemo() {
         System.out.println(genHeader("SystemUtilsDemo"));
         System.out.println("获得系统文件分隔符.");
-        System.out.println(SystemUtils.FILE_SEPARATOR);
+        // System.out.println(SystemUtils.FILE_SEPARATOR);
 
         System.out.println("获得源文件编码.");
         System.out.println(SystemUtils.FILE_ENCODING);
@@ -134,8 +134,8 @@ public class LangDemo {
     public void stringEscapeUtilsDemo() {
         System.out.println(genHeader("StringEscapeUtils"));
         System.out.println("转换特殊字符.");
-        System.out.println("html:" + StringEscapeUtils.escapeHtml4("/n\n"));
-        System.out.println("html:" + StringEscapeUtils.unescapeHtml4("<p>"));
+        // System.out.println("html:" + StringEscapeUtils.escapeHtml4("/n\n"));
+        // System.out.println("html:" + StringEscapeUtils.unescapeHtml4("<p>"));
     }
 
     // 数字相关, 如求数组中的最大最小值
@@ -151,7 +151,7 @@ public class LangDemo {
         System.out.println(NumberUtils.isDigits("123.1"));
 
         System.out.println("判断字符串是否是有效数字.");
-        System.out.println(NumberUtils.isNumber("0123.1"));
+        System.out.println(NumberUtils.isCreatable("0123.1"));
     }
 
     // 日期格式化

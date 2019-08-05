@@ -26,7 +26,7 @@ public class DocxToHtmlUtils {
                 "{ margin: 0; padding: 0; border: 0;}" +
                 "body {line-height: 1; padding: 30px;} ";
         userCSS = "body {padding: 30px;}";
-        htmlSettings.setUserCSS(userCSS); // 用户自己定义的 CSS
+        // htmlSettings.setUserCSS(userCSS); // 用户自己定义的 CSS
 
         OutputStream os = new FileOutputStream(htmlPath);
         Docx4jProperties.setProperty("docx4j.Convert.Out.HTML.OutputMethodXML", true);
