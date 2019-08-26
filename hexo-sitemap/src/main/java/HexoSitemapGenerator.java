@@ -66,9 +66,12 @@ public class HexoSitemapGenerator {
         // C. 获取参数
         // 输出帮助文档
         if (cmd.hasOption("h")) {
-            String header = "运行: java -jar sitemap.jar -m /Blog/_posts\n默认目录为 /Users/Biao/Documents/workspace/Blog/source/_posts";
+            String header = "\n" +
+                    "运行: java -jar sitemap.jar -m /Blog/_posts\n" +
+                    "默认目录为 /Users/Biao/Documents/workspace/Blog/source/_posts\n" +
+                    "\nwhere options include:";
             String footer = "";
-            new HelpFormatter().printHelp("MyApp", header, options, footer, true);
+            new HelpFormatter().printHelp("sitemap", header, options, footer, true);
             System.exit(0);
         }
 
