@@ -1,8 +1,9 @@
-import java.util.stream.Stream;
+import org.apache.commons.cli.*;
+
+import java.util.Arrays;
 
 public class Test {
-    public static void main(String[] args) {
-        Stream.of(1, 2, 3).forEach(System.out::println);
+    public static void main(String[] args) throws ParseException {
+        System.out.println(Arrays.toString(args));
     }
-
 }

@@ -29,6 +29,7 @@ repositories {
 dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'commons-cli:commons-cli:1.4'
 
     compileOnly 'org.projectlombok:lombok:1.16.18'
     annotationProcessor 'org.projectlombok:lombok:1.16.18'

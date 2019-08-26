@@ -1,4 +1,5 @@
 import lombok.Data;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -53,18 +54,22 @@ public class HexoSitemapGenerator {
             "tags: Index\n" +
             "---\n\n";
 
-    public static void main(String[] args) throws IOException {
-        // 运行:
-        //     java -jar sitemap.jar --help: 查看帮助，--help 必须在 sitemap.jar 后
-        //     java -jar sitemap.jar
-        //     java -jar -Ddir=<mds_path> sitemap.jar: -D 必须在 sitemap.jar 前
-        for (String arg : args) {
-            if ("--help".equals(arg)) {
-                System.out.println("java -jar sitemap.jar                 : 默认目录 /Users/Biao/Documents/workspace/Blog/source/_posts");
-                System.out.println("java -jar -Ddir=<mds_path> sitemap.jar: 指定目录");
+    public static void main(String[] args) throws IOException, ParseException {
+        // A. 定义参数
+        Options options = new Options();
+        options.addOption("h", "help", false, "Lists short help");
+        options.addOption("m", true, "博客的 Markdown 文件所在目录");
 
-                return;
-            }
+        // B. 解析参数
+        CommandLine cmd = new DefaultParser().parse(options, args);
+
+        // C. 获取参数
+        // 输出帮助文档
+        if (cmd.hasOption("h")) {
+            String header = "运行: java -jar sitemap.jar -m /Blog/_posts\n默认目录为 /Users/Biao/Documents/workspace/Blog/source/_posts";
+            String footer = "";
+            new HelpFormatter().printHelp("MyApp", header, options, footer, true);
+            System.exit(0);
         }
 
         // 1. 遍历 md 文件
@@ -74,7 +79,7 @@ public class HexoSitemapGenerator {
         //    3.2 生成 sitemap.md 的内容
         //    3.3 保存 sitemap.md 到文件
 
-        final String blogDir = System.getProperty("dir", DEFAULT_BLOG_DIR); // 博客的文件夹
+        String blogDir = Optional.ofNullable(cmd.getOptionValue("m")).orElse(DEFAULT_BLOG_DIR);
         Map<String, List<Meta>> tagMetas = new TreeMap<>(); // key 为 tag, value 为具有相同 tag 的 meta
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(blogDir), "*.md")) {
