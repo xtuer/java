@@ -18,6 +18,8 @@ public class User {
     private boolean isLast;
     private List<String> roles = new LinkedList<>();
 
+    private long adminId = 10;
+
     public User() {
     }
 
