@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <configuration scan="true" scanPeriod="3 seconds">
-    <property name="log.base" value="/temp/logs/mix"/>
+    <property name="log.base" value="/tmp/logs/mix"/>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
