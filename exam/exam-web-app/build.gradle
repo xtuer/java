@@ -1,0 +1,173 @@
+plugins {
+    id 'war'
+    id 'java'
+    id 'org.gretty' version '2.3.1'
+    id 'org.hidetake.ssh' version '2.9.0'
+}
+
+gretty {
+    httpPort         = 8080
+    contextPath      = ''
+    servletContainer = 'tomcat8'
+
+    inplaceMode  = 'hard'
+    debugSuspend = false
+    managedClassReload      = true
+    recompileOnSourceChange = true
+
+    // 升级 gretty 自带的 springloaded
+    jvmArgs = ["-javaagent:${project.projectDir}/springloaded-1.2.8.RELEASE.jar", '-noverify', '-Djava.awt.headless=true']
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                   Maven 依赖                               //
+////////////////////////////////////////////////////////////////////////////////
+repositories {
+    mavenCentral()
+}
+
+ext.versions = [
+        spring        : '5.0.2.RELEASE',
+        springSecurity: '5.0.0.RELEASE',
+        redisClient   : '2.9.0',
+        servlet       : '4.0.0',
+        lombok        : '1.16.20',
+        fastjson      : '1.2.59',
+        thymeleaf     : '3.0.9.RELEASE',
+        mysql         : '5.1.46',
+        mybatis       : '3.5.0',
+        mybatisSpring : '1.3.1',
+        druid         : '1.1.17',
+        validator     : '6.0.5.Final',
+        commonsLang   : '3.7',
+        commonsText   : '1.7',
+        commonsFileupload: '1.3.3',
+        easyPoi       : '3.0.3',
+        easyOkHttp    : '1.1.3',
+        junit         : '4.12',
+        logback       : '1.3.0-alpha4',
+        slf4j         : '1.7.25',
+        jsoup         : '1.12.1',
+        jetCache      : '2.5.13',
+]
+
+dependencies {
+    compile(
+            "org.springframework:spring-webmvc:${versions.spring}",
+            "org.springframework:spring-context-support:${versions.spring}",
+            "org.springframework.security:spring-security-web:${versions.springSecurity}",
+            "org.springframework.security:spring-security-config:${versions.springSecurity}",
+            "redis.clients:jedis:${versions.redisClient}",
+            "com.alibaba:fastjson:${versions.fastjson}",
+            "org.thymeleaf:thymeleaf-spring5:${versions.thymeleaf}",
+            "mysql:mysql-connector-java:${versions.mysql}",
+            "org.springframework:spring-jdbc:${versions.spring}",
+            "org.mybatis:mybatis-spring:${versions.mybatisSpring}",
+            "org.mybatis:mybatis:${versions.mybatis}",
+            "com.alibaba:druid:${versions.druid}",
+            "org.hibernate.validator:hibernate-validator:${versions.validator}",
+            "org.apache.commons:commons-lang3:${versions.commonsLang}",
+            "org.apache.commons:commons-text:${versions.commonsText}",
+            "commons-fileupload:commons-fileupload:${versions.commonsFileupload}",
+            "cn.afterturn:easypoi-base:${versions.easyPoi}",
+            "com.mzlion:easy-okhttp:${versions.easyOkHttp}",
+            "org.jsoup:jsoup:${versions.jsoup}",
+            "com.alicp.jetcache:jetcache-anno:${versions.jetCache}",
+            "com.alicp.jetcache:jetcache-redis:${versions.jetCache}",
+    )
+
+    // Log dependencies
+    compile(
+            "ch.qos.logback:logback-classic:${versions.logback}", // slf4j-logback绑定
+            "org.slf4j:jcl-over-slf4j:${versions.slf4j}",         // redirect apache commons logging
+            "org.slf4j:jul-to-slf4j:${versions.slf4j}",           // redirect jdk util logging
+            "org.slf4j:log4j-over-slf4j:${versions.slf4j}",       // redirect log4j
+    )
+
+    compileOnly("org.projectlombok:lombok:${versions.lombok}")
+    compileOnly("javax.servlet:javax.servlet-api:${versions.servlet}")
+    testCompile("org.springframework:spring-test:${versions.spring}")
+    testCompile("junit:junit:${versions.junit}")
+
+    annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+}
+
+ext {
+    // 运行、打包以及部署的环境选择, 默认是开发环境(即命令没有 -Denv 参数)
+    // 运行: gradle clean appStart, gradle clean appStartDebug
+    // 构建: gradle clean assemble, gradle clean assemble -Denv=production
+    // 部署: gradle clean deploy,   gradle clean deploy   -Denv=production
+    environment     = System.getProperty("env", "development") // 获取 gradle 参数中 env 的值，选择环境
+    war.archiveName = "training-${environment}.zip"                 // 打包的文件名，不用 war 包自动解压的话，用 .zip 会更好一些
+    config          = new ConfigSlurper(environment).parse(file('config.groovy').toURI().toURL()).toProperties()
+
+    println "\n::--o 加载配置用于环境: ${environment}\n"
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                  资源动态替换                                //
+////////////////////////////////////////////////////////////////////////////////
+processResources {
+    // src/main/resources 下所有文件中 @key@ 的内容使用 config.groovy 里对应的进行替换
+    filteringCharset = 'UTF-8'
+    from(sourceSets.main.resources.srcDirs) {
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: config)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                   项目部署                                  //
+////////////////////////////////////////////////////////////////////////////////
+remotes {
+    server {
+        host     = config.getProperty('deploy.host')
+        user     = config.getProperty('deploy.username')
+        password = config.getProperty('deploy.password')
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+task deploy(dependsOn: war) {
+    def targetDir = '/www.training.com'
+    doLast {
+        ssh.run {
+            session(remotes.server) {
+                put from: "${buildDir}/libs/${war.archiveName}", into: "${targetDir}"
+                execute """
+                    source /root/.bash_profile;
+                    sh /usr/local/edu/tomcat/bin/shutdown.sh;
+                    rm -rf   ${targetDir}/ROOT;
+                    unzip -u ${targetDir}/${war.archiveName} -d ${targetDir}/ROOT > /dev/null;
+                    rm -rf   ${targetDir}/${war.archiveName};
+                    kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \$2}'`;
+                    sh /usr/local/edu/tomcat/bin/startup.sh;
+                """
+            }
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    JVM                                     //
+////////////////////////////////////////////////////////////////////////////////
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+compileJava {
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation' << '-parameters'
+    options.forkOptions.jvmArgs << '-parameters'
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                   Test                                     //
+////////////////////////////////////////////////////////////////////////////////
+test {
+    // we want display the following test events
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED"
+    }
+}
