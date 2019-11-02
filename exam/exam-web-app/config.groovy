@@ -2,12 +2,12 @@
 // 部署: gradle clean deploy   -Denv=production
 
 // 把下面的映射添加到 hosts 文件，如果 mysql, redis 等安装在其他机器上，修改为对应机器的 IP
-// 127.0.0.1 mysql.training
-// 127.0.0.1 redis.training
-// 127.0.0.1 mongodb.training
-// 127.0.0.1 activemq.training
-// 127.0.0.1 zooKeeper.training
-// 127.0.0.1 elasticsearch.training
+// 127.0.0.1 mysql.exam
+// 127.0.0.1 redis.exam
+// 127.0.0.1 mongodb.exam
+// 127.0.0.1 activemq.exam
+// 127.0.0.1 zooKeeper.exam
+// 127.0.0.1 elasticsearch.exam
 
 ////////////////////////////////////////////////////////////////////////////////////
 //                               定义所有环境下都有的通用配置
@@ -21,14 +21,14 @@
         }
 
         database {
-            host     = 'mysql.training'
-            dbname   = 'training'
+            host     = 'mysql.exam'
+            dbname   = 'exam'
             username = 'root'
             password = 'root'
         }
 
         redis {
-            host     = 'redis.training'
+            host     = 'redis.exam'
             port     = 6379
             password = ''
             database = 0
@@ -43,9 +43,9 @@
         appKey = 'Default_Key'
 
         thymeleafCacheable = true        // thymeleaf 使用缓存提高效率
-        repoDirectory = '/training/repo' // 文件仓库目录
-        tempDirectory = '/training/temp' // 临时文件目录，例如存储上传的临时文件，里面的文件可以超过几天不放问可以用 crontab 自动删除
-        logsDirectory = '/training/logs' // 日志目录
+        repoDirectory = '/exam/repo' // 文件仓库目录
+        tempDirectory = '/exam/temp' // 临时文件目录，例如存储上传的临时文件，里面的文件可以超过几天不放问可以用 crontab 自动删除
+        logsDirectory = '/exam/logs' // 日志目录
 //  }
 //}
 
@@ -63,16 +63,16 @@ environments {
 
     win {
         thymeleafCacheable = false
-        repoDirectory = 'D:/training/repo' // 文件仓库目录
-        tempDirectory = 'D:/training/temp' // 临时文件目录
-        logsDirectory = 'D:/training/logs' // 日志目录
+        repoDirectory = 'D:/exam/repo' // 文件仓库目录
+        tempDirectory = 'D:/exam/temp' // 临时文件目录
+        logsDirectory = 'D:/exam/logs' // 日志目录
     }
 
     mac {
         thymeleafCacheable = false
-        repoDirectory = '/tmp/training/repo' // 文件仓库目录
-        tempDirectory = '/tmp/training/temp' // 临时文件目录
-        logsDirectory = '/tmp/training/logs' // 日志目录
+        repoDirectory = '/tmp/exam/repo' // 文件仓库目录
+        tempDirectory = '/tmp/exam/temp' // 临时文件目录
+        logsDirectory = '/tmp/exam/logs' // 日志目录
     }
 
     /*-----------------------------------------------------------------------------|

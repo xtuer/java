@@ -1,9 +1,9 @@
-import com.edu.training.bean.Organization;
-import com.edu.training.bean.Result;
-import com.edu.training.bean.User;
-import com.edu.training.mapper.OrganizationMapper;
-import com.edu.training.service.OrganizationService;
-import com.edu.training.util.Utils;
+import com.exam.bean.Organization;
+import com.exam.bean.Result;
+import com.exam.bean.User;
+import com.exam.mapper.OrganizationMapper;
+import com.exam.service.OrganizationService;
+import com.exam.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
