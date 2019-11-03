@@ -1,0 +1,285 @@
+/**
+ * 题目的工具类
+ *
+ * 提示:
+ * 1. 题型: 单选题 (1)、多选题 (2)、判断题 (3)、填空题 (4)、问答题 (5)、复合题 (6)、题型题 (7)
+ * 2. created 的用途:
+ *    新创建的题目和选项提交到服务器前把他们的 ID 修改为 0，这是因为服务器在处理时发现 ID 为 0 表明是新建的，
+ *    在保存到数据库前服务器会为它们生成一个全局唯一的 ID，插入到数据库，ID 非 0 则说明是已经存在的，则更新它们。
+ *    在 appendQuestionOption() 中生成选项时给定了一个非 0 ID，这是因为 Vue 的 v-for 中遍历选项时
+ *    使用 :key 绑定 ID，那么 ID 就不能为 0 了，所以就给新创建的题目和选项增加了一个标记 created 为 true，
+ *    在提交时发现 created 为 true 就把它们的 ID 设置为 0。
+ * 3. deleted 的用途:
+ *    页面上删除题目或者选项时不是把它们从对应的数组里删除，而是设置他们的 deleted 为 true，界面上不显示它们，提交时:
+ *    2.1 如果 created 为 true  (新创建的)，deleted 为 true，那么先把他们从数组里删除掉，不传给服务器
+ *    2.2 如果 created 为 false (已存在的)，deleted 为 true，要传给服务器，服务器处理时从数据库里删除它们，ID 不为 0，服务器知道是已存在的
+ * 4. 添加、删除题目的选项后，需要调用 updateOptionMarks() 更新一下选项的标记 A, B, C, D
+ * 5. 在提交到服务器的时候，需要调用 cleanQuestion() 清理一下题目，删除其中 created 和 deleted 同时为 true 的项
+ */
+export default class QuestionUtils {
+    /**
+     * 创建题目，会自动给题目分配一个 ID
+     *
+     * @param  {Integer} type    题目的类型
+     * @param  {String}  stem    题干
+     * @param  {Integer} purpose 用途
+     * @return {JSON} 返回新建题目的 JSON 对象
+     */
+    static createQuestion(type, stem = '请输入题干', purpose = 0) {
+        // 1. 创建题目对象
+        // 2. 如果是单选题或者多选题，则增加 4 个默认选项
+        // 3. 如果是判断题，则增加 2 个默认选项
+        // 4. 如果是问答题，则创建 1 个选项，用于存储问答题的答案
+
+        // [1] 创建题目对象
+        let question = {
+            id: Utils.nextId(),
+            stem,
+            key       : '', // 参考答案
+            analysis  : '', // 解析
+            options   : [], // 选项
+            type,           // 题型: 单选题 (1)、多选题 (2)、判断题 (3)、填空题 (4)、问答题 (5)、复合题 (6)、题型题 (7)
+            purpose,        // 此题目的用途，例如题型题的 purpose 为此题型的 type
+            groupSn   : 0,  // 题型分组序号 (试卷中使用)
+            snLabel   : '', // 题目的序号: 一、1. (1)
+            score     : 5,  // 分值 (1. 试卷中题型题的每题得分，2. 考试时此题得分)
+            totalScore: 0,  // 满分 (1. 试卷中题型题的大题满分，2. 其他题每题满分)
+            created   : true,  // 新创建的标记
+            deleted   : false, // 删除标记
+            parentId  : '0',   // 复合题的小题所属复合题的 ID
+            subQuestions: [],  // 复合题的小题
+        };
+
+        if (type === QUESTION_TYPE.SINGLE_CHOICE || type === QUESTION_TYPE.MULTIPLE_CHOICE) {
+            // [2] 如果是单选题或者多选题，则增加 4 个默认选项
+            QuestionUtils.appendQuestionOption(question);
+            QuestionUtils.appendQuestionOption(question);
+            QuestionUtils.appendQuestionOption(question);
+            QuestionUtils.appendQuestionOption(question);
+        } else if (type === QUESTION_TYPE.TFNG) {
+            // [3] 如果是判断题，则增加 2 个默认选项
+            QuestionUtils.appendQuestionOption(question, '正确', false);
+            QuestionUtils.appendQuestionOption(question, '错误', false);
+        } else if (type === QUESTION_TYPE.ESSAY_QUESTION) {
+            // [4] 如果是问答题，则创建 1 个选项，用于存储问答题的答案
+            QuestionUtils.appendQuestionOption(question);
+        }
+
+        return question;
+    }
+
+    /**
+     * 给题目添加一个新的选项
+     *
+     * @param  {JSON}    question 题目
+     * @param  {String}  desc     选项的描述
+     * @param  {Boolean} correct  是否正确答案，默认值为 false
+     * @return {JSON} 返回新增加的选项
+     */
+    static appendQuestionOption(question, desc = '新建选项', correct = false) {
+        const option = {
+            id: Utils.nextId(),
+            desc,
+            correct,
+            position: 0,
+            checked : false, // 客观题作答时是否选中该选项
+            created : true,
+            deleted : false,
+            mark    : '', // 选择题选项标记: A, B, C, D
+            questionId: question.id,
+        };
+
+        question.options.push(option);
+        QuestionUtils.updateOptionMarks(question);
+
+        return option;
+    }
+
+    /**
+     * 删除题目
+     * 只是修改题目的 deleted 为 true，标记为被删除
+     *
+     * @param  {JSON} question 要删除的题目
+     * @return 无返回值
+     */
+    static deleteQuestion(question) {
+        question.deleted = true;
+    }
+
+    /**
+     * 删除题目指定下标的选项
+     * 只是修改选项的 deleted 为 true，标记为被删除，没有真的从题目的选项数组里删除
+     *
+     * @param  {JSON}    question    题目
+     * @param  {Integer} optionIndex 要删除的选项的下标
+     * @return 无返回值
+     */
+    static deleteQuestionOption(question, optionIndex) {
+        // 1. 标记选项为删除状态: deleted 为 true
+        // 2. 更新选项前面的 A, B, C, D
+        const option = question.options[optionIndex];
+
+        if (option) {
+            option.deleted = true;
+            QuestionUtils.updateOptionMarks(question);
+        }
+    }
+
+    /**
+     * 给复合题增加一个新的小题
+     *
+     * @param  {JSON}    question        复合题
+     * @param  {Integer} subQuestionType 小题的题型
+     * @return {JSON} 返回新增加的小题
+     */
+    static appendSubQuestion(question, subQuestionType) {
+        const subQuestion = QuestionUtils.createQuestion(subQuestionType);
+        subQuestion.parentId = question.id;
+        question.subQuestions.push(subQuestion);
+
+        return subQuestion;
+    }
+
+    /**
+     * 删除复合题指定下标的小题
+     * 只是修改小题的 deleted 为 true，标记为被删除，没有真的从小题的数组里删除
+     *
+     * @param  {JSON}    question 复合题
+     * @param  {Integer} subQuestionIndex 要删除的小题的下标
+     * @return 无返回值
+     */
+    static deleteSubQuestion(question, subQuestionIndex) {
+        const subQuestion = question.subQuestions[subQuestionIndex];
+
+        if (subQuestion) {
+            subQuestion.deleted = true; // 标记小题为删除状态: deleted 为 true
+        }
+    }
+
+    /**
+     * 删除整个题型题
+     *
+     * @param {Array} questions 题目数组
+     * @param {JSON}  groupQuestion 题型题
+     * @return 无返回值
+     */
+    static deleteGroupQuestions(questions, groupQuestion) {
+        questions.filter(q => q.groupSn === groupQuestion.groupSn).forEach(q => {
+            q.deleted = true;
+        });
+    }
+
+    /**
+     * 标记 option 为 question 的正确选项
+     *
+     * @param {JSON} question
+     * @param {JSON} option
+     * @return 无
+     */
+    static markCorrectOption(question, option) {
+        // 1. 单选题、判断题: 只有一个正确选项
+        //    1.1 设置所有选择的 correct 为 false
+        //    1.2 设置 option.correct 为 true
+        // 2. 多选题: 置反 option.correct
+
+        if (question.type === QUESTION_TYPE.SINGLE_CHOICE || question.type === QUESTION_TYPE.TFNG) {
+            question.options.forEach(o => {
+                o.correct = false;
+            });
+
+            option.correct = true;
+        } else if (question.type === QUESTION_TYPE.MULTIPLE_CHOICE) {
+            option.correct = !option.correct;
+        }
+    }
+
+    /**
+     * 更新题目选项的标记为 A, B, C, D，例如添加或删除某个选项后就要重新计算一次
+     * Mark 指的是选择题选项的标记 A, B, C, D
+     *
+     * @param  {JSON} question 题目
+     * @return 无返回值
+     */
+    static updateOptionMarks(question) {
+        // 1. 更新选项的标记: 把题目选项中 deleted 为 false 的选项按顺序设置编号 A, B, C, D
+        // 2. 更新小题选项的标记: 使用递归
+
+        // [1] 更新选项的标记
+        let sn = 0;
+        question.options.filter(o => !o.deleted).forEach(o => {
+            o.mark = String.fromCharCode(65 + sn); // 65 是 A
+            sn += 1;
+        });
+
+        // [2] 更新小题选项的标记: 使用递归
+        question.subQuestions.forEach(q => {
+            QuestionUtils.updateOptionMarks(q);
+        });
+    }
+
+    /**
+     * 更新题目的序号
+     *
+     * @param {Array} questions 题目数组
+     * @return 无
+     */
+    static updateQuestionSnLabels(questions) {
+        // 1. 题型题: 使用中文序号，如 二、
+        // 2. 普通题: 使用阿拉伯数字，如 2、
+        // 3. 复合题的小题: 使用阿拉伯数字加括号，如（2）
+
+        let gsn = 0; // 题型题
+        let qsn = 0; // 普通题
+        let ssn = 0; // 复合题的小题
+        let groupSn = -1; // 当前分组序号
+
+        questions.filter(question => !question.deleted).forEach(question => {
+            if (question.groupSn !== groupSn) {
+                groupSn = question.groupSn;
+                gsn += 1; // 新题型开始
+            }
+
+            // [1] 题型题
+            if (question.type === QUESTION_TYPE.DESCRIPTION) {
+                question.snLabel = Utils.toCnNumber(gsn) + '、';
+                return;
+            }
+
+            // [2] 普通题
+            qsn += 1;
+            question.snLabel = qsn + '、';
+
+            // [3] 复合题的小题
+            ssn = 0;
+            question.subQuestions.filter(sub => !sub.deleted).forEach(sub => {
+                ssn += 1;
+                sub.snLabel = `(${ssn})　`;
+            });
+        });
+    }
+
+    /**
+     * 添加题目到题型题 groupQuestion 所属题目组
+     *
+     * @param {Array} questions 题目
+     * @param {JSON} groupQuestion 题型题
+     */
+    static appendQuestionToGroup(questions, groupQuestion) {
+        // 1. 找到最后一个 groupSn 与 groupQuestion.groupSn 相同的题目的下标 pos
+        // 2. 在 pos + 1 处插入一个题目，题目的类型为 groupQuestion.purpose
+
+        let pos = -1;
+        for (let i = questions.length - 1; i >= 0; i--) {
+            if (questions[i].groupSn === groupQuestion.groupSn) {
+                pos = i;
+                break;
+            }
+        }
+
+        pos += 1;
+        const type = groupQuestion.purpose;
+        const question = QuestionUtils.createQuestion(type, '新创建的题目');
+        question.groupSn = groupQuestion.groupSn;
+        questions.splice(pos, 0, question);
+    }
+}

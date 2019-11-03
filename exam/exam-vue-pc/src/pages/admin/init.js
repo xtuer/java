@@ -9,6 +9,9 @@ import '@/../public/static/lib/axios.rest';
 import filters from '@/../public/static/js/filters';
 import methods from '@/../public/static/js/methods';
 import UserDao from '@/../public/static/js/dao/UserDao';
+import QuestionUtils from '@/../public/static/js/QuestionUtils';
+import RichText from '@/components/RichText.vue';
+import Question from '@/components/Question.vue';
 
 // [1] 注册 Vue 的原型函数
 Object.keys(methods).forEach((key) => {
@@ -20,11 +23,13 @@ Object.keys(filters).forEach(key => {
     Vue.filter(key, filters[key]);
 });
 
-// [3] 注册 Dao
+// [3] 注册 Dao，工具类
 window.UserDao = UserDao;
+window.QuestionUtils = QuestionUtils;
 
 // [4] 注册全局组件
-// Vue.component('ProjectTable', ProjectTable);
+Vue.component('RichText', RichText);
+Vue.component('Question', Question);
 
 // [5] 定义全局的 Message, Notice，为了能够在 Dao 中使用
 window.LoadingBar = LoadingBar;

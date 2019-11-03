@@ -88,3 +88,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.ivu-btn-small {
+    font-size: 12px !important;
+}

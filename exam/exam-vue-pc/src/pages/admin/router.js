@@ -12,9 +12,14 @@ export default new Router({
             component: Home,
         },
         {
+            path: '/paper-edit/:id',
+            name: 'paper-edit',
+            component: () => import(/* webpackChunkName: "paper" */ './views/PaperEdit.vue'),
+        },
+        {
             path: '/about',
             name: 'about',
-            component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+            component: () => import(/* webpackChunkName: "common" */ './views/About.vue'),
         },
         {
             // 404 页面
