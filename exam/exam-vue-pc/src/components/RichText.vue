@@ -52,7 +52,7 @@ export default {
     },
     mounted() {
         // 创建各种场景使用的 toolbar
-        const toolbar1 = `${this.baseToolbar} image media file code`; // 普通场景使用
+        const toolbar1 = `${this.baseToolbar} image media file fitb code`; // 普通场景使用
         const toolbar2 = `${this.baseToolbar} image media fitb code`; // 编辑题目使用
         this.toolbars  = [toolbar1, toolbar2];
 
@@ -193,8 +193,8 @@ export default {
 
         addToolbarButtons(editor) {
             // 添加填空按钮
-            editor.addButton('fitb', { icon: 'code', title: '插入填空', onclick: () => {
-                editor.insertContent('&nbsp;<abbr class="fitb">________</abbr>&nbsp;');
+            editor.addButton('fitb', { icon: 'line', title: '插入填空', onclick: () => {
+                editor.insertContent(' <abbr class="fitb">________</abbr> ');
             } });
 
             // 添加上传图片按钮

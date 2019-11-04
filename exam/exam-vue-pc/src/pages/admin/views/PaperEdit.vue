@@ -16,11 +16,12 @@
             </DropdownMenu>
         </Dropdown>
 
-        <Button type="primary" style="margin-left: 12px">保存 (共 {{ paper.totalScore }} 分)</Button>
+        <Button type="primary" style="margin-left: 12px" @click="save">保存 (共 {{ paper.totalScore }} 分)</Button>
 
         <!-- 编辑题目对话框 -->
         <Modal v-model="modal" title="编辑题目" :styles="{top: '40px', marginBottom: '40px'}" class="edit-question-modal" footer-hide>
-            <Question ref="editingQuestion" :question="editingQuestion" editable
+            <!-- 编辑的时候不要用共享的 Question，否则 RichText 复用时数据会乱 -->
+            <Question v-if="modal" ref="editingQuestion" :question="editingQuestion" editable
                     @on-append-sub-question="updateQuestionStatus"
                     @on-delete-sub-question="updateQuestionStatus"/>
         </Modal>
@@ -46,8 +47,8 @@ export default {
         if (Utils.isValidId(paperId)) {
             // Fetch from server
         } else {
-            this.appendGroupQuestion(1);
-            this.appendGroupQuestion(6);
+            this.appendGroupQuestion(4);
+            // this.appendGroupQuestion(6);
         }
     },
     methods: {
@@ -95,9 +96,8 @@ export default {
             // 2. 赋值 question 为正在编辑的题目
             // 3. 弹出编辑对话框
 
-            this.$refs.editingQuestion.resetActiveTabName();
-            this.editingQuestion = question;
             this.modal = true;
+            this.editingQuestion = question;
         },
         // 更新题目的状态
         updateQuestionStatus() {
@@ -106,6 +106,15 @@ export default {
             QuestionUtils.updateQuestionSnLabels(this.paper.questions);
             this.paper.totalScore = QuestionUtils.updateQuestionScores(this.paper.questions);
         },
+        // 保存
+        save() {
+            let questions = JSON.parse(JSON.stringify(this.paper.questions));
+            // console.log(JSON.stringify(questions));
+            questions = QuestionUtils.cleanQuestions(questions);
+
+            console.log(JSON.stringify(questions));
+            this.$Message.success('保存成功');
+        }
     },
     computed: {
         // 可用题目，去掉被删除的题目

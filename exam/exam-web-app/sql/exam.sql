@@ -51,7 +51,7 @@ DROP TABLE IF EXISTS exam_question_option;
 
 CREATE TABLE exam_question_option (
     id          bigint(20)  NOT NULL  COMMENT '选项 ID',
-    `desc`      text                  COMMENT '选项描述',
+    description text                  COMMENT '选项描述',
     is_correct  tinyint(11) DEFAULT 0 COMMENT '是否正确选项',
     question_id bigint(20)  NOT NULL  COMMENT '所属题目 ID',
     position    int(11)     DEFAULT 0 COMMENT '选项在题目中的位置',

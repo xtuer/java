@@ -71,15 +71,15 @@ export default class QuestionUtils {
     /**
      * 给题目添加一个新的选项
      *
-     * @param  {JSON}    question 题目
-     * @param  {String}  desc     选项的描述
-     * @param  {Boolean} correct  是否正确答案，默认值为 false
+     * @param  {JSON}    question    题目
+     * @param  {String}  description 选项的描述
+     * @param  {Boolean} correct     是否正确答案，默认值为 false
      * @return {JSON} 返回新增加的选项
      */
-    static appendQuestionOption(question, desc = '新建选项', correct = false) {
+    static appendQuestionOption(question, description = '新建选项', correct = false) {
         const option = {
             id: Utils.nextId(),
-            desc,
+            description,
             correct,
             position: 0,
             checked : false, // 客观题作答时是否选中该选项
@@ -359,5 +359,104 @@ export default class QuestionUtils {
                                                                  || question.purpose === QUESTION_TYPE.TFNG
                                                                  || question.purpose === QUESTION_TYPE.FITB
             );
+    }
+
+    /**
+     * 判断传入的题目是否按题给分的题 (编辑试卷时使用)
+     *
+     * @param {JSON} question 题目
+     * @return {Boolean} 按题给分的题返回 true，否则返回 false
+     */
+    static isScoreSelfQuestion(question) {
+        // 复合题的小题或问答题
+        return Utils.isValidId(question.parentId) || question.type === QUESTION_TYPE.ESSAY_QUESTION;
+    }
+
+    /**
+     * 整理题目，去掉不需要的题目和选项，设置新创建的题目和选项的 ID 为 0
+     *
+     * @param  {Array} questions 题目数组
+     * @return {Array} 返回整理好后的题目数组
+     */
+    static cleanQuestions(questions) {
+        // 1. 处理填空题: 解析填空题的题干，每个空生成一个 option
+        // 2. 去掉 created === true && deleted === true 的题目
+        // 3. 设置 created === true 的题目的 ID 为 0
+        // 4. 去掉 created === true && deleted === true 的选项
+        // 5. 设置 created === true 的选项的 ID 为 0
+        // 6. 整理复合题的小题
+
+        // [1] 处理填空题: 解析填空题的题干，每个空生成一个 option
+        questions.filter(q => q.type === QUESTION_TYPE.FITB).forEach(q => {
+            QuestionUtils.cleanFitbQuestion(q);
+        });
+
+        // [2] 去掉 created === true && deleted === true 的题目
+        questions = questions.filter(q => !(q.created && q.deleted)).map(q => {
+            // [2] 设置 created === true 的题目的 ID 为 0
+            if (q.created) {
+                q.id = 0;
+            }
+
+            // [3] 整理填空题
+
+            // [4] 去掉 created === true && deleted === true 的选项
+            q.options = q.options.filter(o => !(o.created && o.deleted)).map(o => {
+                // [5] 设置 created === true 的选项的 ID 为 0
+                if (o.created) {
+                    o.id = 0;
+                }
+
+                return o;
+            });
+
+            // [6] 整理复合题的小题
+            if (q.type === QUESTION_TYPE.COMPLEX) {
+                q.subQuestions = QuestionUtils.cleanQuestions(q.subQuestions);
+            }
+
+            return q;
+        });
+
+        return questions;
+    }
+
+    /**
+     * 处理填空题: 解析填空题的题干，每个空生成一个 option
+     *
+     * @param {JSON} question 填空题
+     * @return 无
+     */
+    static cleanFitbQuestion(question) {
+        // 1. 解析题干，得到空的数量 blankCount
+        // 2. 如果 blankCount 小于题目的 options.length，则删除多余的 options
+        //    2.1 前 blankCount 个选项保留
+        //    2.2 后 (optionCount - blankCount) 个选项删除
+        // 3. 如果 blankCount 大于题目的 options.length，则添加对应数量的 options
+
+        // [1] 解析题干，得到空的数量 blankCount
+        const div = document.createElement('div');
+        div.innerHTML = question.stem;
+        const blankCount = div.querySelectorAll('abbr').length;
+        const optionCount = question.options.length;
+
+        if (blankCount < optionCount) {
+            // [2] 如果 blankCount 小于题目的 options.length，则删除多余的 options
+
+            // [2.1] 前 blankCount 个选项保留
+            for (let i = 0; i < optionCount; i++) {
+                question.options[i].deleted = false;
+            }
+
+            // [2.2] 后 (optionCount - blankCount) 个选项删除
+            for (let i = blankCount; i < optionCount; i++) {
+                question.options[i].deleted = true;
+            }
+        } else if (blankCount > optionCount) {
+            // [3] 如果 blankCount 大于题目的 options.length，则添加对应数量的 options
+            for (let i = optionCount; i < blankCount; i++) {
+                QuestionUtils.appendQuestionOption(question, '填空题的空');
+            }
+        }
     }
 }

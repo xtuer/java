@@ -15,7 +15,7 @@ on-edit-question-click(question)  : 点击编辑题目按钮触发，参数为�
 on-delete-question-click(question): 点击删除题目按钮触发，参数为删除的题目
 on-append-sub-question(): 添加小题时触发，参数无
 on-delete-sub-question(): 删除小题时触发，参数无
-on-score-change(groupQuestion): 题目的满分变化时触发，参数为题目
+on-score-change(question): 题目的满分变化时触发，参数为题目
 
 Slot: 无
 
@@ -26,7 +26,7 @@ Slot: 无
 question
     stem
     option
-        mark, desc
+        mark, description
     tfngs
         tfng
     key
@@ -80,7 +80,7 @@ question
                 <template v-if="question.type===1 || question.type===2">
                     <div v-for="option in options" :key="option.id" class="option">
                         <div class="mark" :class="{ correct: option.correct }" @click="markCorrectOption(option)">{{ option.mark }}</div>
-                        <RichText v-model="option.desc" inline class="desc"/>
+                        <RichText v-model="option.description" inline class="description"/>
                         <Icon type="md-close" size="18" class="close" @click="deleteOption(option)"/>
                     </div>
                     <Button type="dashed" size="small" icon="md-add" class="append-option-button" @click="appendOption">添加选项</Button>
@@ -90,7 +90,7 @@ question
                 <template v-if="question.type===3">
                     <div class="tfngs">
                         <div v-for="option in options" :key="option.id" :class="{ tfng: true, correct: option.correct }" @click="markCorrectOption(option)">
-                            {{ option.desc }}
+                            {{ option.description }}
                         </div>
                     </div>
                 </template>
@@ -180,14 +180,14 @@ question
             <template v-if="question.type===1 || question.type===2">
                 <div v-for="option in options" :key="option.id" class="option">
                     <div class="mark" :class="{ correct: option.correct }">{{ option.mark }}</div>
-                    <div class="desc" v-html="option.desc"></div>
+                    <div class="description" v-html="option.description"></div>
                 </div>
             </template>
 
             <!-- [3] 判断题: 选项 (正确、错误) -->
             <template v-if="question.type===3">
                 <div class="tfngs">
-                    <div v-for="option in options" :key="option.id" :class="{ tfng: true, correct: option.correct }"> {{ option.desc }}</div>
+                    <div v-for="option in options" :key="option.id" :class="{ tfng: true, correct: option.correct }"> {{ option.description }}</div>
                 </div>
             </template>
 
@@ -292,7 +292,7 @@ export default {
         // 给自己打分的题型: 每题得分不一样
         scoreSelf() {
             // 复合题的小题、问答题
-            return Utils.isValidId(this.question.parentId) || this.question.type === QUESTION_TYPE.ESSAY_QUESTION;
+            return QuestionUtils.isScoreSelfQuestion(this.question);
         }
     }
 };
@@ -435,12 +435,13 @@ export default {
             background: white;
             transition: all .6s;
             opacity: 0;
-            border-radius: 4px;
+            border-radius: 2px;
+            box-shadow: 0 0 2px #aaa;
 
             .ivu-icon {
                 font-size: 18px;
                 cursor: pointer;
-                margin-left: 12px;
+                margin-left: 6px;
 
                 &:first-child {
                     margin-left: 3px;
