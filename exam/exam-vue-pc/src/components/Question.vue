@@ -4,9 +4,10 @@
 参数:
 question: [必选] 题目
 editable: [可选] 是否可编辑
-border  : [可选] 是否显示边框
-toolbar : [可选] 是否显示工具栏
-paper-edit: [可选] 是否编辑试卷模式
+border  : [可选] 是否显示边框 (readonly 模式下用)
+toolbar : [可选] 是否显示工具栏 (readonly 模式下用)
+paper-edit: [可选] 是否编辑试卷模式 (readonly 模式下用)
+score-show: [可选] 是否显示分数 (readonly 模式下用)
 
 事件:
 on-append-question-to-group-click(groupQuestion): 点击题型题的添加题目按钮触发，参数为题型题
@@ -14,6 +15,7 @@ on-edit-question-click(question)  : 点击编辑题目按钮触发，参数为�
 on-delete-question-click(question): 点击删除题目按钮触发，参数为删除的题目
 on-append-sub-question(): 添加小题时触发，参数无
 on-delete-sub-question(): 删除小题时触发，参数无
+on-score-change(groupQuestion): 题目的满分变化时触发，参数为题目
 
 Slot: 无
 
@@ -128,18 +130,43 @@ question
             <!-- [1] 题干: 编辑试卷模式 -->
             <div class="stem">
                 <div>{{ question.snLabel }}</div>
-                <div v-html="question.stem"></div>
+                <div class="stem-content">
+                    <div v-html="question.stem"></div>
 
-                <!-- 题型题 (客观题): 编辑试卷时题型题的分值 -->
-                <div v-if="objectiveGroup && paperEdit" class="group-score-edit">
-                    ，每题 <InputNumber v-model="question.score" :min="1" :step="0.5" size="small"/> 分，共 {{ question.totalScore }} 分
+                    <!--
+                        1. 给定分数 (编辑试卷时)
+                            每题得分都一样: 在题型题上给分 (每题得分)，包括单选题、多选题、判断题、填空题
+                            每题得分不一样: 复合题的小题、问答题
+                        2. 显示分数 (预览试卷时)
+                    -->
+
+                    <!-- [1] 给定分数 (编辑试卷时) -->
+                    <template v-if="paperEdit">
+                        <!-- 每题得分都一样 -->
+                        <div v-if="scoreGroup" class="group-score-edit">
+                            ，每题 <InputNumber v-model="question.score" :min="1" :step="0.5" size="small" @on-change="$emit('on-score-change', question)"/> 分，共 {{ question.totalScore }} 分
+                        </div>
+                        <!-- 每题得分不一样 -->
+                        <div v-else-if="scoreSelf">
+                            <InputNumber v-model="question.totalScore" :min="1" :step="0.5" size="small" @on-change="$emit('on-score-change', question)"/> 分
+                        </div>
+                        <div v-else-if="question.type===7">
+                            ，共 {{ question.totalScore }} 分
+                        </div>
+                    </template>
+
+                    <!-- [2] 显示分数 (预览试卷时) -->
+                    <template v-else-if="!paperEdit && scoreShow">
+                        <div v-if="scoreGroup">，每题 {{ question.score }} 分，共 {{ question.totalScore }} 分
+                        </div>
+                        <div v-else-if="scoreSelf" style="margin-left: 6px">
+                            ({{ question.score }} 分)
+                        </div>
+                        <div v-else-if="question.type===7">
+                            ，共 {{ question.totalScore }} 分
+                        </div>
+                    </template>
                 </div>
-                <!-- 题型题 (客观题): 普通模式时题型题的分值 -->
-                <div v-else-if="objectiveGroup && !paperEdit">
-                    ，每题 {{ question.score }} 分，共 {{ question.totalScore }} 分
-                </div>
-                <!-- 其他题型: 占位 -->
-                <div v-else></div>
 
                 <!-- 工具栏 -->
                 <div v-if="toolbar" class="toolbar">
@@ -166,7 +193,9 @@ question
 
             <!-- [5] 复合题: 递归显示小题 -->
             <template v-if="question.type===6">
-                <Question v-for="subQuestion in subQuestions" :key="subQuestion.id" :question="subQuestion"/>
+                <Question v-for="subQuestion in subQuestions" :key="subQuestion.id"
+                        :question="subQuestion" :paper-edit="paperEdit" :score-show="scoreShow"
+                        @on-score-change="$emit('on-score-change', subQuestion)"/>
             </template>
         </template>
     </div>
@@ -181,6 +210,7 @@ export default {
         border  : { type: Boolean, default: false }, // 是否显示边框
         toolbar : { type: Boolean, default: false }, // 是否显示工具栏
         paperEdit: { type: Boolean, default: false }, // 编辑试卷模式
+        scoreShow: { type: Boolean, default: false }, // 编辑试卷模式
     },
     data() {
         return {
@@ -238,6 +268,7 @@ export default {
                 'question-sub'     : Utils.isValidId(this.question.parentId), // 复合题的小题
                 'question-editable': this.editable,
                 'question-readonly': !this.editable,
+                'question-paper-edit': this.paperEdit,
                 border: this.border,
             };
         },
@@ -253,13 +284,15 @@ export default {
         subQuestionTypes() {
             return QUESTION_TYPES.filter(q => q.value !== QUESTION_TYPE.COMPLEX);
         },
-        // 题型题是客观题型时为 true，否则为 false
-        objectiveGroup() {
-            return (this.question.type === QUESTION_TYPE.DESCRIPTION)
-                && (this.question.purpose === QUESTION_TYPE.SINGLE_CHOICE
-                    || this.question.purpose === QUESTION_TYPE.MULTIPLE_CHOICE
-                    || this.question.purpose === QUESTION_TYPE.TFNG
-                );
+        // 给小组打分的题型: 每题得分都一样
+        scoreGroup() {
+            // 在题型题上给分 (每题得分)，包括单选题、多选题、判断题、填空题
+            return QuestionUtils.isScoreGroupQuestion(this.question);
+        },
+        // 给自己打分的题型: 每题得分不一样
+        scoreSelf() {
+            // 复合题的小题、问答题
+            return Utils.isValidId(this.question.parentId) || this.question.type === QUESTION_TYPE.ESSAY_QUESTION;
         }
     }
 };
@@ -305,7 +338,7 @@ export default {
         .tfng {
             @include alignCenter;
             font-size: 12px;
-            height: 26px;
+            height: 24px;
 
             &.correct {
                 color: white;
@@ -374,39 +407,55 @@ export default {
     // 题干
     .stem {
         display: grid;
-        grid-template-columns:repeat(3, max-content);
-        font-weight: bold;
+        grid-template-columns: max-content 1fr;
         align-items: start;
         position: relative;
+
+        .stem-content {
+            > div, > div > p {
+                display: inline-block;
+            }
+        }
 
         // 题型题的分值样式
         .group-score-edit {
             display: flex;
             align-items: flex-start;
+        }
 
-            .ivu-input-number {
-                width: 60px;
-                margin: 0 6px;
-            }
+        .ivu-input-number {
+            width: 55px;
+            margin: auto 6px;
         }
 
         // 编辑题目的工具栏
         .toolbar {
             position: absolute;
-            right: 4px;
+            right: 0px;
+            background: white;
+            transition: all .6s;
+            opacity: 0;
+            border-radius: 4px;
 
             .ivu-icon {
                 font-size: 18px;
                 cursor: pointer;
                 margin-left: 12px;
-                color: #999;
+
+                &:first-child {
+                    margin-left: 3px;
+                }
 
                 &:hover {
                     color: $primaryColor;
-                    transition: all 1s;
+                    transition: all .6s;
                 }
             }
         }
+    }
+
+    &:hover .stem .toolbar {
+        opacity: 1;
     }
 
     // 选择题选项
@@ -420,6 +469,19 @@ export default {
             width: 24px;
             height: 24px;
         }
+    }
+
+    // 编辑试卷时，鼠标移动到题目上，高亮它
+    &.question-paper-edit:hover {
+        border-radius: 3px;
+        box-shadow: 0 0 1px $primaryColor;
+        transition: all .5s;
+        background: rgba(0, 140, 240, 0.1);
+    }
+
+    &.question-group .stem {
+        font-size: 18px;
+        font-weight: bold;
     }
 }
 </style>

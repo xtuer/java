@@ -43,7 +43,7 @@ export default class QuestionUtils {
             groupSn   : 0,  // 题型分组序号 (试卷中使用)
             snLabel   : '', // 题目的序号: 一、1. (1)
             score     : 5,  // 分值 (1. 试卷中题型题的每题得分，2. 考试时此题得分)
-            totalScore: 0,  // 满分 (1. 试卷中题型题的大题满分，2. 其他题每题满分)
+            totalScore: 5,  // 满分 (1. 试卷中题型题的大题满分，2. 其他题每题满分)
             created   : true,  // 新创建的标记
             deleted   : false, // 删除标记
             parentId  : '0',   // 复合题的小题所属复合题的 ID
@@ -172,8 +172,8 @@ export default class QuestionUtils {
     /**
      * 标记 option 为 question 的正确选项
      *
-     * @param {JSON} question
-     * @param {JSON} option
+     * @param {JSON} question 题目
+     * @param {JSON} option   选项
      * @return 无
      */
     static markCorrectOption(question, option) {
@@ -183,12 +183,15 @@ export default class QuestionUtils {
         // 2. 多选题: 置反 option.correct
 
         if (question.type === QUESTION_TYPE.SINGLE_CHOICE || question.type === QUESTION_TYPE.TFNG) {
+            // [1.1] 设置所有选择的 correct 为 false
             question.options.forEach(o => {
                 o.correct = false;
             });
 
+            // [1.2] 设置 option.correct 为 true
             option.correct = true;
         } else if (question.type === QUESTION_TYPE.MULTIPLE_CHOICE) {
+            // [2] 多选题: 置反 option.correct
             option.correct = !option.correct;
         }
     }
@@ -263,6 +266,7 @@ export default class QuestionUtils {
      *
      * @param {Array} questions 题目
      * @param {JSON} groupQuestion 题型题
+     * @return 无
      */
     static appendQuestionToGroup(questions, groupQuestion) {
         // 1. 找到最后一个 groupSn 与 groupQuestion.groupSn 相同的题目的下标 pos
@@ -281,5 +285,79 @@ export default class QuestionUtils {
         const question = QuestionUtils.createQuestion(type, '新创建的题目');
         question.groupSn = groupQuestion.groupSn;
         questions.splice(pos, 0, question);
+    }
+
+    /**
+     * 更新题目的分数
+     *
+     * @param  {Array} questions 题目数组
+     * @return {Integer} 返回题目的总分
+     */
+    static updateQuestionScores(questions) {
+        // 1. 计算复合题的满分，为小题满分之和
+        // 2. 按照题型计算满分
+        // 3. 计算总分
+
+        // [1] 计算复合题的满分，为小题满分之和
+        questions.filter(q => !q.deleted && q.type === QUESTION_TYPE.COMPLEX).forEach(q => {
+            q.totalScore = 0;
+            q.subQuestions.filter(sub => !sub.deleted).forEach(sub => {
+                q.totalScore += sub.totalScore;
+            });
+        });
+
+        // [2] 按照题型计算满分
+        questions.filter(q => !q.deleted && q.type === QUESTION_TYPE.DESCRIPTION).forEach(q => {
+            QuestionUtils.updateGroupQuestionScores(questions, q);
+        });
+
+        // [3] 计算总分
+        let totalScore = 0;
+        questions.filter(q => !q.deleted && q.type !== QUESTION_TYPE.DESCRIPTION).forEach(q => {
+            totalScore += q.totalScore;
+        });
+
+        return totalScore;
+    }
+
+    /**
+     * 更新 groupQuestion 所在整个题型的题目的分数
+     *
+     * @param {Array} questions    题目数组
+     * @param {JSON} groupQuestion 题型题
+     * @return 无
+     */
+    static updateGroupQuestionScores(questions, groupQuestion) {
+        // 1. 过滤掉被删除的题目、非本题型的题目和题型题自己
+        // 2. 如果属于按组给分的题型，则普通题的满分为 groupQuestion.score
+        // 3. 题型题的满分为所有普通题的满分之和
+
+        groupQuestion.totalScore = 0;
+
+        // [1] 过滤掉被删除的题目、非本题型的题目和题型题自己
+        questions.filter(q => !q.deleted && q.id !== groupQuestion.id && q.groupSn === groupQuestion.groupSn).forEach(q => {
+            // [2] 如果属于按组给分的题型，则普通题的满分为 groupQuestion.score
+            if (QuestionUtils.isScoreGroupQuestion(groupQuestion)) {
+                q.totalScore = groupQuestion.score;
+            }
+
+            // [3] 题型题的满分为所有普通题的满分之和
+            groupQuestion.totalScore += q.totalScore;
+        });
+    }
+
+    /**
+     * 判断传入的题目是否按整组题给分的题型题 (编辑试卷时使用)
+     *
+     * @param {JSON} question 题目
+     * @return {Boolean} 整组给分的题型题返回 true，否则返回 false
+     */
+    static isScoreGroupQuestion(question) {
+        // 在题型题上给分 (每题得分)，包括单选题、多选题、判断题、填空题
+        return (question.type === QUESTION_TYPE.DESCRIPTION)
+            && (question.purpose === QUESTION_TYPE.SINGLE_CHOICE || question.purpose === QUESTION_TYPE.MULTIPLE_CHOICE
+                                                                 || question.purpose === QUESTION_TYPE.TFNG
+                                                                 || question.purpose === QUESTION_TYPE.FITB
+            );
     }
 }

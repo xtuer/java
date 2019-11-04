@@ -1,10 +1,12 @@
 <template>
     <div class="paper-edit">
         <div class="questions">
-            <Question v-for="question in questions" :key="question.id" :question="question" paper-edit toolbar
+            <Question v-for="question in questions" :key="question.id" :question="question"
+                    paper-edit toolbar
                     @on-append-question-to-group-click="appendQuestionToGroup"
                     @on-delete-question-click="deleteQuestion"
-                    @on-edit-question-click="editQuestion"/>
+                    @on-edit-question-click="editQuestion"
+                    @on-score-change="updateQuestionStatus"/>
         </div>
 
         <Dropdown slot="extra" transfer @on-click="appendGroupQuestion">
@@ -13,6 +15,8 @@
                 <DropdownItem v-for="type in questionTypes" :key="type.value" :name="type.value">{{ type.name }}</DropdownItem>
             </DropdownMenu>
         </Dropdown>
+
+        <Button type="primary" style="margin-left: 12px">保存 (共 {{ paper.totalScore }} 分)</Button>
 
         <!-- 编辑题目对话框 -->
         <Modal v-model="modal" title="编辑题目" :styles="{top: '40px', marginBottom: '40px'}" class="edit-question-modal" footer-hide>
@@ -29,7 +33,8 @@ export default {
         return {
             paper: {
                 id: '0',
-                questions: [],
+                questions : [], // 试卷的题目
+                totalScore: 0,  // 试卷的满分
             },
             editingQuestion: { stem: '' },
             modal: false,
@@ -96,9 +101,10 @@ export default {
         },
         // 更新题目的状态
         updateQuestionStatus() {
-            // 1. 更新题目的得分 TODO:
-            // 2. 更新题目的序号
+            // 1. 更新题目的序号
+            // 2. 更新题目的得分
             QuestionUtils.updateQuestionSnLabels(this.paper.questions);
+            this.paper.totalScore = QuestionUtils.updateQuestionScores(this.paper.questions);
         },
     },
     computed: {
@@ -125,11 +131,6 @@ export default {
     .questions {
         > .question {
             margin-bottom: 12px;
-
-            &:hover {
-                border-radius: 4px;
-                box-shadow: 0 0 1px rgba(45, 140, 240, 0.5);
-            }
         }
     }
 }

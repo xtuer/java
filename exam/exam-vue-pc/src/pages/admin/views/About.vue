@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <Question v-for="question in questions" :key="question.id" :question="question" :editable="question.editable" border/>
+        <Question v-for="question in questions" :key="question.id" :question="question" :editable="question.editable" border score-show/>
         <Button @click="toggleEdit">Toggle 编辑</Button>
     </div>
 </template>
