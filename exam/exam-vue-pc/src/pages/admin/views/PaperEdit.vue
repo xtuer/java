@@ -44,7 +44,7 @@ export default {
     mounted() {
         const paperId = this.$route.params.id;
 
-        if (Utils.isValidId(paperId)) {
+        if (Utils.isIdValid(paperId)) {
             // Fetch from server
         } else {
             this.appendGroupQuestion(4);

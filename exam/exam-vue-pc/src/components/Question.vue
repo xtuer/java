@@ -265,7 +265,7 @@ export default {
                 question           : true,
                 'question-group'   : this.question.type === QUESTION_TYPE.DESCRIPTION, // 题型题，题型分组
                 'question-complex' : this.question.type === QUESTION_TYPE.COMPLEX, // 复合题
-                'question-sub'     : Utils.isValidId(this.question.parentId), // 复合题的小题
+                'question-sub'     : Utils.isIdValid(this.question.parentId), // 复合题的小题
                 'question-editable': this.editable,
                 'question-readonly': !this.editable,
                 'question-paper-edit': this.paperEdit,
