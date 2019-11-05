@@ -23,7 +23,7 @@
 DROP TABLE IF EXISTS exam_question;
 
 CREATE TABLE exam_question (
-    id         bigint(20) NOT NULL   COMMENT '题目 ID',
+    id         bigint(20)  NOT NULL  COMMENT '题目 ID',
     stem       text                  COMMENT '题干',
     `key`      text                  COMMENT '参考答案',
     analysis   text                  COMMENT '题目解析',
@@ -50,11 +50,12 @@ CREATE TABLE exam_question (
 DROP TABLE IF EXISTS exam_question_option;
 
 CREATE TABLE exam_question_option (
-    id          bigint(20)  NOT NULL  COMMENT '选项 ID',
-    description text                  COMMENT '选项描述',
-    is_correct  tinyint(11) DEFAULT 0 COMMENT '是否正确选项',
-    question_id bigint(20)  NOT NULL  COMMENT '所属题目 ID',
-    position    int(11)     DEFAULT 0 COMMENT '选项在题目中的位置',
+    id          bigint(20)  NOT NULL   COMMENT '选项 ID',
+    description text                   COMMENT '选项描述',
+    is_correct  tinyint(11) DEFAULT 0  COMMENT '是否正确选项',
+    position    int(11)     DEFAULT 0  COMMENT '选项在题目中的位置',
+    mark        varchar(8)  DEFAULT '' COMMENT '选项序号: A, B, C, D',
+    question_id bigint(20)  NOT NULL   COMMENT '所属题目 ID',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

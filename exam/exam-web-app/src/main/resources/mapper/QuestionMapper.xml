@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<mapper namespace="com.exam.mapper.QuestionMapper">
+    <!-- 插入或者更新题目 -->
+    <insert id="insertOrUpdateQuestion" parameterType="Question">
+        INSERT INTO exam_question (id, stem, `key`, analysis, type, difficulty, position, purpose, parent_id)
+        VALUES (#{id}, #{stem}, #{key}, #{analysis}, #{type}, #{difficulty}, #{position}, #{purpose}, #{parentId})
+
+        ON DUPLICATE KEY
+        UPDATE stem = #{stem}, `key` = #{key}, analysis = #{analysis}, type = #{type},
+               difficulty = #{difficulty}, position = #{position}, purpose = #{purpose}, parent_id = #{parentId}
+    </insert>
+
+    <!-- 插入或者更新题目的选项 -->
+    <insert id="insertOrUpdateQuestionOption" parameterType="QuestionOption">
+        INSERT INTO exam_question_option (id, description, is_correct, position, mark, question_id)
+        VALUES (#{id}, #{description}, #{correct}, #{position}, #{mark}, #{questionId})
+
+        ON DUPLICATE KEY
+        UPDATE description = #{description}, is_correct = #{correct}, position = #{position}, mark = #{mark}, question_id = #{questionId}
+    </insert>
+
+    <!-- 删除题目，同时会删除题目的选项，题目的小题以及小题的选项 -->
+    <delete id="deleteQuestion" parameterType="long">
+        DELETE FROM exam_question_option WHERE question_id = #{questionId};
+        DELETE FROM exam_question_option WHERE question_id in (SELECT id FROM exam_question WHERE parent_id = #{questionId});
+        DELETE FROM exam_question WHERE id = #{questionId};
+        DELETE FROM exam_question WHERE parent_id = #{questionId};
+    </delete>
+
+    <!-- 删除选项 -->
+    <delete id="deleteQuestionOption" parameterType="long">
+        DELETE FROM exam_question_option WHERE id = #{optionId}
+    </delete>
+</mapper>
