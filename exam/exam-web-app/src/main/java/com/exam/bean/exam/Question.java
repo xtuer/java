@@ -4,13 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 题目
+ */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Question {
+public class Question  implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     // 题目类型
     public static final int SINGLE_CHOICE   = 1; // 单选题
     public static final int MULTIPLE_CHOICE = 2; // 多选题

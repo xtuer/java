@@ -4,10 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
+/**
+ * 题目的选项
+ */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class QuestionOption {
+public class QuestionOption  implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private long    id;          // 选项 ID
     private String  description; // 选项描述
     private boolean correct;     // 是否正确选项

@@ -19,6 +19,57 @@ public class QuestionService extends BaseService {
     private QuestionMapper questionMapper;
 
     /**
+     * 插入或者更新题目，如果题目的 deleted 为 true，则会删除它
+     *
+     * @param question 题目
+     * @return 返回题目的 ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public long insertOrUpdateQuestion(Question question) {
+        // 1. 确保题目的 ID
+        // 2. 更新题目选项的 mark
+        // 3. 更新题目的位置
+        // 4. 如果 question.deleted 为 true，删除题目，返回
+        // 5. 插入或者更新题目
+        // 6. 删除、插入或者更新选项
+        // 7. 插入或者更新小题
+
+        // [1] 确保题目的 ID
+        // [2] 更新题目选项的 mark
+        // [3] 更新题目的位置
+        ensureQuestionId(question);
+        updateQuestionOptionMarks(question);
+        updateQuestionPositions(question);
+
+        // [4] 如果 question.deleted 为 true，删除题目，返回
+        if (question.isDeleted()) {
+            questionMapper.deleteQuestion(question.getId());
+            return question.getId();
+        }
+
+        // [5] 插入或者更新题目
+        questionMapper.insertOrUpdateQuestion(question);
+
+        // [6] 删除、插入或者更新选项
+        for (QuestionOption option : question.getOptions()) {
+            if (option.isDeleted()) {
+                // 删除选项
+                questionMapper.deleteQuestionOption(option.getId());
+            } else {
+                // 插入或者更新选项
+                questionMapper.insertOrUpdateQuestionOption(option);
+            }
+        }
+
+        // [7] 插入或者更新小题 (递归)
+        for (Question subQuestion : question.getSubQuestions()) {
+            insertOrUpdateQuestion(subQuestion);
+        }
+
+        return question.getId();
+    }
+
+    /**
      * 给题目添加选项
      *
      * @param question 题目
@@ -178,54 +229,6 @@ public class QuestionService extends BaseService {
 
             // [3] 更新小题选项的位置
             updateQuestionPositions(subQuestion);
-        }
-    }
-
-    /**
-     * 插入或者更新题目，如果题目的 deleted 为 true，则会删除它
-     *
-     * @param question 题目
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void insertOrUpdateQuestion(Question question) {
-        // 1. 确保题目的 ID
-        // 2. 更新题目选项的 mark
-        // 3. 更新题目的位置
-        // 4. 如果 question.deleted 为 true，删除题目，返回
-        // 5. 插入或者更新题目
-        // 6. 删除、插入或者更新选项
-        // 7. 插入或者更新小题
-
-        // [1] 确保题目的 ID
-        // [2] 更新题目选项的 mark
-        // [3] 更新题目的位置
-        ensureQuestionId(question);
-        updateQuestionOptionMarks(question);
-        updateQuestionPositions(question);
-
-        // [4] 如果 question.deleted 为 true，删除题目，返回
-        if (question.isDeleted()) {
-            questionMapper.deleteQuestion(question.getId());
-            return;
-        }
-
-        // [5] 插入或者更新题目
-        questionMapper.insertOrUpdateQuestion(question);
-
-        // [6] 删除、插入或者更新选项
-        for (QuestionOption option : question.getOptions()) {
-            if (option.isDeleted()) {
-                // 删除选项
-                questionMapper.deleteQuestionOption(option.getId());
-            } else {
-                // 插入或者更新选项
-                questionMapper.insertOrUpdateQuestionOption(option);
-            }
-        }
-
-        // [7] 插入或者更新小题 (递归)
-        for (Question subQuestion : question.getSubQuestions()) {
-            insertOrUpdateQuestion(subQuestion);
         }
     }
 }
