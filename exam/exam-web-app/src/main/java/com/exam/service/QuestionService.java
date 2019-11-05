@@ -95,7 +95,7 @@ public class QuestionService extends BaseService {
      *
      * @param question 题目
      */
-    public void makeSureQuestionId(Question question) {
+    public void ensureQuestionId(Question question) {
         // 1. 确保题目的 ID
         // 2. 确保选项的 ID
         // 3. 确保选项的题目 ID
@@ -119,7 +119,7 @@ public class QuestionService extends BaseService {
 
         for (Question subQuestion : question.getSubQuestions()) {
             // [4] 确保复合题小题的 ID
-            makeSureQuestionId(subQuestion);
+            ensureQuestionId(subQuestion);
 
             // [5] 确保复合题小题所属题目的 ID
             subQuestion.setParentId(question.getId());
@@ -199,7 +199,7 @@ public class QuestionService extends BaseService {
         // [1] 确保题目的 ID
         // [2] 更新题目选项的 mark
         // [3] 更新题目的位置
-        makeSureQuestionId(question);
+        ensureQuestionId(question);
         updateQuestionOptionMarks(question);
         updateQuestionPositions(question);
 

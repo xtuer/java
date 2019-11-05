@@ -51,7 +51,7 @@ public class QuestionTest {
     @Test
     public void makeSureQuestionId() {
         Question question = newComposedQuestion();
-        questionService.makeSureQuestionId(question);
+        questionService.ensureQuestionId(question);
         Utils.dump(question);
     }
 
@@ -66,11 +66,11 @@ public class QuestionTest {
         Question question = newComposedQuestion();
         questionService.insertOrUpdateQuestion(question);
 
-        // 删除第一个选项
+        // 删除第二个选项
         // 删除第二个小题
         // 删除第一个小题的第二个选项
         // 然后更新数据库
-        question.getOptions().get(0).setDeleted(true);
+        question.getOptions().get(1).setDeleted(true);
         question.getSubQuestions().get(1).setDeleted(true);
         question.getSubQuestions().get(0).getOptions().get(1).setDeleted(true);
         questionService.insertOrUpdateQuestion(question);
