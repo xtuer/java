@@ -319,10 +319,10 @@ Utils.toCnNumber = function(n) {
 
         if (1 === shi) {
             // 11-19: 十一、十二、...
-            return '十' + (ge!==0?Utils.BASE_CN_NUMBERS[ge]:'');
+            return '十' + (ge===0 ? '' : Utils.BASE_CN_NUMBERS[ge]);
         } else {
             // 20-99: 二十一、二十二、...
-            return Utils.BASE_CN_NUMBERS[shi] + '十' + (ge===0?'':Utils.BASE_CN_NUMBERS[ge]);
+            return Utils.BASE_CN_NUMBERS[shi] + '十' + (ge===0 ? '' : Utils.BASE_CN_NUMBERS[ge]);
         }
     } else {
         return '';

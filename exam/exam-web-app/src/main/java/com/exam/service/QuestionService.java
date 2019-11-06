@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 操作题目的服务类，可以给题目自动分配 ID、添加选项、添加小题、CRUD 题目等
+ * 操作题目的服务类，可以给题目自动分配 ID、添加选项、添加小题、CRUD 题目等，关键接口有:
+ *     查询题目: findQuestionById(questionId)
+ *     更新题目: insertOrUpdateQuestion(question)
  */
 @Slf4j
 @Service
@@ -44,18 +47,20 @@ public class QuestionService extends BaseService {
      */
     private List<Question> hierarchyQuestions(List<Question> questions) {
         // 1. 找到第一级题目
-        // 2. 找到第二级题目 (小题: parentId 为有效 ID)
-        // 3. 把小题放到对应的题目下
+        // 2. 找到第二级题目 (小题: parentId 有效 ID)
+        // 3. 把一级题目放到 Map，加速查找
+        // 4. 遍历所有小题，把小题放到所属的题目下
 
         List<Question> topQuestions = questions.stream().filter(q -> Utils.isIdInvalid(q.getParentId())).collect(Collectors.toList());
         List<Question> subQuestions = questions.stream().filter(q -> Utils.isIdValid(q.getParentId())).collect(Collectors.toList());
+        Map<Long, Question> topQuestionMap = topQuestions.stream().collect(Collectors.toMap(Question::getId, question -> question));
 
+        // [4] 遍历所有小题，把小题放到所属的题目下
         for (Question sub : subQuestions) {
-            for (Question top : topQuestions) {
-                if (sub.getParentId() == top.getId()) {
-                    top.getSubQuestions().add(sub);
-                    break;
-                }
+            Question top = topQuestionMap.get(sub.getParentId()); // 查找小题所属题目
+
+            if (top != null) {
+                top.getSubQuestions().add(sub); // 把小题放到对应的题目下
             }
         }
 
@@ -72,7 +77,7 @@ public class QuestionService extends BaseService {
     public long insertOrUpdateQuestion(Question question) {
         // 1. 确保题目的 ID
         // 2. 更新题目选项的 mark
-        // 3. 更新题目的位置
+        // 3. 更新小题和选项的位置
         // 4. 如果 question.deleted 为 true，删除题目，返回
         // 5. 插入或者更新题目
         // 6. 删除、插入或者更新选项
@@ -80,10 +85,10 @@ public class QuestionService extends BaseService {
 
         // [1] 确保题目的 ID
         // [2] 更新题目选项的 mark
-        // [3] 更新题目的位置
+        // [3] 更新小题和选项的位置
         ensureQuestionId(question);
         updateQuestionOptionMarks(question);
-        updateQuestionPositions(question);
+        updateSubQuestionAndOptionPositions(question);
 
         // [4] 如果 question.deleted 为 true，删除题目，返回
         if (question.isDeleted()) {
@@ -245,11 +250,11 @@ public class QuestionService extends BaseService {
     }
 
     /**
-     * 更新题目的位置 (小题的位置, 选项的位置)
+     * 更新小题和选项的位置
      *
      * @param question 题目
      */
-    public void updateQuestionPositions(Question question) {
+    public void updateSubQuestionAndOptionPositions(Question question) {
         // 1. 更新选项的位置
         // 2. 更新小题的位置
         // 3. 更新小题选项的位置
@@ -272,7 +277,7 @@ public class QuestionService extends BaseService {
             subQuestion.setPosition(subPos++);
 
             // [3] 更新小题选项的位置
-            updateQuestionPositions(subQuestion);
+            updateSubQuestionAndOptionPositions(subQuestion);
         }
     }
 }

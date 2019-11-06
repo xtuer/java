@@ -371,6 +371,35 @@ public final class Utils {
         }
     }
 
+    private static final String[] BASE_CN_NUMBERS = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
+
+    /**
+     * 阿拉伯数字转为中文数字，支持 [0, 99]
+     *
+     * @param n 阿拉伯数字
+     * @return 返回 [0, 99] 之间的中文数字字符串，超出范围的返回 ''
+     */
+    public static String toCnNumber(int n) {
+        if (0 <= n && n <= 10) {
+            // 0-10: 零、一、...、十
+            return BASE_CN_NUMBERS[n];
+        } else if (11 <= n && n <= 99) {
+            int ge  = n % 10;
+            int shi = n / 10;
+
+            if (1 == shi) {
+                // 11-19: 十一、十二、...
+                return "十" + (ge==0 ? "" : BASE_CN_NUMBERS[ge]);
+            } else {
+                // 20-99: 二十一、二十二、...
+                return BASE_CN_NUMBERS[shi] + "十" + (ge==0 ? "" : BASE_CN_NUMBERS[ge]);
+            }
+        } else {
+            log.info("数字 {} 越界，只支持 [0, 99] 之间的数字", n);
+            return "";
+        }
+    };
+
     public static void main(String[] args) {
         String text = "如果要编码的字节数不能被3整除，最后会多出1个或2个字节.";
         String encrypt = base64(text);

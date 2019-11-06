@@ -8,8 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
- * 操作试卷的服务
+ * 操作试卷的服务，关键接口有:
+ *     查询试卷: findPaperById(paperId)
+ *     更新试卷: insertOrUpdatePaper(paper)
  */
 @Service
 public class PaperService extends BaseService {
@@ -29,26 +33,29 @@ public class PaperService extends BaseService {
     public long insertOrUpdatePaper(Paper paper) {
         // 1. 确保试卷的 ID
         // 2. 更新题目在试卷中的位置
-        // 3. 插入或者更新题目到题目表 exam_question (题目自身的数据)
-        // 4. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
-        // 5. 插入或者更新试卷表 exam_paper (试卷自身的数据)
+        // 3. 更新题目在试卷中的序号 snLabel
+        // 4. 插入或者更新题目到题目表 exam_question (题目自身的数据)
+        // 5. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
+        // 6. 插入或者更新试卷表 exam_paper (试卷自身的数据)
 
         // [1] 确保试卷的 ID
         // [2] 更新题目在试卷中的位置
+        // [3] 更新题目在试卷中的序号 snLabel
         ensurePaperId(paper);
         updatePaperQuestionPositions(paper);
+        updatePaperQuestionSnLabels(paper.getQuestions());
 
-        // [3] 插入或者更新题目到表 exam_question (题目自身的数据)
+        // [4] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {
             questionService.insertOrUpdateQuestion(question);
         }
 
-        // [4] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
+        // [5] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
         for (Question question : paper.getQuestions()) {
             insertOrUpdatePaperQuestion(question);
         }
 
-        // [5] 插入或者更新试卷表 exam_paper (试卷自身的数据)
+        // [6] 插入或者更新试卷表 exam_paper (试卷自身的数据)
         paperMapper.insertOrUpdatePaper(paper);
 
         return paper.getId();
@@ -120,6 +127,56 @@ public class PaperService extends BaseService {
         int pos = 0;
         for (Question question : paper.getQuestions()) {
             question.setPosition(pos++);
+        }
+    }
+
+    /**
+     * 更新题目在试卷中的序号 snLabel
+     *
+     * @param questions 题目数组
+     */
+    public void updatePaperQuestionSnLabels(List<Question> questions) {
+        // 1. 题型题: 使用中文序号，如 二、
+        // 2. 普通题: 使用阿拉伯数字，如 2、
+        // 3. 复合题的小题: 使用阿拉伯数字加括号，如（2）
+
+        int gsn = 0; // 题型题
+        int qsn = 0; // 普通题
+        int ssn = 0; // 复合题的小题
+        int groupSn = -1; // 当前分组序号
+
+        for (Question question : questions) {
+            // 忽略被删除的题目
+            if (question.isDeleted()) {
+                continue;
+            }
+
+            if (question.getGroupSn() != groupSn) {
+                groupSn = question.getGroupSn();
+                gsn += 1; // 新题型开始
+            }
+
+            // [1] 题型题: 使用中文序号，如 二、
+            if (question.getType() == Question.DESCRIPTION) {
+                question.setSnLabel(Utils.toCnNumber(gsn) + "、");
+                return;
+            }
+
+            // [2] 普通题: 使用阿拉伯数字，如 2、
+            qsn += 1;
+            question.setSnLabel(qsn + "、");
+
+            // [3] 复合题的小题: 使用阿拉伯数字加括号，如（2）
+            ssn = 0;
+            for (Question sub : question.getSubQuestions()) {
+                // 忽略被删除的小题
+                if (sub.isDeleted()) {
+                    continue;
+                }
+
+                ssn += 1;
+                sub.setSnLabel("(" + ssn + ")　");
+            }
         }
     }
 }
