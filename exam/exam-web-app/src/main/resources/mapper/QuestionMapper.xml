@@ -3,6 +3,37 @@
 
 <!--namespace 非常重要：必须是 Mapper 类的全路径-->
 <mapper namespace="com.exam.mapper.QuestionMapper">
+    <!-- 题目的列 -->
+    <sql id="question_columns">
+        q.id AS question_id, q.stem AS question_stem, q.key AS question_key, q.analysis AS question_analysis,
+        q.type AS question_type, q.difficulty AS question_difficulty, q.position AS question_position,
+        q.purpose AS question_purpose, q.parent_id AS question_parent_id,
+
+        o.id AS option_id, o.description AS option_description, o.is_correct AS option_correct, o.position AS option_position,
+        o.mark AS option_mark, o.question_id AS option_question_id
+    </sql>
+
+    <!-- 查找指定 ID 的题目 (如有小题，同时查出) -->
+    <select id="findQuestionById" parameterType="long" resultMap="QuestionResultMap">
+        (
+            SELECT <include refid="question_columns"/>
+            FROM exam_question q
+                LEFT JOIN exam_question_option o ON o.question_id = q.id
+            WHERE q.id = #{questionId}
+            ORDER BY q.position, o.position
+        )
+
+        UNION ALL
+
+        (
+            SELECT <include refid="question_columns"/>
+            FROM exam_question q
+                LEFT JOIN exam_question_option o ON o.question_id = q.id
+            WHERE q.parent_id = #{questionId}
+            ORDER BY q.position, o.position
+        )
+    </select>
+
     <!-- 插入或者更新题目 -->
     <insert id="insertOrUpdateQuestion" parameterType="Question">
         INSERT INTO exam_question (id, stem, `key`, analysis, type, difficulty, position, purpose, parent_id)
@@ -34,4 +65,30 @@
     <delete id="deleteQuestionOption" parameterType="long">
         DELETE FROM exam_question_option WHERE id = #{optionId}
     </delete>
+
+    <!-- 题目: 包含选项 -->
+    <resultMap id="QuestionResultMap" type="Question">
+        <id property="id" column="question_id"/>
+        <result property="stem"       column="question_stem"/>
+        <result property="key"        column="question_key"/>
+        <result property="analysis"   column="question_analysis"/>
+        <result property="type"       column="question_type"/>
+        <result property="difficulty" column="question_difficulty"/>
+        <result property="position"   column="question_position"/>
+        <result property="purpose"    column="question_purpose"/>
+        <result property="parentId"   column="question_parent_id"/>
+
+        <!-- 题目的选项: 1 对多 -->
+        <collection property="options" ofType="QuestionOption" resultMap="QuestionOptionResultMap"/>
+    </resultMap>
+
+    <!-- 题目的选项 -->
+    <resultMap id="QuestionOptionResultMap" type="QuestionOption">
+        <id property="id" column="option_id"/>
+        <result property="description" column="option_description"/>
+        <result property="correct"     column="option_correct"/>
+        <result property="position"    column="option_position"/>
+        <result property="mark"        column="option_mark"/>
+        <result property="questionId"  column="option_question_id"/>
+    </resultMap>
 </mapper>

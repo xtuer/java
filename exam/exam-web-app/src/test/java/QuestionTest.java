@@ -76,6 +76,13 @@ public class QuestionTest {
         questionService.insertOrUpdateQuestion(question);
     }
 
+    // 测试查询题目
+    @Test
+    public void findQuestionById() {
+        Question question = questionService.findQuestionById(1);
+        Utils.dump(question);
+    }
+
     // 测试删除题目
     @Test
     public void deleteQuestion() {
@@ -125,9 +132,9 @@ public class QuestionTest {
         questionService.appendSubQuestion(question, newQuestion(0, "小题三", Question.FITB));
 
         // 小题的选项
-        questionService.appendQuestionOption(question.getSubQuestions().get(0), newOption(4, "小题的选项一"));
-        questionService.appendQuestionOption(question.getSubQuestions().get(0), newOption(0, "小题的选项二"));
-        questionService.appendQuestionOption(question.getSubQuestions().get(0), newOption(0, "小题的选项三"));
+        questionService.appendQuestionOption(question.getSubQuestions().get(0), newOption(4, "小题一的选项一"));
+        questionService.appendQuestionOption(question.getSubQuestions().get(0), newOption(0, "小题一的选项二"));
+        questionService.appendQuestionOption(question.getSubQuestions().get(0), newOption(0, "小题一的选项三"));
 
         return question;
     }

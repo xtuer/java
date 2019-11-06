@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 操作题目的服务类，可以给题目自动分配 ID、添加选项、添加小题、CRUD 题目等
  */
@@ -17,6 +20,47 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionService extends BaseService {
     @Autowired
     private QuestionMapper questionMapper;
+
+    /**
+     * 查找指定 ID 的题目
+     *
+     * @param questionId 题目 ID
+     * @return 返回查找到的题目，找不到返回 null
+     */
+    public Question findQuestionById(long questionId) {
+        // 1. 查找 ID 为 questionId 的题目，并且查询出它的小题
+        // 2. 把小题放置到 subQuestions 中
+        List<Question> questions = questionMapper.findQuestionById(questionId);
+        questions = hierarchyQuestions(questions);
+
+        return questions.size() > 0 ? questions.get(0) : null;
+    }
+
+    /**
+     * 把平铺的题目层级化 (小题放入所属复合题中)
+     *
+     * @param questions 题目数组
+     * @return 返回层级化的题目数组
+     */
+    private List<Question> hierarchyQuestions(List<Question> questions) {
+        // 1. 找到第一级题目
+        // 2. 找到第二级题目 (小题: parentId 为有效 ID)
+        // 3. 把小题放到对应的题目下
+
+        List<Question> topQuestions = questions.stream().filter(q -> Utils.isIdInvalid(q.getParentId())).collect(Collectors.toList());
+        List<Question> subQuestions = questions.stream().filter(q -> Utils.isIdValid(q.getParentId())).collect(Collectors.toList());
+
+        for (Question sub : subQuestions) {
+            for (Question top : topQuestions) {
+                if (sub.getParentId() == top.getId()) {
+                    top.getSubQuestions().add(sub);
+                    break;
+                }
+            }
+        }
+
+        return topQuestions;
+    }
 
     /**
      * 插入或者更新题目，如果题目的 deleted 为 true，则会删除它
