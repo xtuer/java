@@ -24,7 +24,26 @@ public class PaperService extends BaseService {
     private PaperMapper paperMapper;
 
     /**
-     * 插入或者更新题目
+     * 查找指定 ID 的试卷
+     *
+     * @param paperId 试卷 ID
+     * @return 返回查找到的试卷，查不到返回 null
+     */
+    public Paper findPaperById(long paperId) {
+        // 1. 查询试卷的基本信息
+        // 2. 查询试卷的题目
+
+        Paper paper = paperMapper.findPaperById(paperId);
+
+        if (paper != null) {
+            paper.setQuestions(questionService.findPaperQuestions(paperId));
+        }
+
+        return paper;
+    }
+
+    /**
+     * 插入或者更新试卷
      *
      * @param paper 试卷
      * @return 返回试卷的 ID
@@ -34,28 +53,31 @@ public class PaperService extends BaseService {
         // 1. 确保试卷的 ID
         // 2. 更新题目在试卷中的位置
         // 3. 更新题目在试卷中的序号 snLabel
-        // 4. 插入或者更新题目到题目表 exam_question (题目自身的数据)
-        // 5. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
-        // 6. 插入或者更新试卷表 exam_paper (试卷自身的数据)
+        // 4. 计算试卷总分
+        // 5. 插入或者更新题目到题目表 exam_question (题目自身的数据)
+        // 6. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
+        // 7. 插入或者更新试卷表 exam_paper (试卷自身的数据)
 
         // [1] 确保试卷的 ID
         // [2] 更新题目在试卷中的位置
         // [3] 更新题目在试卷中的序号 snLabel
-        ensurePaperId(paper);
-        updatePaperQuestionPositions(paper);
-        updatePaperQuestionSnLabels(paper.getQuestions());
+        // [4] 计算试卷总分
+        this.ensurePaperId(paper);
+        this.updatePaperQuestionPositions(paper);
+        this.updatePaperQuestionSnLabels(paper.getQuestions());
+        this.calculatePaperTotalScore(paper);
 
-        // [4] 插入或者更新题目到表 exam_question (题目自身的数据)
+        // [5] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {
             questionService.upsertQuestion(question);
         }
 
-        // [5] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
+        // [6] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
         for (Question question : paper.getQuestions()) {
-            upsertPaperQuestion(question);
+            this.upsertPaperQuestion(question);
         }
 
-        // [6] 插入或者更新试卷表 exam_paper (试卷自身的数据)
+        // [7] 插入或者更新试卷表 exam_paper (试卷自身的数据)
         paperMapper.upsertPaper(paper);
 
         return paper.getId();
@@ -73,7 +95,7 @@ public class PaperService extends BaseService {
 
         // [1] 如果题目标记为删除，则从表 exam_paper_question 中删除题目
         if (question.isDeleted()) {
-            // 删除试卷的题目
+            // 删除试卷的题目 (试卷题目表中小题的记录也被一起删除了)
             paperMapper.deletePaperQuestion(question.getId());
             return;
         }
@@ -83,7 +105,7 @@ public class PaperService extends BaseService {
 
         // [3] 插入或者更新小题到试卷题目表 exam_paper_question (小题也插入到试卷题目表，方便查询)
         for (Question subQuestion : question.getSubQuestions()) {
-            upsertPaperQuestion(subQuestion);
+            this.upsertPaperQuestion(subQuestion);
         }
     }
 
@@ -126,7 +148,7 @@ public class PaperService extends BaseService {
         // 提示: 只需要设置第一级题目的位置即可，小题和选项的位置由题目自己去保证
         int pos = 0;
         for (Question question : paper.getQuestions()) {
-            question.setPosition(pos++);
+            question.setPositionInPaper(pos++);
         }
     }
 
@@ -178,5 +200,43 @@ public class PaperService extends BaseService {
                 sub.setSnLabel("(" + ssn + ")　");
             }
         }
+    }
+
+    /**
+     * 计算试卷的满分
+     *
+     * @param paper 试卷
+     * @return 返回试卷的满分
+     */
+    public double calculatePaperTotalScore(Paper paper) {
+        // 试卷满分为一级可计分题目满分之和加上可计分小题的满分之和
+        double total = 0;
+
+        for (Question question : paper.getQuestions()) {
+            if (this.canQuestionCalculateScore(question)) {
+                total += question.getTotalScore();
+            }
+
+            for (Question sub : question.getSubQuestions()) {
+                if (this.canQuestionCalculateScore(sub)) {
+                    total += sub.getTotalScore();
+                }
+            }
+        }
+
+        return total;
+    }
+
+    /**
+     * 判断题目是否可计分 (选择题、判断题、填空题、问答题可计分)
+     *
+     * @param question 题目
+     * @return 如果题目可计分返回 true，否则返回 false
+     */
+    private boolean canQuestionCalculateScore(Question question) {
+        return question.getType() == Question.SINGLE_CHOICE
+                || question.getType() == Question.MULTIPLE_CHOICE
+                || question.getType() == Question.FITB
+                || question.getType() == Question.ESSAY_QUESTION;
     }
 }

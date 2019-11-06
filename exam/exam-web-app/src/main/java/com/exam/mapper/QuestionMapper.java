@@ -12,7 +12,7 @@ public interface QuestionMapper {
     /**
      * 查找指定 ID 的题目: 复合题时包含了小题，所以返回类型使用数组，需要把小题合并到大题的 subQuestions 中后才能使用
      *
-     * [注意]: 不要直接使用这个方法，应该使用 QuestionService.findQuestionById()
+     * [注意]: 不要直接使用这个方法，应该使用 QuestionService.findQuestionById(questionId)
      *
      * @param questionId 问题的 ID
      * @return 返回查找到的问题
@@ -47,4 +47,13 @@ public interface QuestionMapper {
      * @param optionId 选项 ID
      */
     void deleteQuestionOption(long optionId);
+
+    /**
+     * 查找试卷的题目
+     * [注意]: 不要直接使用这个方法，应该使用 QuestionService.findPaperQuestions(paperId)
+     *
+     * @param paperId 试卷 ID
+     * @return 返回题目的数组
+     */
+    List<Question> findPaperQuestions(long paperId);
 }

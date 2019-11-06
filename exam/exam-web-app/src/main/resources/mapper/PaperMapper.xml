@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
+<mapper namespace="com.exam.mapper.PaperMapper">
+    <!-- 试卷的列 -->
+    <sql id="paper_columns">
+        id, title, type, total_score AS totalScore, is_objective AS objective, org_id AS orgId
+    </sql>
+
+    <!-- 查找指定 ID 的试卷 -->
+    <select id="findPaperById" parameterType="long" resultType="Paper">
+        SELECT <include refid="paper_columns"/> FROM exam_paper WHERE id = #{paperId}
+    </select>
+
+    <!-- 插入或者更新试卷 -->
+    <insert id="upsertPaper" parameterType="Paper">
+        INSERT INTO exam_paper (id, title, type, total_score, is_objective, org_id)
+        VALUES (#{id}, #{title}, #{type}, #{totalScore}, #{objective}, #{orgId})
+
+        ON DUPLICATE KEY
+        UPDATE title = #{title}, type = #{type}, total_score = #{totalScore}, is_objective = #{objective}, org_id = #{orgId}
+    </insert>
+
+    <!-- 插入或者更新试卷的题目到试卷题目表 (不会更新小题的，因为逻辑复杂) -->
+    <insert id="upsertPaperQuestion" parameterType="Question">
+        INSERT INTO exam_paper_question (paper_id, question_id, group_sn, position, score, total_score, sn_label, parent_question_id)
+        VALUES (#{paperId}, #{id}, #{groupSn}, #{positionInPaper}, #{score}, #{totalScore}, #{snLabel}, #{parentId})
+
+        ON DUPLICATE KEY
+        UPDATE group_sn = #{groupSn}, position = #{positionInPaper}, score = #{score}, total_score = #{totalScore},
+               sn_label = #{snLabel}, parent_question_id = #{parentId}
+    </insert>
+
+    <!-- 试卷题目表中删除题目，同时删除题目表中题目的小题 -->
+    <delete id="deletePaperQuestion" parameterType="long">
+        DELETE FROM exam_paper_question WHERE question_id = #{questionId};
+        DELETE FROM exam_paper_question WHERE parent_question_id = #{questionId};
+    </delete>
+</mapper>

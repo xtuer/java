@@ -32,7 +32,7 @@ public class Question  implements Serializable {
     private String analysis;   // 题目解析
     private int    type;       // 题目类型: 0 (未知)、1 (单选题)、2 (多选题)、3 (判断题)、4 (填空题)、5 (问答题)、6 (复合题)、7 (题型题)
     private int    difficulty; // 题目难度: 0 (未知)、1 (容易)、2 (较易)、3 (一般)、4 (较难)、5 (困难)
-    private int    position;   // 复合题的小题在题目中的位置，题目在试卷中的位置
+    private int    position;   // 复合题的小题在题目中的位置
     private int    purpose;    // 题目用途: 0 (考试题目)、1 (问卷题目)
     private long   parentId;   // 复合题的小题所属大题 ID
     private boolean deleted;   // 是否被删除
@@ -45,4 +45,5 @@ public class Question  implements Serializable {
     private int    groupSn;    // 试卷: 大题 (题型) 分组序号，例如属于第一大题单选题组，顺序表示在试卷中的位置
     private double score;      // 试卷: 每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 单选题，每题 5 分，共 30 分
     private double totalScore; // 试卷: 题目满分 (题目、题型题、复合题的满分)
+    private int    positionInPaper; // 试卷: 题目在试卷中的位置
 }

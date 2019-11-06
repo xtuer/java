@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * 操作题目的服务类，可以给题目自动分配 ID、添加选项、添加小题、CRUD 题目等，关键接口有:
  *     查询题目: findQuestionById(questionId)
  *     更新题目: upsertQuestion(question)
+ *     试卷题目: findPaperQuestions(paperId)
  */
 @Slf4j
 @Service
@@ -34,9 +35,21 @@ public class QuestionService extends BaseService {
         // 1. 查找 ID 为 questionId 的题目，并且查询出它的小题
         // 2. 把小题放置到 subQuestions 中
         List<Question> questions = questionMapper.findQuestionById(questionId);
-        questions = hierarchyQuestions(questions);
+        questions = this.hierarchyQuestions(questions);
 
         return questions.size() > 0 ? questions.get(0) : null;
+    }
+
+    /**
+     * 查找试卷的题目
+     * [注意]: 不要直接使用这个方法，应该使用 QuestionService.findPaperQuestions(paperId)
+     *
+     * @param paperId 试卷 ID
+     * @return 返回题目的数组
+     */
+    public List<Question> findPaperQuestions(long paperId) {
+        List<Question> questions = questionMapper.findPaperQuestions(paperId);
+        return this.hierarchyQuestions(questions);
     }
 
     /**
@@ -86,9 +99,9 @@ public class QuestionService extends BaseService {
         // [1] 确保题目的 ID
         // [2] 更新题目选项的 mark
         // [3] 更新小题和选项的位置
-        ensureQuestionId(question);
-        updateQuestionOptionMarks(question);
-        updateSubQuestionAndOptionPositions(question);
+        this.ensureQuestionId(question);
+        this.updateQuestionOptionMarks(question);
+        this.updateSubQuestionAndOptionPositions(question);
 
         // [4] 如果 question.deleted 为 true，删除题目，返回
         if (question.isDeleted()) {
@@ -219,7 +232,7 @@ public class QuestionService extends BaseService {
 
         for (Question subQuestion : question.getSubQuestions()) {
             // [4] 确保复合题小题的 ID
-            ensureQuestionId(subQuestion);
+            this.ensureQuestionId(subQuestion);
 
             // [5] 确保复合题小题所属题目的 ID
             subQuestion.setParentId(question.getId());
@@ -245,7 +258,7 @@ public class QuestionService extends BaseService {
 
         // [2] 更新小题的选项 mark
         for (Question subQuestion : question.getSubQuestions()) {
-            updateQuestionOptionMarks(subQuestion);
+            this.updateQuestionOptionMarks(subQuestion);
         }
     }
 
@@ -277,7 +290,7 @@ public class QuestionService extends BaseService {
             subQuestion.setPosition(subPos++);
 
             // [3] 更新小题选项的位置
-            updateSubQuestionAndOptionPositions(subQuestion);
+            this.updateSubQuestionAndOptionPositions(subQuestion);
         }
     }
 }

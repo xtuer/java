@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!--namespace 非常重要：必须是 Mapper 类的全路径-->
+<!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
 <mapper namespace="com.exam.mapper.QuestionMapper">
     <!-- 题目的列 -->
     <sql id="question_columns">
@@ -66,6 +66,28 @@
         DELETE FROM exam_question_option WHERE id = #{optionId}
     </delete>
 
+    <!--
+        查找试卷的题目:
+        查询条件: 在试卷的题目表中找到试卷 paperId 的所有题目，然后和题目表、题目选项表进行左连接
+        排序顺序: 题型 group_sn、在试卷中的位置、小题的位置、选项的位置
+    -->
+    <select id="findPaperQuestions" parameterType="long" resultMap="QuestionResultMap">
+        SELECT
+            pq.paper_id    AS paper_id,
+            pq.group_sn    AS paper_question_group_sn,
+            pq.position    AS paper_question_position,
+            pq.score       AS paper_question_score,
+            pq.total_score AS paper_question_total_score,
+            pq.sn_label    AS paper_question_sn_label,
+            <include refid="question_columns"/>
+        FROM exam_paper_question pq
+        LEFT JOIN exam_question q        ON q.id = pq.question_id
+        LEFT JOIN exam_question_option o ON q.id = o.question_id
+
+        WHERE pq.paper_id = #{paperId}
+        ORDER BY paper_question_group_sn, paper_question_position, question_position, option_position
+    </select>
+
     <!-- 题目: 包含选项 -->
     <resultMap id="QuestionResultMap" type="Question">
         <id property="id" column="question_id"/>
@@ -77,6 +99,14 @@
         <result property="position"   column="question_position"/>
         <result property="purpose"    column="question_purpose"/>
         <result property="parentId"   column="question_parent_id"/>
+
+        <!-- 试卷相关属性  -->
+        <result property="paperId"         column="paper_id"/>
+        <result property="groupSn"         column="paper_question_group_sn"/>
+        <result property="positionInPaper" column="paper_question_position"/>
+        <result property="score"           column="paper_question_score"/>
+        <result property="totalScore"      column="paper_question_total_score"/>
+        <result property="snLabel"         column="paper_question_sn_label"/>
 
         <!-- 题目的选项: 1 对多 -->
         <collection property="options" ofType="QuestionOption" resultMap="QuestionOptionResultMap"/>
