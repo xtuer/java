@@ -57,14 +57,14 @@ public class QuestionTest {
 
     // 测试添加或者更新题目
     @Test
-    public void insertOrUpdateQuestion() {
+    public void upsertQuestion() {
         // 提示: 测试前可先清空题目和选项表
         // delete from exam_question;
         // delete from exam_question_option;
 
         // 插入题目到数据库
         Question question = newComposedQuestion();
-        questionService.insertOrUpdateQuestion(question);
+        questionService.upsertQuestion(question);
 
         // 删除第二个选项
         // 删除第二个小题
@@ -73,7 +73,7 @@ public class QuestionTest {
         question.getOptions().get(1).setDeleted(true);
         question.getSubQuestions().get(1).setDeleted(true);
         question.getSubQuestions().get(0).getOptions().get(1).setDeleted(true);
-        questionService.insertOrUpdateQuestion(question);
+        questionService.upsertQuestion(question);
     }
 
     // 测试查询题目

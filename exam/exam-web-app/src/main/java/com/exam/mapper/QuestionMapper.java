@@ -24,14 +24,14 @@ public interface QuestionMapper {
      *
      * @param question 题目
      */
-    void insertOrUpdateQuestion(Question question);
+    void upsertQuestion(Question question);
 
     /**
      * 插入或者更新题目的选项
      *
      * @param option 选项
      */
-    void insertOrUpdateQuestionOption(QuestionOption option);
+    void upsertQuestionOption(QuestionOption option);
 
     /**
      * 删除题目

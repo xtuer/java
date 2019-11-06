@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * 操作题目的服务类，可以给题目自动分配 ID、添加选项、添加小题、CRUD 题目等，关键接口有:
  *     查询题目: findQuestionById(questionId)
- *     更新题目: insertOrUpdateQuestion(question)
+ *     更新题目: upsertQuestion(question)
  */
 @Slf4j
 @Service
@@ -74,7 +74,7 @@ public class QuestionService extends BaseService {
      * @return 返回题目的 ID
      */
     @Transactional(rollbackFor = Exception.class)
-    public long insertOrUpdateQuestion(Question question) {
+    public long upsertQuestion(Question question) {
         // 1. 确保题目的 ID
         // 2. 更新题目选项的 mark
         // 3. 更新小题和选项的位置
@@ -97,7 +97,7 @@ public class QuestionService extends BaseService {
         }
 
         // [5] 插入或者更新题目
-        questionMapper.insertOrUpdateQuestion(question);
+        questionMapper.upsertQuestion(question);
 
         // [6] 删除、插入或者更新选项
         for (QuestionOption option : question.getOptions()) {
@@ -106,13 +106,13 @@ public class QuestionService extends BaseService {
                 questionMapper.deleteQuestionOption(option.getId());
             } else {
                 // 插入或者更新选项
-                questionMapper.insertOrUpdateQuestionOption(option);
+                questionMapper.upsertQuestionOption(option);
             }
         }
 
         // [7] 插入或者更新小题 (递归)
         for (Question subQuestion : question.getSubQuestions()) {
-            insertOrUpdateQuestion(subQuestion);
+            upsertQuestion(subQuestion);
         }
 
         return question.getId();

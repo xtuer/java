@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 操作试卷的服务，关键接口有:
  *     查询试卷: findPaperById(paperId)
- *     更新试卷: insertOrUpdatePaper(paper)
+ *     更新试卷: upsertPaper(paper)
  */
 @Service
 public class PaperService extends BaseService {
@@ -30,7 +30,7 @@ public class PaperService extends BaseService {
      * @return 返回试卷的 ID
      */
     @Transactional(rollbackFor = Exception.class)
-    public long insertOrUpdatePaper(Paper paper) {
+    public long upsertPaper(Paper paper) {
         // 1. 确保试卷的 ID
         // 2. 更新题目在试卷中的位置
         // 3. 更新题目在试卷中的序号 snLabel
@@ -47,16 +47,16 @@ public class PaperService extends BaseService {
 
         // [4] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {
-            questionService.insertOrUpdateQuestion(question);
+            questionService.upsertQuestion(question);
         }
 
         // [5] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
         for (Question question : paper.getQuestions()) {
-            insertOrUpdatePaperQuestion(question);
+            upsertPaperQuestion(question);
         }
 
         // [6] 插入或者更新试卷表 exam_paper (试卷自身的数据)
-        paperMapper.insertOrUpdatePaper(paper);
+        paperMapper.upsertPaper(paper);
 
         return paper.getId();
     }
@@ -66,7 +66,7 @@ public class PaperService extends BaseService {
      *
      * @param question 试卷的题目
      */
-    public void insertOrUpdatePaperQuestion(Question question) {
+    public void upsertPaperQuestion(Question question) {
         // 1. 如果题目标记为删除，则从表 exam_paper_question 中删除题目
         // 2. 插入或者更新题目到试卷题目表 exam_paper_question
         // 3. 插入或者更新小题到试卷题目表 exam_paper_question (小题也插入到试卷题目表，方便查询)
@@ -79,11 +79,11 @@ public class PaperService extends BaseService {
         }
 
         // [2] 插入或者更新题目到试卷题目表 exam_paper_question
-        paperMapper.insertOrUpdatePaperQuestion(question);
+        paperMapper.upsertPaperQuestion(question);
 
         // [3] 插入或者更新小题到试卷题目表 exam_paper_question (小题也插入到试卷题目表，方便查询)
         for (Question subQuestion : question.getSubQuestions()) {
-            insertOrUpdatePaperQuestion(subQuestion);
+            upsertPaperQuestion(subQuestion);
         }
     }
 

@@ -12,14 +12,14 @@ public interface PaperMapper {
      *
      * @param paper 试卷
      */
-    void insertOrUpdatePaper(Paper paper);
+    void upsertPaper(Paper paper);
 
     /**
      * 插入或者更新试卷的题目到试卷题目表
      *
      * @param question 题目
      */
-    void insertOrUpdatePaperQuestion(Question question);
+    void upsertPaperQuestion(Question question);
 
     /**
      * 试卷题目表中删除题目，同时删除题目的小题

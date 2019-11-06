@@ -35,7 +35,7 @@
     </select>
 
     <!-- 插入或者更新题目 -->
-    <insert id="insertOrUpdateQuestion" parameterType="Question">
+    <insert id="upsertQuestion" parameterType="Question">
         INSERT INTO exam_question (id, stem, `key`, analysis, type, difficulty, position, purpose, parent_id)
         VALUES (#{id}, #{stem}, #{key}, #{analysis}, #{type}, #{difficulty}, #{position}, #{purpose}, #{parentId})
 
@@ -45,7 +45,7 @@
     </insert>
 
     <!-- 插入或者更新题目的选项 -->
-    <insert id="insertOrUpdateQuestionOption" parameterType="QuestionOption">
+    <insert id="upsertQuestionOption" parameterType="QuestionOption">
         INSERT INTO exam_question_option (id, description, is_correct, position, mark, question_id)
         VALUES (#{id}, #{description}, #{correct}, #{position}, #{mark}, #{questionId})
 
