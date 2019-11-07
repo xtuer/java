@@ -146,10 +146,17 @@ export default {
                                 const width  = file.imageWidth;
                                 const height = file.imageHeight;
 
-                                const image  = document.getElementById(imageId) || document.getElementById(`${self.editorId}_ifr`).contentWindow.document.getElementById(imageId);
-                                image.src    = file.url;
-                                image.width  = width;
-                                image.height = height;
+                                // 只修改 RichText 里面的图片 src
+                                const editorDom = document.querySelector(`#${self.editorId}`);
+                                const image     = editorDom.querySelector(`#${imageId}`)
+                                               || editorDom.querySelector(`#${self.editorId}_ifr`).contentWindow.document.querySelector(`#${imageId}`);
+
+                                image.src = file.url;
+
+                                if (width && height) {
+                                    image.width  = width;
+                                    image.height = height;
+                                }
                             }).catch(err => {
                                 console.log('上传失败！');
                             });
@@ -228,7 +235,7 @@ export default {
                 // [2.1] 上传图片插入文本框
                 const width  = file.imageWidth;
                 const height = file.imageHeight;
-                this.editor.insertContent(`<img src="${url}" title="${filename}" width="${width}" height="${height}">`);
+                this.editor.insertContent(`<img src="${url}" title="${filename}" align="top" width="${width}" height="${height}">`);
             } else if (this.uploadProps.audio && Utils.isMp3(url)) {
                 // [2.2] 上传 MP3
                 this.editor.insertContent(`&nbsp;<audio controls><source src="${url}"></audio>&nbsp;`);

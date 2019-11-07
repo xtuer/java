@@ -20,7 +20,7 @@
         <Tag color="success" style="margin-left: 20px">试卷类型: {{ paper.objective ? '客观题试卷' : '主观题试卷' }}</Tag>
 
         <!-- 编辑题目对话框 -->
-        <Modal v-model="modal" title="编辑题目" :styles="{top: '40px', marginBottom: '40px'}" class="edit-question-modal" footer-hide>
+        <Modal v-model="modal" title="编辑题目" width="800" :styles="{top: '40px', marginBottom: '40px'}" class="edit-question-modal" footer-hide>
             <!-- 编辑的时候不要用共享的 Question，否则 RichText 复用时数据会乱 -->
             <Question v-if="modal" ref="editingQuestion" :question="editingQuestion" editable
                     @on-append-sub-question="updateQuestionStatus"
