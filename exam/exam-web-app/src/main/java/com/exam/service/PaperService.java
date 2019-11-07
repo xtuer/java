@@ -56,9 +56,10 @@ public class PaperService extends BaseService {
         // 2. 更新题目在试卷中的位置
         // 3. 更新题目在试卷中的序号 snLabel
         // 4. 确定试卷是客观题试卷还是主观题试卷 (客观题试卷自动批阅完成)
-        // 5. 插入或者更新题目到题目表 exam_question (题目自身的数据)
-        // 6. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
-        // 7. 插入或者更新试卷表 exam_paper (试卷自身的数据)
+        // 5. 移动试卷标题，题干、选项中的临时文件到文件仓库
+        // 6. 插入或者更新题目到题目表 exam_question (题目自身的数据)
+        // 7. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
+        // 8. 插入或者更新试卷表 exam_paper (试卷自身的数据)
 
         // [1] 确保试卷的 ID
         // [2] 更新题目在试卷中的位置
@@ -69,19 +70,22 @@ public class PaperService extends BaseService {
         this.updatePaperQuestionSnLabels(paper.getQuestions());
         paper.setObjective(this.isObjectivePaper(paper));
 
-        log.debug(Utils.toJson(paper)); // 输出试卷
+        // [5] 移动试卷标题，题干、选项中的临时文件到文件仓库
+        this.movePaperTempFilesToRepo(paper);
 
-        // [5] 插入或者更新题目到表 exam_question (题目自身的数据)
+        log.debug("保存试卷\n{}", Utils.toJson(paper)); // 输出试卷
+
+        // [6] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {
             questionService.upsertQuestion(question);
         }
 
-        // [6] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
+        // [7] 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
         for (Question question : paper.getQuestions()) {
             this.upsertPaperQuestion(question);
         }
 
-        // [7] 插入或者更新试卷表 exam_paper (试卷自身的数据)
+        // [8] 插入或者更新试卷表 exam_paper (试卷自身的数据)
         paperMapper.upsertPaper(paper);
 
         return paper.getId();
@@ -234,5 +238,47 @@ public class PaperService extends BaseService {
         }
 
         return true;
+    }
+
+    /**
+     * 移动试卷标题，题干、选项中的临时文件到文件仓库
+     *
+     * @param paper 试卷
+     */
+    private void movePaperTempFilesToRepo(Paper paper) {
+        // 1. 移动试卷标题中的临时文件到文件仓库
+        // 2. 移动题目中的临时文件到文件仓库
+        paper.setTitle(super.fileService.moveFileToRepoInHtml(paper.getTitle()));
+        paper.getQuestions().forEach(this::moveQuestionTempFilesToRepo);
+    }
+
+    /**
+     * 移动题干、参考答案、解析中和选项中的临时文件到文件仓库
+     *
+     * @param question 题目
+     */
+    private void moveQuestionTempFilesToRepo(Question question) {
+        // 1. 忽略被删除的文件
+        // 2. 移动题干、参考答案和解析中的临时文件到文件仓库
+        // 3. 移动选项中的临时文件到文件仓库 (忽略被删除的选项)
+        // 4. 递归处理小题中的临时文件
+
+        // [1] 忽略被删除的文件
+        if (question.isDeleted()) {
+            return;
+        }
+
+        // [2] 移动题干、参考答案和解析中的临时文件到文件仓库
+        question.setStem(super.fileService.moveFileToRepoInHtml(question.getStem()));
+        question.setKey(super.fileService.moveFileToRepoInHtml(question.getKey()));
+        question.setAnalysis(super.fileService.moveFileToRepoInHtml(question.getAnalysis()));
+
+        // [3] 移动选项中的临时文件到文件仓库 (忽略被删除的选项)
+        question.getOptions().stream().filter(option -> !option.isDeleted()).forEach(option -> {
+            option.setDescription(super.fileService.moveFileToRepoInHtml(option.getDescription()));
+        });
+
+        // [4] 递归处理小题中的临时文件
+        question.getSubQuestions().forEach(this::moveQuestionTempFilesToRepo);
     }
 }

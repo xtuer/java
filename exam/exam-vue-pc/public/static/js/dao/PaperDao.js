@@ -1,5 +1,3 @@
-import { Notice } from 'view-design';
-
 /**
  * 访问试卷的 Dao
  */
@@ -56,7 +54,6 @@ export default class PaperDao {
      *
      * 网址: http://localhost:8080/api/papers/{paperId}
      * 参数: 无
-     * RequestBody 为 JSON 格式的试卷
      *
      * @param {JSON} paper 试卷
      * @return {Promise} 返回 Promise 对象，resolve 的参数为试卷 ID，reject 的参数为错误信息
