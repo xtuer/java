@@ -3,7 +3,7 @@ import { Notice } from 'view-design';
 /**
  * 访问试卷的 Dao
  */
-export default class UserDao {
+export default class PaperDao {
     /**
      * 查询指定 ID 的试卷
      *
@@ -30,7 +30,10 @@ export default class UserDao {
      * 查询当前机构的试卷
      *
      * 网址: http://localhost:8080/api/currentOrg/papers
-     * 参数: pageNumber, pageSize, name
+     * 参数: filter 可包含下面几个属性
+     *      title     [可选]: 试卷标题，可模糊搜索
+     *      pageSize  [可选]: 数量
+     *      pageNumber[可选]: 页码
      *
      * @param {JSON} filter 过滤条件
      * @return {Promise} 返回 Promise 对象，resolve 的参数为试卷数组，reject 的参数为错误信息

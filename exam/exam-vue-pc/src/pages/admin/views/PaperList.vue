@@ -4,11 +4,11 @@
 <template>
     <div class="papers">
         <!-- 搜索工具栏 -->
-        <!-- <div class="toolbar">
-            <span>用户名:</span>
-            <Input v-model="filter.name" placeholder="请输入用户名"/>
+        <div class="toolbar">
+            <span>试卷标题:</span>
+            <Input v-model="filter.title" placeholder="请输入用户名"/>
             <Button :loading="loading" type="primary" @click="searchPapers">搜索</Button>
-        </div> -->
+        </div>
 
         <!-- 显示试卷 -->
         <Table :columns="columns" :loading="loading" :data="papers">
@@ -32,8 +32,8 @@ export default {
         return {
             papers: [],
             filter: { // 搜索条件
-                name      : '',
-                pageSize  : 2,
+                title: '',
+                pageSize  : 10,
                 pageNumber: 1,
             },
             more   : false, // 是否还有更多用户
