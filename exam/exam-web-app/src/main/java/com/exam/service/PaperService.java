@@ -60,8 +60,6 @@ public class PaperService extends BaseService {
         // 6. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
         // 7. 插入或者更新试卷表 exam_paper (试卷自身的数据)
 
-        log.debug(Utils.toJson(paper)); // 输出要创建的试卷
-
         // [1] 确保试卷的 ID
         // [2] 更新题目在试卷中的位置
         // [3] 更新题目在试卷中的序号 snLabel
@@ -70,6 +68,8 @@ public class PaperService extends BaseService {
         this.updatePaperQuestionPositions(paper);
         this.updatePaperQuestionSnLabels(paper.getQuestions());
         paper.setObjective(this.isObjectivePaper(paper));
+
+        log.debug(Utils.toJson(paper)); // 输出试卷
 
         // [5] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {

@@ -21,10 +21,13 @@ public interface PaperMapper {
     /**
      * 查询指定机构 ID 的试卷
      *
-     * @param orgId 机构 ID
+     * @param orgId  机构 ID
+     * @param title  试卷标题，可模糊搜索
+     * @param offset 分页的起始位置
+     * @param count  分页的记录数量
      * @return 返回机构的试卷数组
      */
-    List<Paper> findPapersByOrgId(long orgId);
+    List<Paper> findPapersByOrgId(long orgId, String title, int offset, int count);
 
     /**
      * 插入或者更新试卷

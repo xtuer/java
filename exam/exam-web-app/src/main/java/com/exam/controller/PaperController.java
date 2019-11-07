@@ -4,6 +4,7 @@ import com.exam.bean.Result;
 import com.exam.bean.exam.Paper;
 import com.exam.mapper.PaperMapper;
 import com.exam.service.PaperService;
+import com.exam.util.PageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class PaperController extends BaseController {
      * 网址: http://localhost:8080/api/papers/{paperId}
      * 参数: 无
      *
+     * @param paperId 试卷 ID
      * @return payload 为试卷
      */
     @GetMapping(Urls.API_PAPERS_BY_ID)
@@ -42,15 +44,23 @@ public class PaperController extends BaseController {
      * 更新创建试卷
      *
      * 网址: http://localhost:8080/api/currentOrg/papers
-     * 参数: 无
-     * RequestBody 为 JSON 格式的试卷
+     * 参数:
+     *     title     [可选]: 试卷标题，可模糊搜索
+     *     pageSize  [可选]: 数量
+     *     pageNumber[可选]: 页码
      *
+     * @param title      试卷标题
+     * @param pageSize   数量
+     * @param pageNumber 页码
      * @return payload 为试卷的 ID
      */
     @GetMapping(Urls.API_PAPERS_OF_CURRENT_ORG)
-    public Result<List<Paper>> findPapersOfCurrentOrg() {
+    public Result<List<Paper>> findPapersOfCurrentOrg(@RequestParam(required = false) String title,
+                                                      @RequestParam(required = false, defaultValue = "20") int pageSize,
+                                                      @RequestParam(required = false, defaultValue = "1") int pageNumber) {
+        int offset = PageUtils.offset(pageNumber, pageSize);
         long orgId = super.getCurrentOrganizationId();
-        return Result.ok(paperMapper.findPapersByOrgId(orgId));
+        return Result.ok(paperMapper.findPapersByOrgId(orgId, title, offset, pageSize));
     }
 
     /**
