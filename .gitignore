@@ -8,6 +8,8 @@ template-web-gradle/src/main/webapp/WEB-INF/page
 template-web-gradle/src/main/webapp/WEB-INF/static
 node_modules/
 page-vue/
+page-pc/
+page-mobile/
 
 ### Gradle ###
 build/

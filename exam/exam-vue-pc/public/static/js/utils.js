@@ -296,7 +296,7 @@ Utils.nextId = function() {
  * @param  {String} 进行校验的 ID
  * @return {Boolean} ID 有效返回 true，否则返回 false
  */
-Utils.isIdValid = function(id) {
+Utils.idIdValid = function(id) {
     return id && (id + '' !== '0');
 };
 

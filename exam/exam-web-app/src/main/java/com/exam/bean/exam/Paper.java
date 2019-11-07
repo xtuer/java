@@ -21,7 +21,7 @@ public class Paper implements Serializable {
     private String  title;      // 试卷标题
     private int     type;       // 试卷类型: 0 (普通试卷)、1 (调查问卷)
     private double  totalScore; // 试卷总分
-    private boolean objective;  // true (包含主观题)、false (全是客观题)
+    private boolean objective;  // true (全是客观题)、false (包含主观题)
     private long    orgId;      // 机构 ID
 
     private List<Question> questions = new LinkedList<>(); // 试卷的题目

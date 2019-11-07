@@ -13,6 +13,11 @@
         SELECT <include refid="paper_columns"/> FROM exam_paper WHERE id = #{paperId}
     </select>
 
+    <!-- 查询指定机构 ID 的试卷 -->
+    <select id="findPapersByOrgId" parameterType="long" resultType="Paper">
+        SELECT <include refid="paper_columns"/> FROM exam_paper WHERE org_id = #{orgId}
+    </select>
+
     <!-- 插入或者更新试卷 -->
     <insert id="upsertPaper" parameterType="Paper">
         INSERT INTO exam_paper (id, title, type, total_score, is_objective, org_id)

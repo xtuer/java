@@ -9,6 +9,7 @@ import '@/../public/static/lib/axios.rest';
 import filters from '@/../public/static/js/filters';
 import methods from '@/../public/static/js/methods';
 import UserDao from '@/../public/static/js/dao/UserDao';
+import PaperDao from '@/../public/static/js/dao/PaperDao';
 import QuestionUtils from '@/../public/static/js/QuestionUtils';
 import RichText from '@/components/RichText.vue';
 import Question from '@/components/Question.vue';
@@ -25,6 +26,7 @@ Object.keys(filters).forEach(key => {
 
 // [3] 注册 Dao，工具类
 window.UserDao = UserDao;
+window.PaperDao = PaperDao;
 window.QuestionUtils = QuestionUtils;
 
 // [4] 注册全局组件

@@ -105,8 +105,8 @@ DROP TABLE IF EXISTS exam_paper;
 CREATE TABLE exam_paper (
     id            bigint(20)    NOT NULL   COMMENT '试卷 ID',
     title         varchar(2048) DEFAULT '' COMMENT '试卷标题',
-    type          int(11)       DEFAULT 0  COMMENT '试卷类型: 0 (普通试卷)、1 (调查问卷)',
-    total_score   int(11)       DEFAULT 0  COMMENT '试卷总分',
+    type          tinyint(11)   DEFAULT 0  COMMENT '试卷类型: 0 (普通试卷)、1 (调查问卷)',
+    total_score   double        DEFAULT 0  COMMENT '试卷总分',
     is_objective  tinyint(4)    DEFAULT 0  COMMENT '0 (包含主观题)、1 (全是客观题)',
     org_id        bigint(20)    DEFAULT 0  COMMENT '机构 ID',
 

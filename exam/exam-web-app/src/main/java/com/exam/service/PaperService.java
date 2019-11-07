@@ -4,6 +4,7 @@ import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
 import com.exam.mapper.PaperMapper;
 import com.exam.util.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.List;
  *     查询试卷: findPaperById(paperId)
  *     更新试卷: upsertPaper(paper)
  */
+@Slf4j
 @Service
 public class PaperService extends BaseService {
     @Autowired
@@ -53,19 +55,21 @@ public class PaperService extends BaseService {
         // 1. 确保试卷的 ID
         // 2. 更新题目在试卷中的位置
         // 3. 更新题目在试卷中的序号 snLabel
-        // 4. 计算试卷总分
+        // 4. 确定试卷是客观题试卷还是主观题试卷 (客观题试卷自动批阅完成)
         // 5. 插入或者更新题目到题目表 exam_question (题目自身的数据)
         // 6. 插入或者更新题目到试卷的题目表 exam_paper_question (题目和试卷的关系)
         // 7. 插入或者更新试卷表 exam_paper (试卷自身的数据)
 
+        log.debug(Utils.toJson(paper)); // 输出要创建的试卷
+
         // [1] 确保试卷的 ID
         // [2] 更新题目在试卷中的位置
         // [3] 更新题目在试卷中的序号 snLabel
-        // [4] 计算试卷总分
+        // [4] 确定试卷是客观题试卷还是主观题试卷
         this.ensurePaperId(paper);
         this.updatePaperQuestionPositions(paper);
         this.updatePaperQuestionSnLabels(paper.getQuestions());
-        this.calculatePaperTotalScore(paper);
+        paper.setObjective(this.isObjectivePaper(paper));
 
         // [5] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {
@@ -181,7 +185,7 @@ public class PaperService extends BaseService {
             // [1] 题型题: 使用中文序号，如 二、
             if (question.getType() == Question.DESCRIPTION) {
                 question.setSnLabel(Utils.toCnNumber(gsn) + "、");
-                return;
+                continue;
             }
 
             // [2] 普通题: 使用阿拉伯数字，如 2、
@@ -203,40 +207,32 @@ public class PaperService extends BaseService {
     }
 
     /**
-     * 计算试卷的满分
-     *
-     * @param paper 试卷
-     * @return 返回试卷的满分
-     */
-    public double calculatePaperTotalScore(Paper paper) {
-        // 试卷满分为一级可计分题目满分之和加上可计分小题的满分之和
-        double total = 0;
-
-        for (Question question : paper.getQuestions()) {
-            if (this.canQuestionCalculateScore(question)) {
-                total += question.getTotalScore();
-            }
-
-            for (Question sub : question.getSubQuestions()) {
-                if (this.canQuestionCalculateScore(sub)) {
-                    total += sub.getTotalScore();
-                }
-            }
-        }
-
-        return total;
-    }
-
-    /**
      * 判断题目是否可计分 (选择题、判断题、填空题、问答题可计分)
      *
      * @param question 题目
      * @return 如果题目可计分返回 true，否则返回 false
      */
-    private boolean canQuestionCalculateScore(Question question) {
+    private boolean canQuestionScoring(Question question) {
         return question.getType() == Question.SINGLE_CHOICE
                 || question.getType() == Question.MULTIPLE_CHOICE
                 || question.getType() == Question.FITB
                 || question.getType() == Question.ESSAY_QUESTION;
+    }
+
+    /**
+     * 判断试卷是否客观题试卷 (试卷不包含问答题和填空题则是客观题试卷)
+     *
+     * @param paper 试卷
+     * @return 客观题试卷返回 true，否则返回 false
+     */
+    public boolean isObjectivePaper(Paper paper) {
+        for (Question question : paper.getQuestions()) {
+            // 试卷中有一个题是主观题则返回 false
+            if (questionService.isSubjectiveQuestion(question)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

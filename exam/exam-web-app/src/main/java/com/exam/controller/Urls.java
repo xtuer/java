@@ -65,4 +65,7 @@ public interface Urls {
     String API_ORGS_BY_ID  = "/api/orgs/{orgId}";         // 指定 ID 的机构
     String API_ORGS_ENABLE = "/api/orgs/{orgId}/enabled"; // 指定 ID 的机构的启用禁用状态
 
+    // 试卷
+    String API_PAPERS_BY_ID          = "/api/papers/{paperId}";  // 指定 ID 的试卷
+    String API_PAPERS_OF_CURRENT_ORG = "/api/currentOrg/papers"; // 当前机构的试卷
 }

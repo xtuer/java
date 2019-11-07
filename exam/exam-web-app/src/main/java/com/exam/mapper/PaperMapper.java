@@ -3,6 +3,8 @@ package com.exam.mapper;
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
 
+import java.util.List;
+
 /**
  * 试卷的 Mapper
  */
@@ -15,6 +17,14 @@ public interface PaperMapper {
      * @return 返回查找到的试卷，查不到返回 null
      */
     Paper findPaperById(long paperId);
+
+    /**
+     * 查询指定机构 ID 的试卷
+     *
+     * @param orgId 机构 ID
+     * @return 返回机构的试卷数组
+     */
+    List<Paper> findPapersByOrgId(long orgId);
 
     /**
      * 插入或者更新试卷

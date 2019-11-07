@@ -184,7 +184,17 @@ public final class Utils {
      * @param object 要输出的对象
      */
     public static void dump(Object object) {
-        System.out.println(JSON.toJSONStringWithDateFormat(object, "yyyy-MM-dd HH:mm:ss.SSS", SerializerFeature.PrettyFormat));
+        System.out.println(Utils.toJson(object));
+    }
+
+    /**
+     * 把对象转为 Json 字符串
+     *
+     * @param object 要转为 Json 字符串的对象
+     * @return 返回对象的 Json 字符串表示
+     */
+    public static String toJson(Object object) {
+        return JSON.toJSONStringWithDateFormat(object, "yyyy-MM-dd HH:mm:ss.SSS", SerializerFeature.PrettyFormat);
     }
 
     /**

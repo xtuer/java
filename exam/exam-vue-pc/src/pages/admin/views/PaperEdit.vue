@@ -17,6 +17,7 @@
         </Dropdown>
 
         <Button type="primary" style="margin-left: 12px" @click="save">保存 (共 {{ paper.totalScore }} 分)</Button>
+        <Tag color="success" style="margin-left: 20px">试卷类型: {{ paper.objective ? '客观题试卷' : '主观题试卷' }}</Tag>
 
         <!-- 编辑题目对话框 -->
         <Modal v-model="modal" title="编辑题目" :styles="{top: '40px', marginBottom: '40px'}" class="edit-question-modal" footer-hide>
@@ -41,15 +42,8 @@ export default {
             modal: false,
         };
     },
-    mounted() {
-        const paperId = this.$route.params.id;
-
-        if (Utils.isIdValid(paperId)) {
-            // Fetch from server
-        } else {
-            this.appendGroupQuestion(4);
-            // this.appendGroupQuestion(6);
-        }
+    created() {
+        this.init();
     },
     methods: {
         // 添加题型
@@ -62,7 +56,7 @@ export default {
             const stem = this.questionTypeName(type);
             const purpose = type;
             const groupQuestion = QuestionUtils.createQuestion(QUESTION_TYPE.DESCRIPTION, stem, purpose);
-            groupQuestion.groupSn = Utils.nextSn();
+            groupQuestion.groupSn = QuestionUtils.nextGroupSn(this.paper.questions);
             this.paper.questions.push(groupQuestion);
             this.updateQuestionStatus();
         },
@@ -106,14 +100,39 @@ export default {
             QuestionUtils.updateQuestionSnLabels(this.paper.questions);
             this.paper.totalScore = QuestionUtils.updateQuestionScores(this.paper.questions);
         },
-        // 保存
+        // 保存试卷
         save() {
-            let questions = JSON.parse(JSON.stringify(this.paper.questions));
+            let paper = JSON.parse(JSON.stringify(this.paper));
             // console.log(JSON.stringify(questions));
-            questions = QuestionUtils.cleanQuestions(questions);
+            paper.questions = QuestionUtils.cleanQuestions(paper.questions);
+            // console.log(JSON.stringify(questions));
 
-            console.log(JSON.stringify(questions));
-            this.$Message.success('保存成功');
+            PaperDao.upsertPaper(paper).then(paperId => {
+                if (Utils.idIdValid(this.paper.id)) {
+                    // 编辑试卷时从服务器加载最新的试卷
+                    return PaperDao.findPaper(paperId);
+                } else {
+                    // 创建试卷时跳转到试卷编辑页面
+                    this.$router.push({ name: 'paper-edit', params: { id: paperId } });
+                    return null;
+                }
+            }).then(newPaper => {
+                this.paper = newPaper;
+            });
+        },
+        // 初始化
+        init() {
+            // 1. paperId 有效时从服务器获取此 ID 的试卷
+            // 2. paperId 无效时创建一个默认的试卷
+            const paperId = this.$route.params.id;
+
+            if (Utils.idIdValid(paperId)) {
+                PaperDao.findPaper(paperId).then(paper => {
+                    this.paper = paper;
+                });
+            } else {
+                this.appendGroupQuestion(1);
+            }
         }
     },
     computed: {
@@ -125,7 +144,11 @@ export default {
         questionTypes() {
             return QUESTION_TYPES;
         },
-    }
+    },
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        $route: 'init'
+    },
 };
 </script>
 

@@ -369,7 +369,7 @@ export default class QuestionUtils {
      */
     static isScoreSelfQuestion(question) {
         // 复合题的小题或问答题
-        return Utils.isIdValid(question.parentId) || question.type === QUESTION_TYPE.ESSAY_QUESTION;
+        return Utils.idIdValid(question.parentId) || question.type === QUESTION_TYPE.ESSAY_QUESTION;
     }
 
     /**
@@ -458,5 +458,19 @@ export default class QuestionUtils {
                 QuestionUtils.appendQuestionOption(question, '填空题的空');
             }
         }
+    }
+
+    /**
+     * 计算下一个题型的 groupSn
+     *
+     * @param {Array} questions 题目数组
+     * @return {Integer} 返回下一个 groupSn
+     */
+    static nextGroupSn(questions) {
+        // 下一个 groupSn 为最后一个题型题的 groupSn+1
+        const groupQuestions = questions.filter(q => q.type === QUESTION_TYPE.DESCRIPTION);
+        const len = groupQuestions.length;
+
+        return len > 0 ? groupQuestions[len-1].groupSn+1 : 0;
     }
 }

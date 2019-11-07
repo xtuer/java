@@ -12,6 +12,11 @@ export default new Router({
             component: Home,
         },
         {
+            path: '/papers',
+            name: 'papers',
+            component: () => import(/* webpackChunkName: "paper" */ './views/PaperList.vue'),
+        },
+        {
             path: '/paper-edit/:id',
             name: 'paper-edit',
             component: () => import(/* webpackChunkName: "paper" */ './views/PaperEdit.vue'),
