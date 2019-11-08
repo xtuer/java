@@ -1,7 +1,5 @@
 package com.exam.service;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +9,13 @@ public class BaseService {
     protected IdWorker idWorker;
 
     @Autowired
-    protected FileService fileService;
+    protected UserService userService;
 
     @Autowired
-    protected UserService userService;
+    protected TempFileService tempFileService;
+
+    @Autowired
+    protected RepoFileService repoFileService;
 
     /**
      * 生成唯一的 64 位 long 的 ID

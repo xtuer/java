@@ -1,12 +1,8 @@
 package com.exam.controller;
 
 import com.exam.bean.User;
-import com.exam.service.FileService;
-import com.exam.service.IdWorker;
-import com.exam.service.OrganizationService;
-import com.exam.service.UserService;
+import com.exam.service.*;
 import com.exam.util.SecurityUtils;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -18,13 +14,16 @@ public class BaseController {
     protected IdWorker idWorker;
 
     @Autowired
-    protected FileService fileService;
-
-    @Autowired
     protected UserService userService;
 
     @Autowired
     protected OrganizationService orgService;
+
+    @Autowired
+    protected TempFileService tempFileService;
+
+    @Autowired
+    protected RepoFileService repoFileService;
 
     /**
      * 获取当前登录用户

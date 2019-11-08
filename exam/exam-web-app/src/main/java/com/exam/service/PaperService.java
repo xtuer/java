@@ -71,7 +71,7 @@ public class PaperService extends BaseService {
         paper.setObjective(this.isObjectivePaper(paper));
 
         // [5] 移动试卷标题，题干、选项中的临时文件到文件仓库
-        this.movePaperTempFilesToRepo(paper);
+        this.moveTempFileToRepoInPaper(paper);
 
         log.debug("保存试卷\n{}", Utils.toJson(paper)); // 输出试卷
 
@@ -245,19 +245,22 @@ public class PaperService extends BaseService {
      *
      * @param paper 试卷
      */
-    private void movePaperTempFilesToRepo(Paper paper) {
+    private void moveTempFileToRepoInPaper(Paper paper) {
         // 1. 移动试卷标题中的临时文件到文件仓库
         // 2. 移动题目中的临时文件到文件仓库
-        paper.setTitle(super.fileService.moveFileToRepoInHtml(paper.getTitle()));
-        paper.getQuestions().forEach(this::moveQuestionTempFilesToRepo);
+        paper.setTitle(this.moveTempFileToRepo(paper.getTitle(), paper.getId()));
+        paper.getQuestions().forEach(question -> {
+            this.moveTempFileToRepoInQuestion(question, paper.getId());
+        });
     }
 
     /**
      * 移动题干、参考答案、解析中和选项中的临时文件到文件仓库
      *
+     * @param paperId 试卷 ID
      * @param question 题目
      */
-    private void moveQuestionTempFilesToRepo(Question question) {
+    private void moveTempFileToRepoInQuestion(Question question, long paperId) {
         // 1. 忽略被删除的文件
         // 2. 移动题干、参考答案和解析中的临时文件到文件仓库
         // 3. 移动选项中的临时文件到文件仓库 (忽略被删除的选项)
@@ -269,16 +272,29 @@ public class PaperService extends BaseService {
         }
 
         // [2] 移动题干、参考答案和解析中的临时文件到文件仓库
-        question.setStem(super.fileService.moveFileToRepoInHtml(question.getStem()));
-        question.setKey(super.fileService.moveFileToRepoInHtml(question.getKey()));
-        question.setAnalysis(super.fileService.moveFileToRepoInHtml(question.getAnalysis()));
+        question.setStem(this.moveTempFileToRepo(question.getStem(), paperId));
+        question.setKey(this.moveTempFileToRepo(question.getKey(), paperId));
+        question.setAnalysis(this.moveTempFileToRepo(question.getAnalysis(), paperId));
 
         // [3] 移动选项中的临时文件到文件仓库 (忽略被删除的选项)
         question.getOptions().stream().filter(option -> !option.isDeleted()).forEach(option -> {
-            option.setDescription(super.fileService.moveFileToRepoInHtml(option.getDescription()));
+            option.setDescription(this.moveTempFileToRepo(option.getDescription(), paperId));
         });
 
         // [4] 递归处理小题中的临时文件
-        question.getSubQuestions().forEach(this::moveQuestionTempFilesToRepo);
+        question.getSubQuestions().forEach(sub -> {
+            this.moveTempFileToRepoInQuestion(sub, paperId);
+        });
+    }
+
+    /**
+     * 移动试卷下的临时文件到仓库中试卷自己的文件夹下
+     *
+     * @param html    试卷中的 html 富文本
+     * @param paperId 试卷 ID
+     * @return 返回处理后的 html
+     */
+    private String moveTempFileToRepo(String html, long paperId) {
+        return super.repoFileService.moveTempFileToRepoInHtml(html, "paper", paperId+"");
     }
 }
