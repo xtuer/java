@@ -42,7 +42,7 @@
         appId  = 'Default_ID'
         appKey = 'Default_Key'
 
-        thymeleafCacheable = true        // thymeleaf 使用缓存提高效率
+        thymeleafCacheable = true    // thymeleaf 使用缓存提高效率
         repoDirectory = '/exam/repo' // 文件仓库目录
         tempDirectory = '/exam/temp' // 临时文件目录，例如存储上传的临时文件，里面的文件可以超过几天不放问可以用 crontab 自动删除
         logsDirectory = '/exam/logs' // 日志目录
