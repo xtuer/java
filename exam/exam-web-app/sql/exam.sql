@@ -5,7 +5,7 @@
 # exam_paper
 # exam
 # exam_record
-# exam_question_answer
+# exam_question_option_answer
 # exam_question_answer_result
 
 #-------------------------------------------
@@ -166,8 +166,7 @@ CREATE TABLE exam_record (
     id             bigint(20) NOT NULL     COMMENT '试卷记录 ID',
     user_id        bigint(20) DEFAULT 0    COMMENT '考试用户 ID',
     exam_id        bigint(20) DEFAULT 0    COMMENT '考试 ID',
-    paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID',
-    clazz_id       bigint(20) DEFAULT 0    COMMENT '班级 ID',
+    paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID，方便使用考试记录查找考试的试卷',
     status         int        DEFAULT 0    COMMENT '状态: 0 (已创建)、1 (已提交)、2 (已批改) [点击考试的时候才创建考试记录]',
     elapsed_time   int(11)    DEFAULT 0    COMMENT '已考试时间，单位为秒',
     rank           int(11)    DEFAULT 0    COMMENT '考试排名',
@@ -182,12 +181,12 @@ CREATE TABLE exam_record (
 ) ENGINE=InnoDB;
 
 #-------------------------------------------
-# 表名：exam_question_answer
+# 表名：exam_question_option_answer
 # 作者：黄彪
 # 日期：2019-06-21
 # 版本：1.0
-# 描述：题目作答表
-#      记录用户什么时候、回答什么试卷 (作业) 的题目，不管是主观题还是客观题，回答的选项保存到作答表中，主观题的选项回答的内容保存到 content 里
+# 描述：题目选项作答表
+#      记录用户什么时候、回答什么试卷 (作业) 的题目选项，不管是主观题还是客观题，回答的选项保存到作答表中，主观题的选项回答的内容保存到 content 里
 #      保存投票和调查问卷等时，不需要创建考试记录，只需要自定义一个 exam_record_id 即可，这个 exam_record_id 可以保存在其他地方
 #
 #      客观题 (单选题、多选题、判断题): 保存选择的选项
@@ -196,12 +195,11 @@ CREATE TABLE exam_record (
 #             问答题: 只有一个选项，针对这个选项进行回答
 #      保存回答时，先删除对应题目的所有回答，然后再把新的所有回答保存一次
 #------------------------------------------
-DROP TABLE IF EXISTS exam_question_answer;
+DROP TABLE IF EXISTS exam_question_option_answer;
 
-CREATE TABLE exam_question_answer (
+CREATE TABLE exam_question_option_answer (
     user_id            bigint(20) DEFAULT 0 COMMENT '考试用户 ID',
     exam_record_id     bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
-    paper_id           bigint(20) DEFAULT 0 COMMENT '试卷 ID',
     question_id        bigint(20) DEFAULT 0 COMMENT '题目 ID',
     question_option_id bigint(20) DEFAULT 0 COMMENT '选项 ID',
     content            text                 COMMENT '主观题的回答内容，客观题时为空',
@@ -211,7 +209,7 @@ CREATE TABLE exam_question_answer (
 
     id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
     UNIQUE KEY index_record_option_unique (exam_record_id, question_option_id) COMMENT '记录作答问题选项唯一',
-    KEY index_question_answer (user_id, exam_record_id, paper_id)
+    KEY index_question_answer (user_id, exam_record_id)
 ) ENGINE=InnoDB;
 
 #-------------------------------------------

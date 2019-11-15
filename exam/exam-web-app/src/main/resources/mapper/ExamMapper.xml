@@ -30,13 +30,13 @@
 
     <!-- 使用 ID 查找考试记录 -->
     <select id="findExamRecordById" resultType="ExamRecord">
-        SELECT id, user_id, exam_id, paper_id, clazz_id, status, elapsed_time, rank, score, submitted_time
+        SELECT id, user_id, exam_id, paper_id, status, elapsed_time, rank, score, submitted_time
         FROM exam_record WHERE id = #{examRecordId}
     </select>
 
     <!-- 创建考试记录 -->
     <insert id="insertExamRecord">
-        INSERT INTO exam_record (id, user_id, exam_id, paper_id, clazz_id)
-        VALUES (#{id}, #{userId}, #{examId}, #{paperId}, #{clazzId})
+        INSERT INTO exam_record (id, user_id, exam_id, paper_id)
+        VALUES (#{id}, #{userId}, #{examId}, #{paperId})
     </insert>
 </mapper>

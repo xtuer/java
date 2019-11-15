@@ -79,8 +79,7 @@ public class ExamService extends BaseService {
 
         // [3.2] 如果 recordCount < maxTimes，则允许创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
-        record.setId(super.nextId()).setUserId(userId).setExamId(examId)
-                .setPaperId(exam.getPaperId()).setClazzId(exam.getClazzId());
+        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(exam.getPaperId());
         examMapper.insertExamRecord(record);
 
         return Result.ok(record.getId());
