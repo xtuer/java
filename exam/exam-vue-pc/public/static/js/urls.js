@@ -23,8 +23,8 @@ const Urls = {
     API_DICTS    : '/api/currentOrg/dicts', // 查询当前机构字典列表
 
     // 试卷
-    API_PAPERS_BY_ID         : '/api/papers/{paperId}',  // 指定 ID 的试卷
-    API_PAPERS_OF_CURRENT_ORG: '/api/currentOrg/papers', // 当前机构的试卷
+    API_PAPERS_BY_ID         : '/api/exam/papers/{paperId}',  // 指定 ID 的试卷
+    API_PAPERS_OF_CURRENT_ORG: '/api/exam/papers/currentOrg', // 当前机构的试卷
 };
 
 window.Urls = Urls;

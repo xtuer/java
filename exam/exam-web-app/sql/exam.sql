@@ -1,12 +1,12 @@
 # 考试相关总共有下面 8 个表
 # exam_question
-# exam_question_item
+# exam_question_option
 # exam_paper_question
 # exam_paper
 # exam
 # exam_record
 # exam_question_answer
-# exam_question_result
+# exam_question_answer_result
 
 #-------------------------------------------
 # 表名：exam_question
@@ -135,14 +135,14 @@ CREATE TABLE exam (
     start_time                  datetime      DEFAULT NULL  COMMENT '考试开始时间',
     end_time                    datetime      DEFAULT NULL  COMMENT '考试结束时间',
     duration                    int(11)       DEFAULT 0     COMMENT '考试持续时间, 单位为秒',
-    allowed_times               int(11)       DEFAULT 1     COMMENT '允许考试次数',
+    max_times                   int(11)       DEFAULT 1     COMMENT '允许考试次数',
 
     is_question_shuffled        tinyint(4)    DEFAULT 0     COMMENT '是否打乱题目',
     is_question_option_shuffled tinyint(4)    DEFAULT 0     COMMENT '是否打乱题目的选项',
     is_correction_finished      tinyint(4)    DEFAULT 0     COMMENT '是否已批改完试卷: 0 (未完成)、1 (完成)',
     highest_score               double        DEFAULT 0     COMMENT '最高分',
     lowest_score                double        DEFAULT 0     COMMENT '最低分',
-    avg_score                   double        DEFAULT 0     COMMENT '平均分',
+    average_score               double        DEFAULT 0     COMMENT '平均分',
     pass_rate                   double        DEFAULT 0     COMMENT '及格率',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -166,14 +166,13 @@ CREATE TABLE exam_record (
     id             bigint(20) NOT NULL     COMMENT '试卷记录 ID',
     user_id        bigint(20) DEFAULT 0    COMMENT '考试用户 ID',
     exam_id        bigint(20) DEFAULT 0    COMMENT '考试 ID',
-    clazz_id       bigint(20) DEFAULT 0    COMMENT '班级 ID',
     paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID',
-    score          double     DEFAULT 0    COMMENT '考试得分',
+    clazz_id       bigint(20) DEFAULT 0    COMMENT '班级 ID',
     status         int        DEFAULT 0    COMMENT '状态: 0 (已创建)、1 (已提交)、2 (已批改) [点击考试的时候才创建考试记录]',
-    used_time      int(11)    DEFAULT 0    COMMENT '已使用时间，单位为秒',
-    clazz_rank     int(11)    DEFAULT 0    COMMENT '班级排名',
+    elapsed_time   int(11)    DEFAULT 0    COMMENT '已考试时间，单位为秒',
+    rank           int(11)    DEFAULT 0    COMMENT '考试排名',
+    score          double     DEFAULT 0    COMMENT '考试得分',
     submitted_time datetime   DEFAULT NULL COMMENT '提交试卷时间',
-    nickname       varchar(256) DEFAULT '' COMMENT '用户昵称',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -216,15 +215,15 @@ CREATE TABLE exam_question_answer (
 ) ENGINE=InnoDB;
 
 #-------------------------------------------
-# 表名：exam_question_result
+# 表名：exam_question_answer_result
 # 作者：黄彪
 # 日期：2019-06-21
 # 版本：1.0
 # 描述：题目作答分数表，记录用户什么时候、回答什么试卷 (作业) 的题目所获得的分数
 #------------------------------------------
-DROP TABLE IF EXISTS exam_question_result;
+DROP TABLE IF EXISTS exam_question_answer_result;
 
-CREATE TABLE exam_question_result (
+CREATE TABLE exam_question_answer_result (
     user_id     bigint(20) DEFAULT 0 COMMENT '考试用户 ID',
     record_id   bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
     paper_id    bigint(20) DEFAULT 0 COMMENT '试卷 ID',

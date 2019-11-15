@@ -1,8 +1,9 @@
-package com.exam.service;
+package com.exam.service.exam;
 
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
-import com.exam.mapper.PaperMapper;
+import com.exam.mapper.exam.PaperMapper;
+import com.exam.service.BaseService;
 import com.exam.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

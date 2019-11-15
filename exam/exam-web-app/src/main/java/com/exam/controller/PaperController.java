@@ -2,8 +2,8 @@ package com.exam.controller;
 
 import com.exam.bean.Result;
 import com.exam.bean.exam.Paper;
-import com.exam.mapper.PaperMapper;
-import com.exam.service.PaperService;
+import com.exam.mapper.exam.PaperMapper;
+import com.exam.service.exam.PaperService;
 import com.exam.util.PageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class PaperController extends BaseController {
     /**
      * 查询指定 ID 的试卷
      *
-     * 网址: http://localhost:8080/api/papers/{paperId}
+     * 网址: http://localhost:8080/api/exam/papers/{paperId}
      * 参数: 无
      *
      * @param paperId 试卷 ID
@@ -43,7 +43,7 @@ public class PaperController extends BaseController {
     /**
      * 更新创建试卷
      *
-     * 网址: http://localhost:8080/api/currentOrg/papers
+     * 网址: http://localhost:8080/api/exam/papers/currentOrg
      * 参数:
      *     title     [可选]: 试卷标题，可模糊搜索
      *     pageSize  [可选]: 数量
@@ -66,7 +66,7 @@ public class PaperController extends BaseController {
     /**
      * 更新创建试卷
      *
-     * 网址: http://localhost:8080/api/papers/{paperId}
+     * 网址: http://localhost:8080/api/exam/papers/{paperId}
      * 参数: 无
      * RequestBody 为 JSON 格式的试卷
      *

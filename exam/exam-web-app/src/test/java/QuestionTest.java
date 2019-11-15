@@ -1,18 +1,16 @@
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
 import com.exam.bean.exam.QuestionOption;
-import com.exam.mapper.QuestionMapper;
+import com.exam.mapper.exam.QuestionMapper;
 import com.exam.service.IdWorker;
-import com.exam.service.PaperService;
-import com.exam.service.QuestionService;
+import com.exam.service.exam.PaperService;
+import com.exam.service.exam.QuestionService;
 import com.exam.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 /* 测试题目
  delete from exam_paper;

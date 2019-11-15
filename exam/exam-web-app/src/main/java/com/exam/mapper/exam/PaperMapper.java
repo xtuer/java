@@ -1,4 +1,4 @@
-package com.exam.mapper;
+package com.exam.mapper.exam;
 
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
