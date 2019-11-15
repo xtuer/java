@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class QuestionOptionAnswer {
     private long userId;           // 考试用户 ID
-    private long recordId;         // 考试记录 ID
+    private long examRecordId;     // 考试记录 ID
     private long paperId;          // 试卷 ID
     private long questionId;       // 题目 ID
     private long questionOptionId; // 选项 ID
