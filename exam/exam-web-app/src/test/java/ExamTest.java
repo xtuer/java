@@ -24,9 +24,12 @@ public class ExamTest {
      */
     @Test
     public void upsertExam() {
-        Exam exam = new Exam();
+        // 1. 创建一份试卷，试卷 ID 修改为 1 (手动)
+        // 2. 创建考试，考试 ID、试卷 ID、班级 ID 都为 1 (下面)
         Date startTime = new Date();
         Date endTime = new Date(startTime.getTime() + 60*60*1000);
+
+        Exam exam = new Exam();
         exam.setId(1).setPaperId(1).setClazzId(1).setTitle("测试考试").setMaxTimes(1)
                 .setDuration(60*60).setStartTime(startTime).setEndTime(endTime);
         examMapper.upsertExam(exam);
@@ -37,6 +40,7 @@ public class ExamTest {
      */
     @Test
     public void createExamRecord() {
+        // 给用户 1 的考试 1 创建考试记录
         Utils.dump(examService.insertExamRecord(1, 1));
     }
 
@@ -45,6 +49,7 @@ public class ExamTest {
      */
     @Test
     public void findExamRecord() {
-        Utils.dump(examService.findExamRecord(1, 2));
+        // 查询用户 1 的考试 1 的考试记录
+        Utils.dump(examService.findExamRecord(1, 1));
     }
 }
