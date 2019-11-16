@@ -130,7 +130,7 @@ DROP TABLE IF EXISTS exam;
 CREATE TABLE exam (
     id                          bigint(20)                  COMMENT '考试 ID',
     paper_id                    bigint(20)    DEFAULT 0     COMMENT '试卷 ID',
-    clazz_id                    bigint(20)    DEFAULT 0     COMMENT '班级 ID',
+    holder_id                   bigint(20)    DEFAULT 0     COMMENT '考试拥有者 ID，例如机构 ID、班级 ID 等，根据业务需求而定',
     title                       varchar(2048) DEFAULT ''    COMMENT '考试标题',
     start_time                  datetime      DEFAULT NULL  COMMENT '考试开始时间',
     end_time                    datetime      DEFAULT NULL  COMMENT '考试结束时间',
@@ -169,7 +169,6 @@ CREATE TABLE exam_record (
     paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID，方便使用考试记录查找考试的试卷',
     status         int        DEFAULT 0    COMMENT '状态: 0 (已创建)、1 (已提交)、2 (已批改) [点击考试的时候才创建考试记录]',
     elapsed_time   int(11)    DEFAULT 0    COMMENT '已考试时间，单位为秒',
-    rank           int(11)    DEFAULT 0    COMMENT '考试排名',
     score          double     DEFAULT 0    COMMENT '考试得分',
     submitted_time datetime   DEFAULT NULL COMMENT '提交试卷时间',
 

@@ -13,15 +13,6 @@ public interface ExamMapper {
     Exam findExamById(long examId);
 
     /**
-     * 统计用户某次考试的考试记录数量
-     *
-     * @param userId 用户 ID
-     * @param examId 考试 ID
-     * @return 返回考试记录数量
-     */
-    int countExamRecords(long userId, long examId);
-
-    /**
      * 创建或更新考试
      *
      * @param exam 考试
@@ -29,12 +20,22 @@ public interface ExamMapper {
     void upsertExam(Exam exam);
 
     /**
-     * 使用 ID 查找考试记录
+     * 查找用户的考试记录
      *
+     * @param userId       用户 ID
      * @param examRecordId 考试记录 ID
      * @return 返回查找到的考试记录，查找不到返回 null
      */
-    ExamRecord findExamRecordById(long examRecordId);
+    ExamRecord findExamRecordByUserIdAndExamRecordId(long userId, long examRecordId);
+
+    /**
+     * 统计用户某次考试的考试记录数量
+     *
+     * @param userId 用户 ID
+     * @param examId 考试 ID
+     * @return 返回考试记录数量
+     */
+    int countExamRecordsByUserIdAndExamId(long userId, long examId);
 
     /**
      * 创建考试记录
