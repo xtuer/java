@@ -8,4 +8,5 @@ public interface CacheConst {
 
     String KEY_USER = "'user.' + #userId";
     String KEY_ORG  = "'org.' + #host";
+    String KEY_EXAM = "'exam.' + #examId";
 }

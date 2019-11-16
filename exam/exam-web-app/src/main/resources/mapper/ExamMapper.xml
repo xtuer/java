@@ -10,7 +10,7 @@
 
     <!-- 考试记录的列 -->
     <sql id="record_columns">
-        id, user_id, exam_id, paper_id, status, elapsed_time, rank, score, submitted_time
+        id, user_id, exam_id, paper_id, status, elapsed_time, score, submitted_time
     </sql>
 
     <!--=============================================================================================
@@ -35,19 +35,32 @@
                                                 考试记录
     ==============================================================================================-->
     <!-- 查找用户的考试记录 -->
-    <select id="findExamRecordByUserIdAndExamRecordId" resultType="ExamRecord">
+    <select id="findExamRecordById" resultType="ExamRecord">
         SELECT <include refid="record_columns"/>
-        FROM exam_record WHERE id = #{examRecordId} AND user_id = #{userId}
+        FROM exam_record
+        WHERE id = #{examRecordId}
+    </select>
+
+    <!-- 查找用户的指定考试的所有考试记录 -->
+    <select id="findExamRecordsByUserIdAndExamId" resultType="ExamRecord">
+        SELECT <include refid="record_columns"/>
+        FROM exam_record
+        WHERE user_id = #{userId} AND exam_id = #{examId}
+        ORDER BY created_at
     </select>
 
     <!-- 统计用户某次考试的考试记录数量 -->
     <select id="countExamRecordsByUserIdAndExamId" resultType="int">
-        SELECT count(1) FROM exam_record WHERE user_id = #{userId} AND exam_id = #{examId}
+        SELECT count(1)
+        FROM exam_record
+        WHERE user_id = #{userId} AND exam_id = #{examId}
     </select>
 
-    <!-- 查找用户 -->
-    <select id="findQuestionOptionAnswersByUserIdAndExamRecordId" resultType="QuestionOptionAnswer">
-
+    <!-- 查找指定考试记录所有题目选项的回答 -->
+    <select id="findQuestionOptionAnswersByExamRecordId" resultType="QuestionOptionAnswer">
+        SELECT exam_record_id, question_id, question_option_id, content
+        FROM exam_question_option_answer
+        WHERE exam_record_id = #{examRecordId}
     </select>
 
     <!-- 创建考试记录 -->
@@ -55,4 +68,27 @@
         INSERT INTO exam_record (id, user_id, exam_id, paper_id)
         VALUES (#{id}, #{userId}, #{examId}, #{paperId})
     </insert>
+
+    <!-- 更新考试记录的状态:
+         考试记录的状态值变化设计为只会递增
+    -->
+    <update id="updateExamRecordStatus">
+    <![CDATA[
+        UPDATE exam_record
+        SET status = ${status}
+        WHERE id = ${examRecordId} AND status < ${status}
+    ]]>
+    </update>
+
+    <!-- 插入题目的回答 -->
+    <insert id="insertQuestionOptionAnswer" parameterType="QuestionOptionAnswer">
+        INSERT INTO exam_question_option_answer (exam_record_id, question_id, question_option_id, content)
+        VALUES (#{examRecordId}, #{questionId}, #{questionOptionId}, #{content})
+    </insert>
+
+    <!-- 删除指定的考试记录里指定题目的所有回答 -->
+    <delete id="deleteQuestionOptionAnswersByExamRecordIdAndQuestionId">
+        DELETE FROM exam_question_option_answer
+        WHERE exam_record_id = #{examRecordId} AND question_id = #{questionId}
+    </delete>
 </mapper>

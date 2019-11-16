@@ -167,7 +167,7 @@ CREATE TABLE exam_record (
     user_id        bigint(20) DEFAULT 0    COMMENT '考试用户 ID',
     exam_id        bigint(20) DEFAULT 0    COMMENT '考试 ID',
     paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID，方便使用考试记录查找考试的试卷',
-    status         int        DEFAULT 0    COMMENT '状态: 0 (已创建)、1 (已提交)、2 (已批改) [点击考试的时候才创建考试记录]',
+    status         int        DEFAULT 0    COMMENT '状态: 0 (新创建)、1 (已作答)、2 (已提交)、3 (已批改) [点击考试的时候才创建考试记录]',
     elapsed_time   int(11)    DEFAULT 0    COMMENT '已考试时间，单位为秒',
     score          double     DEFAULT 0    COMMENT '考试得分',
     submitted_time datetime   DEFAULT NULL COMMENT '提交试卷时间',
@@ -197,7 +197,6 @@ CREATE TABLE exam_record (
 DROP TABLE IF EXISTS exam_question_option_answer;
 
 CREATE TABLE exam_question_option_answer (
-    user_id            bigint(20) DEFAULT 0 COMMENT '考试用户 ID',
     exam_record_id     bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
     question_id        bigint(20) DEFAULT 0 COMMENT '题目 ID',
     question_option_id bigint(20) DEFAULT 0 COMMENT '选项 ID',
@@ -208,7 +207,7 @@ CREATE TABLE exam_question_option_answer (
 
     id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
     UNIQUE KEY index_record_option_unique (exam_record_id, question_option_id) COMMENT '记录作答问题选项唯一',
-    KEY index_question_answer (user_id, exam_record_id)
+    KEY index_exo_answer (exam_record_id)
 ) ENGINE=InnoDB;
 
 #-------------------------------------------

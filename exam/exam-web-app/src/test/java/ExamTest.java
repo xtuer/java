@@ -1,4 +1,6 @@
 import com.exam.bean.exam.Exam;
+import com.exam.bean.exam.ExamRecordAnswer;
+import com.exam.bean.exam.QuestionOptionAnswer;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.service.exam.ExamService;
 import com.exam.util.Utils;
@@ -9,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration({"classpath:config/application.xml"})
@@ -49,7 +53,51 @@ public class ExamTest {
      */
     @Test
     public void findExamRecord() {
-        // 查询用户 1 的考试 1 的考试记录
-        Utils.dump(examService.findExamRecord(1, 1));
+        // 查询考试记录
+        Utils.dump(examService.findExamRecord(1));
+    }
+
+    /**
+     * 查找用户的指定考试的所有考试记录
+     */
+    @Test
+    public void findExamRecords() {
+        Utils.dump(examMapper.findExamRecordsByUserIdAndExamId(1, 1));
+    }
+
+    /**
+     * 插入更新题目的回答
+     */
+    @Test
+    public void answerExamRecord() {
+        long recordId = 1;
+        ExamRecordAnswer examRecordAnswer = new ExamRecordAnswer();
+        examRecordAnswer.setExamRecordId(recordId).setSubmitted(true);
+
+        List<QuestionOptionAnswer> answers = new LinkedList<>();
+        answers.add(newAnswer(recordId, 1, 1, ""));
+        answers.add(newAnswer(recordId, 1, 2, ""));
+        answers.add(newAnswer(recordId, 2, 3, "填空-1"));
+        answers.add(newAnswer(recordId, 2, 4, "填空-2"));
+        answers.add(newAnswer(recordId, 3, 5, "回答"));
+
+        examRecordAnswer.setAnswers(answers);
+
+        Utils.dump(examService.answerExamRecord(examRecordAnswer));
+    }
+
+    @Test
+    public void findQuestionOptionAnswersByExamRecordId() {
+        Utils.dump(examMapper.findQuestionOptionAnswersByExamRecordId(1));
+    }
+
+    /**
+     * 创建题目选项的回答
+     */
+    private QuestionOptionAnswer newAnswer(long examRecordId, long questionId, long questionOptionId, String content) {
+        QuestionOptionAnswer answer = new QuestionOptionAnswer();
+        answer.setExamRecordId(examRecordId).setQuestionId(questionId).setQuestionOptionId(questionOptionId).setContent(content);
+
+        return answer;
     }
 }
