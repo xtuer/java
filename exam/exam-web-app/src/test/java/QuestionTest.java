@@ -89,7 +89,7 @@ public class QuestionTest {
     // 测试查询题目
     @Test
     public void findQuestionById() {
-        Question question = questionService.findQuestionById(100);
+        Question question = questionService.findQuestion(100);
         Utils.dump(question);
     }
 

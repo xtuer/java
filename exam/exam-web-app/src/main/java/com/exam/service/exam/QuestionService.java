@@ -32,7 +32,7 @@ public class QuestionService extends BaseService {
      * @param questionId 题目 ID
      * @return 返回查找到的题目，找不到返回 null
      */
-    public Question findQuestionById(long questionId) {
+    public Question findQuestion(long questionId) {
         // 1. 查找 ID 为 questionId 的题目，并且查询出它的小题
         // 2. 把小题放置到 subQuestions 中
         List<Question> questions = questionMapper.findQuestionById(questionId);
