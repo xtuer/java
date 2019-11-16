@@ -64,6 +64,14 @@ public interface ExamMapper {
     void updateExamRecordStatus(long examRecordId, int status);
 
     /**
+     * 增加考试记录的使用时间
+     *
+     * @param examRecordId 考试记录 ID
+     * @param timeInSeconds 增加的时间
+     */
+    void increaseExamRecordElapsedTime(long examRecordId, long timeInSeconds);
+
+    /**
      * 插入题目的回答
      *
      * @param answer 回答

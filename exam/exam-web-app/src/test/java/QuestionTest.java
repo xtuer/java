@@ -120,7 +120,7 @@ public class QuestionTest {
     // 测试查找试卷的题目
     @Test
     public void findPaper() {
-        Paper paper = paperService.findPaperById(100);
+        Paper paper = paperService.findPaper(100);
         Utils.dump(paper);
     }
 

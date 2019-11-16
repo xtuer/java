@@ -31,7 +31,7 @@ public class PaperController extends BaseController {
      */
     @GetMapping(Urls.API_PAPERS_BY_ID)
     public Result<Paper> findPaperById(@PathVariable long paperId) {
-        Paper paper = paperService.findPaperById(paperId);
+        Paper paper = paperService.findPaper(paperId);
 
         if (paper != null) {
             return Result.ok(paper);

@@ -1,5 +1,8 @@
 package com.exam.service.exam;
 
+import com.alicp.jetcache.anno.CacheInvalidate;
+import com.alicp.jetcache.anno.Cached;
+import com.exam.bean.CacheConst;
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
 import com.exam.mapper.exam.PaperMapper;
@@ -32,7 +35,8 @@ public class PaperService extends BaseService {
      * @param paperId 试卷 ID
      * @return 返回查找到的试卷，查不到返回 null
      */
-    public Paper findPaperById(long paperId) {
+    @Cached(name = CacheConst.CACHE, key = CacheConst.KEY_PAPER_ID)
+    public Paper findPaper(long paperId) {
         // 1. 查询试卷的基本信息
         // 2. 查询试卷的题目
 
@@ -52,6 +56,7 @@ public class PaperService extends BaseService {
      * @return 返回试卷的 ID
      */
     @Transactional(rollbackFor = Exception.class)
+    @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_PAPER)
     public long upsertPaper(Paper paper) {
         // 1. 确保试卷的 ID
         // 2. 更新题目在试卷中的位置

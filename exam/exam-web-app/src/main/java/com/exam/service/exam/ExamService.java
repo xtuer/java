@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
  * 考试的服务:
  *     创建或编辑考试
  *     创建考试记录
- *     查找考试记录 (考试记录信息、考试的试卷、用户的作答)
- *     考试作答
+ *     查找考试记录: findExamRecord (考试记录信息、考试的试卷、用户的作答)
+ *     考试作答: answerExamRecord (后期可放到 MQ)
  *
  * 提示:
- *     1. 考试和用户无关，考试记录才和用户有关
+ *     1. 考试和用户无关，考试记录才和用户有关，由于考试读多写少，可以放入缓存
  *     2. 同一个考试，同一个人可以创建多个考试记录，也就是考试允许多次作答
  *     3. 获取用户的某次考试记录时，得到的考试记录里会带上考试的试卷、作答内容，方便前端一次性得到所有数据
  */
@@ -47,13 +47,15 @@ public class ExamService extends BaseService {
      * @param exam 考试
      * @return 成功操作的 payload 为考试 ID
      */
+    @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
     public Result<Long> upsertExam(Exam exam) {
         // 1. 检查考试时间，有效时间条件为:
         //    1.1 startTime < endTime
         //    2.2 endTime - startTime >= duration
         // 2. 检查最大次数: maxTimes >= 1
         // 3. 分配考试 ID
-        // 4. 插入数据库，返回 Exam 的 ID
+        // 4. 插入数据库
+        // 5. 返回考试 ID
 
         // [1] 检查考试时间，有效时间条件为:
         //    [1.1] startTime < endTime
@@ -75,12 +77,10 @@ public class ExamService extends BaseService {
             exam.setId(super.nextId());
         }
 
-        // [4] 插入数据库，返回 Exam 的 ID
+        // [4] 插入数据库
         examMapper.upsertExam(exam);
 
-        // [5] 清楚考试的缓存
-        self.invalidateExamCache(exam.getId());
-
+        // [5] 返回考试 ID
         return Result.ok(exam.getId());
     }
 
@@ -90,19 +90,9 @@ public class ExamService extends BaseService {
      * @param examId 考试 ID
      * @return 返回查找到的考试，查找不到返回 null
      */
-    @Cached(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
+    @Cached(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM_ID)
     public Exam findExam(long examId) {
         return examMapper.findExamById(examId);
-    }
-
-    /**
-     * 清楚考试的缓存
-     *
-     * @param examId 考试 ID
-     */
-    @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
-    public void invalidateExamCache(long examId) {
-
     }
 
     /**
@@ -121,14 +111,14 @@ public class ExamService extends BaseService {
         ExamRecord record = examMapper.findExamRecordById(examRecordId);
 
         // [2] 查找试卷
-        Paper paper = paperService.findPaperById(record.getPaperId());
+        Paper paper = paperService.findPaper(record.getPaperId());
         record.setPaper(paper);
 
         // [3] 查找作答
-        // [4] 合并作答到试卷的题目选项里
         List<QuestionOptionAnswer> examAnswers = examMapper.findQuestionOptionAnswersByExamRecordId(examRecordId);
         Map<Long, QuestionOptionAnswer> answersMap = examAnswers.stream().collect(Collectors.toMap(QuestionOptionAnswer::getQuestionOptionId, a -> a));
 
+        // [4] 合并作答到试卷的题目选项里
         for (Question question : paper.getQuestions()) {
             // 题目的选项
             for (QuestionOption option : question.getOptions()) {
@@ -172,7 +162,7 @@ public class ExamService extends BaseService {
         //    4.2 如果 recordCount < maxTimes，则允许创建考试记录，返回考试记录的 ID
 
         // [1] 查找考试
-        Exam exam = examMapper.findExamById(examId);
+        Exam exam = self.findExam(examId);
 
         if (exam == null) {
             return Result.failMessage("考试不存在: " + examId);
