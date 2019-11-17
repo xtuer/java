@@ -19,10 +19,11 @@ import java.util.stream.Collectors;
 
 /**
  * 考试的服务:
- *     创建或编辑考试
- *     创建考试记录
+ *     创建或编辑考试: upsertExam
+ *     用户的考试信息: findExam(userId, examId) (包含考试记录)
+ *     创建考试记录: insertExamRecord
  *     查找考试记录: findExamRecord (考试记录信息、考试的试卷、用户的作答)
- *     考试作答: answerExamRecord (后期可放到 MQ)
+ *     考试作答: answerExamRecord (操作数据库比较多，后期可放到 MQ)
  *
  * 提示:
  *     1. 考试和用户无关，考试记录才和用户有关，由于考试读多写少，可以放入缓存
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ExamService extends BaseService {
+    private static final int SUBMIT_DELAY = 10; // 考试提交允许延迟的时间, 10 秒 (因为网络传输的延迟等，需要延迟一点时间进行校正，不能非常精确)
+
     @Autowired
     private ExamMapper examMapper;
 
@@ -93,6 +96,20 @@ public class ExamService extends BaseService {
     @Cached(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM_ID)
     public Exam findExam(long examId) {
         return examMapper.findExamById(examId);
+    }
+
+    /**
+     * 查找用户的考试信息，如果用户在此考试中进行过作答，同时查找出所有相关的考试记录
+     *
+     * @param userId 用户 ID
+     * @param examId 考试 ID
+     * @return 返回考试
+     */
+    public Exam findExam(long userId, long examId) {
+        Exam exam = self.findExam(examId);
+        exam.setExamRecords(examMapper.findExamRecordsByUserIdAndExamId(userId, examId));
+
+        return exam;
     }
 
     /**
@@ -196,9 +213,10 @@ public class ExamService extends BaseService {
      * 考试作答
      *
      * @param examRecordAnswer 作答
+     * @return 成功创建回答的 payload 为选项的 ID 的数组，否则返回错误信息的 Result
      */
     @Transactional(rollbackFor = Exception.class)
-    public Result<Boolean> answerExamRecord(ExamRecordAnswer examRecordAnswer) {
+    public Result<?> answerExamRecord(ExamRecordAnswer examRecordAnswer) {
         // 1. 查询考试记录
         // 2. 如果不能作答则返回
         // 3. 更新考试记录的状态:
@@ -207,6 +225,9 @@ public class ExamService extends BaseService {
         // 4. 把回答按题目分组
         // 5. 删除题目的所有回答
         // 6. 创建回答
+        // 7. 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
+
+        log.info("用户 {} 回答考试记录 {}", examRecordAnswer.getUserId(), examRecordAnswer.getExamRecordId());
 
         // [1] 查询考试记录
         long examRecordId = examRecordAnswer.getExamRecordId();
@@ -220,6 +241,7 @@ public class ExamService extends BaseService {
 
         // [4] 更新考试记录的状态
         if (examRecordAnswer.isSubmitted()) {
+            log.info("用户 {} 提交考试记录 {}", examRecordAnswer.getUserId(), examRecordAnswer.getExamRecordId());
             examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_SUBMITTED);
         } else {
             examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_ANSWERED);
@@ -240,7 +262,9 @@ public class ExamService extends BaseService {
             }
         });
 
-        return Result.ok();
+        // [7] 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
+        List<Long> optionIds = examRecordAnswer.getAnswers().stream().map(QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
+        return Result.ok(optionIds);
     }
 
     /**
@@ -276,9 +300,10 @@ public class ExamService extends BaseService {
             return Result.failMessage("不在考试时间范围内，不能作答");
         }
 
-        // [5] 如果考试时间已经用完，不能作答
-        if (examRecord.getElapsedTime() >= exam.getDuration()) {
-            return Result.failMessage("考试时间已经用完，不能作答");
+        // [5] 如果考试时间已经用完，不能作答 (因为网络传输的延迟等，需要延迟一点时间进行校正，不能非常精确)
+        if (examRecord.getElapsedTime() >= exam.getDuration() + SUBMIT_DELAY) {
+            log.info("考试记录 {} 时间已经用完，不能作答", examRecordId);
+            return Result.failMessage("考试记录 " + examRecordId + " 时间已经用完，不能作答");
         }
 
         // [6] 其他情况均可作答

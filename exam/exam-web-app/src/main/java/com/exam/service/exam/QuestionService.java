@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * 操作题目的服务类，可以给题目自动分配 ID、添加选项、添加小题、CRUD 题目等，关键接口有:
- *     查询题目: findQuestionById(questionId)
+ *     查询题目: findQuestion(questionId)
  *     更新题目: upsertQuestion(question)
  *     试卷题目: findPaperQuestions(paperId)
  */

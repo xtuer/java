@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 考试
@@ -33,12 +35,11 @@ public class Exam {
     private double averageScore; // 平均分
     private double passRate;     // 及格率
 
-    // 考试的状态: 0 (未开始), 1 (考试中), 2 (已结束)
-    // 注意: 通过计算得到，不保存到数据库
-    private int status;
+    private List<ExamRecord> examRecords = new LinkedList<>(); // 用户的考试记录
 
     /**
-     * 获取考试状态
+     * 通过计算得到考试状态
+     * 考试的状态: 0 (未开始), 1 (考试中), 2 (已结束)
      *
      * @return 返回考试状态
      */
@@ -62,7 +63,9 @@ public class Exam {
      * @return 返回状态的 label
      */
     public String getStatusLabel() {
-        if (status < 0 || status > 2) {
+        int status = getStatus();
+
+        if (status < 0 || status >= STATUS_LABELS.length) {
             return "未定义";
         } else {
             return STATUS_LABELS[status];

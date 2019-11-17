@@ -61,8 +61,8 @@ public class ExamTest {
      * 查找用户的指定考试的所有考试记录
      */
     @Test
-    public void findExamRecords() {
-        Utils.dump(examMapper.findExamRecordsByUserIdAndExamId(1, 1));
+    public void findExamInfo() {
+        Utils.dump(examService.findExam(1, 1));
     }
 
     /**

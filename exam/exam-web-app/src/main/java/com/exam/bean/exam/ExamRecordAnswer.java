@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ExamRecordAnswer {
+    private long userId;
     private long examRecordId;
     private boolean submitted;
     List<QuestionOptionAnswer> answers;
