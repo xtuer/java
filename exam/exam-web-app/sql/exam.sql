@@ -172,6 +172,7 @@ CREATE TABLE exam_record (
     score          double     DEFAULT 0    COMMENT '考试得分',
     submitted_time datetime   DEFAULT NULL COMMENT '提交试卷时间',
 
+    tick_at    datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '打卡时间',
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 

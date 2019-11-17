@@ -80,11 +80,15 @@
     ]]>
     </update>
 
-    <!-- 增加考试记录的使用时间 -->
+    <!-- 增加考试记录的使用时间:
+         和上一次更新时间比较，如果小于 timeInSeconds-5 则不更新, 5秒是误差，可调节
+    -->
     <update id="increaseExamRecordElapsedTime">
+    <![CDATA[
         UPDATE exam_record
-        SET elapsed_time = elapsed_time + ${timeInSeconds}
-        WHERE id = ${examRecordId}
+        SET elapsed_time = elapsed_time+${timeInSeconds}, tick_at = now()
+        WHERE id = ${examRecordId} AND (UNIX_TIMESTAMP(tick_at)+${timeInSeconds}-5) < UNIX_TIMESTAMP(now())
+    ]]>
     </update>
 
     <!-- 插入题目的回答 -->
