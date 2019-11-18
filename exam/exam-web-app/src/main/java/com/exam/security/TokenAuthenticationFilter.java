@@ -1,14 +1,16 @@
 package com.exam.security;
 
-import com.exam.controller.Urls;
 import com.exam.bean.User;
 import com.exam.config.AppConfig;
+import com.exam.controller.Urls;
+import com.exam.util.SecurityUtils;
 import com.exam.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
@@ -19,6 +21,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * 使用 token 进行身份验证的过滤器。
@@ -45,10 +48,8 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         if (user == null) {
             return null;
         } else {
-            user.setPassword("[protected]"); // 密码不能为 null，但是也没有用，所以随便设置一个吧
-            user = user.cloneForSecurity();  // 生成 Spring Security 可使用的用户对象
-
-            return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+            Collection<? extends GrantedAuthority> authorities = SecurityUtils.buildUserDetails(user).getAuthorities();
+            return new UsernamePasswordAuthenticationToken(user, user.getPassword(), authorities);
         }
     }
 

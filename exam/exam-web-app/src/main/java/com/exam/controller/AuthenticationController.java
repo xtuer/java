@@ -3,7 +3,6 @@ package com.exam.controller;
 import com.exam.bean.Result;
 import com.exam.bean.User;
 import com.exam.config.AppConfig;
-import com.exam.security.SecurityConstant;
 import com.exam.security.TokenService;
 import com.exam.service.UserService;
 import com.exam.util.WebUtils;
@@ -131,9 +130,7 @@ public class AuthenticationController extends BaseController {
         }
 
         // 生成用户的 token，并保存 token 到 cookie (方便浏览器端使用 Ajax 登录)
-        userService.createLoginRecord(user.getId(), user.getUsername()); // 创建用户的登录记录
-        String token = tokenService.generateToken(user);
-        WebUtils.writeCookie(response, SecurityConstant.AUTH_TOKEN_KEY, token, config.getAuthTokenDuration());
+        String token = userService.loginToken(user, response);
 
         return Result.ok(token);
     }
