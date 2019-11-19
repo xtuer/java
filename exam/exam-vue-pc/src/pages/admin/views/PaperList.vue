@@ -8,16 +8,16 @@
             <span>试卷标题:</span>
             <Input v-model="filter.title" placeholder="请输入用户名"/>
             <Button :loading="loading" type="primary" @click="searchPapers">搜索</Button>
+            <span></span>
+            <Button type="primary" :to="{ name: 'paper-edit', params: { id: '0' } }">创建试卷</Button>
         </div>
 
         <!-- 显示试卷 -->
-        <Table :columns="columns" :loading="loading" :data="papers">
+        <Table :columns="columns" :loading="loading" :data="papers" border>
             <template slot-scope="{ row: paper }" slot="id">
                 <Button :to="{ name: 'paper-edit', params: { id: paper.id } }">编辑试卷 {{ paper.id }}</Button>
             </template>
         </Table>
-
-        <Button type="primary" :to="{ name: 'paper-edit', params: { id: '0' } }" style="margin-top: 12px">创建试卷</Button>
 
         <!-- 加载下一页用户按钮 -->
         <Button :loading="loading" v-show="more" @click="fetchMorePapers">更多...</Button>
@@ -72,9 +72,12 @@ export default {
 
 <style lang="scss">
 .papers {
+    display: grid;
+    grid-gap: 24px;
+
     .toolbar {
         display: grid;
-        grid-template-columns: max-content 200px 100px;
+        grid-template-columns: max-content 200px 100px 1fr 100px;
         grid-gap: 12px;
         align-items: center;
     }

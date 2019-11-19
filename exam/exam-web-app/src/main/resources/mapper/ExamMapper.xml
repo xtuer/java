@@ -21,6 +21,11 @@
         SELECT <include refid="exam_columns"/> FROM exam WHERE id = #{examId}
     </select>
 
+    <!-- 查找当前机构下的考试 -->
+    <select id="findExamsByOrgId" resultType="Exam">
+        SELECT <include refid="exam_columns"/> FROM exam WHERE holder_id = #{orgId}
+    </select>
+
     <!-- 创建或更新考试 -->
     <insert id="upsertExam" parameterType="Exam">
         INSERT INTO exam (id, paper_id, holder_id, title, start_time, end_time, duration, max_times)

@@ -30,6 +30,14 @@ public interface PaperMapper {
     List<Paper> findPapersByOrgId(long orgId, String title, int offset, int count);
 
     /**
+     * 判断 ID 为传入的 paperId 的试卷是否存在
+     *
+     * @param paperId 试卷 ID
+     * @return 试卷存在返回 true，不存在返回 false
+     */
+    boolean paperExists(long paperId);
+
+    /**
      * 插入或者更新试卷
      *
      * @param paper 试卷

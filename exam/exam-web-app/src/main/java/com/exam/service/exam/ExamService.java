@@ -6,9 +6,11 @@ import com.exam.bean.CacheConst;
 import com.exam.bean.Result;
 import com.exam.bean.exam.*;
 import com.exam.mapper.exam.ExamMapper;
+import com.exam.mapper.exam.PaperMapper;
 import com.exam.service.BaseService;
 import com.exam.util.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +44,9 @@ public class ExamService extends BaseService {
     private PaperService paperService;
 
     @Autowired
+    private PaperMapper paperMapper;
+
+    @Autowired
     private ExamService self;
 
     /**
@@ -52,17 +57,29 @@ public class ExamService extends BaseService {
      */
     @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
     public Result<Long> upsertExam(Exam exam) {
-        // 1. 检查考试时间，有效时间条件为:
-        //    1.1 startTime < endTime
-        //    2.2 endTime - startTime >= duration
-        // 2. 检查最大次数: maxTimes >= 1
-        // 3. 分配考试 ID
-        // 4. 插入数据库
-        // 5. 返回考试 ID
+        // 1. 考试标题不能为空
+        // 2. 试卷必须存在
+        // 3. 检查考试时间，有效时间条件为:
+        //    3.1 startTime < endTime
+        //    3.2 endTime - startTime >= duration
+        // 4. 检查最大次数: maxTimes >= 1
+        // 5. 分配考试 ID
+        // 6. 插入数据库
+        // 7. 返回考试 ID
 
-        // [1] 检查考试时间，有效时间条件为:
-        //    [1.1] startTime < endTime
-        //    [2.2] endTime - startTime >= duration
+        // [1] 考试标题不能为空
+        if (StringUtils.isBlank(exam.getTitle())) {
+            return Result.failMessage("考试的标题不能为空");
+        }
+
+        // [2] 试卷必须存在
+        if (!paperMapper.paperExists(exam.getPaperId())) {
+            return Result.failMessage("试卷 " + exam.getPaperId() + " 不存在");
+        }
+
+        // [3] 检查考试时间，有效时间条件为:
+        //    [3.1] startTime < endTime
+        //    [3.2] endTime - startTime >= duration
         if (exam.getStartTime().after(exam.getEndTime())) {
             return Result.failMessage("考试开始时间必须小于考试结束时间");
         }
@@ -70,20 +87,21 @@ public class ExamService extends BaseService {
             return Result.failMessage("考试时间区间必须大于考试持续时间");
         }
 
-        // [2] 检查最大次数: maxTimes >= 1
+        // [4] 检查最大次数: maxTimes >= 1
         if (exam.getMaxTimes() < 1) {
             return Result.failMessage("最大考试次数必须大于等于 1");
         }
 
-        // [3] 分配考试 ID
+        // [5] 分配考试 ID
         if (Utils.isIdInvalid(exam.getId())) {
             exam.setId(super.nextId());
         }
 
-        // [4] 插入数据库
+        // [6] 插入数据库
+        log.info("创建试卷 {}，标题: {}", exam.getId(), exam.getTitle());
         examMapper.upsertExam(exam);
 
-        // [5] 返回考试 ID
+        // [7] 返回考试 ID
         return Result.ok(exam.getId());
     }
 

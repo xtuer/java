@@ -22,6 +22,16 @@ export default new Router({
             component: () => import(/* webpackChunkName: "paper" */ './views/PaperEdit.vue'),
         },
         {
+            path: '/exams',
+            name: 'exams',
+            component: () => import(/* webpackChunkName: "paper" */ './views/Exams.vue'),
+        },
+        {
+            path: '/user/:userId/exam/:examId',
+            name: 'user-exam',
+            component: () => import(/* webpackChunkName: "paper" */ './views/UserExam.vue'),
+        },
+        {
             path: '/about',
             name: 'about',
             component: () => import(/* webpackChunkName: "common" */ './views/About.vue'),

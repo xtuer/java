@@ -25,6 +25,11 @@ const Urls = {
     // 试卷
     API_PAPERS_BY_ID         : '/api/exam/papers/{paperId}',    // 指定 ID 的试卷
     API_PAPERS_OF_CURRENT_ORG: '/api/exam/papers/ofCurrentOrg', // 当前机构的试卷
+    API_EXAMS_OF_CURRENT_ORG : '/api/exam/exams/ofCurrentOrg',  // 当前机构的考试
+    API_USER_EXAMS           : '/api/exam/users/{userId}/exams/{examId}',         // 用户的某次考试 (同时得到此次考试的所有考试记录)
+    API_USER_EXAM_RECORDS    : '/api/exam/users/{userId}/exams/{examId}/records', // 用户的某次考试的考试记录
+    API_USER_EXAM_RECORDS_BY_ID   : '/api/exam/users/{userId}/exams/{examId}/records/{recordId}',        // 指定 ID 的考试记录
+    API_USER_EXAM_ANSWER_QUESTIONS: '/api/exam/users/{userId}/exams/{examId}/records/{recordId}/answer', // 题目作答
 };
 
 window.Urls = Urls;

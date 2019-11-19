@@ -16,4 +16,8 @@ body, html, #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+#app {
+    padding: 20px;
+}
 </style>

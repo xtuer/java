@@ -16,6 +16,14 @@ public interface ExamMapper {
     Exam findExamById(long examId);
 
     /**
+     * 查找 ID 为传入的 orgId 的机构下的考试
+     *
+     * @param orgId 机构 ID
+     * @return 返回查找到的考试数组
+     */
+    List<Exam> findExamsByOrgId(long orgId);
+
+    /**
      * 创建或更新考试
      *
      * @param exam 考试

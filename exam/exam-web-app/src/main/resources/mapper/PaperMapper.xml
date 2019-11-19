@@ -24,6 +24,11 @@
         LIMIT ${offset}, ${count}
     </select>
 
+    <!-- 判断 ID 为传入的 paperId 的试卷是否存在 -->
+    <select id="paperExists" parameterType="long" resultType="boolean">
+        SELECT EXISTS ( SELECT 1 FROM exam_paper WHERE id = #{paperId})
+    </select>
+
     <!-- 插入或者更新试卷 -->
     <insert id="upsertPaper" parameterType="Paper">
         INSERT INTO exam_paper (id, title, type, total_score, is_objective, org_id)
