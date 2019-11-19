@@ -12,9 +12,10 @@ export default new Router({
             component: Home,
         },
         {
+            // 试卷列表
             path: '/papers',
             name: 'papers',
-            component: () => import(/* webpackChunkName: "paper" */ './views/PaperList.vue'),
+            component: () => import(/* webpackChunkName: "paper" */ './views/Papers.vue'),
         },
         {
             path: '/paper-edit/:id',
@@ -22,17 +23,20 @@ export default new Router({
             component: () => import(/* webpackChunkName: "paper" */ './views/PaperEdit.vue'),
         },
         {
+            // 考试列表
             path: '/exams',
             name: 'exams',
             component: () => import(/* webpackChunkName: "paper" */ './views/Exams.vue'),
         },
         {
+            // 用户的考试
             path: '/user/:userId/exam/:examId',
             name: 'user-exam',
             component: () => import(/* webpackChunkName: "paper" */ './views/UserExam.vue'),
         },
         {
-            path: '/user/:userId/exam/:examId/examRecord/:recordId',
+            // 用户的考试记录 (考试)
+            path: '/user/:userId/exam/:examId/record/:recordId',
             name: 'user-exam-record',
             component: () => import(/* webpackChunkName: "paper" */ './views/UserExamRecord.vue'),
         },
