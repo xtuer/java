@@ -2,13 +2,11 @@ package com.exam.controller;
 
 import com.exam.bean.Result;
 import com.exam.bean.exam.Exam;
+import com.exam.bean.exam.ExamRecord;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.service.exam.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -78,6 +76,41 @@ public class ExamController extends BaseController {
             return Result.ok(exam);
         } else {
             return Result.failMessage("找不到考试 " + examId);
+        }
+    }
+
+    /**
+     * 创建用户某次考试的考试记录
+     *
+     * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records
+     * 参数: 无
+     *
+     * @param userId 用户 ID
+     * @param examId 考试 ID
+     * @return 成功的 payload 为考试记录 ID
+     */
+    @PostMapping(Urls.API_USER_EXAM_RECORDS)
+    public Result<Long> insertExamRecord(@PathVariable long userId, @PathVariable long examId) {
+        return examService.insertExamRecord(userId, examId);
+    }
+
+    /**
+     * 查询用户的考试记录，内容有: 考试记录信息、考试的试卷、用户的作答
+     *
+     * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records/{recordId}
+     * 参数: 无
+     *
+     * @param recordId 考试记录 ID
+     * @return 成功的 payload 为用户的考试记录
+     */
+    @GetMapping(Urls.API_USER_EXAM_RECORDS_BY_ID)
+    public Result<ExamRecord> findExamRecord(@PathVariable long recordId) {
+        ExamRecord record = examService.findExamRecord(recordId);
+
+        if (record != null) {
+            return Result.ok(record);
+        } else {
+            return Result.failMessage("找不到考试记录 " + recordId);
         }
     }
 }

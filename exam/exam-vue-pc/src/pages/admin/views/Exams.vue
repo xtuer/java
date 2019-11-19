@@ -5,7 +5,7 @@
             <Button v-for="exam in exams"
                     :key="exam.id"
                     :to="{ name: 'user-exam', params: { userId: 1, examId: exam.id }}">
-                {{ exam.title}} - {{ exam.statusLabel }}
+                <Tag :color="statusColor(exam)">{{ exam.statusLabel }}</Tag> {{ exam.title}}
             </Button>
         </div>
 
@@ -147,6 +147,10 @@ export default {
                     this.loading = false;
                 });
             });
+        },
+        statusColor(exam) {
+            const colors = ['warning', 'success', 'error'];
+            return colors[exam.status];
         },
     }
 };

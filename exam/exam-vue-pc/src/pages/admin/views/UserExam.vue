@@ -4,8 +4,10 @@
             {{ exam }}
             <Tag :color="statusColor">{{ exam.statusLabel }}</Tag>
         </div>
-        <Button v-if="canStartExam" @click="startExam">开始考试</Button>
-        <Button v-for="record in exam.examRecords" :key="record.id">{{ canContinueExam(record) ? '继续考试' : '查看作答' }}</Button>
+        <Button v-if="canStartExam" @click="startExam()">开始考试</Button>
+        <Button v-for="record in exam.examRecords" :key="record.id" @click="doExam(userId, examId, record.id)">
+            {{ canContinueExam(record) ? '继续考试' : '查看作答' }}
+        </Button>
     </div>
 </template>
 
@@ -28,9 +30,16 @@ export default {
         });
     },
     methods: {
-        // 开始考试 (创建考试记录)
+        // 开始考试
         startExam() {
+            ExamDao.insertExamRecord(this.userId, this.examId).then(examRecordId => {
+                this.doExam(this.userId, this.examId, examRecordId);
+            });
+        },
+        // 考试 (创建考试记录)
+        doExam(userId, examId, recordId) {
             // 创建考试记录成功，进入考试页面
+            this.$router.push({ name: 'user-exam-record', params: { userId, examId, recordId } });
         },
         // 是否可以继续考试: exam.status 为 1，考试记录未提交，使用时长小于考试允许时长
         canContinueExam(examRecord) {

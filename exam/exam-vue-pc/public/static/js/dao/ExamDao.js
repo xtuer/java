@@ -78,4 +78,51 @@ export default class ExamDao {
             });
         });
     }
+
+    /**
+     * 创建用户某次考试的考试记录
+     *
+     * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records
+     * 参数: 无
+     *
+     * @param {Long} userId 用户 ID
+     * @param {Long} examId 考试 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为考试记录 ID，reject 的参数为错误信息
+     */
+    static insertExamRecord(userId, examId) {
+        return new Promise((resolve, reject) => {
+            Rest.create({ url: Urls.API_USER_EXAM_RECORDS, pathVariables: { userId, examId } }).then(({ data: examRecordId, success, message }) => {
+                if (success) {
+                    resolve(examRecordId);
+                } else {
+                    Notice.error({ title: '创建考试记录错误', desc: message });
+                    reject(message);
+                }
+            });
+        });
+    }
+
+    /**
+     * 查询用户的考试记录，内容有: 考试记录信息、考试的试卷、用户的作答
+     *
+     * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records/{recordId}
+     * 参数: 无
+     *
+     * @param {Long} userId   用户 ID
+     * @param {Long} examId   考试 ID
+     * @param {Long} recordId 考试记录 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为考试记录，reject 的参数为错误信息
+     */
+    static findExamRecord(userId, examId, recordId) {
+        return new Promise((resolve, reject) => {
+            Rest.get({ url: Urls.API_USER_EXAM_RECORDS_BY_ID, pathVariables: { userId, examId, recordId } }).then(({ data: examRecord, success, message }) => {
+                if (success) {
+                    resolve(examRecord);
+                } else {
+                    Notice.error({ title: '查找考试记录错误', desc: message });
+                    reject(message);
+                }
+            });
+        });
+    }
 }
