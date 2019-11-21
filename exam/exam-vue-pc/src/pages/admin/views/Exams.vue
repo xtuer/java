@@ -33,7 +33,7 @@
                 </FormItem>
 
                 <FormItem label="考试时长:" prop="duration">
-                    <InputNumber v-model="editedExam.duration" :formatter="value => `${value} 分`" :min="10"/>
+                    <InputNumber v-model="editedExam.duration" :formatter="value => `${value} 分钟`" :min="10"/>
                 </FormItem>
 
                 <FormItem label="考试次数:" prop="maxTimes">
