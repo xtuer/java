@@ -28,7 +28,8 @@ public class ExamRecord {
     private double score;     // 考试得分
     private Date   submitted_time; // 提交试卷时间
 
-    private Paper paper; // 考试试卷
+    private Exam  exam;  // 考试
+    private Paper paper; // 试卷
 
     /**
      * 获取考试记录的状态 label

@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class QuestionOptionAnswer {
+    private long examId;           // 考试 ID，按题批改的时候用于查询某次考试某个题的作答，统计某个选项的作答数量
     private long examRecordId;     // 考试记录 ID
     private long questionId;       // 题目 ID
     private long questionOptionId; // 选项 ID

@@ -3,6 +3,7 @@ package com.exam.controller;
 import com.exam.bean.Result;
 import com.exam.bean.exam.Exam;
 import com.exam.bean.exam.ExamRecord;
+import com.exam.bean.exam.ExamRecordAnswer;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.service.exam.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class ExamController extends BaseController {
      * @return 成功的 payload 为用户的考试对象
      */
     @GetMapping(Urls.API_USER_EXAMS)
-    public Result<Exam> findUserExam(@PathVariable long userId, @PathVariable long examId) {
+    public Result<Exam> findExam(@PathVariable long userId, @PathVariable long examId) {
         Exam exam = examService.findExam(userId, examId);
 
         if (exam != null) {
@@ -112,5 +113,31 @@ public class ExamController extends BaseController {
         } else {
             return Result.failMessage("找不到考试记录 " + recordId);
         }
+    }
+
+    /**
+     * 对考试记录的题目进行作答
+     *
+     * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records/{recordId}/answer
+     * 参数: 无
+     * Request Body 为:
+     * {
+     *     "submitted": false,
+     *     "answers": [
+     *         { "questionId": 0, "questionOptionId": 0, "content": "" },
+     *         { "questionId": 0, "questionOptionId": 0, "content": "" }
+     *     ]
+     * }
+     *
+     * @param examRecordAnswer 考试记录的作答
+     * @return 成功创建回答的 payload 为选项的 ID 的数组，否则返回错误信息的 Result
+     */
+    @PostMapping(Urls.API_USER_EXAM_ANSWER_QUESTIONS)
+    public Result<?> answerExamRecord(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
+        // userId 和 examRecordId 在 URL 和登录信息中可以获得
+        examRecordAnswer.setUserId(super.getLoginUserId());
+        examRecordAnswer.setExamRecordId(recordId);
+
+        return examService.answerExamRecord(examRecordAnswer);
     }
 }

@@ -23,14 +23,24 @@ import java.util.stream.Collectors;
  * 考试的服务:
  *     创建或编辑考试: upsertExam
  *     用户的考试信息: findExam(userId, examId) (包含考试记录)
- *     创建考试记录: insertExamRecord
- *     查找考试记录: findExamRecord (考试记录信息、考试的试卷、用户的作答)
- *     考试作答: answerExamRecord (操作数据库比较多，后期可放到 MQ)
+ *     创建考试记录: insertExamRecord(userId, examId)
+ *     查找考试记录: findExamRecord(recordId) (考试记录信息、考试的试卷、用户的作答)
+ *     考试作答: answerExamRecord(answer)
  *
  * 提示:
  *     1. 考试和用户无关，考试记录才和用户有关，由于考试读多写少，可以放入缓存
  *     2. 同一个考试，同一个人可以创建多个考试记录，也就是考试允许多次作答
  *     3. 获取用户的某次考试记录时，得到的考试记录里会带上考试的试卷、作答内容，方便前端一次性得到所有数据
+ *
+ * 缓存:
+ *     1. 使用 ID 查找考试  : ExamService.findExam(examId)
+ *     2. 查找指定 ID 的试卷: PaperService.findPaper(paperId)
+ *
+ * 优化:
+ *     考试作答: answerExamRecord
+ *         1. 操作数据库比较多，后期可放到 MQ
+ *         2. 由于是一次性获取考试记录的作答，不需要使用关联查询，可以存储到 MongoDB
+ *         3. 中间的作答保存到 MongoDB，目前只保存了最后一次的作答
  */
 @Slf4j
 @Service
@@ -131,22 +141,25 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 查询用户的考试记录，内容有: 考试记录信息、考试的试卷、用户的作答
+     * 查询用户的考试记录，内容有: 考试、试卷、考试记录、此考试记录的用户作答 (已经合并到试卷里)
+     * 提示: 不需要传入用户 ID，因为考试记录是和用户一一对应的
      *
      * @param examRecordId 考试记录 ID
      * @return 返回查询到的考试记录
      */
     public ExamRecord findExamRecord(long examRecordId) {
         // 1. 查找考试记录
-        // 2. 查找试卷
+        // 2. 查找考试和试卷
         // 3. 查找作答
         // 4. 合并作答到试卷的题目选项里
 
         // [1] 查找考试记录
         ExamRecord record = examMapper.findExamRecordById(examRecordId);
 
-        // [2] 查找试卷
+        // [2] 查找考试和试卷
+        Exam  exam  = self.findExam(record.getExamId());
         Paper paper = paperService.findPaper(record.getPaperId());
+        record.setExam(exam);
         record.setPaper(paper);
 
         // [3] 查找作答
@@ -275,8 +288,9 @@ public class ExamService extends BaseService {
 
             // [6] 创建回答
             for (QuestionOptionAnswer answer : questionAnswers) {
-                answer.setExamRecordId(examRecordId); // 再次确保考试记录 ID，避免前端忘了填
-                examMapper.insertQuestionOptionAnswer(answer);
+                answer.setExamId(examRecord.getExamId());      // 再次确保考试 ID
+                answer.setExamRecordId(examRecordId);          // 再次确保考试记录 ID，避免前端忘了填
+                examMapper.insertQuestionOptionAnswer(answer); // 保存到数据库
             }
         });
 

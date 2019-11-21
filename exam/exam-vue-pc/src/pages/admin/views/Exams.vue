@@ -83,7 +83,7 @@ export default {
                 ],
                 // 逻辑验证，validator 使用 Lambda，可以访问 Vue.prototype 中的数据
                 duration: [
-                    { required: true, message: '考试时长不能超过考试时间范围', trigger: 'change', validator: (rule, value, callback) => {
+                    { message: '考试时长不能超过考试时间范围', trigger: 'change', validator: (rule, value, callback) => {
                         const startTime = this.editedExam.timeRange[0];
                         const endTime   = this.editedExam.timeRange[1];
 

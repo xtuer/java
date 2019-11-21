@@ -198,6 +198,7 @@ CREATE TABLE exam_record (
 DROP TABLE IF EXISTS exam_question_option_answer;
 
 CREATE TABLE exam_question_option_answer (
+    exam_id            bigint(20) DEFAULT 0 COMMENT '考试 ID，按题批改的时候用于查询某次考试某个题的作答，统计某个选项的作答数量',
     exam_record_id     bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
     question_id        bigint(20) DEFAULT 0 COMMENT '题目 ID',
     question_option_id bigint(20) DEFAULT 0 COMMENT '选项 ID',
