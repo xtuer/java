@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -68,12 +70,12 @@ public class ExamService extends BaseService {
     @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
     public Result<Long> upsertExam(Exam exam) {
         // 1. 考试标题不能为空
-        // 2. 试卷必须存在
-        // 3. 检查考试时间，有效时间条件为:
-        //    3.1 startTime < endTime
-        //    3.2 endTime - startTime >= duration
-        // 4. 检查最大次数: maxTimes >= 1
-        // 5. 分配考试 ID
+        // 2. 检查考试时间，有效时间条件为:
+        //    2.1 startTime < endTime
+        //    2.2 endTime - startTime >= duration
+        // 3. 检查最大次数: maxTimes >= 1
+        // 4. 试卷必须存在
+        // 5. 分配试卷 ID
         // 6. 插入数据库
         // 7. 返回考试 ID
 
@@ -82,14 +84,9 @@ public class ExamService extends BaseService {
             return Result.failMessage("考试的标题不能为空");
         }
 
-        // [2] 试卷必须存在
-        if (!paperMapper.paperExists(exam.getPaperId())) {
-            return Result.failMessage("试卷 " + exam.getPaperId() + " 不存在");
-        }
-
-        // [3] 检查考试时间，有效时间条件为:
-        //    [3.1] startTime < endTime
-        //    [3.2] endTime - startTime >= duration
+        // [2] 检查考试时间，有效时间条件为:
+        //    [2.1] startTime < endTime
+        //    [2.2] endTime - startTime >= duration
         if (exam.getStartTime().after(exam.getEndTime())) {
             return Result.failMessage("考试开始时间必须小于考试结束时间");
         }
@@ -97,9 +94,23 @@ public class ExamService extends BaseService {
             return Result.failMessage("考试时间区间必须大于考试持续时间");
         }
 
-        // [4] 检查最大次数: maxTimes >= 1
+        // [3] 检查最大次数: maxTimes >= 1
         if (exam.getMaxTimes() < 1) {
             return Result.failMessage("最大考试次数必须大于等于 1");
+        }
+
+        // [4] 试卷必须存在
+        Set<Long> paperIds = exam.getPaperIdsList();
+
+        if (paperIds.isEmpty()) {
+            log.warn("考试 {} 没有试卷", exam.getId());
+            return Result.failMessage("考试 " + exam.getId() + " 没有试卷");
+        }
+
+        for (long paperId : paperIds) {
+            if (!paperMapper.paperExists(paperId)) {
+                return Result.failMessage("试卷 " +paperId + " 不存在");
+            }
         }
 
         // [5] 分配考试 ID
@@ -205,9 +216,9 @@ public class ExamService extends BaseService {
         // 1. 查找考试
         // 2. 检查考试状态，只有考试中时才允许创建考试记录
         // 3. 获取用户此考试的考试记录数量 recordCount
-        // 4. 决定是否允许创建考试记录:
-        //    4.1 如果 recordCount >= maxTimes，则不允许创建考试记录
-        //    4.2 如果 recordCount < maxTimes，则允许创建考试记录，返回考试记录的 ID
+        // 4. 如果 recordCount >= maxTimes，则不允许创建考试记录
+        // 5. 分配试卷
+        // 6. 创建考试记录，返回考试记录的 ID
 
         // [1] 查找考试
         Exam exam = self.findExam(examId);
@@ -227,14 +238,17 @@ public class ExamService extends BaseService {
         // [3] 获取用户此考试的考试记录数量 recordCount
         int recordCount = examMapper.countExamRecordsByUserIdAndExamId(userId, examId);
 
-        // [4.1] 如果 recordCount >= maxTimes，则不允许创建考试记录
+        // [4] 如果 recordCount >= maxTimes，则不允许创建考试记录
         if (recordCount >= exam.getMaxTimes()) {
             return Result.failMessage("考试次数已经用完");
         }
 
-        // [4.2] 如果 recordCount < maxTimes，则允许创建考试记录，返回考试记录的 ID
+        // [5] 分配试卷
+        long paperId = this.assignPaper(userId, exam);
+
+        // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
-        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(exam.getPaperId());
+        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId);
         examMapper.insertExamRecord(record);
 
         return Result.ok(record.getId());
@@ -340,5 +354,33 @@ public class ExamService extends BaseService {
 
         // [6] 其他情况均可作答
         return Result.ok();
+    }
+
+    /**
+     * 给用户分配考试的试卷
+     *
+     * @param userId 用户 ID
+     * @param exam   考试
+     * @return 返回本次考试的试卷 ID
+     */
+    private long assignPaper(long userId, Exam exam) {
+        // 1. 查找出考试的所有试卷 ID、做过的试卷 ID、未做过的试卷 ID
+        // 2. 如果还有未做过的试卷，随机从中分配一个
+        // 3. 如果所有试卷都做过了，随机从所有的试卷中分配一个
+
+        // [1] 查找出考试的所有试卷 ID、做过的试卷 ID、未做过的试卷 ID
+        Set<Long> allPaperIds  = exam.getPaperIdsList(); // 考试所有的 paperId
+        Set<Long> usedPaperIds = examMapper.findPaperIdsByUserIdAndExamId(userId, exam.getId()); // 已经使用过的 paperId
+        Set<Long> restPaperIds = allPaperIds.stream().filter(id -> !usedPaperIds.contains(id)).collect(Collectors.toSet()); // 未使用过的 paperId
+
+        if (!restPaperIds.isEmpty()) {
+            // [2] 如果还有未做过的试卷，随机从中分配一个
+            int index = (int)(userId % restPaperIds.size());
+            return new ArrayList<>(restPaperIds).get(index);
+        } else {
+            // [3] 如果所有试卷都做过了，随机从所有的试卷中分配一个
+            int index = (int)(userId % allPaperIds.size());
+            return new ArrayList<>(allPaperIds).get(index);
+        }
     }
 }

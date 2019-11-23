@@ -16,8 +16,8 @@
                     <Input v-model="editedExam.title" placeholder="请输入考试标题"/>
                 </FormItem>
 
-                <FormItem label="选择试卷:" prop="paperId">
-                    <Input v-model="editedExam.paperId" placeholder="请输入试卷 ID"/>
+                <FormItem label="选择试卷:" prop="paperIds">
+                    <Input v-model="editedExam.paperIds" placeholder="请输入试卷 ID"/>
                 </FormItem>
 
                 <FormItem label="考试时间:" prop="timeRange">
@@ -64,7 +64,7 @@ export default {
                     { required: true, whitespace: true, message: '试卷标题不能为空', trigger: 'blur' }
                 ],
                 // 正则验证
-                paperId: [
+                paperIds: [
                     { required: true, pattern: /^\d+$/, message: '请输入正确的试卷 ID (数字)', trigger: 'blur' }
                 ],
                 // 时间范围验证
@@ -119,7 +119,7 @@ export default {
             this.editedExam = {
                 id       : '0', // 考试 ID
                 title    : '',  // 考试标题
-                paperId  : '',  // 试卷 ID
+                paperIds : '',  // 试卷 ID
                 startTime: '',  // 开始时间
                 endTime  : '',  // 结束时间
                 duration : 60,  // 考试时长

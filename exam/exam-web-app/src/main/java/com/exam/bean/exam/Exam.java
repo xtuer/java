@@ -3,10 +3,15 @@ package com.exam.bean.exam;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 考试
@@ -22,7 +27,6 @@ public class Exam {
     public static final String[] STATUS_LABELS = {"未开始", "考试中", "已结束"};
 
     private long id;        // 考试 ID
-    private long paperId;   // 试卷 ID
     private long holderId;  // 考试拥有者 ID，例如机构 ID、班级 ID 等，根据业务需求而定
     private String title;   // 考试标题
     private Date startTime; // 考试开始时间
@@ -34,6 +38,7 @@ public class Exam {
     private double lowestScore;  // 最低分
     private double averageScore; // 平均分
     private double passRate;     // 及格率
+    private String paperIds;     // 试卷 IDs，一个考试有多个试卷，ID 之间使用英文逗号分隔
 
     private List<ExamRecord> examRecords = new LinkedList<>(); // 用户的考试记录
 
@@ -70,5 +75,19 @@ public class Exam {
         } else {
             return STATUS_LABELS[status];
         }
+    }
+
+    /**
+     * 获取试卷 ID 的数组
+     *
+     * @return 试卷 ID 的 list
+     */
+    public Set<Long> getPaperIdsList() {
+        // 把字符串的 IDs 转为 Long 的 IDs 数组
+        return Stream.of(StringUtils.split(paperIds, ","))
+                .map(String::trim)
+                .map(NumberUtils::toLong)
+                .filter(id -> id > 0)
+                .collect(Collectors.toSet());
     }
 }

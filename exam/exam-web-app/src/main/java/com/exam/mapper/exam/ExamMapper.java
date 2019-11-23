@@ -5,6 +5,7 @@ import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.QuestionOptionAnswer;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ExamMapper {
     /**
@@ -62,6 +63,15 @@ public interface ExamMapper {
      * @param record 考试记录
      */
     void insertExamRecord(ExamRecord record);
+
+    /**
+     * 查找用户在某次考试中已经做过的试卷
+     *
+     * @param userId 用户 ID
+     * @param examId 考试 ID
+     * @return 返回试卷 ID 的数组
+     */
+    Set<Long> findPaperIdsByUserIdAndExamId(long userId, long examId);
 
     /**
      * 更新考试记录的状态

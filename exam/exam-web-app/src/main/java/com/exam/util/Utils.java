@@ -410,6 +410,16 @@ public final class Utils {
         }
     };
 
+    /**
+     * 获取随机数整数
+     *
+     * @return 返回随机的整数
+     */
+    public static int randomInt() {
+        Random random = new Random();
+        return random.nextInt();
+    }
+
     public static void main(String[] args) {
         String text = "如果要编码的字节数不能被3整除，最后会多出1个或2个字节.";
         String encrypt = base64(text);

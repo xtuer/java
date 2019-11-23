@@ -34,7 +34,7 @@ public class ExamTest {
         Date endTime = new Date(startTime.getTime() + 60*60*1000);
 
         Exam exam = new Exam();
-        exam.setId(1).setPaperId(1).setHolderId(1).setTitle("测试考试").setMaxTimes(1)
+        exam.setId(1).setPaperIds("1").setHolderId(1).setTitle("测试考试").setMaxTimes(1)
                 .setDuration(60*60).setStartTime(startTime).setEndTime(endTime);
         Utils.dump(examService.upsertExam(exam));
     }
