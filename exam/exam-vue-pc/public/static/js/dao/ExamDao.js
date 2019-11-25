@@ -125,4 +125,38 @@ export default class ExamDao {
             });
         });
     }
+
+    /**
+     * 对考试记录的题目进行作答
+     *
+     * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records/{recordId}/answer
+     * 参数: 无
+     * Request Body 为:
+     * {
+     *     "submitted": false,
+     *     "answers": [
+     *         { "questionId": 0, "questionOptionId": 0, "content": "" },
+     *         { "questionId": 0, "questionOptionId": 0, "content": "" }
+     *     ]
+     * }
+     *
+     * @param userId {Long}   用户 ID
+     * @param examId {Long}   考试 ID
+     * @param recordId {Long} 考试记录 ID
+     * @param examRecordAnswer {JSON} 回答
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为成功作答的选项 ID 的数组，reject 的参数为错误信息
+     */
+    static answerExamRecord(userId, examId, recordId, examRecordAnswer) {
+        return new Promise((resolve, reject) => {
+            Rest.create({ url: Urls.API_USER_EXAM_ANSWER_QUESTIONS, pathVariables: { userId, examId, recordId }, data: examRecordAnswer, json: true })
+                .then(({ data: optionIds, success, message }) => {
+                    if (success) {
+                        resolve(optionIds);
+                    } else {
+                        Notice.error({ title: '回答考试错误', desc: message });
+                        reject(message);
+                    }
+                });
+        })
+    }
 }

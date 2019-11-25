@@ -43,7 +43,7 @@ export default {
         },
         // 是否可以继续考试: exam.status 为 1，考试记录未提交，使用时长小于考试允许时长
         canContinueExam(examRecord) {
-            return this.exam.status === 1 && !examRecord.submitted && examRecord.elapsedTime < this.exam.duration;
+            return this.exam.status === 1 && examRecord.status < 2 && examRecord.elapsedTime < this.exam.duration;
         }
     },
     computed: {
