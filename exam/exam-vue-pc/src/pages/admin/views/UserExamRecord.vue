@@ -76,7 +76,7 @@ export default {
 
             ExamDao.answerExamRecord(this.userId, this.examId, this.recordId, recordAnswer);
         },
-        // 是否可以继续考试: exam.status 为 1，考试记录未提交，使用时长小于考试允许时长
+        // 是否可以继续考试: 考试期间、未提交、考试记录的时间未用完
         canContinueExam(examRecord) {
             if (!this.loaded) {
                 return false;

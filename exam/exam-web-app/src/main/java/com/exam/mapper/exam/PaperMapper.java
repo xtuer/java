@@ -38,6 +38,14 @@ public interface PaperMapper {
     boolean paperExists(long paperId);
 
     /**
+     * 判断试卷是否客观题试卷
+     *
+     * @param paperId 试卷 ID
+     * @return 全是客观题的试卷返回 true，否则返回 false
+     */
+    boolean isPaperObjective(long paperId);
+
+    /**
      * 插入或者更新试卷
      *
      * @param paper 试卷

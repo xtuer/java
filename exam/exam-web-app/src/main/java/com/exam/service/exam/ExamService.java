@@ -69,24 +69,29 @@ public class ExamService extends BaseService {
      */
     @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
     public Result<Long> upsertExam(Exam exam) {
-        // 1. 考试标题不能为空
-        // 2. 检查考试时间，有效时间条件为:
-        //    2.1 startTime < endTime
-        //    2.2 endTime - startTime >= duration
-        // 3. 检查最大次数: maxTimes >= 1
-        // 4. 试卷必须存在
-        // 5. 分配试卷 ID
+        // 1. 分配试卷 ID
+        // 2. 考试标题不能为空
+        // 3. 检查考试时间，有效时间条件为:
+        //    3.1 startTime < endTime
+        //    3.2 endTime - startTime >= duration
+        // 4. 检查最大次数: maxTimes >= 1
+        // 5. 试卷必须存在
         // 6. 插入数据库
         // 7. 返回考试 ID
 
-        // [1] 考试标题不能为空
+        // [1] 分配考试 ID
+        if (Utils.isIdInvalid(exam.getId())) {
+            exam.setId(super.nextId());
+        }
+
+        // [2] 考试标题不能为空
         if (StringUtils.isBlank(exam.getTitle())) {
             return Result.failMessage("考试的标题不能为空");
         }
 
-        // [2] 检查考试时间，有效时间条件为:
-        //    [2.1] startTime < endTime
-        //    [2.2] endTime - startTime >= duration
+        // [3] 检查考试时间，有效时间条件为:
+        //    [3.1] startTime < endTime
+        //    [3.2] endTime - startTime >= duration
         if (exam.getStartTime().after(exam.getEndTime())) {
             return Result.failMessage("考试开始时间必须小于考试结束时间");
         }
@@ -94,33 +99,28 @@ public class ExamService extends BaseService {
             return Result.failMessage("考试时间区间必须大于考试持续时间");
         }
 
-        // [3] 检查最大次数: maxTimes >= 1
+        // [4] 检查最大次数: maxTimes >= 1
         if (exam.getMaxTimes() < 1) {
             return Result.failMessage("最大考试次数必须大于等于 1");
         }
 
-        // [4] 试卷必须存在
+        // [5] 试卷必须存在
         Set<Long> paperIds = exam.getPaperIdsList();
 
         if (paperIds.isEmpty()) {
-            log.warn("考试 {} 没有试卷", exam.getId());
-            return Result.failMessage("考试 " + exam.getId() + " 没有试卷");
+            return Result.failMessage("没有试卷");
         }
 
         for (long paperId : paperIds) {
             if (!paperMapper.paperExists(paperId)) {
+                log.warn("[失败] 创建考试: 试卷 {} 不存在", paperId);
                 return Result.failMessage("试卷 " +paperId + " 不存在");
             }
         }
 
-        // [5] 分配考试 ID
-        if (Utils.isIdInvalid(exam.getId())) {
-            exam.setId(super.nextId());
-        }
-
         // [6] 插入数据库
-        log.info("创建试卷 {}，标题: {}", exam.getId(), exam.getTitle());
         examMapper.upsertExam(exam);
+        log.info("[成功] 创建试卷: 试卷 ID {}，标题: {}", exam.getId(), exam.getTitle());
 
         // [7] 返回考试 ID
         return Result.ok(exam.getId());
@@ -163,6 +163,7 @@ public class ExamService extends BaseService {
         // 2. 查找考试和试卷
         // 3. 查找作答
         // 4. 合并作答到试卷的题目选项里
+        // 5. TODO 批改
 
         // [1] 查找考试记录
         ExamRecord record = examMapper.findExamRecordById(examRecordId);
@@ -224,32 +225,40 @@ public class ExamService extends BaseService {
         Exam exam = self.findExam(examId);
 
         if (exam == null) {
+            log.warn("[失败] 创建考试记录: 用户 {}, 考试 {}，考试不存在", userId, examId);
             return Result.failMessage("考试不存在: " + examId);
         }
 
         // [2] 检查考试状态，只有考试中时才允许创建考试记录
         if (exam.getStatus() == Exam.STATUS_NOT_STARTED) {
+            log.warn("[失败] 创建考试记录: 用户 {}, 考试 {}，考试未开始", userId, examId);
             return Result.failMessage("考试未开始");
         }
         if (exam.getStatus() == Exam.STATUS_ENDED) {
+            log.warn("[失败] 创建考试记录: 用户 {}, 考试 {}，考试已结束", userId, examId);
             return Result.failMessage("考试已结束");
         }
 
         // [3] 获取用户此考试的考试记录数量 recordCount
-        int recordCount = examMapper.countExamRecordsByUserIdAndExamId(userId, examId);
+        final int recordCount = examMapper.countExamRecordsByUserIdAndExamId(userId, examId);
+        final int maxTimes = exam.getMaxTimes();
 
         // [4] 如果 recordCount >= maxTimes，则不允许创建考试记录
-        if (recordCount >= exam.getMaxTimes()) {
+        if (recordCount >= maxTimes) {
+            log.warn("[失败] 创建考试记录: 用户 {}, 考试 {}，已经考了 {} 次，最多可以考 {} 次", userId, examId, recordCount, maxTimes);
             return Result.failMessage("考试次数已经用完");
         }
 
         // [5] 分配试卷
         long paperId = this.assignPaper(userId, exam);
+        boolean objective = paperMapper.isPaperObjective(paperId); // 是否客观题试卷
 
         // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
-        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId);
+        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId).setObjective(objective);
         examMapper.insertExamRecord(record);
+
+        log.info("[成功] 创建考试记录: 用户 {}, 考试 {}, 第 {} 个考试记录 {}，最多可以考 {} 次", userId, examId, recordCount+1, record.getId(), maxTimes);
 
         return Result.ok(record.getId());
     }
@@ -264,43 +273,37 @@ public class ExamService extends BaseService {
     public Result<?> answerExamRecord(ExamRecordAnswer examRecordAnswer) {
         // 1. 查询考试记录
         // 2. 如果不能作答则返回
-        // 3. 更新考试记录的状态:
-        //    3.1 submitted 为 true 表示提交试卷，更新考试记录状态为 2 (已提交)
-        //    3.2 submitted 为 false 表示普通作答，更新考试记录状态为 1 (已作答)
-        // 4. 把回答按题目分组
-        // 5. 删除题目的所有回答
-        // 6. 创建回答
-        // 7. 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
+        // 3. 把回答按题目分组
+        // 4. 删除题目的所有回答, 然后重新创建回答
+        // 5. 更新考试记录的状态:
+        //    5.1 submitted 为 true 表示提交试卷，更新考试记录状态为 2 (已提交)，批改客观题
+        //    5.2 submitted 为 false 表示普通作答，更新考试记录状态为 1 (已作答)
+        // 6. 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
 
-        log.info("用户 {} 回答考试记录 {}", examRecordAnswer.getUserId(), examRecordAnswer.getExamRecordId());
+        long userId       = examRecordAnswer.getUserId();
+        long examRecordId = examRecordAnswer.getExamRecordId();
+
+        if (log.isDebugEnabled()) {
+            log.debug("[开始] 回答考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
+        }
 
         // [1] 查询考试记录
-        long examRecordId = examRecordAnswer.getExamRecordId();
         ExamRecord examRecord = examMapper.findExamRecordById(examRecordId);
 
         // [2] 如果不能作答则返回
-        Result<Boolean> result = canDoExamination(examRecord, examRecordId);
+        Result<Boolean> result = canDoExamination(userId, examRecordId, examRecord);
         if (!result.isSuccess()) {
             return result;
         }
 
-        // [4] 更新考试记录的状态
-        if (examRecordAnswer.isSubmitted()) {
-            log.info("用户 {} 提交考试记录 {}", examRecordAnswer.getUserId(), examRecordAnswer.getExamRecordId());
-            examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_SUBMITTED);
-        } else {
-            examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_ANSWERED);
-        }
-
-        // [4] 把回答按题目分组
+        // [3] 把回答按题目分组
         List<QuestionOptionAnswer> answers = examRecordAnswer.getAnswers();
         Map<Long, List<QuestionOptionAnswer>> answersMap = answers.stream().collect(Collectors.groupingBy(QuestionOptionAnswer::getQuestionId));
 
+        // [4] 删除题目的所有回答, 然后重新创建回答
         answersMap.forEach((questionId, questionAnswers) -> {
-            // [5] 删除题目的所有回答
             examMapper.deleteQuestionOptionAnswersByExamRecordIdAndQuestionId(examRecordId, questionId);
 
-            // [6] 创建回答
             for (QuestionOptionAnswer answer : questionAnswers) {
                 answer.setExamId(examRecord.getExamId());      // 再次确保考试 ID
                 answer.setExamRecordId(examRecordId);          // 再次确保考试记录 ID，避免前端忘了填
@@ -308,7 +311,24 @@ public class ExamService extends BaseService {
             }
         });
 
-        // [7] 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
+        // [5] 更新考试记录的状态
+        if (examRecordAnswer.isSubmitted()) {
+            // [5.1] submitted 为 true 表示提交试卷，更新考试记录状态为 2 (已提交)，批改客观题
+            examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_SUBMITTED);
+            log.info("[成功] 回答考试记录: 用户 {}, 考试记录 {}, 提交试卷", userId, examRecordId);
+
+            // 查找用户作答的考试记录，用于批改主观题
+            ExamRecord finalExamRecord = self.findExamRecord(examRecordId);
+            self.correctObjectiveQuestions(finalExamRecord);
+        } else {
+            examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_ANSWERED);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("[结束] 回答考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
+        }
+
+        // [6] 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
         List<Long> optionIds = examRecordAnswer.getAnswers().stream().map(QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
         return Result.ok(optionIds);
     }
@@ -316,11 +336,12 @@ public class ExamService extends BaseService {
     /**
      * 判断是否可以进行考试作答 (作答是针对考试记录的)
      *
-     * @param examRecord   考试记录
+     * @param userId       用户 ID
      * @param examRecordId 考试记录 ID
+     * @param examRecord   考试记录
      * @return 可作答返回 Result.ok()，否则返回错误说明
      */
-    public Result<Boolean> canDoExamination(ExamRecord examRecord, long examRecordId) {
+    private Result<Boolean> canDoExamination(long userId, long examRecordId, ExamRecord examRecord) {
         // 1. 如果考试记录为 null，不能作答
         // 2. 考试记录已提交不能作答，不能作答
         // 3. 查找考试记录所属的考试 (考试记录依托于考试，所以理论上考试一定存在)
@@ -330,11 +351,13 @@ public class ExamService extends BaseService {
 
         // [1] 如果考试记录为 null，不能作答
         if (examRecord == null) {
+            log.warn("[失败] 回答考试记录: 用户 {}, 考试记录 {}, 考试记录不存在，不能作答", userId, examRecordId);
             return Result.failMessage("考试记录 " + examRecordId + " 不存在，不能作答");
         }
 
         // [2] 考试记录已提交不能作答，不能作答
         if (examRecord.getStatus() >= ExamRecord.STATUS_SUBMITTED) {
+            log.warn("[失败] 回答考试记录: 用户 {}, 考试记录 {}, 已经提交，不能作答", userId, examRecordId);
             return Result.failMessage("考试记录 " + examRecordId + " 已经提交，不能再作答");
         }
 
@@ -343,12 +366,13 @@ public class ExamService extends BaseService {
 
         // [4] 如果不在考试时间范围内，不能作答
         if (exam.getStatus() != Exam.STATUS_STARTED) {
+            log.warn("[失败] 回答考试记录: 用户 {}, 考试记录 {}, 不在考试时间范围内，不能作答", userId, examRecordId);
             return Result.failMessage("不在考试时间范围内，不能作答");
         }
 
         // [5] 如果考试时间已经用完，不能作答 (因为网络传输的延迟等，需要延迟一点时间进行校正，不能非常精确)
         if (examRecord.getElapsedTime() >= exam.getDuration() + SUBMIT_DELAY) {
-            log.info("考试记录 {} 时间已经用完，不能作答", examRecordId);
+            log.warn("[失败] 回答考试记录: 用户 {}, 考试记录 {}, 考试时间已经用完，不能作答", userId, examRecordId);
             return Result.failMessage("考试记录 " + examRecordId + " 时间已经用完，不能作答");
         }
 
@@ -382,5 +406,14 @@ public class ExamService extends BaseService {
             int index = (int)(userId % allPaperIds.size());
             return new ArrayList<>(allPaperIds).get(index);
         }
+    }
+
+    /**
+     * 自动批阅主观题
+     *
+     * @param userExamRecord 用户的考试记录
+     */
+    private void correctObjectiveQuestions(ExamRecord userExamRecord) {
+        // TODO
     }
 }

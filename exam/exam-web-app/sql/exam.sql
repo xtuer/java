@@ -167,10 +167,11 @@ CREATE TABLE exam_record (
     user_id        bigint(20) DEFAULT 0    COMMENT '考试用户 ID',
     exam_id        bigint(20) DEFAULT 0    COMMENT '考试 ID',
     paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID，方便使用考试记录查找考试的试卷',
-    status         int        DEFAULT 0    COMMENT '状态: 0 (新创建|未作答)、1 (已作答)、2 (已提交|批改中)、3 (已批改) [点击考试的时候才创建考试记录]',
+    status         int        DEFAULT 0    COMMENT '状态: 0 (未作答)、1 (已作答)、2 (已提交)、3 (自动批改)、4 (手动批改)、5 (批改结束) [点击考试的时候才创建考试记录]',
     elapsed_time   int(11)    DEFAULT 0    COMMENT '已考试时间，单位为秒',
     score          double     DEFAULT 0    COMMENT '考试得分',
     submitted_time datetime   DEFAULT NULL COMMENT '提交试卷时间',
+    objective      tinyint(4) DEFAULT 0    COMMENT '0 (使用的试卷包含主观题)、1 (使用的试卷全是客观题)',
 
     tick_at    datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '打卡时间',
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
