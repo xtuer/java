@@ -214,23 +214,23 @@ CREATE TABLE exam_question_option_answer (
 ) ENGINE=InnoDB;
 
 #-------------------------------------------
-# 表名：exam_question_answer_result
+# 表名：exam_question_result
 # 作者：黄彪
 # 日期：2019-06-21
 # 版本：1.0
 # 描述：题目作答分数表，记录用户什么时候、回答什么试卷 (作业) 的题目所获得的分数
 #------------------------------------------
-DROP TABLE IF EXISTS exam_question_answer_result;
+DROP TABLE IF EXISTS exam_question_result;
 
-CREATE TABLE exam_question_answer_result (
+CREATE TABLE exam_question_result (
     exam_record_id bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
     question_id    bigint(20) DEFAULT 0 COMMENT '题目 ID',
-    score          double     DEFAULT 0 COMMENT '分数',
-    status         tinyint(4) DEFAULT 0 COMMENT '题目的作答状态: 0 (错)、1 (半对)、2 (对)',
+    score          double     DEFAULT 0 COMMENT '题目得分',
+    status         tinyint(4) DEFAULT 0 COMMENT '题目的作答状态: 0 (错误)、1 (半对)、2 (全对)',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
-    KEY index_question_result (exam_record_id)
+    UNIQUE KEY index_record_question_unique (exam_record_id, question_id) COMMENT '记录作答结果唯一'
 ) ENGINE=InnoDB;

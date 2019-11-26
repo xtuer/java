@@ -112,4 +112,20 @@
         DELETE FROM exam_question_option_answer
         WHERE exam_record_id = #{examRecordId} AND question_id = #{questionId}
     </delete>
+
+    <!-- 插入或者更新题目的作答结果 -->
+    <insert id="upsertQuestionResult">
+        INSERT INTO exam_question_result (exam_record_id, question_id, score, status)
+        VALUES (#{examRecordId}, #{questionId}, #{score}, #{status})
+
+        ON DUPLICATE KEY
+        UPDATE score = #{score}, status = #{status}
+    </insert>
+
+    <!-- 查询考试记录中题目的得分 -->
+    <select id="findQuestionResultByExamRecordId" resultType="QuestionResult">
+        SELECT exam_record_id, question_id, score, status
+        FROM exam_question_result
+        WHERE exam_record_id = #{examRecordId}
+    </select>
 </mapper>

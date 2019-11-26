@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -163,7 +160,8 @@ public class ExamService extends BaseService {
         // 2. 查找考试和试卷
         // 3. 查找作答
         // 4. 合并作答到试卷的题目选项里
-        // 5. TODO 批改
+        // 5. 批改客观题: 批改未提交、并且不能继续作答的考试记录的客观题
+        // 6. 查询题目得分
 
         // [1] 查找考试记录
         ExamRecord record = examMapper.findExamRecordById(examRecordId);
@@ -174,34 +172,41 @@ public class ExamService extends BaseService {
         record.setExam(exam);
         record.setPaper(paper);
 
+        // 所有题目
+        List<Question> questions = new LinkedList<>();
+        questions.addAll(paper.getQuestions());
+        questions.addAll(paper.getQuestions().stream().flatMap(q -> q.getSubQuestions().stream()).collect(Collectors.toList()));
+
         // [3] 查找作答
         List<QuestionOptionAnswer> examAnswers = examMapper.findQuestionOptionAnswersByExamRecordId(examRecordId);
         Map<Long, QuestionOptionAnswer> answersMap = examAnswers.stream().collect(Collectors.toMap(QuestionOptionAnswer::getQuestionOptionId, a -> a));
 
         // [4] 合并作答到试卷的题目选项里
-        for (Question question : paper.getQuestions()) {
-            // 题目的选项
-            for (QuestionOption option : question.getOptions()) {
-                QuestionOptionAnswer answer = answersMap.get(option.getId());
+        questions.stream().flatMap(q -> q.getOptions().stream()).forEach(option -> {
+            QuestionOptionAnswer answer = answersMap.get(option.getId());
 
-                if (answer != null) {
-                    option.setChecked(true);
-                    option.setAnswer(answer.getContent());
-                }
+            if (answer != null) {
+                option.setChecked(true);
+                option.setAnswer(answer.getContent());
             }
+        });
 
-            for (Question subQuestion : question.getSubQuestions()) {
-                // 小题的选项
-                for (QuestionOption option : subQuestion.getOptions()) {
-                    QuestionOptionAnswer answer = answersMap.get(option.getId());
-
-                    if (answer != null) {
-                        option.setChecked(true);
-                        option.setAnswer(answer.getContent());
-                    }
-                }
-            }
+        // [5] 批改客观题: 批改未提交、并且不能继续作答的考试记录的客观题
+        if (record.getStatus() < ExamRecord.STATUS_SUBMITTED && !this.canDoExamination(record.getUserId(), record.getId(), record).isSuccess()) {
+            this.correctObjectiveQuestions(record);
         }
+
+        // [6] 查询题目得分
+        List<QuestionResult> questionResults = examMapper.findQuestionResultByExamRecordId(examRecordId);
+        Map<Long, QuestionResult> questionResultsMap = questionResults.stream().collect(Collectors.toMap(QuestionResult::getQuestionId, r -> r));
+        questions.forEach(question -> {
+            QuestionResult result =  questionResultsMap.get(question.getId());
+
+            if (result != null) {
+                question.setScore(result.getScore());
+                question.setScoreStatus(result.getStatus());
+            }
+        });
 
         return record;
     }
@@ -319,7 +324,7 @@ public class ExamService extends BaseService {
 
             // 查找用户作答的考试记录，用于批改主观题
             ExamRecord finalExamRecord = self.findExamRecord(examRecordId);
-            self.correctObjectiveQuestions(finalExamRecord);
+            this.correctObjectiveQuestions(finalExamRecord);
         } else {
             examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_ANSWERED);
         }
@@ -409,11 +414,71 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 自动批阅主观题
+     * 自动批改考试记录里的主观题
      *
      * @param userExamRecord 用户的考试记录
      */
+    @Transactional(rollbackFor = Exception.class)
     private void correctObjectiveQuestions(ExamRecord userExamRecord) {
-        // TODO
+        // 1. 遍历题目，进行批改
+        // 2. 修改考试记录的状态为已经自动批改过
+
+        for (Question question : userExamRecord.getPaper().getQuestions()) {
+            this.correctObjectiveQuestion(userExamRecord.getId(), question);
+        }
+
+        examMapper.updateExamRecordStatus(userExamRecord.getId(), ExamRecord.STATUS_AUTO_CORRECTED);
+        log.info("[成功] 自动批改考试: 用户 {}, 考试记录 {}", userExamRecord.getUserId(), userExamRecord.getId());
+    }
+
+    /**
+     * 自动批改主观题
+     *
+     * @param examRecordId 考试记录 ID
+     * @param question     题目
+     */
+    private void correctObjectiveQuestion(long examRecordId, Question question) {
+        // 1. 如果是复合题，递归批改复合题的小题
+        // 2. 非客观题则不进行批改
+        // 3. 得到所有正确的选项，所有作答的选项
+        // 4. 批改客观题:
+        //    4.1 如果作答的选项不为空且是正确的选项的子集
+        //        4.1.1 全对: 个数一样
+        //        4.1.3 半对: 个数不一样
+        //    4.2 错误: 未作答，或者作答的选项有一个不在正确的选项中则错误
+        // 5. 保存题目的作答结果
+
+        // [1] 如果是复合题，递归批改复合题的小题
+        if (question.getType() == Question.COMPLEX) {
+            for (Question subQuestion : question.getSubQuestions()) {
+                correctObjectiveQuestion(examRecordId, subQuestion);
+            }
+        }
+
+        // [2] 非客观题则不进行批改
+        if (question.getType() != Question.SINGLE_CHOICE && question.getType() != Question.MULTIPLE_CHOICE && question.getType() != Question.TFNG) {
+            return;
+        }
+
+        // [3] 得到所有正确的选项，所有作答的选项
+        List<Long> correctOptions = question.getOptions().stream().filter(QuestionOption::isCorrect).map(QuestionOption::getId).collect(Collectors.toList());
+        List<Long> checkedOptions = question.getOptions().stream().filter(QuestionOption::isChecked).map(QuestionOption::getId).collect(Collectors.toList());
+
+        // [4] 批改客观题
+        QuestionResult result = new QuestionResult(examRecordId, question.getId(), 0D, QuestionResult.STATUS_ERROR); // 默认为错误，得 0 分
+
+        if (!checkedOptions.isEmpty() && correctOptions.containsAll(checkedOptions)) {
+            // [4.1] 如果作答选项为空则错误
+            if (correctOptions.size() == checkedOptions.size()) {
+                // [4.1.1] 全对: 个数一样
+                result.setScore(question.getTotalScore()).setStatus(QuestionResult.STATUS_RIGHT);
+            } else {
+                // [4.1.3] 半对: 个数不一样
+                result.setScore(question.getTotalScore() / 2).setStatus(QuestionResult.STATUS_HALF_RIGHT);
+            }
+        }
+
+        // [5] 保存题目的作答结果
+        examMapper.upsertQuestionResult(result);
     }
 }

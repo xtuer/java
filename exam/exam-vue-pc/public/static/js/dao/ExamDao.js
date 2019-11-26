@@ -157,6 +157,6 @@ export default class ExamDao {
                         reject(message);
                     }
                 });
-        })
+        });
     }
 }

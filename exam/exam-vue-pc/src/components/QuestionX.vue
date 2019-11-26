@@ -18,13 +18,16 @@
                 <template v-else-if="question.type===7">
                     ，共 {{ question.totalScore }} 分
                 </template>
+                <template v-if="scoring">
+                    <span style="color: red; margin-left: 12px">[得分: {{ question.score }} / {{ question.totalScore }}]</span>
+                </template>
             </div>
         </div>
 
         <!-- [2] 选择题: 选项 -->
         <template v-if="question.type===1 || question.type===2">
             <div v-for="option in question.options" :key="option.id" class="option">
-                <div class="mark" :class="{ correct: option.correct, checked: option.checked }" @click="commit(question, option)">
+                <div class="mark" :class="{ correct: option.correct, checked: option.checked }" @click="answer(question, option)">
                     {{ option.mark }}
                 </div>
                 <div class="description" v-html="option.description"></div>
@@ -37,7 +40,7 @@
                 <div v-for="option in question.options"
                         :key="option.id"
                         :class="{ tfng: true, correct: option.correct, checked: option.checked }"
-                        @click="commit(question, option)">
+                        @click="answer(question, option)">
                     {{ option.description }}
                 </div>
             </div>
@@ -51,7 +54,7 @@
                    :readonly="!answerable"
                    placeholder="请填空..."
                    style="width: 300px"
-                   @on-blur="commit(question)"/>
+                   @on-blur="answer(question)"/>
         </template>
 
         <!-- [5] 问答题 -->
@@ -62,7 +65,7 @@
                    type="textarea"
                    placeholder="请回答..."
                    style="width: 400px"
-                   @on-blur="commit(question)"/>
+                   @on-blur="answer(question)"/>
         </template>
 
         <!-- [6] 复合题: 递归显示小题 -->
@@ -70,6 +73,7 @@
             <QuestionX v-for="subQuestion in question.subQuestions"
                        :key="subQuestion.id"
                        :question="subQuestion"
+                       :answerable="answerable"
                        @on-answer="$emit('on-answer', subQuestion)"/>
         </template>
     </div>
@@ -87,7 +91,7 @@ export default {
     },
     methods: {
         // 提交问题的答案: 填空题和问答题时不需要 option
-        commit(question, option) {
+        answer(question, option) {
             if (!this.answerable) { return; }
 
             // 1. 单选题和判断题: 取消所有选项，然后选择当前选项
@@ -125,6 +129,11 @@ export default {
         scoreSelf() {
             // 复合题的小题、问答题
             return QuestionUtils.isScoreSelfQuestion(this.question);
+        },
+        scoring() {
+            return this.question.type === 1 || this.question.type === 2
+                    || this.question.type === 3 || this.question.type === 4
+                    || this.question.type === 5;
         }
     }
 };

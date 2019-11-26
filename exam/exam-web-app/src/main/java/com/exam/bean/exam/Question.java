@@ -46,4 +46,6 @@ public class Question  implements Serializable {
     private double score;      // 试卷: 每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 单选题，每题 5 分，共 30 分
     private double totalScore; // 试卷: 题目满分 (题目、题型题、复合题的满分)
     private int    positionInPaper; // 试卷: 题目在试卷中的位置
+
+    private int scoreStatus; // 题目的作答状态: 0 (错误)、1 (半对)、2 (全对) [查询考试记录时设置]
 }

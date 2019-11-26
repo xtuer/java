@@ -104,6 +104,7 @@ public class PaperService extends BaseService {
      */
     public void upsertPaperQuestion(Question question) {
         // 1. 如果题目标记为删除，则从表 exam_paper_question 中删除题目
+        // 2. 只有题型题保存 score (每题得分)
         // 2. 插入或者更新题目到试卷题目表 exam_paper_question
         // 3. 插入或者更新小题到试卷题目表 exam_paper_question (小题也插入到试卷题目表，方便查询)
 
@@ -114,10 +115,15 @@ public class PaperService extends BaseService {
             return;
         }
 
-        // [2] 插入或者更新题目到试卷题目表 exam_paper_question
+        // [2] 只有题型题保存 score (每题得分)
+        if (question.getType() != Question.DESCRIPTION) {
+            question.setScore(0);
+        }
+
+        // [3] 插入或者更新题目到试卷题目表 exam_paper_question
         paperMapper.upsertPaperQuestion(question);
 
-        // [3] 插入或者更新小题到试卷题目表 exam_paper_question (小题也插入到试卷题目表，方便查询)
+        // [4] 插入或者更新小题到试卷题目表 exam_paper_question (小题也插入到试卷题目表，方便查询)
         for (Question subQuestion : question.getSubQuestions()) {
             this.upsertPaperQuestion(subQuestion);
         }

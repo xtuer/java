@@ -28,7 +28,7 @@ public class ExamRecord {
     private long paperId;     // 试卷 ID，方便使用考试记录查找考试的试卷
     private int  status;      // 状态: 0 (未作答)、1 (已作答)、2 (已提交)、3 (自动批改)、4 (手动批改)、5 (批改结束) [点击考试的时候才创建考试记录]
     private int  elapsedTime; // 已考试时间，单位为秒
-    private double score;     // 考试得分
+    private double  score;    // 考试得分
     private Date    submitted_time;  // 提交试卷时间
     private boolean objective;       // true (使用的试卷全是客观题)、false (使用的试卷包含主观题)
 
