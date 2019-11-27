@@ -74,7 +74,9 @@ export default {
                 });
             });
 
-            ExamDao.answerExamRecord(this.userId, this.examId, this.recordId, recordAnswer);
+            ExamDao.answerExamRecord(this.userId, this.examId, this.recordId, recordAnswer).then(() => {
+                this.$Message.success('提交试卷成功');
+            });
         },
         // 是否可以继续考试: 考试期间、未提交、考试记录的时间未用完
         canContinueExam(examRecord) {

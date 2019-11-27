@@ -79,7 +79,7 @@ CREATE TABLE exam_paper_question (
     question_id        bigint(20)   DEFAULT 0  COMMENT '题目 ID',
     group_sn           int(11)      DEFAULT 0  COMMENT '大题 (题型) 分组序号，例如属于第一大题单选题组，顺序表示在试卷中的位置',
     position           int(11)      DEFAULT 0  COMMENT '题目在试卷里的位置',
-    score              double       DEFAULT 0  COMMENT '每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 单选题，每题 5 分，共 30 分',
+    score              double       DEFAULT 0  COMMENT '题型题的每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 如单选题，每题 5 分，共 30 分',
     total_score        double       DEFAULT 0  COMMENT '题目满分 (题目、题型题、复合题的满分)',
     sn_label           varchar(128) DEFAULT '' COMMENT '试卷中题目的可读序号，例如 一、二、1、2、❶、❷ 等',
     parent_question_id bigint(20)   DEFAULT 0  COMMENT '小题所属复合题的 ID',

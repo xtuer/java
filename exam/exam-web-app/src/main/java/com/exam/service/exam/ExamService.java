@@ -160,7 +160,7 @@ public class ExamService extends BaseService {
         // 2. 查找考试和试卷
         // 3. 查找作答
         // 4. 合并作答到试卷的题目选项里
-        // 5. 批改客观题: 批改未提交、并且不能继续作答的考试记录的客观题
+        // 5. 批改客观题: 未批改、并且不能继续作答的考试记录的客观题
         // 6. 查询题目得分
 
         // [1] 查找考试记录
@@ -191,22 +191,24 @@ public class ExamService extends BaseService {
             }
         });
 
-        // [5] 批改客观题: 批改未提交、并且不能继续作答的考试记录的客观题
-        if (record.getStatus() < ExamRecord.STATUS_SUBMITTED && !this.canDoExamination(record.getUserId(), record.getId(), record).isSuccess()) {
+        // [5] 批改客观题: 未批改、并且不能继续作答的考试记录的客观题
+        if (record.getStatus() < ExamRecord.STATUS_AUTO_CORRECTED && !this.canDoExamination(record.getUserId(), record.getId(), record).isSuccess()) {
             this.correctObjectiveQuestions(record);
         }
 
         // [6] 查询题目得分
-        List<QuestionResult> questionResults = examMapper.findQuestionResultByExamRecordId(examRecordId);
-        Map<Long, QuestionResult> questionResultsMap = questionResults.stream().collect(Collectors.toMap(QuestionResult::getQuestionId, r -> r));
-        questions.forEach(question -> {
-            QuestionResult result =  questionResultsMap.get(question.getId());
+        if (record.getStatus() >= ExamRecord.STATUS_AUTO_CORRECTED) {
+            List<QuestionResult> questionResults = examMapper.findQuestionResultByExamRecordId(examRecordId);
+            Map<Long, QuestionResult> questionResultsMap = questionResults.stream().collect(Collectors.toMap(QuestionResult::getQuestionId, r -> r));
+            questions.forEach(question -> {
+                QuestionResult result =  questionResultsMap.get(question.getId());
 
-            if (result != null) {
-                question.setScore(result.getScore());
-                question.setScoreStatus(result.getStatus());
-            }
-        });
+                if (result != null) {
+                    question.setScore(result.getScore());
+                    question.setScoreStatus(result.getStatus());
+                }
+            });
+        }
 
         return record;
     }
@@ -288,8 +290,8 @@ public class ExamService extends BaseService {
         long userId       = examRecordAnswer.getUserId();
         long examRecordId = examRecordAnswer.getExamRecordId();
 
-        if (log.isDebugEnabled()) {
-            log.debug("[开始] 回答考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
+        if (examRecordAnswer.isSubmitted()) {
+            log.info("[开始] 提交考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
         }
 
         // [1] 查询考试记录
@@ -320,17 +322,16 @@ public class ExamService extends BaseService {
         if (examRecordAnswer.isSubmitted()) {
             // [5.1] submitted 为 true 表示提交试卷，更新考试记录状态为 2 (已提交)，批改客观题
             examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_SUBMITTED);
-            log.info("[成功] 回答考试记录: 用户 {}, 考试记录 {}, 提交试卷", userId, examRecordId);
+            log.info("[成功] 提交考试记录: 用户 {}, 考试记录 {}, 提交试卷", userId, examRecordId);
 
-            // 查找用户作答的考试记录，用于批改主观题
-            ExamRecord finalExamRecord = self.findExamRecord(examRecordId);
-            this.correctObjectiveQuestions(finalExamRecord);
+            // 注意: 自动批改客观题 (查找用户作答的考试记录的时候进行了自动批改)
+            this.findExamRecord(examRecordId);
         } else {
             examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_ANSWERED);
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("[结束] 回答考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
+        if (examRecordAnswer.isSubmitted()) {
+            log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
         }
 
         // [6] 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
@@ -420,15 +421,21 @@ public class ExamService extends BaseService {
      */
     @Transactional(rollbackFor = Exception.class)
     private void correctObjectiveQuestions(ExamRecord userExamRecord) {
-        // 1. 遍历题目，进行批改
-        // 2. 修改考试记录的状态为已经自动批改过
+        // 1. 遍历题目，逐题批改
+        // 2. 修改考试记录的状态为自动批改
 
+        log.info("[开始] 自动批改客观题: 用户 {}, 考试记录 {}", userExamRecord.getUserId(), userExamRecord.getId());
+
+        // [1] 遍历题目，逐题批改
         for (Question question : userExamRecord.getPaper().getQuestions()) {
             this.correctObjectiveQuestion(userExamRecord.getId(), question);
         }
 
+        // [2] 修改考试记录的状态为自动批改
+        userExamRecord.setStatus(ExamRecord.STATUS_AUTO_CORRECTED);
         examMapper.updateExamRecordStatus(userExamRecord.getId(), ExamRecord.STATUS_AUTO_CORRECTED);
-        log.info("[成功] 自动批改考试: 用户 {}, 考试记录 {}", userExamRecord.getUserId(), userExamRecord.getId());
+
+        log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", userExamRecord.getUserId(), userExamRecord.getId());
     }
 
     /**
@@ -441,11 +448,11 @@ public class ExamService extends BaseService {
         // 1. 如果是复合题，递归批改复合题的小题
         // 2. 非客观题则不进行批改
         // 3. 得到所有正确的选项，所有作答的选项
-        // 4. 批改客观题:
+        // 4. 批改客观题 (全对得满分，部分正确得一半分):
         //    4.1 如果作答的选项不为空且是正确的选项的子集
         //        4.1.1 全对: 个数一样
         //        4.1.3 半对: 个数不一样
-        //    4.2 错误: 未作答，或者作答的选项有一个不在正确的选项中则错误
+        //    4.2 错误: 未作答，或者答错任何一个选项
         // 5. 保存题目的作答结果
 
         // [1] 如果是复合题，递归批改复合题的小题
