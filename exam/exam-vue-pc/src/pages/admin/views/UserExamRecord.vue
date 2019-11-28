@@ -67,10 +67,10 @@ export default {
             const recordAnswer = { submitted: true, questions: [] };
 
             this.examRecord.paper.questions.forEach(question => {
-                recordAnswer.answers.push(...this.getQuestionForAnswer(question));
+                recordAnswer.questions.push(this.getQuestionForAnswer(question));
 
                 question.subQuestions.forEach(sub => {
-                    recordAnswer.answers.push(...this.getQuestionForAnswer(sub));
+                    recordAnswer.questions.push(this.getQuestionForAnswer(sub));
                 });
             });
 

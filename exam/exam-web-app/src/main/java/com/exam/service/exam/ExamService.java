@@ -410,6 +410,7 @@ public class ExamService extends BaseService {
         //    4.2 错误: 未作答，或者答错任何一个选项
         // 5. 计算考试得分
         // 6. 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
+        // 7. 保存考试记录到数据库
 
         log.info("[开始] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
 
@@ -446,17 +447,22 @@ public class ExamService extends BaseService {
                 }
             } else {
                 // [4.2] 错误: 未作答，或者答错任何一个选项
-                qa.setScore(question.getTotalScore()).setScoreStatus(QuestionResult.STATUS_ERROR);
+                qa.setScore(0).setScoreStatus(QuestionResult.STATUS_ERROR);
             }
         });
 
         // [5] 计算考试得分
+        record.setScore(0);
         record.getQuestions().forEach(qa -> {
             record.setScore(record.getScore() + qa.getScore());
         });
 
         // [6] 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
+        record.setObjective(paper.isObjective());
         record.setStatus(paper.isObjective() ? ExamRecord.STATUS_FINISH_CORRECTED : ExamRecord.STATUS_AUTO_CORRECTED);
+
+        // [7] 保存考试记录到数据库
+        examDao.upsertExamRecord(record);
 
         log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
     }
