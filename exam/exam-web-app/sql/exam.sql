@@ -1,12 +1,9 @@
-# 考试相关总共有下面 8 个表
+# 考试相关总共有下面 5 个表
 # exam_question
 # exam_question_option
 # exam_paper_question
 # exam_paper
 # exam
-# exam_record
-# exam_question_option_answer
-# exam_question_answer_result
 
 #-------------------------------------------
 # 表名：exam_question
@@ -149,88 +146,5 @@ CREATE TABLE exam (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (id),
-    KEY index_clazz_id (clazz_id) COMMENT '加速查找班级的试卷'
-) ENGINE=InnoDB;
-
-#-------------------------------------------
-# 表名：exam_record
-# 作者：黄彪
-# 日期：2019-06-21
-# 版本：1.0
-# 描述：考试记录
-#      保存学生考试的记录，同一个试卷可以考多次，考试记录用来确定某一次考试
-#------------------------------------------
-DROP TABLE IF EXISTS exam_record;
-
-CREATE TABLE exam_record (
-    id             bigint(20) NOT NULL     COMMENT '试卷记录 ID',
-    user_id        bigint(20) DEFAULT 0    COMMENT '考试用户 ID',
-    exam_id        bigint(20) DEFAULT 0    COMMENT '考试 ID',
-    paper_id       bigint(20) DEFAULT 0    COMMENT '试卷 ID，方便使用考试记录查找考试的试卷',
-    status         int        DEFAULT 0    COMMENT '状态: 0 (未作答)、1 (已作答)、2 (已提交)、3 (自动批改)、4 (手动批改)、5 (批改结束) [点击考试的时候才创建考试记录]',
-    elapsed_time   int(11)    DEFAULT 0    COMMENT '已考试时间，单位为秒',
-    score          double     DEFAULT 0    COMMENT '考试得分',
-    submitted_time datetime   DEFAULT NULL COMMENT '提交试卷时间',
-    objective      tinyint(4) DEFAULT 0    COMMENT '0 (使用的试卷包含主观题)、1 (使用的试卷全是客观题)',
-
-    tick_at    datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '打卡时间',
-    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-
-    PRIMARY KEY (id),
-    KEY index_user_exam_record (user_id, exam_id) COMMENT '加速查找用户的某次考试的所有考试记录'
-) ENGINE=InnoDB;
-
-#-------------------------------------------
-# 表名：exam_question_option_answer
-# 作者：黄彪
-# 日期：2019-06-21
-# 版本：1.0
-# 描述：题目选项作答表
-#      记录用户什么时候、回答什么试卷 (作业) 的题目选项，不管是主观题还是客观题，回答的选项保存到作答表中，主观题的选项回答的内容保存到 content 里
-#      保存投票和调查问卷等时，不需要创建考试记录，只需要自定义一个 exam_record_id 即可，这个 exam_record_id 可以保存在其他地方
-#
-#      客观题 (单选题、多选题、判断题): 保存选择的选项
-#      主观题 (填空题、问答题):
-#             填空题: 每个空对应一个选项
-#             问答题: 只有一个选项，针对这个选项进行回答
-#      保存回答时，先删除对应题目的所有回答，然后再把新的所有回答保存一次
-#------------------------------------------
-DROP TABLE IF EXISTS exam_question_option_answer;
-
-CREATE TABLE exam_question_option_answer (
-    exam_id            bigint(20) DEFAULT 0 COMMENT '考试 ID，按题批改的时候用于查询某次考试某个题的作答，统计某个选项的作答数量',
-    exam_record_id     bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
-    question_id        bigint(20) DEFAULT 0 COMMENT '题目 ID',
-    question_option_id bigint(20) DEFAULT 0 COMMENT '选项 ID',
-    content            text                 COMMENT '主观题的回答内容，客观题时为空',
-
-    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-
-    id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
-    UNIQUE KEY index_record_option_unique (exam_record_id, question_option_id) COMMENT '记录作答问题选项唯一',
-    KEY index_exo_answer (exam_record_id)
-) ENGINE=InnoDB;
-
-#-------------------------------------------
-# 表名：exam_question_result
-# 作者：黄彪
-# 日期：2019-06-21
-# 版本：1.0
-# 描述：题目作答分数表，记录用户什么时候、回答什么试卷 (作业) 的题目所获得的分数
-#------------------------------------------
-DROP TABLE IF EXISTS exam_question_result;
-
-CREATE TABLE exam_question_result (
-    exam_record_id bigint(20) DEFAULT 0 COMMENT '考试记录 ID',
-    question_id    bigint(20) DEFAULT 0 COMMENT '题目 ID',
-    score          double     DEFAULT 0 COMMENT '题目得分',
-    status         tinyint(4) DEFAULT 0 COMMENT '题目的作答状态: 0 (错误)、1 (半对)、2 (全对)',
-
-    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-
-    id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
-    UNIQUE KEY index_record_question_unique (exam_record_id, question_id) COMMENT '记录作答结果唯一'
+    KEY index_holder_id (holder_id) COMMENT '加速查找的试卷'
 ) ENGINE=InnoDB;
