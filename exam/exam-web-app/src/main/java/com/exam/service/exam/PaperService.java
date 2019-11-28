@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 操作试卷的服务，关键接口有:
@@ -82,10 +81,12 @@ public class PaperService extends BaseService {
         this.updatePaperQuestionSnLabels(paper.getQuestions());
         paper.setObjective(this.isObjectivePaper(paper));
 
+        if (log.isDebugEnabled()) {
+            log.debug("[开始] 保存试卷 {}\n{}", paper.getId(), Utils.toJson(paper)); // 输出试卷
+        }
+
         // [5] 移动试卷标题，题干、选项中的临时文件到文件仓库
         this.moveTempFileToRepoInPaper(paper);
-
-        log.debug("保存试卷\n{}", Utils.toJson(paper)); // 输出试卷
 
         // [6] 插入或者更新题目到表 exam_question (题目自身的数据)
         for (Question question : paper.getQuestions()) {
@@ -99,6 +100,10 @@ public class PaperService extends BaseService {
 
         // [8] 插入或者更新试卷表 exam_paper (试卷自身的数据)
         paperMapper.upsertPaper(paper);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[结束] 保存试卷 {}", paper.getId()); // 输出试卷
+        }
 
         return paper.getId();
     }
@@ -229,7 +234,7 @@ public class PaperService extends BaseService {
     }
 
     /**
-     * 判断题目是否可计分 (选择题、判断题、填空题、问答题可计分)
+     * 判断题目是否可计分 (单选题、多选题、判断题、填空题、问答题可计分)
      *
      * @param question 题目
      * @return 如果题目可计分返回 true，否则返回 false
@@ -237,6 +242,7 @@ public class PaperService extends BaseService {
     private boolean canQuestionScoring(Question question) {
         return question.getType() == Question.SINGLE_CHOICE
                 || question.getType() == Question.MULTIPLE_CHOICE
+                || question.getType() == Question.TFNG
                 || question.getType() == Question.FITB
                 || question.getType() == Question.ESSAY_QUESTION;
     }
