@@ -15,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -256,7 +253,7 @@ public class ExamService extends BaseService {
 
         // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
-        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId).setObjective(objective);
+        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId).setObjective(objective).setTickAt(new Date());
         examDao.upsertExamRecord(record);
 
         log.info("[成功] 创建考试记录: 用户 {}, 考试 {}, 第 {} 个考试记录 {}，最多可以考 {} 次", userId, examId, recordCount+1, record.getId(), maxTimes);
@@ -308,6 +305,7 @@ public class ExamService extends BaseService {
         // [4.2] 保存所有题目的作答到考试记录
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
         record.setQuestions(examRecordAnswer.getQuestions());
+        record.setSubmittedAt(new Date());
         examDao.upsertExamRecord(record);
 
         // [4.3] 自动批改客观题

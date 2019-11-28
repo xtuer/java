@@ -1,4 +1,7 @@
-import com.exam.bean.exam.*;
+import com.exam.bean.exam.Exam;
+import com.exam.bean.exam.ExamRecord;
+import com.exam.bean.exam.Paper;
+import com.exam.bean.exam.QuestionForAnswer;
 import com.exam.dao.ExamDao;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.service.exam.ExamService;
@@ -67,32 +70,6 @@ public class ExamTest {
     }
 
     /**
-     * 插入更新题目的回答
-     */
-    @Test
-    public void answerExamRecord() {
-        // long recordId = 1;
-        // ExamRecordAnswer examRecordAnswer = new ExamRecordAnswer();
-        // examRecordAnswer.setExamRecordId(recordId).setSubmitted(true);
-        //
-        // List<QuestionAnswer> answers = new LinkedList<>();
-        // answers.add(newAnswer(recordId, 1, 1, ""));
-        // answers.add(newAnswer(recordId, 1, 2, ""));
-        // answers.add(newAnswer(recordId, 2, 3, "填空-1"));
-        // answers.add(newAnswer(recordId, 2, 4, "填空-2"));
-        // answers.add(newAnswer(recordId, 3, 5, "回答"));
-        //
-        // examRecordAnswer.setAnswers(answers);
-        //
-        // Utils.dump(examService.answerExamRecord(examRecordAnswer));
-    }
-
-    @Test
-    public void findQuestionOptionAnswersByExamRecordId() {
-        Utils.dump(examMapper.findQuestionOptionAnswersByExamRecordId(1));
-    }
-
-    /**
      * 插入更新题目的作答 (Mongo)
      */
     @Test
@@ -131,10 +108,10 @@ public class ExamTest {
         QuestionForAnswer.QuestionOptionAnswer a2 = new QuestionForAnswer.QuestionOptionAnswer();
         a2.setQuestionOptionId(22);
 
-        ExamRecord.ExamRecordQuestion q1 = new ExamRecord.ExamRecordQuestion();
-        ExamRecord.ExamRecordQuestion q2 = new ExamRecord.ExamRecordQuestion();
-        q1.setId(1).setScore(4.5);
-        q2.setId(2).setScore(7.5);
+        QuestionForAnswer q1 = new QuestionForAnswer();
+        QuestionForAnswer q2 = new QuestionForAnswer();
+        q1.setQuestionId(1).setScore(4.5);
+        q2.setQuestionId(2).setScore(7.5);
         q1.getAnswers().add(a1);
         q2.getAnswers().add(a2);
 
@@ -161,13 +138,9 @@ public class ExamTest {
         Utils.dump(examDao.findPaperIdsByUserIdAndExamId(1, 1));
     }
 
-    /**
-     * 创建题目选项的回答
-     */
-    private QuestionForAnswer newAnswer(long examRecordId, long questionId, long questionOptionId, String content) {
-        QuestionForAnswer answer = new QuestionForAnswer();
-        answer.setExamRecordId(examRecordId).setQuestionId(questionId).setQuestionOptionId(questionOptionId).setContent(content);
-
-        return answer;
+    @Test
+    public void increaseExamRecordElapsedTimeMongo() {
+        examDao.increaseExamRecordElapsedTime(1, 20);
+        examDao.increaseExamRecordElapsedTime(1, 20);
     }
 }

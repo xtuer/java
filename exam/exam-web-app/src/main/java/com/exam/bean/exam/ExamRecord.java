@@ -38,7 +38,8 @@ public class ExamRecord {
     private int  elapsedTime;  // 已考试时间，单位为秒
     private double  score;     // 考试得分
     private boolean objective; // true (使用的试卷全是客观题)、false (使用的试卷包含主观题)
-    private Date    submitted_time = new Date();  // 提交试卷时间
+    private Date    submittedAt;  // 提交试卷时间
+    private Date    tickAt;       // 打卡时间
 
     private List<QuestionForAnswer> questions = new LinkedList<>(); // 考试记录题目的作答 (不返回给前端)
 

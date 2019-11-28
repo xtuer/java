@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,16 +19,17 @@ import java.util.stream.Collectors;
  * 考试 Dao (MongoDB 使用)
  *
  * 提示:
- *     mongoTemplate.save(): 如果 id 对应的 document 不存在则插入，否则替换
- *     mongoTemplate.upsert(): 查询不到复合条件的 document 则插入，否则合并更新参数中的 document 指定的 field
- *     mongoTemplate.find(): 返回 List，查询不到返回空的 List
+ *     mongoTemplate.save()   : 如果 id 对应的 document 不存在则插入，存在则插入新的属性，替换非 null 属性
+ *     mongoTemplate.upsert() : 查询不到复合条件的则插入，存在则替换 (如果 Update 使用 Document 创建则原来的所有属性都会被删除)
+ *     mongoTemplate.find()   : 返回 List，查询不到返回空的 List
  *     mongoTemplate.findOne(): 返回查询到的对象，查询不到返回 null
  */
 @Service
 public class ExamDao {
     // 考试记录作答表: 复合唯一索引 (examRecordId, questionOptionId)
     private static final String QUESTION_ANSWER = "exam_question_answer";
-    private static final String EXAM_RECORD = "exam_record";
+    private static final String EXAM_RECORD     = "exam_record";
+    private static final int ELAPSED_TIME_DELTA = 5; // 计时的时间差
 
     @Resource(name = "mongoTemplate")
     private MongoTemplate mongoTemplate;
@@ -132,5 +134,34 @@ public class ExamDao {
         List<ExamRecord> records = mongoTemplate.find(query, ExamRecord.class, EXAM_RECORD);
 
         return records;
+    }
+
+    /**
+     * 增加考试记录的使用时间
+     *
+     * @param examRecordId  考试记录 ID
+     * @param timeInSeconds 增加的时间
+     */
+    public void increaseExamRecordElapsedTime(long examRecordId, int timeInSeconds) {
+        // 1. 查询考试记录的 elapsedTime 和 tickAt
+        // 2. 如果 tickAt + timeInSeconds <= 当前时间则增加时间
+
+        Criteria criteria = Criteria.where("_id").is(examRecordId); // 奇怪: 使用 id 可以查询到，但是更新不行，使用 _id 的话都可以
+
+        // [1] 查询考试记录的 elapsedTime 和 tickAt
+        Query query = Query.query(criteria);
+        query.fields().include("tickAt").include("elapsedTime");
+        ExamRecord record = mongoTemplate.findOne(query, ExamRecord.class, EXAM_RECORD);
+
+        if (record == null) { return; }
+
+        long will = record.getTickAt().getTime() + (timeInSeconds-ELAPSED_TIME_DELTA)*1000L; // 下次最早可计时时间
+        long now  = System.currentTimeMillis(); // 当前时间
+
+        // [2] 如果 tickAt + timeInSeconds <= 当前时间则增加时间
+        if (will <= now) {
+            Update update = new Update().set("elapsedTime", record.getElapsedTime() + timeInSeconds).set("tickAt", new Date());
+            mongoTemplate.updateFirst(Query.query(criteria), update, EXAM_RECORD);
+        }
     }
 }
