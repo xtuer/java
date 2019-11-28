@@ -93,12 +93,6 @@ public class QuestionTest {
         Utils.dump(question);
     }
 
-    // 测试删除题目
-    @Test
-    public void deleteQuestion() {
-        questionMapper.deleteQuestion(100);
-    }
-
     // 测试编辑试卷
     @Test
     public void upsertPaper() {

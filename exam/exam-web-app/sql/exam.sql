@@ -1,9 +1,12 @@
-# 考试相关总共有下面 5 个表
+# 考试相关总共有下面 4 个表
 # exam_question
-# exam_question_option
 # exam_paper_question
 # exam_paper
 # exam
+#
+# 和用户相关的数据存在 Mongo，有 2 个集合
+# exam_record
+# exam_question_answer
 
 #-------------------------------------------
 # 表名：exam_question
@@ -29,36 +32,13 @@ CREATE TABLE exam_question (
     position   int(11)     DEFAULT 0 COMMENT '复合题的小题在题目中的位置',
     purpose    int(11)     DEFAULT 0 COMMENT '题目用途: 0 (考试题目)、1 (问卷题目)',
     parent_id  bigint(20)  DEFAULT 0 COMMENT '复合题的小题所属大题 ID',
+    options_json mediumtext          COMMENT '选项的 JSON 字符串',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (id),
     KEY index_parent_id (parent_id) COMMENT '加速查找复合题的小题'
-) ENGINE=InnoDB;
-
-#-------------------------------------------
-# 表名：exam_question_option
-# 作者：黄彪
-# 日期：2019-06-21
-# 版本：1.0
-# 描述：题目的选项，每个题目默认都有个位置属性，非打乱选项顺序时用
-#------------------------------------------
-DROP TABLE IF EXISTS exam_question_option;
-
-CREATE TABLE exam_question_option (
-    id          bigint(20)  NOT NULL   COMMENT '选项 ID',
-    description text                   COMMENT '选项描述',
-    is_correct  tinyint(11) DEFAULT 0  COMMENT '是否正确选项',
-    position    int(11)     DEFAULT 0  COMMENT '选项在题目中的位置',
-    mark        varchar(8)  DEFAULT '' COMMENT '选项序号: A, B, C, D',
-    question_id bigint(20)  NOT NULL   COMMENT '所属题目 ID',
-
-    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-
-    PRIMARY KEY (id),
-    KEY index_question_id (question_id) COMMENT '加速查找题目的选项'
 ) ENGINE=InnoDB;
 
 #-------------------------------------------

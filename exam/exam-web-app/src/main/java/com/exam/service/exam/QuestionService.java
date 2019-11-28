@@ -94,7 +94,7 @@ public class QuestionService extends BaseService {
         // 3. 更新小题和选项的位置
         // 4. 如果 question.deleted 为 true，删除题目，返回
         // 5. 插入或者更新题目
-        // 6. 删除、插入或者更新选项
+        // 6. 去掉被删除的选项
         // 7. 插入或者更新小题
 
         // [1] 确保题目的 ID
@@ -113,16 +113,8 @@ public class QuestionService extends BaseService {
         // [5] 插入或者更新题目
         questionMapper.upsertQuestion(question);
 
-        // [6] 删除、插入或者更新选项
-        for (QuestionOption option : question.getOptions()) {
-            if (option.isDeleted()) {
-                // 删除选项
-                questionMapper.deleteQuestionOption(option.getId());
-            } else {
-                // 插入或者更新选项
-                questionMapper.upsertQuestionOption(option);
-            }
-        }
+        // [6] 去掉被删除的选项
+        question.setOptions(question.getOptions().stream().filter(o -> !o.isDeleted()).collect(Collectors.toList()));
 
         // [7] 插入或者更新小题 (递归)
         for (Question subQuestion : question.getSubQuestions()) {

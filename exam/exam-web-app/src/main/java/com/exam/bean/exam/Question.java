@@ -1,5 +1,8 @@
 package com.exam.bean.exam;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.annotation.JSONType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -14,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
+@JSONType(ignores = {"optionsJson"})
 public class Question  implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -47,4 +51,22 @@ public class Question  implements Serializable {
     private double totalScore; // 试卷: 题目满分 (题目、题型题、复合题的满分)
     private int    positionInPaper; // 试卷: 题目在试卷中的位置
     private int    scoreStatus;     // 作答: 状态为 0 (未批改)、1 (错误)、2 (半对)、3 (全对)
+
+    private String optionsJson; // 选项的 JSON 字符串
+
+    // MyBatis 使用
+    public String getOptionsJson() {
+        return JSON.toJSONString(this.options);
+    }
+
+    // MyBatis 使用
+    public void setOptionsJson(String optionsJson) {
+        this.optionsJson = optionsJson;
+
+        if (optionsJson == null) {
+            this.options = new LinkedList<>();
+        } else {
+            this.options = JSON.parseObject(optionsJson, new TypeReference<LinkedList<QuestionOption>>() {});
+        }
+    }
 }
