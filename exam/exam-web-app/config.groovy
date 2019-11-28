@@ -27,6 +27,14 @@
             password = 'root'
         }
 
+        mongo {
+            host = 'mongo.exam'
+            port = 27017
+            database = 'ebag'
+            username = 'ebag'
+            password = 'ebag'
+        }
+
         redis {
             host     = 'redis.exam'
             port     = 6379

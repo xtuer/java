@@ -1,6 +1,5 @@
-import com.exam.bean.exam.Exam;
-import com.exam.bean.exam.ExamRecordAnswer;
-import com.exam.bean.exam.QuestionOptionAnswer;
+import com.exam.bean.exam.*;
+import com.exam.dao.ExamDao;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.service.exam.ExamService;
 import com.exam.util.Utils;
@@ -11,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -22,6 +20,9 @@ public class ExamTest {
 
     @Autowired
     private ExamMapper examMapper;
+
+    @Autowired
+    private ExamDao examDao;
 
     /**
      * 创建考试
@@ -70,20 +71,20 @@ public class ExamTest {
      */
     @Test
     public void answerExamRecord() {
-        long recordId = 1;
-        ExamRecordAnswer examRecordAnswer = new ExamRecordAnswer();
-        examRecordAnswer.setExamRecordId(recordId).setSubmitted(true);
-
-        List<QuestionOptionAnswer> answers = new LinkedList<>();
-        answers.add(newAnswer(recordId, 1, 1, ""));
-        answers.add(newAnswer(recordId, 1, 2, ""));
-        answers.add(newAnswer(recordId, 2, 3, "填空-1"));
-        answers.add(newAnswer(recordId, 2, 4, "填空-2"));
-        answers.add(newAnswer(recordId, 3, 5, "回答"));
-
-        examRecordAnswer.setAnswers(answers);
-
-        Utils.dump(examService.answerExamRecord(examRecordAnswer));
+        // long recordId = 1;
+        // ExamRecordAnswer examRecordAnswer = new ExamRecordAnswer();
+        // examRecordAnswer.setExamRecordId(recordId).setSubmitted(true);
+        //
+        // List<QuestionAnswer> answers = new LinkedList<>();
+        // answers.add(newAnswer(recordId, 1, 1, ""));
+        // answers.add(newAnswer(recordId, 1, 2, ""));
+        // answers.add(newAnswer(recordId, 2, 3, "填空-1"));
+        // answers.add(newAnswer(recordId, 2, 4, "填空-2"));
+        // answers.add(newAnswer(recordId, 3, 5, "回答"));
+        //
+        // examRecordAnswer.setAnswers(answers);
+        //
+        // Utils.dump(examService.answerExamRecord(examRecordAnswer));
     }
 
     @Test
@@ -92,10 +93,79 @@ public class ExamTest {
     }
 
     /**
+     * 插入更新题目的作答 (Mongo)
+     */
+    @Test
+    public void upsertQuestionAnswerMongo() {
+        QuestionForAnswer answer = new QuestionForAnswer();
+        answer.setExamRecordId(1).setQuestionId(1);
+        QuestionForAnswer.QuestionOptionAnswer oa = new QuestionForAnswer.QuestionOptionAnswer();
+        oa.setQuestionOptionId(1);
+        oa.setContent("Hello");
+        answer.getAnswers().add(oa);
+        examDao.upsertQuestionAnswer(answer);
+    }
+
+    /**
+     * 查询考试记录题目的作答
+     */
+    @Test
+    public void findQuestionAnswersMongo() {
+        long examRecordId = 1;
+        List<QuestionForAnswer> answers = examDao.findQuestionForAnswersByExamRecordId(1);
+        Utils.dump(answers);
+    }
+
+    @Test
+    public void upsertExamRecordMongo() {
+        ExamRecord record = new ExamRecord();
+        record.setId(1).setUserId(1).setExamId(1).setStatus(2);
+
+        Paper paper = new Paper();
+        paper.setId(1001);
+        record.setPaper(paper);
+
+        // 选项和作答
+        QuestionForAnswer.QuestionOptionAnswer a1 = new QuestionForAnswer.QuestionOptionAnswer();
+        a1.setQuestionOptionId(11);
+        QuestionForAnswer.QuestionOptionAnswer a2 = new QuestionForAnswer.QuestionOptionAnswer();
+        a2.setQuestionOptionId(22);
+
+        ExamRecord.ExamRecordQuestion q1 = new ExamRecord.ExamRecordQuestion();
+        ExamRecord.ExamRecordQuestion q2 = new ExamRecord.ExamRecordQuestion();
+        q1.setId(1).setScore(4.5);
+        q2.setId(2).setScore(7.5);
+        q1.getAnswers().add(a1);
+        q2.getAnswers().add(a2);
+
+        record.getQuestions().add(q1);
+        record.getQuestions().add(q2);
+
+        examDao.upsertExamRecord(record);
+    }
+
+    @Test
+    public void findExamRecordMongo() {
+        ExamRecord record = examDao.findExamRecordById(1);
+        Utils.dump(record);
+        Utils.dump(record.getQuestions());
+    }
+
+    @Test
+    public void countExamRecordsMongo() {
+        System.out.println(examDao.countExamRecordsByUserIdAndExamId(1, 1));
+    }
+
+    @Test
+    public void findPaperIdsByUserIdAndExamIdMongo() {
+        Utils.dump(examDao.findPaperIdsByUserIdAndExamId(1, 1));
+    }
+
+    /**
      * 创建题目选项的回答
      */
-    private QuestionOptionAnswer newAnswer(long examRecordId, long questionId, long questionOptionId, String content) {
-        QuestionOptionAnswer answer = new QuestionOptionAnswer();
+    private QuestionForAnswer newAnswer(long examRecordId, long questionId, long questionOptionId, String content) {
+        QuestionForAnswer answer = new QuestionForAnswer();
         answer.setExamRecordId(examRecordId).setQuestionId(questionId).setQuestionOptionId(questionOptionId).setContent(content);
 
         return answer;

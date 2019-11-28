@@ -5,6 +5,7 @@ import com.alicp.jetcache.anno.Cached;
 import com.exam.bean.CacheConst;
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
+import com.exam.bean.exam.QuestionOption;
 import com.exam.mapper.exam.PaperMapper;
 import com.exam.service.BaseService;
 import com.exam.util.Utils;
@@ -13,7 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 操作试卷的服务，关键接口有:
@@ -308,5 +314,32 @@ public class PaperService extends BaseService {
      */
     private String moveTempFileToRepo(String html, long paperId) {
         return super.repoFileService.moveTempFileToRepoInHtml(html, "paper", paperId+"");
+    }
+
+    /**
+     * 获取试卷中的所有题目 (复合题的小题也展开到 map 里)
+     *
+     * @param paper 试卷
+     * @return 返回所有题目的数组
+     */
+    public Map<Long, Question> getAllQuestionsOfPaper(Paper paper) {
+        List<Question> questions = new LinkedList<>();
+        questions.addAll(paper.getQuestions());
+        questions.addAll(paper.getQuestions().stream().map(Question::getSubQuestions).flatMap(List::stream).collect(Collectors.toList()));
+
+        return questions.stream().collect(Collectors.toMap(Question::getId, q -> q));
+    }
+
+    /**
+     * 获取试卷中的所有选项
+     *
+     * @param paper 试卷
+     * @return 返回所有选项的数组
+     */
+    public Map<Long, QuestionOption> getAllQuestionOptionsOfPaper(Paper paper) {
+        Collection<Question> questions = this.getAllQuestionsOfPaper(paper).values();
+        List<QuestionOption> options   = questions.stream().map(Question::getOptions).flatMap(List::stream).collect(Collectors.toList());
+
+        return options.stream().collect(Collectors.toMap(QuestionOption::getId, o -> o));
     }
 }

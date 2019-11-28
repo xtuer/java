@@ -62,7 +62,7 @@
     </select>
 
     <!-- 查找指定考试记录所有题目选项的回答 -->
-    <select id="findQuestionOptionAnswersByExamRecordId" resultType="QuestionOptionAnswer">
+    <select id="findQuestionOptionAnswersByExamRecordId" resultType="QuestionForAnswer">
         SELECT exam_record_id, question_id, question_option_id, content
         FROM exam_question_option_answer
         WHERE exam_record_id = #{examRecordId}
@@ -102,7 +102,7 @@
     </update>
 
     <!-- 插入题目的回答 -->
-    <insert id="insertQuestionOptionAnswer" parameterType="QuestionOptionAnswer">
+    <insert id="insertQuestionOptionAnswer" parameterType="QuestionForAnswer">
         INSERT INTO exam_question_option_answer (exam_id, exam_record_id, question_id, question_option_id, content)
         VALUES (#{examId}, #{examRecordId}, #{questionId}, #{questionOptionId}, #{content})
     </insert>

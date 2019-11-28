@@ -2,7 +2,7 @@ package com.exam.mapper.exam;
 
 import com.exam.bean.exam.Exam;
 import com.exam.bean.exam.ExamRecord;
-import com.exam.bean.exam.QuestionOptionAnswer;
+import com.exam.bean.exam.QuestionForAnswer;
 import com.exam.bean.exam.QuestionResult;
 
 import java.util.List;
@@ -95,7 +95,7 @@ public interface ExamMapper {
      *
      * @param answer 回答
      */
-    void insertQuestionOptionAnswer(QuestionOptionAnswer answer);
+    void insertQuestionOptionAnswer(QuestionForAnswer answer);
 
     /**
      * 查找指定考试记录所有题目选项的回答
@@ -103,7 +103,7 @@ public interface ExamMapper {
      * @param examRecordId 考试记录 ID
      * @return 返回回答的数组
      */
-    List<QuestionOptionAnswer> findQuestionOptionAnswersByExamRecordId(long examRecordId);
+    List<QuestionForAnswer> findQuestionOptionAnswersByExamRecordId(long examRecordId);
 
     /**
      * 删除指定的考试记录里指定题目的所有回答

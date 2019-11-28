@@ -16,5 +16,5 @@ public class ExamRecordAnswer {
     private long userId;
     private long examRecordId;
     private boolean submitted;
-    List<QuestionOptionAnswer> answers;
+    List<QuestionForAnswer> questions; // 题目的作答
 }

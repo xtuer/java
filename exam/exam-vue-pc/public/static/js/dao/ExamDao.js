@@ -134,9 +134,10 @@ export default class ExamDao {
      * Request Body 为:
      * {
      *     "submitted": false,
-     *     "answers": [
-     *         { "questionId": 0, "questionOptionId": 0, "content": "" },
-     *         { "questionId": 0, "questionOptionId": 0, "content": "" }
+     *     "questions": [
+     *          { "questionId": 0, answers: [{ "questionOptionId": 0, "content": "xxx" }, { "questionOptionId": 0, "content": "xxx" }] },
+     *          { "questionId": 0, answers: [{ "questionOptionId": 0, "content": "xxx" }, { "questionOptionId": 0, "content": "xxx" }] },
+     *          { "questionId": 0, answers: [{ "questionOptionId": 0, "content": "xxx" }, { "questionOptionId": 0, "content": "xxx" }] },
      *     ]
      * }
      *

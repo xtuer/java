@@ -5,6 +5,7 @@ import com.alicp.jetcache.anno.Cached;
 import com.exam.bean.CacheConst;
 import com.exam.bean.Result;
 import com.exam.bean.exam.*;
+import com.exam.dao.ExamDao;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.mapper.exam.PaperMapper;
 import com.exam.service.BaseService;
@@ -13,13 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 考试的服务:
+ * 考试服务:
  *     创建或编辑考试: upsertExam
  *     用户的考试信息: findExam(userId, examId) (包含考试记录)
  *     创建考试记录: insertExamRecord(userId, examId)
@@ -27,13 +30,14 @@ import java.util.stream.Collectors;
  *     考试作答: answerExamRecord(answer)
  *
  * 提示:
- *     1. 考试和用户无关，考试记录才和用户有关，由于考试读多写少，可以放入缓存
+ *     1. 考试和试卷与用户无关，数据保存到 MySQL, 考试记录和考试作答和用户有关，保存到 MongoDB
  *     2. 同一个考试，同一个人可以创建多个考试记录，也就是考试允许多次作答
  *     3. 获取用户的某次考试记录时，得到的考试记录里会带上考试的试卷、作答内容，方便前端一次性得到所有数据
  *
  * 缓存:
  *     1. 使用 ID 查找考试  : ExamService.findExam(examId)
  *     2. 查找指定 ID 的试卷: PaperService.findPaper(paperId)
+ *     3. 使用 self 进行调用，说明要走缓存: self.findExam(examId)
  *
  * 优化:
  *     考试作答: answerExamRecord
@@ -50,6 +54,9 @@ public class ExamService extends BaseService {
     private ExamMapper examMapper;
 
     @Autowired
+    private ExamDao examDao;
+
+    @Autowired
     private PaperService paperService;
 
     @Autowired
@@ -57,6 +64,17 @@ public class ExamService extends BaseService {
 
     @Autowired
     private ExamService self;
+
+    /**
+     * 使用 ID 查找考试
+     *
+     * @param examId 考试 ID
+     * @return 返回查找到的考试，查找不到返回 null
+     */
+    @Cached(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM_ID)
+    public Exam findExam(long examId) {
+        return examMapper.findExamById(examId);
+    }
 
     /**
      * 插入或者更新考试
@@ -124,17 +142,6 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 使用 ID 查找考试
-     *
-     * @param examId 考试 ID
-     * @return 返回查找到的考试，查找不到返回 null
-     */
-    @Cached(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM_ID)
-    public Exam findExam(long examId) {
-        return examMapper.findExamById(examId);
-    }
-
-    /**
      * 查找用户的考试信息，如果用户在此考试中进行过作答，同时查找出所有相关的考试记录
      *
      * @param userId 用户 ID
@@ -143,7 +150,7 @@ public class ExamService extends BaseService {
      */
     public Exam findExam(long userId, long examId) {
         Exam exam = self.findExam(examId);
-        exam.setExamRecords(examMapper.findExamRecordsByUserIdAndExamId(userId, examId));
+        exam.setExamRecords(examDao.findExamRecordsByUserIdAndExamId(userId, examId));
 
         return exam;
     }
@@ -156,59 +163,46 @@ public class ExamService extends BaseService {
      * @return 返回查询到的考试记录
      */
     public ExamRecord findExamRecord(long examRecordId) {
-        // 1. 查找考试记录
-        // 2. 查找考试和试卷
-        // 3. 查找作答
-        // 4. 合并作答到试卷的题目选项里
-        // 5. 批改客观题: 未批改、并且不能继续作答的考试记录的客观题
-        // 6. 查询题目得分
+        // 1. 查找考试、试卷、考试记录
+        // 2. 恢复考试状态: 如果考试记录未提交，则查询作答记录
+        // 3. 批改客观题: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
+        // 4. 获取试卷的所有题目和选项
+        // 5. 合并题目的作答、得分到试卷的 questions 里，以供用户使用
 
-        // [1] 查找考试记录
-        ExamRecord record = examMapper.findExamRecordById(examRecordId);
-
-        // [2] 查找考试和试卷
+        // [1] 查找考试、试卷、考试记录
+        ExamRecord record = examDao.findExamRecordById(examRecordId);
         Exam  exam  = self.findExam(record.getExamId());
         Paper paper = paperService.findPaper(record.getPaperId());
         record.setExam(exam);
         record.setPaper(paper);
 
-        // 所有题目
-        List<Question> questions = new LinkedList<>();
-        questions.addAll(paper.getQuestions());
-        questions.addAll(paper.getQuestions().stream().flatMap(q -> q.getSubQuestions().stream()).collect(Collectors.toList()));
+        // [2] 恢复考试状态: 如果考试记录未提交，则查询作答记录
+        if (record.getStatus() < ExamRecord.STATUS_SUBMITTED) {
+            List<QuestionForAnswer> qas = examDao.findQuestionForAnswersByExamRecordId(record.getId());
+            record.setQuestions(qas); // record 中的 questions 为题目的作答和得分
+        }
 
-        // [3] 查找作答
-        List<QuestionOptionAnswer> examAnswers = examMapper.findQuestionOptionAnswersByExamRecordId(examRecordId);
-        Map<Long, QuestionOptionAnswer> answersMap = examAnswers.stream().collect(Collectors.toMap(QuestionOptionAnswer::getQuestionOptionId, a -> a));
-
-        // [4] 合并作答到试卷的题目选项里
-        questions.stream().flatMap(q -> q.getOptions().stream()).forEach(option -> {
-            QuestionOptionAnswer answer = answersMap.get(option.getId());
-
-            if (answer != null) {
-                option.setChecked(true);
-                option.setAnswer(answer.getContent());
-            }
-        });
-
-        // [5] 批改客观题: 未批改、并且不能继续作答的考试记录的客观题
+        // [3] 批改客观题: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
         if (record.getStatus() < ExamRecord.STATUS_AUTO_CORRECTED && !this.canDoExamination(record.getUserId(), record.getId(), record).isSuccess()) {
-            this.correctObjectiveQuestions(record);
+            this.correctObjectiveQuestions(record, paper);
         }
 
-        // [6] 查询题目得分
-        if (record.getStatus() >= ExamRecord.STATUS_AUTO_CORRECTED) {
-            List<QuestionResult> questionResults = examMapper.findQuestionResultByExamRecordId(examRecordId);
-            Map<Long, QuestionResult> questionResultsMap = questionResults.stream().collect(Collectors.toMap(QuestionResult::getQuestionId, r -> r));
-            questions.forEach(question -> {
-                QuestionResult result =  questionResultsMap.get(question.getId());
+        // [4] 获取试卷的所有题目和选项
+        Map<Long, Question>     questions = paperService.getAllQuestionsOfPaper(paper);
+        Map<Long, QuestionOption> options = paperService.getAllQuestionOptionsOfPaper(paper);
 
-                if (result != null) {
-                    question.setScore(result.getScore());
-                    question.setScoreStatus(result.getStatus());
-                }
+        // [5] 合并题目的作答、得分到试卷的 questions 里，以供前端直接使用
+        record.getQuestions().forEach(qa -> {
+            Question question = questions.get(qa.getQuestionId());
+            question.setScore(qa.getScore());
+            question.setScoreStatus(qa.getScoreStatus());
+
+            qa.getAnswers().forEach(oa -> {
+                QuestionOption option = options.get(oa.getQuestionOptionId());
+                option.setChecked(true);
+                option.setAnswer(oa.getContent());
             });
-        }
+        });
 
         return record;
     }
@@ -247,7 +241,7 @@ public class ExamService extends BaseService {
         }
 
         // [3] 获取用户此考试的考试记录数量 recordCount
-        final int recordCount = examMapper.countExamRecordsByUserIdAndExamId(userId, examId);
+        final int recordCount = examDao.countExamRecordsByUserIdAndExamId(userId, examId);
         final int maxTimes = exam.getMaxTimes();
 
         // [4] 如果 recordCount >= maxTimes，则不允许创建考试记录
@@ -263,7 +257,7 @@ public class ExamService extends BaseService {
         // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
         record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId).setObjective(objective);
-        examMapper.insertExamRecord(record);
+        examDao.upsertExamRecord(record);
 
         log.info("[成功] 创建考试记录: 用户 {}, 考试 {}, 第 {} 个考试记录 {}，最多可以考 {} 次", userId, examId, recordCount+1, record.getId(), maxTimes);
 
@@ -271,72 +265,57 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 考试作答
+     * 对考试记录进行作答:
+     *     A. 如果 submitted 为 false 则对单题进行作答
+     *     B. 如果 submitted 为 true 则提交试卷，对所有题目进行作答
      *
      * @param examRecordAnswer 作答
-     * @return 成功创建回答的 payload 为选项的 ID 的数组，否则返回错误信息的 Result
+     * @return 成功创建回答的 payload 为选项的 ID，否则返回错误信息的 Result
      */
-    @Transactional(rollbackFor = Exception.class)
     public Result<?> answerExamRecord(ExamRecordAnswer examRecordAnswer) {
         // 1. 查询考试记录
         // 2. 如果不能作答则返回
-        // 3. 把回答按题目分组
-        // 4. 删除题目的所有回答, 然后重新创建回答
-        // 5. 更新考试记录的状态:
-        //    5.1 submitted 为 true 表示提交试卷，更新考试记录状态为 2 (已提交)，批改客观题
-        //    5.2 submitted 为 false 表示普通作答，更新考试记录状态为 1 (已作答)
-        // 6. 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
-
-        long userId       = examRecordAnswer.getUserId();
-        long examRecordId = examRecordAnswer.getExamRecordId();
-
-        if (examRecordAnswer.isSubmitted()) {
-            log.info("[开始] 提交考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
-        }
+        // 3. 如果只是作答单个题目，保存作答记录
+        // 4. 如果是提交试卷:
+        //    4.1 修改考试记录的状态为已提交
+        //    4.2 保存所有题目的作答到考试记录
+        //    4.3 自动批改客观题
 
         // [1] 查询考试记录
-        ExamRecord examRecord = examMapper.findExamRecordById(examRecordId);
+        long userId   = examRecordAnswer.getUserId();
+        long recordId = examRecordAnswer.getExamRecordId();
+        ExamRecord record = examDao.findExamRecordById(recordId);
 
         // [2] 如果不能作答则返回
-        Result<Boolean> result = canDoExamination(userId, examRecordId, examRecord);
-        if (!result.isSuccess()) {
-            return result;
+        Result test = this.canDoExamination(userId, recordId, record);
+        if (!test.isSuccess()) {
+            return test;
         }
 
-        // [3] 把回答按题目分组
-        List<QuestionOptionAnswer> answers = examRecordAnswer.getAnswers();
-        Map<Long, List<QuestionOptionAnswer>> answersMap = answers.stream().collect(Collectors.groupingBy(QuestionOptionAnswer::getQuestionId));
+        // [3] 如果只是作答单个题目，保存作答记录
+        if (!examRecordAnswer.isSubmitted()) {
+            QuestionForAnswer question = examRecordAnswer.getQuestions().get(0);
+            question.setExamRecordId(recordId);
+            examDao.upsertQuestionAnswer(question);
 
-        // [4] 删除题目的所有回答, 然后重新创建回答
-        answersMap.forEach((questionId, questionAnswers) -> {
-            examMapper.deleteQuestionOptionAnswersByExamRecordIdAndQuestionId(examRecordId, questionId);
-
-            for (QuestionOptionAnswer answer : questionAnswers) {
-                answer.setExamId(examRecord.getExamId());      // 再次确保考试 ID
-                answer.setExamRecordId(examRecordId);          // 再次确保考试记录 ID，避免前端忘了填
-                examMapper.insertQuestionOptionAnswer(answer); // 保存到数据库
-            }
-        });
-
-        // [5] 更新考试记录的状态
-        if (examRecordAnswer.isSubmitted()) {
-            // [5.1] submitted 为 true 表示提交试卷，更新考试记录状态为 2 (已提交)，批改客观题
-            examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_SUBMITTED);
-            log.info("[成功] 提交考试记录: 用户 {}, 考试记录 {}, 提交试卷", userId, examRecordId);
-
-            // 注意: 自动批改客观题 (查找用户作答的考试记录的时候进行了自动批改)
-            this.findExamRecord(examRecordId);
-        } else {
-            examMapper.updateExamRecordStatus(examRecordId, ExamRecord.STATUS_ANSWERED);
+            return Result.ok(question.getQuestionId());
         }
 
-        if (examRecordAnswer.isSubmitted()) {
-            log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, examRecordId);
-        }
+        // [4] 如果是提交试卷:
+        log.info("[开始] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
 
-        // [6] 返回创建了回答的选项 ID 的数组，方便前端从缓冲列表里删除提交成功的记录
-        List<Long> optionIds = examRecordAnswer.getAnswers().stream().map(QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
-        return Result.ok(optionIds);
+        // [4.1] 修改考试记录的状态为已提交
+        // [4.2] 保存所有题目的作答到考试记录
+        record.setStatus(ExamRecord.STATUS_SUBMITTED);
+        record.setQuestions(examRecordAnswer.getQuestions());
+        examDao.upsertExamRecord(record);
+
+        // [4.3] 自动批改客观题
+        Paper paper = paperService.findPaper(record.getPaperId());
+        this.correctObjectiveQuestions(record, paper);
+
+        log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
+        return Result.okMessage("交卷成功");
     }
 
     /**
@@ -400,7 +379,7 @@ public class ExamService extends BaseService {
 
         // [1] 查找出考试的所有试卷 ID、做过的试卷 ID、未做过的试卷 ID
         Set<Long> allPaperIds  = exam.getPaperIdsList(); // 考试所有的 paperId
-        Set<Long> usedPaperIds = examMapper.findPaperIdsByUserIdAndExamId(userId, exam.getId()); // 已经使用过的 paperId
+        Set<Long> usedPaperIds = examDao.findPaperIdsByUserIdAndExamId(userId, exam.getId()); // 已经使用过的 paperId
         Set<Long> restPaperIds = allPaperIds.stream().filter(id -> !usedPaperIds.contains(id)).collect(Collectors.toSet()); // 未使用过的 paperId
 
         if (!restPaperIds.isEmpty()) {
@@ -415,77 +394,70 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 自动批改考试记录里的主观题
+     * 自动批改客观题: 试卷中有题目的满分和正确选项信息，考试记录中题目的作答根据题目的信息进行判断
      *
-     * @param userExamRecord 用户的考试记录
+     * @param record 考试记录
+     * @param paper  试卷
      */
-    @Transactional(rollbackFor = Exception.class)
-    private void correctObjectiveQuestions(ExamRecord userExamRecord) {
-        // 1. 遍历题目，逐题批改
-        // 2. 修改考试记录的状态为自动批改
-
-        log.info("[开始] 自动批改客观题: 用户 {}, 考试记录 {}", userExamRecord.getUserId(), userExamRecord.getId());
-
-        // [1] 遍历题目，逐题批改
-        for (Question question : userExamRecord.getPaper().getQuestions()) {
-            this.correctObjectiveQuestion(userExamRecord.getId(), question);
-        }
-
-        // [2] 修改考试记录的状态为自动批改
-        userExamRecord.setStatus(ExamRecord.STATUS_AUTO_CORRECTED);
-        examMapper.updateExamRecordStatus(userExamRecord.getId(), ExamRecord.STATUS_AUTO_CORRECTED);
-
-        log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", userExamRecord.getUserId(), userExamRecord.getId());
-    }
-
-    /**
-     * 自动批改主观题
-     *
-     * @param examRecordId 考试记录 ID
-     * @param question     题目
-     */
-    private void correctObjectiveQuestion(long examRecordId, Question question) {
-        // 1. 如果是复合题，递归批改复合题的小题
-        // 2. 非客观题则不进行批改
-        // 3. 得到所有正确的选项，所有作答的选项
+    private void correctObjectiveQuestions(ExamRecord record, Paper paper) {
+        // 1. 得到试卷里所有的题目
+        // 2. 逐个批改考试记录里作答的客观题
+        // 3. 得到正批改的题目的所有正确的选项，所有作答的选项
         // 4. 批改客观题 (全对得满分，部分正确得一半分):
         //    4.1 如果作答的选项不为空且是正确的选项的子集
         //        4.1.1 全对: 个数一样
         //        4.1.3 半对: 个数不一样
         //    4.2 错误: 未作答，或者答错任何一个选项
-        // 5. 保存题目的作答结果
+        // 5. 计算考试得分
+        // 6. 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
 
-        // [1] 如果是复合题，递归批改复合题的小题
-        if (question.getType() == Question.COMPLEX) {
-            for (Question subQuestion : question.getSubQuestions()) {
-                correctObjectiveQuestion(examRecordId, subQuestion);
+        log.info("[开始] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
+
+        // [1] 得到试卷里所有的题目
+        Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
+
+        // [2] 逐个批改考试记录里作答的客观题
+        record.getQuestions().forEach(qa -> {
+            Question question = questions.get(qa.getQuestionId());
+
+            if (question == null) {
+                return;
             }
-        }
 
-        // [2] 非客观题则不进行批改
-        if (question.getType() != Question.SINGLE_CHOICE && question.getType() != Question.MULTIPLE_CHOICE && question.getType() != Question.TFNG) {
-            return;
-        }
+            // 非客观题则不进行批改
+            if (question.getType() != Question.SINGLE_CHOICE && question.getType() != Question.MULTIPLE_CHOICE && question.getType() != Question.TFNG) {
+                return;
+            }
 
-        // [3] 得到所有正确的选项，所有作答的选项
-        List<Long> correctOptions = question.getOptions().stream().filter(QuestionOption::isCorrect).map(QuestionOption::getId).collect(Collectors.toList());
-        List<Long> checkedOptions = question.getOptions().stream().filter(QuestionOption::isChecked).map(QuestionOption::getId).collect(Collectors.toList());
+            // [3] 得到正批改的题目的所有正确的选项，所有作答的选项
+            List<Long> correctOptions = question.getOptions().stream().filter(QuestionOption::isCorrect).map(QuestionOption::getId).collect(Collectors.toList());
+            List<Long> checkedOptions = qa.getAnswers().stream().map(QuestionForAnswer.QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
 
-        // [4] 批改客观题
-        QuestionResult result = new QuestionResult(examRecordId, question.getId(), 0D, QuestionResult.STATUS_ERROR); // 默认为错误，得 0 分
+            // [4] 批改客观题 (全对得满分，部分正确得一半分)
+            if (!checkedOptions.isEmpty() && correctOptions.containsAll(checkedOptions)) {
+                // [4.1] 如果作答的选项不为空且是正确的选项的子集
 
-        if (!checkedOptions.isEmpty() && correctOptions.containsAll(checkedOptions)) {
-            // [4.1] 如果作答选项为空则错误
-            if (correctOptions.size() == checkedOptions.size()) {
-                // [4.1.1] 全对: 个数一样
-                result.setScore(question.getTotalScore()).setStatus(QuestionResult.STATUS_RIGHT);
+                if (correctOptions.size() == checkedOptions.size()) {
+                    // [4.1.1] 全对: 个数一样
+                    qa.setScore(question.getTotalScore()).setScoreStatus(QuestionResult.STATUS_RIGHT);
+                } else {
+                    // [4.1.2] 半对: 个数不一样
+                    qa.setScore(question.getTotalScore() / 2).setScoreStatus(QuestionResult.STATUS_HALF_RIGHT);
+                }
             } else {
-                // [4.1.3] 半对: 个数不一样
-                result.setScore(question.getTotalScore() / 2).setStatus(QuestionResult.STATUS_HALF_RIGHT);
+                // [4.2] 错误: 未作答，或者答错任何一个选项
+                qa.setScore(question.getTotalScore()).setScoreStatus(QuestionResult.STATUS_ERROR);
             }
-        }
+        });
 
-        // [5] 保存题目的作答结果
-        examMapper.upsertQuestionResult(result);
+        // [5] 计算考试得分
+        record.getQuestions().forEach(qa -> {
+            record.setScore(record.getScore() + qa.getScore());
+        });
+
+        // [6] 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
+        record.setStatus(paper.isObjective() ? ExamRecord.STATUS_FINISH_CORRECTED : ExamRecord.STATUS_AUTO_CORRECTED);
+
+        log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
     }
 }
