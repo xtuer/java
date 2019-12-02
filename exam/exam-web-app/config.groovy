@@ -30,9 +30,9 @@
         mongo {
             host = 'mongo.exam'
             port = 27017
-            database = 'ebag'
-            username = 'ebag'
-            password = 'ebag'
+            database = 'exam'
+            username = 'exam'
+            password = 'exam'
         }
 
         redis {
