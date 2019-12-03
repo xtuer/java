@@ -251,7 +251,7 @@ public class ExamService extends BaseService {
 
         // [5] 分配试卷
         long paperId = this.assignPaper(userId, exam);
-        boolean objective = paperMapper.isPaperObjective(paperId); // 是否客观题试卷
+        boolean objective = paperMapper.isObjectivePaper(paperId); // 是否客观题试卷
 
         // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();

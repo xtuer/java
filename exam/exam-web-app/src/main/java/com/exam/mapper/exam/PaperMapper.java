@@ -43,7 +43,7 @@ public interface PaperMapper {
      * @param paperId 试卷 ID
      * @return 全是客观题的试卷返回 true，否则返回 false
      */
-    boolean isPaperObjective(long paperId);
+    boolean isObjectivePaper(long paperId);
 
     /**
      * 插入或者更新试卷

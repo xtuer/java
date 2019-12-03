@@ -30,7 +30,7 @@
     </select>
 
     <!-- 判断试卷是否客观题试卷 -->
-    <select id="isPaperObjective" parameterType="long" resultType="boolean">
+    <select id="isObjectivePaper" parameterType="long" resultType="boolean">
         SELECT EXISTS ( SELECT 1 FROM exam_paper WHERE id = #{paperId} AND is_objective = 1)
     </select>
 
