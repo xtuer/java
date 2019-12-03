@@ -65,7 +65,6 @@ CREATE TABLE exam_paper_question (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
-    KEY index_paper_id (paper_id),
     UNIQUE KEY index_paper_question (paper_id, question_id) COMMENT '同一个题在同一份试卷中只能出现一次'
 ) ENGINE=InnoDB;
 
