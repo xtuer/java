@@ -5,7 +5,6 @@ import com.exam.bean.User;
 import com.exam.bean.exam.Exam;
 import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.ExamRecordAnswer;
-import com.exam.bean.exam.QuestionForAnswer;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.mq.MessageProducer;
 import com.exam.service.exam.ExamService;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 考试的控制器
@@ -140,20 +138,22 @@ public class ExamController extends BaseController {
      *
      * @param examRecordAnswer 考试记录的作答
      * @return 1. 如果是交卷，则 code 为 1，否则 code 为 0
-     *         2. 如果只是题目作答，则 payload 为题目 ID 的数组，方便前端从作答队列中删除此题目 (如果实现了的话)
+     *         2. 如果只是题目作答，则 payload 为题目 ID，方便前端从作答队列中删除此题目 (如果实现了的话)
      */
     @PostMapping(Urls.API_USER_EXAM_ANSWER_QUESTIONS)
-    public Result<List<Long>> answerExamRecord(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
+    public Result<Long> answerExamRecord(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
         // userId 和 examRecordId 在登录信息和 URL 中可以获得
         examRecordAnswer.setUserId(super.getLoginUserId());
         examRecordAnswer.setExamRecordId(recordId);
         messageProducer.sendAnswerExamRecordMessage(examRecordAnswer);
 
+        // 提交试卷
         if (examRecordAnswer.isSubmitted()) {
             return Result.ok("试卷提交成功", null, 1);
         }
 
-        List<Long> ids = examRecordAnswer.getQuestions().stream().map(QuestionForAnswer::getQuestionId).collect(Collectors.toList());
-        return Result.ok(ids);
+        // 只对一个题进行作答
+        long questionId = examRecordAnswer.getQuestions().get(0).getQuestionId();
+        return Result.ok(questionId);
     }
 }
