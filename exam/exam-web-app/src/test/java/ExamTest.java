@@ -131,6 +131,12 @@ public class ExamTest {
     @Test
     public void countExamRecordsMongo() {
         System.out.println(examDao.countExamRecordsByUserIdAndExamId(1, 1));
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            examDao.countExamRecordsByUserIdAndExamId(1, 1);
+        }
+        System.out.println("Elapsed: " + (System.currentTimeMillis() - start));
     }
 
     @Test
@@ -141,6 +147,11 @@ public class ExamTest {
     @Test
     public void increaseExamRecordElapsedTimeMongo() {
         examDao.increaseExamRecordElapsedTime(1, 20);
-        examDao.increaseExamRecordElapsedTime(1, 20);
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            examDao.increaseExamRecordElapsedTime(1, 20);
+        }
+        System.out.println("Elapsed: " + (System.currentTimeMillis() - start));
     }
 }

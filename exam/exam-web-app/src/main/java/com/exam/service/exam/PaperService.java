@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
  * 操作试卷的服务，关键接口有:
  *     查询试卷: findPaperById(paperId)
  *     更新试卷: upsertPaper(paper)
+ *
+ * 缓存:
+ *     1. 查询指定 ID 的试卷: PaperService.findPaper(paperId)
  */
 @Slf4j
 @Service
