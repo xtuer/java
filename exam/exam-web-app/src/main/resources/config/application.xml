@@ -13,6 +13,7 @@
     <!-- Service, Dao, Config, Redis, elasticsearch 等公用的、与 Servlet 无关的对象在此生成 -->
     <import resource="classpath:config/mybatis.xml"/>
     <import resource="classpath:config/mongo.xml"/>
+    <import resource="classpath:config/activemq.xml"/>
     <import resource="classpath:config/spring-security.xml"/>
     <import resource="classpath:config/spring-transaction.xml"/>
 

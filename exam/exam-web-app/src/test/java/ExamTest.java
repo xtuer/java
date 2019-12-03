@@ -1,3 +1,4 @@
+import com.exam.bean.User;
 import com.exam.bean.exam.Exam;
 import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.Paper;
@@ -49,7 +50,9 @@ public class ExamTest {
     @Test
     public void createExamRecord() {
         // 给用户 1 的考试 1 创建考试记录
-        Utils.dump(examService.insertExamRecord(1, 1));
+        User user = new User();
+        user.setId(1).setUsername("Biao").setNickname("彪");
+        Utils.dump(examService.insertExamRecord(user, 1));
     }
 
     /**

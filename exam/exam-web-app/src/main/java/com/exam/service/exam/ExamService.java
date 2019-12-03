@@ -4,6 +4,7 @@ import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.Cached;
 import com.exam.bean.CacheConst;
 import com.exam.bean.Result;
+import com.exam.bean.User;
 import com.exam.bean.exam.*;
 import com.exam.dao.ExamDao;
 import com.exam.mapper.exam.ExamMapper;
@@ -207,11 +208,11 @@ public class ExamService extends BaseService {
     /**
      * 创建用户某次考试的考试记录
      *
-     * @param userId 用户 ID
+     * @param user   用户
      * @param examId 考试 ID
      * @return 成功创建考试记录时 payload 为考试记录 ID，否则返回错误的 Result 对象
      */
-    public Result<Long> insertExamRecord(long userId, long examId) {
+    public Result<Long> insertExamRecord(User user, long examId) {
         // 1. 查找考试
         // 2. 检查考试状态，只有考试中时才允许创建考试记录
         // 3. 获取用户此考试的考试记录数量 recordCount
@@ -221,6 +222,7 @@ public class ExamService extends BaseService {
 
         // [1] 查找考试
         Exam exam = self.findExam(examId);
+        long userId = user.getId();
 
         if (exam == null) {
             log.warn("[失败] 创建考试记录: 用户 {}, 考试 {}，考试不存在", userId, examId);
@@ -253,7 +255,9 @@ public class ExamService extends BaseService {
 
         // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
-        record.setId(super.nextId()).setUserId(userId).setExamId(examId).setPaperId(paperId).setObjective(objective).setTickAt(new Date());
+        record.setId(super.nextId())
+                .setUserId(userId).setUsername(user.getUsername()).setNickname(user.getNickname())
+                .setExamId(examId).setPaperId(paperId).setObjective(objective).setTickAt(new Date());
         examDao.upsertExamRecord(record);
 
         log.info("[成功] 创建考试记录: 用户 {}, 考试 {}, 第 {} 个考试记录 {}，最多可以考 {} 次", userId, examId, recordCount+1, record.getId(), maxTimes);
@@ -284,7 +288,7 @@ public class ExamService extends BaseService {
         ExamRecord record = examDao.findExamRecordById(recordId);
 
         // [2] 如果不能作答则返回
-        Result test = this.canDoExamination(userId, recordId, record);
+        Result<?> test = this.canDoExamination(userId, recordId, record);
         if (!test.isSuccess()) {
             return test;
         }
@@ -305,7 +309,7 @@ public class ExamService extends BaseService {
         // [4.2] 保存所有题目的作答到考试记录
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
         record.setQuestions(examRecordAnswer.getQuestions());
-        record.setSubmittedAt(new Date());
+        record.setSubmittedAt(examRecordAnswer.getSubmittedAt());
         examDao.upsertExamRecord(record);
 
         // [4.3] 自动批改客观题

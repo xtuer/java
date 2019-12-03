@@ -1,10 +1,12 @@
 package com.exam.controller;
 
 import com.exam.bean.Result;
+import com.exam.bean.User;
 import com.exam.bean.exam.Exam;
 import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.ExamRecordAnswer;
 import com.exam.mapper.exam.ExamMapper;
+import com.exam.mq.MessageProducer;
 import com.exam.service.exam.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,9 @@ public class ExamController extends BaseController {
 
     @Autowired
     private ExamMapper examMapper;
+
+    @Autowired
+    private MessageProducer messageProducer;
 
     /**
      * 查找当前机构的考试
@@ -92,7 +97,8 @@ public class ExamController extends BaseController {
      */
     @PostMapping(Urls.API_USER_EXAM_RECORDS)
     public Result<Long> insertExamRecord(@PathVariable long userId, @PathVariable long examId) {
-        return examService.insertExamRecord(userId, examId);
+        User user = super.getLoginUser();
+        return examService.insertExamRecord(user, examId);
     }
 
     /**
@@ -131,14 +137,14 @@ public class ExamController extends BaseController {
      * }
      *
      * @param examRecordAnswer 考试记录的作答
-     * @return 成功创建回答的 payload 为选项的 ID 的数组，否则返回错误信息的 Result
      */
     @PostMapping(Urls.API_USER_EXAM_ANSWER_QUESTIONS)
     public Result<?> answerExamRecord(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
-        // userId 和 examRecordId 在 URL 和登录信息中可以获得
+        // userId 和 examRecordId 在登录信息和 URL 中可以获得
         examRecordAnswer.setUserId(super.getLoginUserId());
         examRecordAnswer.setExamRecordId(recordId);
+        messageProducer.sendAnswerExamRecordMessage(examRecordAnswer);
 
-        return examService.answerExamRecord(examRecordAnswer);
+        return Result.ok();
     }
 }

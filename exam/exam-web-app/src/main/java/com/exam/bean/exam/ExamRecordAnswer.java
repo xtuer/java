@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,8 +14,9 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ExamRecordAnswer {
-    private long userId;
-    private long examRecordId;
-    private boolean submitted;
+    private long userId;       // 用户 ID
+    private long examRecordId; // 考试记录 ID
+    private boolean submitted; // 是否提交试卷
+    private Date submittedAt = new Date(); // 提交试卷时间
     List<QuestionForAnswer> questions; // 题目的作答
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/jms
+       http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <!-- ==================================================================================== -->
+    <!-- 1. 真正可以创建 Connection 的 ConnectionFactory，由对应的 JMS 服务厂商提供 -->
+    <!-- ==================================================================================== -->
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${mqBrokerUrl}"/>
+    </bean>
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory" ref="targetConnectionFactory"/>
+        <property name="maxConnections" value="${mqMaxConnections}"/>
+    </bean>
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="pooledConnectionFactory"/>
+        <property name="reconnectOnException" value="true"/>
+    </bean>
+
+    <!-- Spring 提供的 JMS 工具类 JmsTemplate，用来消息发送 -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+
+    <!-- ==================================================================================== -->
+    <!-- 2. 消息生产者 -->
+    <!-- ==================================================================================== -->
+
+    <!-- 2.1 消息生产者: 发送消息 -->
+    <bean id="mqMessageProducer" class="com.exam.mq.MessageProducer"/>
+
+    <!-- 2.1 消息目的地，点对点的 -->
+    <!-- 考试记录作答队列 -->
+    <bean id="answerExamRecordQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="answer-er-queue"/>
+    </bean>
+
+    <!-- ==================================================================================== -->
+    <!-- 3. 消息消费 -->
+    <!-- ==================================================================================== -->
+
+    <!-- 3.1 消息的消费者 -->
+    <!-- 考试记录作答消息的消费者 -->
+    <bean id="answerExamRecordMessageConsumer" class="com.exam.mq.AnswerExamRecordMessageConsumer"/>
+
+    <!-- 3.2 消息监听容器: 配置消息监听器监听的 destination -->
+    <jms:listener-container connection-factory="connectionFactory" destination-type="queue">
+        <jms:listener destination="answer-er-queue" ref="answerExamRecordMessageConsumer"/>
+    </jms:listener-container>
+</beans>

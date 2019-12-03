@@ -46,6 +46,11 @@
             maxTotal = 10
         }
 
+        mq {
+            brokerUrl      = 'tcp://activemq.exam:61616' // 消息队列的 Broker
+            maxConnections = 10 // 最大连接数
+        }
+
         // 应用的 ID 和 key，用于生成身份认证的 token
         appId  = 'Default_ID'
         appKey = 'Default_Key'
@@ -78,9 +83,9 @@ environments {
 
     mac {
         thymeleafCacheable = false
-        repoDirectory = '/tmp/exam/repo' // 文件仓库目录
-        tempDirectory = '/tmp/exam/temp' // 临时文件目录
-        logsDirectory = '/tmp/exam/logs' // 日志目录
+        repoDirectory = '/usr/local/exam/repo' // 文件仓库目录
+        tempDirectory = '/usr/local/exam/temp' // 临时文件目录
+        logsDirectory = '/usr/local/exam/logs' // 日志目录
     }
 
     /*-----------------------------------------------------------------------------|
