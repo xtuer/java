@@ -122,7 +122,9 @@ public class ExamController extends BaseController {
     }
 
     /**
-     * 对考试记录的题目进行作答
+     * 对考试记录的题目进行作答，只有 2 种情况:
+     * 1. 对单个题目进行作答: submitted 为 false, questions 数组中只有一个元素 (指定题目的作答)
+     * 2. 提交整个试卷的作答: submitted 为 true, questions 数组中有整个试卷所有题目的作答
      *
      * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}/records/{recordId}/answer
      * 参数: 无
@@ -137,23 +139,31 @@ public class ExamController extends BaseController {
      * }
      *
      * @param examRecordAnswer 考试记录的作答
-     * @return 1. 如果是交卷，则 code 为 1，否则 code 为 0
-     *         2. 如果只是题目作答，则 payload 为题目 ID，方便前端从作答队列中删除此题目 (如果实现了的话)
+     * @return 1. 如果是提交试卷，则 code 为 1，否则 code 为 0
+     *         2. 如果是单题作答，则 code 为 0，payload 为题目 ID，方便前端从作答队列中删除此题目 (如果实现了的话)
      */
     @PostMapping(Urls.API_USER_EXAM_ANSWER_QUESTIONS)
     public Result<Long> answerExamRecord(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
+        // 1. 设置考试记录的信息
+        // 2. 提交考试记录到 MQ
+        // 3. 立即返回
+
+        // [1] 设置考试记录的信息
         // userId 和 examRecordId 在登录信息和 URL 中可以获得
         examRecordAnswer.setUserId(super.getLoginUserId());
         examRecordAnswer.setExamRecordId(recordId);
+
+        // [2] 提交考试记录到 MQ
         messageProducer.sendAnswerExamRecordMessage(examRecordAnswer);
 
-        // 提交试卷
+        // [3] 立即返回
         if (examRecordAnswer.isSubmitted()) {
+            // 提交试卷
             return Result.ok("试卷提交成功", null, 1);
+        } else {
+            // 只对一个题进行作答
+            long questionId = examRecordAnswer.getQuestions().get(0).getQuestionId();
+            return Result.ok(questionId);
         }
-
-        // 只对一个题进行作答
-        long questionId = examRecordAnswer.getQuestions().get(0).getQuestionId();
-        return Result.ok(questionId);
     }
 }
