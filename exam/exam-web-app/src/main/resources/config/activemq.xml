@@ -50,7 +50,7 @@
     <bean id="answerExamRecordMessageConsumer" class="com.exam.mq.AnswerExamRecordMessageConsumer"/>
 
     <!-- 3.2 消息监听容器: 配置消息监听器监听的 destination -->
-    <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="client">
+    <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="transacted">
         <jms:listener destination="answer-er-queue" ref="answerExamRecordMessageConsumer"/>
     </jms:listener-container>
 </beans>
