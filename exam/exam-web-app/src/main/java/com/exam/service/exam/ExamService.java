@@ -468,4 +468,35 @@ public class ExamService extends BaseService {
 
         log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
     }
+
+    /**
+     * 获取考试的所有主观题
+     *
+     * @param examId 考试 ID
+     * @return 返回主观题的集合
+     */
+    public Set<Question> getExamSubjectiveQuestions(long examId) {
+        // 1. 查询考试
+        // 2. 获取考试的所有试卷 ID
+        // 3. 遍历每一个试卷，得到试卷的主观题
+
+        // [1] 查询考试
+        // [2] 获取考试的所有试卷 ID
+        Exam exam = self.findExam(examId);
+        Set<Long> paperIds  = exam.getPaperIdsList();
+        Set<Question> questions = new TreeSet<>((a, b) -> (int) (a.getId() - b.getId()));
+
+        // [3] 遍历每一个试卷，得到试卷的主观题
+        for (long paperId : paperIds) {
+            Paper paper = paperService.findPaper(paperId);
+
+            paper.getQuestions().forEach(question -> {
+                if (question.isSubjective()) {
+                    questions.add(question);
+                }
+            });
+        }
+
+        return questions;
+    }
 }

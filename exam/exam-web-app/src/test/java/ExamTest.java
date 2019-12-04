@@ -157,4 +157,9 @@ public class ExamTest {
         }
         System.out.println("Elapsed: " + (System.currentTimeMillis() - start));
     }
+
+    @Test
+    public void getExamSubjectiveQuestions() {
+        Utils.dump(examService.getExamSubjectiveQuestions(386694649323982848L));
+    }
 }
