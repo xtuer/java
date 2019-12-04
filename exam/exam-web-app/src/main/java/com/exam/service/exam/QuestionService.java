@@ -286,40 +286,4 @@ public class QuestionService extends BaseService {
             this.updateSubQuestionAndOptionPositions(subQuestion);
         }
     }
-
-    /**
-     * 判断题目是否主观题 (填空题、问答题)
-     *
-     * @param question 题目
-     * @return 主观题返回 true，否则返回 false
-     */
-    public boolean isSubjectiveQuestion(Question question) {
-        // 1. 被删除的题目当作客观题
-        // 2. 如果题目自己是主观题，则是主观题
-        // 3. 如果题目中有一个小题是主观题，则是主观题
-
-        // [1] 被删除的题目当作客观题
-        if (question.isDeleted()) {
-            return false;
-        }
-
-        // [2] 如果题目自己是主观题，则是主观题
-        if (question.getType() == Question.FITB || question.getType() == Question.ESSAY_QUESTION) {
-            return true;
-        }
-
-        for (Question sub : question.getSubQuestions()) {
-            // 忽略被删除的小题
-            if (sub.isDeleted()) {
-                continue;
-            }
-
-            // [3] 如果题目中有一个小题是主观题，则是主观题
-            if (sub.getType() == Question.FITB || sub.getType() == Question.ESSAY_QUESTION) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

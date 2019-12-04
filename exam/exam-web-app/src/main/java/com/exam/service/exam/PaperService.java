@@ -259,7 +259,7 @@ public class PaperService extends BaseService {
     public boolean isObjectivePaper(Paper paper) {
         for (Question question : paper.getQuestions()) {
             // 试卷中有一个题是主观题则返回 false
-            if (questionService.isSubjectiveQuestion(question)) {
+            if (!question.isDeleted() && question.isSubjective()) {
                 return false;
             }
         }

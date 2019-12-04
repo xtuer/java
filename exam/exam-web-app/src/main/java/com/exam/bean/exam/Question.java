@@ -12,7 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 题目
+ * 题目，分为二大类:
+ * A. 可以作答的题目: 客观题 (单选题、多选题、判断题)、主观题 (填空题、问答题)
+ * B. 不可作答的题目: 题型题、复合题的大题
  */
 @Getter
 @Setter
@@ -68,5 +70,34 @@ public class Question  implements Serializable {
         } else {
             this.options = JSON.parseObject(optionsJson, new TypeReference<LinkedList<QuestionOption>>() {});
         }
+    }
+
+    /**
+     * 判断题目是否客观题
+     *
+     * @return 客观题返回 true，否则返回 false
+     */
+    public boolean isObjective() {
+        return type == SINGLE_CHOICE || type == MULTIPLE_CHOICE || type == TFNG;
+    }
+
+    /**
+     * 判断题目是否主观题
+     *
+     * @return 主观题返回 true，否则返回 false
+     */
+    public boolean isSubjective() {
+        if (type == FITB || type == ESSAY_QUESTION) {
+            return true;
+        }
+
+        // 复合题中任意一个小题是填空题和问答题，则此复合题为主观题
+        for (Question sub : subQuestions) {
+            if (sub.type == FITB || sub.type == ESSAY_QUESTION) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
