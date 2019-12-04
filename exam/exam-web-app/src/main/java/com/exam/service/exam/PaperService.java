@@ -336,7 +336,7 @@ public class PaperService extends BaseService {
         questions.addAll(paper.getQuestions());
         questions.addAll(paper.getQuestions().stream().map(Question::getSubQuestions).flatMap(List::stream).collect(Collectors.toList()));
 
-        return questions.stream().collect(Collectors.toMap(Question::getId, q -> q));
+        return questions.stream().collect(Collectors.toMap(Question::getId, q -> q, (o, n) -> n));
     }
 
     /**
@@ -349,6 +349,6 @@ public class PaperService extends BaseService {
         Collection<Question> questions = this.getAllQuestionsOfPaper(paper).values();
         List<QuestionOption> options   = questions.stream().map(Question::getOptions).flatMap(List::stream).collect(Collectors.toList());
 
-        return options.stream().collect(Collectors.toMap(QuestionOption::getId, o -> o));
+        return options.stream().collect(Collectors.toMap(QuestionOption::getId, o -> o, (o, n) -> n));
     }
 }
