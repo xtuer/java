@@ -28,7 +28,7 @@ public class Question  implements Serializable {
     public static final int MULTIPLE_CHOICE = 2; // 多选题
     public static final int TFNG            = 3; // 判断题: true(是), false(否), not given(未提及)
     public static final int FITB            = 4; // 填空题: fill in the blank
-    public static final int ESSAY_QUESTION  = 5; // 问答题
+    public static final int ESSAY           = 5; // 问答题
     public static final int COMPOSITE       = 6; // 复合题
     public static final int DESCRIPTION     = 7; // 题型题 (大题分组、介绍)
 
@@ -87,13 +87,13 @@ public class Question  implements Serializable {
      * @return 主观题返回 true，否则返回 false
      */
     public boolean isSubjective() {
-        if (type == FITB || type == ESSAY_QUESTION) {
+        if (type == FITB || type == ESSAY) {
             return true;
         }
 
         // 复合题中任意一个小题是填空题和问答题，则此复合题为主观题
         for (Question sub : subQuestions) {
-            if (sub.type == FITB || sub.type == ESSAY_QUESTION) {
+            if (sub.type == FITB || sub.type == ESSAY) {
                 return true;
             }
         }

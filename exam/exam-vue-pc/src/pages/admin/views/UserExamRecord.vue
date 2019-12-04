@@ -48,7 +48,7 @@ export default {
                 question.options.filter(o => o.checked).forEach(o => {
                     questionX.answers.push({ questionOptionId: o.id, content: '' });
                 });
-            } else if (question.type === QUESTION_TYPE.FITB || question.type === QUESTION_TYPE.ESSAY_QUESTION) {
+            } else if (question.type === QUESTION_TYPE.FITB || question.type === QUESTION_TYPE.ESSAY) {
                 // 2. 填空题、问答题
                 question.options.forEach(o => {
                     questionX.answers.push({ questionOptionId: o.id, content: o.answer });

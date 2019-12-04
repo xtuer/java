@@ -60,7 +60,7 @@ export default class QuestionUtils {
             // [3] 如果是判断题，则增加 2 个默认选项
             QuestionUtils.appendQuestionOption(question, '正确', false);
             QuestionUtils.appendQuestionOption(question, '错误', false);
-        } else if (type === QUESTION_TYPE.ESSAY_QUESTION) {
+        } else if (type === QUESTION_TYPE.ESSAY) {
             // [4] 如果是问答题，则创建 1 个选项，用于存储问答题的答案
             QuestionUtils.appendQuestionOption(question);
         }
@@ -369,7 +369,7 @@ export default class QuestionUtils {
      */
     static isScoreSelfQuestion(question) {
         // 复合题的小题或问答题
-        return Utils.idIdValid(question.parentId) || question.type === QUESTION_TYPE.ESSAY_QUESTION;
+        return Utils.idIdValid(question.parentId) || question.type === QUESTION_TYPE.ESSAY;
     }
 
     /**

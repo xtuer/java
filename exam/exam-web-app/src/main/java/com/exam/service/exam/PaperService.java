@@ -247,7 +247,7 @@ public class PaperService extends BaseService {
                 || question.getType() == Question.MULTIPLE_CHOICE
                 || question.getType() == Question.TFNG
                 || question.getType() == Question.FITB
-                || question.getType() == Question.ESSAY_QUESTION;
+                || question.getType() == Question.ESSAY;
     }
 
     /**
