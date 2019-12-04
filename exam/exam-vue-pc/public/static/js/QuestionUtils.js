@@ -299,7 +299,7 @@ export default class QuestionUtils {
         // 3. 计算总分
 
         // [1] 计算复合题的满分，为小题满分之和
-        questions.filter(q => !q.deleted && q.type === QUESTION_TYPE.COMPLEX).forEach(q => {
+        questions.filter(q => !q.deleted && q.type === QUESTION_TYPE.COMPOSITE).forEach(q => {
             q.totalScore = 0;
             q.subQuestions.filter(sub => !sub.deleted).forEach(sub => {
                 q.totalScore += sub.totalScore;
@@ -411,7 +411,7 @@ export default class QuestionUtils {
             });
 
             // [6] 整理复合题的小题
-            if (q.type === QUESTION_TYPE.COMPLEX) {
+            if (q.type === QUESTION_TYPE.COMPOSITE) {
                 q.subQuestions = QuestionUtils.cleanQuestions(q.subQuestions);
             }
 

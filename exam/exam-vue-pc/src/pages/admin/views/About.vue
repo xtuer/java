@@ -25,10 +25,10 @@ export default {
         // this.questions[1].options[1].correct = true;
 
         // 复合题
-        const complexQuestion = QuestionUtils.createQuestion(6, '复合题');
-        QuestionUtils.appendSubQuestion(complexQuestion, 1);
-        QuestionUtils.appendSubQuestion(complexQuestion, 2);
-        this.questions.push(complexQuestion);
+        const compositeQuestion = QuestionUtils.createQuestion(6, '复合题');
+        QuestionUtils.appendSubQuestion(compositeQuestion, 1);
+        QuestionUtils.appendSubQuestion(compositeQuestion, 2);
+        this.questions.push(compositeQuestion);
 
         QuestionUtils.updateQuestionSnLabels(this.questions);
     },

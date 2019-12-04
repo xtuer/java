@@ -29,7 +29,7 @@ public class Question  implements Serializable {
     public static final int TFNG            = 3; // 判断题: true(是), false(否), not given(未提及)
     public static final int FITB            = 4; // 填空题: fill in the blank
     public static final int ESSAY_QUESTION  = 5; // 问答题
-    public static final int COMPLEX         = 6; // 复合题
+    public static final int COMPOSITE       = 6; // 复合题
     public static final int DESCRIPTION     = 7; // 题型题 (大题分组、介绍)
 
     private long   id;   // 题目 ID

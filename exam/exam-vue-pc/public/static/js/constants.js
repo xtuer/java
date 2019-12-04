@@ -9,7 +9,7 @@ window.QUESTION_TYPE = {
     TFNG           : 3, // 判断题: true(是), false(否), not given(未提及)
     FITB           : 4, // 填空题: fill in the blank
     ESSAY_QUESTION : 5, // 问答题
-    COMPLEX        : 6, // 复合题
+    COMPOSITE      : 6, // 复合题
     DESCRIPTION    : 7, // 题型题 (大题分组、介绍)
 };
 

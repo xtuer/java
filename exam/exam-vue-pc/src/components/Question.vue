@@ -262,13 +262,13 @@ export default {
         // 题目的样式
         questionClass() {
             return {
-                question           : true,
-                'question-group'   : this.question.type === QUESTION_TYPE.DESCRIPTION, // 题型题，题型分组
-                'question-complex' : this.question.type === QUESTION_TYPE.COMPLEX, // 复合题
-                'question-multiple': this.question.type === QUESTION_TYPE.MULTIPLE_CHOICE, // 多选题
-                'question-sub'     : Utils.idIdValid(this.question.parentId), // 复合题的小题
-                'question-editable': this.editable,
-                'question-readonly': !this.editable,
+                question             : true,
+                'question-group'     : this.question.type === QUESTION_TYPE.DESCRIPTION, // 题型题，题型分组
+                'question-composite' : this.question.type === QUESTION_TYPE.COMPOSITE, // 复合题
+                'question-multiple'  : this.question.type === QUESTION_TYPE.MULTIPLE_CHOICE, // 多选题
+                'question-sub'       : Utils.idIdValid(this.question.parentId), // 复合题的小题
+                'question-editable'  : this.editable,
+                'question-readonly'  : !this.editable,
                 'question-paper-edit': this.paperEdit,
                 border: this.border,
             };
@@ -283,7 +283,7 @@ export default {
         },
         // 复合题小题的类型
         subQuestionTypes() {
-            return QUESTION_TYPES.filter(q => q.value !== QUESTION_TYPE.COMPLEX);
+            return QUESTION_TYPES.filter(q => q.value !== QUESTION_TYPE.COMPOSITE);
         },
         // 给小组打分的题型: 每题得分都一样
         scoreGroup() {

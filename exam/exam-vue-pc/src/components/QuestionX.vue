@@ -113,11 +113,11 @@ export default {
         // 题目的样式
         questionClass() {
             return {
-                'question-x'         : true,
-                'question-x-group'   : this.question.type === QUESTION_TYPE.DESCRIPTION, // 题型题，题型分组
-                'question-x-complex' : this.question.type === QUESTION_TYPE.COMPLEX, // 复合题
-                'question-x-multiple': this.question.type === QUESTION_TYPE.MULTIPLE_CHOICE, // 多选题
-                'question-x-sub'     : Utils.idIdValid(this.question.parentId), // 复合题的小题
+                'question-x'          : true,
+                'question-x-group'    : this.question.type === QUESTION_TYPE.DESCRIPTION, // 题型题，题型分组
+                'question-x-composite': this.question.type === QUESTION_TYPE.COMPOSITE,   // 复合题
+                'question-x-multiple' : this.question.type === QUESTION_TYPE.MULTIPLE_CHOICE, // 多选题
+                'question-x-sub'      : Utils.idIdValid(this.question.parentId), // 复合题的小题
             };
         },
         // 给小组打分的题型: 每题得分都一样

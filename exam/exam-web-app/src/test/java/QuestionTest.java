@@ -148,7 +148,7 @@ public class QuestionTest {
         //     小题二
         //     小题三
 
-        Question question = newQuestion(100, "混合题", Question.COMPLEX);
+        Question question = newQuestion(100, "混合题", Question.COMPOSITE);
 
         // 选项
         questionService.appendQuestionOption(question, newOption(201, "选项一"));
