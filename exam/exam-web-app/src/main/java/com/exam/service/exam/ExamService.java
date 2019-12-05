@@ -284,10 +284,12 @@ public class ExamService extends BaseService {
         // 4. 如果只是作答单个题目，保存作答记录并返回
         // 5. 如果是提交试卷:
         //    5.1 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
-        //    5.2 修改考试记录的状态为已提交
-        //    5.3 保存所有题目的作答到考试记录
-        //    5.4 自动批改客观题
-        //    5.5 提取主观题作答，以便逐题批改
+        //    5.2 保存所有题目的作答到考试记录
+        //    5.3 修改考试记录的状态为已提交
+        //    5.4 保存所有题目的作答到考试记录
+        //    5.5 保存考试记录
+        //    5.6 自动批改客观题
+        //    5.7 提取考试记录中主观题作答，以便逐题批改
 
         // [1] 查询考试记录
         long userId   = questionAnswers.getUserId();
@@ -335,18 +337,20 @@ public class ExamService extends BaseService {
 
             return q.isObjective() || q.isSubjective();
         }).collect(Collectors.toList());
+        // [5.2] 保存所有题目的作答到考试记录
         record.setQuestions(qas);
 
-        // [5.2] 修改考试记录的状态为已提交
-        // [5.3] 保存所有题目的作答到考试记录
+        // [5.3] 修改考试记录的状态为已提交
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
         record.setSubmittedAt(questionAnswers.getSubmittedAt());
+
+        // [5.4] 保存考试记录
         examDao.upsertExamRecord(record);
 
-        // [5.4] 自动批改客观题
+        // [5.5] 自动批改客观题
         this.correctObjectiveQuestions(record, paper);
 
-        // [5.5] 提取主观题作答，以便逐题批改
+        // [5.6] 提取考试记录中主观题作答，以便逐题批改
         this.extractSubjectiveQuestionAnswer(record, paper);
 
         log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
@@ -496,7 +500,7 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 提取主观题的作答
+     * 提取考试记录中主观题作答，保存到到主观题批改表中
      *
      * @param record 考试记录
      * @param paper  试卷
