@@ -163,7 +163,7 @@ public class ExamService extends BaseService {
     public ExamRecord findExamRecord(long examRecordId) {
         // 1. 查找考试、试卷、考试记录
         // 2. 恢复考试状态: 如果考试记录未提交，则查询作答记录
-        // 3. 批改客观题: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
+        // 3. 批改客观题与提取主观题作答: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
         // 4. 获取试卷的所有题目和选项
         // 5. 合并题目的作答、得分到试卷的 questions 里，以供用户使用
 
@@ -180,9 +180,10 @@ public class ExamService extends BaseService {
             record.setQuestions(qas); // record 中的 questions 为题目的作答和得分
         }
 
-        // [3] 批改客观题: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
+        // [3] 批改客观题与提取主观题作答: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
         if (record.getStatus() < ExamRecord.STATUS_AUTO_CORRECTED && !this.canDoExamination(record.getUserId(), record.getId(), record).isSuccess()) {
             this.correctObjectiveQuestions(record, paper);
+            this.extractSubjectiveQuestionAnswer(record, paper); // 提取主观题作答，以便逐题批改
         }
 
         // [4] 获取试卷的所有题目和选项
@@ -282,6 +283,7 @@ public class ExamService extends BaseService {
         //    4.2 修改考试记录的状态为已提交
         //    4.3 保存所有题目的作答到考试记录
         //    4.4 自动批改客观题
+        //    4.5 提取主观题作答，以便逐题批改
 
         // [1] 查询考试记录
         long userId   = examRecordAnswer.getUserId();
@@ -326,6 +328,9 @@ public class ExamService extends BaseService {
 
         // [4.4] 自动批改客观题
         this.correctObjectiveQuestions(record, paper);
+
+        // [4.5] 提取主观题作答，以便逐题批改
+        this.extractSubjectiveQuestionAnswer(record, paper);
 
         log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
         return Result.okMessage("交卷成功");
@@ -424,7 +429,6 @@ public class ExamService extends BaseService {
         // 5. 计算考试得分
         // 6. 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
         // 7. 保存考试记录到数据库
-        // 8. 提取主观题作答，以便逐题批改
 
         log.info("[开始] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
 
@@ -472,9 +476,6 @@ public class ExamService extends BaseService {
         examDao.upsertExamRecord(record);
 
         log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
-
-        // [8] 提取主观题作答，以便逐题批改
-        this.extractSubjectiveQuestionAnswer(record, paper);
     }
 
     /**
