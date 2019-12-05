@@ -9,7 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 考试记录中保存作答的题目
+ * 保存作答信息的题目:
+ * A. 考试记录中保存作答的题目: exam_record
+ * B. 用于主观题逐题批改: exam_question_correct
  */
 @Getter
 @Setter
