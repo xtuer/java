@@ -138,12 +138,12 @@ public class ExamController extends BaseController {
      *     ]
      * }
      *
-     * @param examRecordAnswer 考试记录的作答
+     * @param examRecordAnswer 考试记录题目的作答
      * @return 1. 如果是提交试卷，则 code 为 1，否则 code 为 0
      *         2. 如果是单题作答，则 code 为 0，payload 为题目 ID，方便前端从作答队列中删除此题目 (如果实现了的话)
      */
     @PostMapping(Urls.API_USER_EXAM_ANSWER_QUESTIONS)
-    public Result<Long> answerExamRecord(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
+    public Result<Long> answerQuestions(@PathVariable long recordId, @RequestBody ExamRecordAnswer examRecordAnswer) {
         // 1. 设置考试记录的信息
         // 2. 提交考试记录到 MQ
         // 3. 立即返回
@@ -154,7 +154,7 @@ public class ExamController extends BaseController {
         examRecordAnswer.setExamRecordId(recordId);
 
         // [2] 提交考试记录到 MQ
-        messageProducer.sendAnswerExamRecordMessage(examRecordAnswer);
+        messageProducer.sendAnswerQuestionsMessage(examRecordAnswer);
 
         // [3] 立即返回
         if (examRecordAnswer.isSubmitted()) {

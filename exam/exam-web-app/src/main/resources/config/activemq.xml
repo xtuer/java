@@ -36,9 +36,9 @@
     <bean id="mqMessageProducer" class="com.exam.mq.MessageProducer"/>
 
     <!-- 2.1 消息目的地，点对点的 -->
-    <!-- 考试记录作答队列 -->
-    <bean id="answerExamRecordQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="answer-er-queue"/>
+    <!-- 题目作答队列 -->
+    <bean id="questionAnswersQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="question-answers-queue"/>
     </bean>
 
     <!-- ==================================================================================== -->
@@ -46,11 +46,11 @@
     <!-- ==================================================================================== -->
 
     <!-- 3.1 消息的消费者 -->
-    <!-- 考试记录作答消息的消费者 -->
-    <bean id="answerExamRecordMessageConsumer" class="com.exam.mq.AnswerExamRecordMessageConsumer"/>
+    <!-- 题目作答消息的消费者 -->
+    <bean id="questionAnswersMessageConsumer" class="com.exam.mq.QuestionAnswersMessageConsumer"/>
 
     <!-- 3.2 消息监听容器: 配置消息监听器监听的 destination -->
     <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="transacted">
-        <jms:listener destination="answer-er-queue" ref="answerExamRecordMessageConsumer"/>
+        <jms:listener destination="question-answers-queue" ref="questionAnswersMessageConsumer"/>
     </jms:listener-container>
 </beans>

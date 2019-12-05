@@ -14,16 +14,16 @@ public class MessageProducer {
     @Resource(name = "jmsTemplate")
     private JmsTemplate jmsTemplate;
 
-    @Resource(name = "answerExamRecordQueue")
-    private Destination answerExamRecordQueue; // 考试记录作答队列
+    @Resource(name = "questionAnswersQueue")
+    private Destination questionAnswersQueue; // 题目作答队列
 
     /**
      * 发送考试记录作答的消息
      *
      * @param examRecordAnswer 考试记录的作答
      */
-    public void sendAnswerExamRecordMessage(ExamRecordAnswer examRecordAnswer) {
-        jmsTemplate.send(answerExamRecordQueue, session -> {
+    public void sendAnswerQuestionsMessage(ExamRecordAnswer examRecordAnswer) {
+        jmsTemplate.send(questionAnswersQueue, session -> {
             return session.createTextMessage(JSON.toJSONString(examRecordAnswer));
         });
     }

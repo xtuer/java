@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 对考试记录的作答 (用于接收前端发送来的作答数据)
+ * 对考试记录题目的作答 (用于接收前端发送来的作答数据)
  */
 @Getter
 @Setter

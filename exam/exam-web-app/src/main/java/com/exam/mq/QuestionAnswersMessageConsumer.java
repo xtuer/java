@@ -16,7 +16,7 @@ import javax.jms.TextMessage;
  * MQ 的消费者: 考试记录作答消息的消费者
  */
 @Slf4j
-public class AnswerExamRecordMessageConsumer implements MessageListener {
+public class QuestionAnswersMessageConsumer implements MessageListener {
     @Autowired
     private ExamService examService;
 
