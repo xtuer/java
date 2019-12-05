@@ -20,9 +20,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @JSONType(ignores = {"optionsJson"})
-public class Question  implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Question {
     // 题目类型
     public static final int SINGLE_CHOICE   = 1; // 单选题
     public static final int MULTIPLE_CHOICE = 2; // 多选题

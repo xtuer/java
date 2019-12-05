@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,9 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Paper implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Paper {
     private long    id;         // 试卷 ID
     private String  title;      // 试卷标题
     private int     type;       // 试卷类型: 0 (普通试卷)、1 (调查问卷)
