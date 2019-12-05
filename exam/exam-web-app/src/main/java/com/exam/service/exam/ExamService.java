@@ -271,10 +271,10 @@ public class ExamService extends BaseService {
      *     A. 如果 submitted 为 false 则对单题进行作答
      *     B. 如果 submitted 为 true 则提交试卷，对所有题目进行作答
      *
-     * @param examRecordAnswer 作答
+     * @param questionAnswers 作答
      * @return 成功创建回答的 payload 为选项的 ID，否则返回错误信息的 Result
      */
-    public Result<?> answerQuestions(ExamRecordAnswer examRecordAnswer) {
+    public Result<?> answerQuestions(QuestionAnswers questionAnswers) {
         // 1. 查询考试记录
         // 2. 如果不能作答则返回
         // 3. 如果只是作答单个题目，保存作答记录
@@ -286,8 +286,8 @@ public class ExamService extends BaseService {
         //    4.5 提取主观题作答，以便逐题批改
 
         // [1] 查询考试记录
-        long userId   = examRecordAnswer.getUserId();
-        long recordId = examRecordAnswer.getExamRecordId();
+        long userId   = questionAnswers.getUserId();
+        long recordId = questionAnswers.getExamRecordId();
         ExamRecord record = examDao.findExamRecordById(recordId);
 
         // [2] 如果不能作答则返回
@@ -297,8 +297,8 @@ public class ExamService extends BaseService {
         }
 
         // [3] 如果只是作答单个题目，保存作答记录
-        if (!examRecordAnswer.isSubmitted()) {
-            QuestionForAnswer question = examRecordAnswer.getQuestions().get(0);
+        if (!questionAnswers.isSubmitted()) {
+            QuestionForAnswer question = questionAnswers.getQuestions().get(0);
             question.setExamRecordId(recordId);
             examDao.upsertQuestionAnswer(question);
 
@@ -314,7 +314,7 @@ public class ExamService extends BaseService {
         Paper paper = paperService.findPaper(record.getPaperId());
         Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
 
-        List<QuestionForAnswer> qas = examRecordAnswer.getQuestions().stream().filter(qa -> {
+        List<QuestionForAnswer> qas = questionAnswers.getQuestions().stream().filter(qa -> {
             Question q = questions.get(qa.getQuestionId());
             return q.isObjective() || q.isSubjective();
         }).collect(Collectors.toList());
@@ -323,7 +323,7 @@ public class ExamService extends BaseService {
         // [4.2] 修改考试记录的状态为已提交
         // [4.3] 保存所有题目的作答到考试记录
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
-        record.setSubmittedAt(examRecordAnswer.getSubmittedAt());
+        record.setSubmittedAt(questionAnswers.getSubmittedAt());
         examDao.upsertExamRecord(record);
 
         // [4.4] 自动批改客观题

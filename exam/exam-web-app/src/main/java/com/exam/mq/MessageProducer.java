@@ -1,7 +1,7 @@
 package com.exam.mq;
 
 import com.alibaba.fastjson.JSON;
-import com.exam.bean.exam.ExamRecordAnswer;
+import com.exam.bean.exam.QuestionAnswers;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.annotation.Resource;
@@ -20,11 +20,11 @@ public class MessageProducer {
     /**
      * 发送考试记录作答的消息
      *
-     * @param examRecordAnswer 考试记录的作答
+     * @param questionAnswers 考试记录的作答
      */
-    public void sendAnswerQuestionsMessage(ExamRecordAnswer examRecordAnswer) {
+    public void sendAnswerQuestionsMessage(QuestionAnswers questionAnswers) {
         jmsTemplate.send(questionAnswersQueue, session -> {
-            return session.createTextMessage(JSON.toJSONString(examRecordAnswer));
+            return session.createTextMessage(JSON.toJSONString(questionAnswers));
         });
     }
 }

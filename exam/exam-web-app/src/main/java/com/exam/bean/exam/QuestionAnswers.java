@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ExamRecordAnswer {
+public class QuestionAnswers {
     private long userId;       // 用户 ID
     private long examRecordId; // 考试记录 ID
     private boolean submitted; // 是否提交试卷

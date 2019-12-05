@@ -1,7 +1,7 @@
 package com.exam.mq;
 
 import com.alibaba.fastjson.JSON;
-import com.exam.bean.exam.ExamRecordAnswer;
+import com.exam.bean.exam.QuestionAnswers;
 import com.exam.service.exam.ExamService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,8 +25,8 @@ public class QuestionAnswersMessageConsumer implements MessageListener {
         TextMessage textMsg = (TextMessage) message;
 
         try {
-            ExamRecordAnswer examRecordAnswer = JSON.parseObject(textMsg.getText(), ExamRecordAnswer.class);
-            examService.answerQuestions(examRecordAnswer);
+            QuestionAnswers questionAnswers = JSON.parseObject(textMsg.getText(), QuestionAnswers.class);
+            examService.answerQuestions(questionAnswers);
         } catch (JMSException e) {
             log.warn(ExceptionUtils.getStackTrace(e));
         }
