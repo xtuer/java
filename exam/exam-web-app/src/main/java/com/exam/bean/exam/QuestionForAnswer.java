@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 考试时对题目选项的作答
+ * 考试记录中保存作答的题目
  */
 @Getter
 @Setter
