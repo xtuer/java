@@ -1,8 +1,5 @@
 import com.exam.bean.User;
-import com.exam.bean.exam.Exam;
-import com.exam.bean.exam.ExamRecord;
-import com.exam.bean.exam.Paper;
-import com.exam.bean.exam.QuestionForAnswer;
+import com.exam.bean.exam.*;
 import com.exam.dao.ExamDao;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.service.exam.ExamService;
@@ -79,7 +76,7 @@ public class ExamTest {
     public void upsertQuestionAnswerMongo() {
         QuestionForAnswer answer = new QuestionForAnswer();
         answer.setExamRecordId(1).setQuestionId(1);
-        QuestionForAnswer.QuestionOptionAnswer oa = new QuestionForAnswer.QuestionOptionAnswer();
+        QuestionOptionAnswer oa = new QuestionOptionAnswer();
         oa.setQuestionOptionId(1);
         oa.setContent("Hello");
         answer.getAnswers().add(oa);
@@ -106,9 +103,9 @@ public class ExamTest {
         record.setPaper(paper);
 
         // 选项和作答
-        QuestionForAnswer.QuestionOptionAnswer a1 = new QuestionForAnswer.QuestionOptionAnswer();
+        QuestionOptionAnswer a1 = new QuestionOptionAnswer();
         a1.setQuestionOptionId(11);
-        QuestionForAnswer.QuestionOptionAnswer a2 = new QuestionForAnswer.QuestionOptionAnswer();
+        QuestionOptionAnswer a2 = new QuestionOptionAnswer();
         a2.setQuestionOptionId(22);
 
         QuestionForAnswer q1 = new QuestionForAnswer();

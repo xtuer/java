@@ -278,9 +278,10 @@ public class ExamService extends BaseService {
         // 2. 如果不能作答则返回
         // 3. 如果只是作答单个题目，保存作答记录
         // 4. 如果是提交试卷:
-        //    4.1 修改考试记录的状态为已提交
-        //    4.2 保存所有题目的作答到考试记录
-        //    4.3 自动批改客观题
+        //    4.1 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
+        //    4.2 修改考试记录的状态为已提交
+        //    4.3 保存所有题目的作答到考试记录
+        //    4.4 自动批改客观题
 
         // [1] 查询考试记录
         long userId   = examRecordAnswer.getUserId();
@@ -302,18 +303,28 @@ public class ExamService extends BaseService {
             return Result.ok(question.getQuestionId());
         }
 
-        // [4] 如果是提交试卷:
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                          提交试卷                                             //
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         log.info("[开始] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
 
-        // [4.1] 修改考试记录的状态为已提交
-        // [4.2] 保存所有题目的作答到考试记录
+        // [4.1] 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
+        Paper paper = paperService.findPaper(record.getPaperId());
+        Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
+
+        List<QuestionForAnswer> qas = examRecordAnswer.getQuestions().stream().filter(qa -> {
+            Question q = questions.get(qa.getQuestionId());
+            return q.isObjective() || q.isSubjective();
+        }).collect(Collectors.toList());
+        record.setQuestions(qas);
+
+        // [4.2] 修改考试记录的状态为已提交
+        // [4.3] 保存所有题目的作答到考试记录
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
-        record.setQuestions(examRecordAnswer.getQuestions());
         record.setSubmittedAt(examRecordAnswer.getSubmittedAt());
         examDao.upsertExamRecord(record);
 
-        // [4.3] 自动批改客观题
-        Paper paper = paperService.findPaper(record.getPaperId());
+        // [4.4] 自动批改客观题
         this.correctObjectiveQuestions(record, paper);
 
         log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
@@ -413,6 +424,7 @@ public class ExamService extends BaseService {
         // 5. 计算考试得分
         // 6. 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
         // 7. 保存考试记录到数据库
+        // 8. 提取主观题作答，以便逐题批改
 
         log.info("[开始] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
 
@@ -423,18 +435,14 @@ public class ExamService extends BaseService {
         record.getQuestions().forEach(qa -> {
             Question question = questions.get(qa.getQuestionId());
 
-            if (question == null) {
-                return;
-            }
-
             // 非客观题则不进行批改
-            if (question.getType() != Question.SINGLE_CHOICE && question.getType() != Question.MULTIPLE_CHOICE && question.getType() != Question.TFNG) {
+            if (question == null || !question.isObjective()) {
                 return;
             }
 
             // [3] 得到正批改的题目的所有正确的选项，所有作答的选项
             List<Long> correctOptions = question.getOptions().stream().filter(QuestionOption::isCorrect).map(QuestionOption::getId).collect(Collectors.toList());
-            List<Long> checkedOptions = qa.getAnswers().stream().map(QuestionForAnswer.QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
+            List<Long> checkedOptions = qa.getAnswers().stream().map(QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
 
             // [4] 批改客观题 (全对得满分，部分正确得一半分)
             if (!checkedOptions.isEmpty() && correctOptions.containsAll(checkedOptions)) {
@@ -442,22 +450,19 @@ public class ExamService extends BaseService {
 
                 if (correctOptions.size() == checkedOptions.size()) {
                     // [4.1.1] 全对: 个数一样
-                    qa.setScore(question.getTotalScore()).setScoreStatus(QuestionResult.STATUS_RIGHT);
+                    qa.setScore(question.getTotalScore()).setScoreStatus(QuestionForAnswer.SCORE_STATUS_RIGHT);
                 } else {
                     // [4.1.2] 半对: 个数不一样
-                    qa.setScore(question.getTotalScore() / 2).setScoreStatus(QuestionResult.STATUS_HALF_RIGHT);
+                    qa.setScore(question.getTotalScore() / 2).setScoreStatus(QuestionForAnswer.SCORE_STATUS_HALF_RIGHT);
                 }
             } else {
                 // [4.2] 错误: 未作答，或者答错任何一个选项
-                qa.setScore(0).setScoreStatus(QuestionResult.STATUS_ERROR);
+                qa.setScore(0).setScoreStatus(QuestionForAnswer.SCORE_STATUS_ERROR);
             }
         });
 
         // [5] 计算考试得分
-        record.setScore(0);
-        record.getQuestions().forEach(qa -> {
-            record.setScore(record.getScore() + qa.getScore());
-        });
+        this.scoringExamRecord(record);
 
         // [6] 修改考试记录的状态: 客观题试卷为批改结束，主观题试卷为自动批改
         record.setObjective(paper.isObjective());
@@ -467,6 +472,35 @@ public class ExamService extends BaseService {
         examDao.upsertExamRecord(record);
 
         log.info("[结束] 自动批改客观题: 用户 {}, 考试记录 {}", record.getUserId(), record.getId());
+
+        // [8] 提取主观题作答，以便逐题批改
+        this.extractSubjectiveQuestionAnswer(record, paper);
+    }
+
+    /**
+     * 提取主观题作答
+     *
+     * @param record 考试记录
+     * @param paper  试卷
+     */
+    private void extractSubjectiveQuestionAnswer(ExamRecord record, Paper paper) {
+        // TODO
+        // 复合题小题的作答合并到复合题下，批改时按整个复合题进行批改
+    }
+
+    /**
+     * 计算考试得分
+     *
+     * @param record 考试记录
+     */
+    private void scoringExamRecord(ExamRecord record) {
+        double sum = 0;
+
+        for (QuestionForAnswer qa : record.getQuestions()) {
+            sum += qa.getScore();
+        }
+
+        record.setScore(sum);
     }
 
     /**

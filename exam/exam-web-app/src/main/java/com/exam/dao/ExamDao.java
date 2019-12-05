@@ -23,10 +23,13 @@ import java.util.stream.Collectors;
  *     mongoTemplate.upsert() : 查询不到复合条件的则插入，存在则替换 (如果 Update 使用 Document 创建则原来的所有属性都会被删除)
  *     mongoTemplate.find()   : 返回 List，查询不到返回空的 List
  *     mongoTemplate.findOne(): 返回查询到的对象，查询不到返回 null
+ *
+ * 索引:
+ *     考试记录作答 exam_question_answer: 复合唯一索引 (examRecordId, questionOptionId)
+ *     主观题批改 exam_question_correct:  复合唯一索引 (examRecordId, questionId), 普通索引 (examId)
  */
 @Service
 public class ExamDao {
-    // 考试记录作答表: 复合唯一索引 (examRecordId, questionOptionId)
     private static final String QUESTION_ANSWER = "exam_question_answer";
     private static final String EXAM_RECORD     = "exam_record";
     private static final int ELAPSED_TIME_DELTA = 5; // 计时的时间差

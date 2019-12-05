@@ -51,7 +51,7 @@ public class Question  implements Serializable {
     private int    groupSn;    // 试卷: 大题 (题型) 分组序号，例如属于第一大题单选题组，顺序表示在试卷中的位置
     private double score;      // 试卷: 每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 单选题，每题 5 分，共 30 分
     private double totalScore; // 试卷: 题目满分 (题目、题型题、复合题的满分)
-    private int    scoreStatus;     // 作答: 状态为 0 (未批改)、1 (错误)、2 (半对)、3 (全对)
+    private int    scoreStatus;     // 作答: 状态为 0 (未知)、1 (错误)、2 (半对)、3 (全对)
     private int    positionInPaper; // 试卷: 题目在试卷中的位置
 
     private String optionsJson; // 选项的 JSON 字符串
