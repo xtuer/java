@@ -42,8 +42,7 @@ public class QuestionService extends BaseService {
     }
 
     /**
-     * 查找试卷的题目
-     * [注意]: 不要直接使用这个方法，应该使用 QuestionService.findPaperQuestions(paperId)
+     * 查找试卷的题目 (复合题的小题被合并到复合题下了)
      *
      * @param paperId 试卷 ID
      * @return 返回题目的数组
@@ -54,7 +53,7 @@ public class QuestionService extends BaseService {
     }
 
     /**
-     * 把平铺的题目层级化 (小题放入所属复合题中)
+     * 把平铺的题目层级化 (复合题的小题被合并到复合题下了)
      *
      * @param questions 题目数组
      * @return 返回层级化的题目数组

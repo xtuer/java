@@ -38,7 +38,7 @@ public class PaperService extends BaseService {
     private PaperMapper paperMapper;
 
     /**
-     * 查找指定 ID 的试卷
+     * 查找指定 ID 的试卷 (复合题的小题被合并到复合题下了)
      *
      * @param paperId 试卷 ID
      * @return 返回查找到的试卷，查不到返回 null
