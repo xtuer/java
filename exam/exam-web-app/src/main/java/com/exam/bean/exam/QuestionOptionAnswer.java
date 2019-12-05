@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class QuestionOptionAnswer {
+    private long questionId;
     private long questionOptionId;
     private String content;
 }

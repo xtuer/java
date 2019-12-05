@@ -156,7 +156,7 @@ public class ExamTest {
     }
 
     @Test
-    public void getExamSubjectiveQuestions() {
-        Utils.dump(examService.getExamSubjectiveQuestions(386694649323982848L));
+    public void getSubjectiveQuestionsOfExam() {
+        Utils.dump(examService.getSubjectiveQuestionsOfExam(386694649323982848L));
     }
 }

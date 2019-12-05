@@ -351,4 +351,14 @@ public class PaperService extends BaseService {
 
         return options.stream().collect(Collectors.toMap(QuestionOption::getId, o -> o, (o, n) -> n));
     }
+
+    /**
+     * 获取试卷的主观题
+     *
+     * @param paper 试卷
+     * @return 返回主观题的数组
+     */
+    public List<Question> getSubjectiveQuestionsOfPaper(Paper paper) {
+        return paper.getQuestions().stream().filter(Question::isSubjective).collect(Collectors.toList());
+    }
 }

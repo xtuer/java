@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -283,6 +284,20 @@ public class QuestionService extends BaseService {
 
             // [3] 更新小题选项的位置
             this.updateSubQuestionAndOptionPositions(subQuestion);
+        }
+    }
+
+    /**
+     * 获取题目下的所有选项 (复合题时为所有小题的选项)
+     *
+     * @param question 题目
+     * @return 返回小题选项的数组
+     */
+    public List<QuestionOption> getQuestionOptions(Question question) {
+        if (question.getType() == Question.COMPOSITE) {
+            return question.getSubQuestions().stream().map(Question::getOptions).flatMap(List::stream).collect(Collectors.toList());
+        } else {
+            return new LinkedList<>(question.getOptions());
         }
     }
 }

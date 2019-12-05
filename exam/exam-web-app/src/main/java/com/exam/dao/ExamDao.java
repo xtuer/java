@@ -30,9 +30,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ExamDao {
-    private static final String QUESTION_ANSWER = "exam_question_answer";
-    private static final String EXAM_RECORD     = "exam_record";
-    private static final int ELAPSED_TIME_DELTA = 5; // 计时的时间差
+    private static final String QUESTION_ANSWER  = "exam_question_answer";
+    private static final String QUESTION_CORRECT = "exam_question_correct";
+    private static final String EXAM_RECORD      = "exam_record";
+    private static final int ELAPSED_TIME_DELTA  = 5; // 计时的时间差
 
     @Resource(name = "mongoTemplate")
     private MongoTemplate mongoTemplate;
@@ -69,9 +70,9 @@ public class ExamDao {
     }
 
     /**
-     * 插入或者更新题目选项的作答
+     * 插入或者更新题目的作答
      *
-     * @param answer 作答
+     * @param answer 题目的作答
      */
     public void upsertQuestionAnswer(QuestionForAnswer answer) {
         Document document = new Document()
@@ -86,6 +87,29 @@ public class ExamDao {
         );
 
         mongoTemplate.upsert(condition, Update.fromDocument(document), QUESTION_ANSWER);
+    }
+
+    /**
+     * 插入或者更新主观题的作答
+     * @param answer 题目的作答
+     */
+    public void upsertSubjectiveQuestionAnswer(QuestionForAnswer answer) {
+        Document document = new Document()
+                .append("examId", answer.getExamId())
+                .append("examRecordId", answer.getExamRecordId())
+                .append("questionId", answer.getQuestionId())
+                .append("teacherId", answer.getTeacherId())
+                .append("answers", answer.getAnswers())
+                .append("score", answer.getScore())
+                .append("scoreStatus", answer.getScoreStatus());
+
+        // 更新条件: 指定考试记录的选项
+        Query condition = Query.query(Criteria
+                .where("examRecordId").is(answer.getExamRecordId())
+                .and("questionId").is(answer.getQuestionId())
+        );
+
+        mongoTemplate.upsert(condition, Update.fromDocument(document), QUESTION_CORRECT);
     }
 
     /**

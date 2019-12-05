@@ -61,6 +61,9 @@ public class ExamService extends BaseService {
     private PaperMapper paperMapper;
 
     @Autowired
+    private QuestionService questionService;
+
+    @Autowired
     private ExamService self;
 
     /**
@@ -277,13 +280,14 @@ public class ExamService extends BaseService {
     public Result<?> answerQuestions(QuestionAnswers questionAnswers) {
         // 1. 查询考试记录
         // 2. 如果不能作答则返回
-        // 3. 如果只是作答单个题目，保存作答记录
-        // 4. 如果是提交试卷:
-        //    4.1 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
-        //    4.2 修改考试记录的状态为已提交
-        //    4.3 保存所有题目的作答到考试记录
-        //    4.4 自动批改客观题
-        //    4.5 提取主观题作答，以便逐题批改
+        // 3. 设置选项作答的题目 ID
+        // 4. 如果只是作答单个题目，保存作答记录并返回
+        // 5. 如果是提交试卷:
+        //    5.1 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
+        //    5.2 修改考试记录的状态为已提交
+        //    5.3 保存所有题目的作答到考试记录
+        //    5.4 自动批改客观题
+        //    5.5 提取主观题作答，以便逐题批改
 
         // [1] 查询考试记录
         long userId   = questionAnswers.getUserId();
@@ -296,7 +300,14 @@ public class ExamService extends BaseService {
             return test;
         }
 
-        // [3] 如果只是作答单个题目，保存作答记录
+        // [3] 设置选项作答的题目 ID
+        questionAnswers.getQuestions().forEach(question -> {
+            question.getAnswers().forEach(answer -> {
+                answer.setQuestionId(question.getQuestionId());
+            });
+        });
+
+        // [4] 如果只是作答单个题目，保存作答记录并返回
         if (!questionAnswers.isSubmitted()) {
             QuestionForAnswer question = questionAnswers.getQuestions().get(0);
             question.setExamRecordId(recordId);
@@ -310,26 +321,32 @@ public class ExamService extends BaseService {
         //////////////////////////////////////////////////////////////////////////////////////////////////
         log.info("[开始] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
 
-        // [4.1] 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
+        // [5.1] 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
         Paper paper = paperService.findPaper(record.getPaperId());
         Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
 
         List<QuestionForAnswer> qas = questionAnswers.getQuestions().stream().filter(qa -> {
             Question q = questions.get(qa.getQuestionId());
+
+            // 过滤掉复合题的大题
+            if (q.getType() == Question.COMPOSITE) {
+                return false;
+            }
+
             return q.isObjective() || q.isSubjective();
         }).collect(Collectors.toList());
         record.setQuestions(qas);
 
-        // [4.2] 修改考试记录的状态为已提交
-        // [4.3] 保存所有题目的作答到考试记录
+        // [5.2] 修改考试记录的状态为已提交
+        // [5.3] 保存所有题目的作答到考试记录
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
         record.setSubmittedAt(questionAnswers.getSubmittedAt());
         examDao.upsertExamRecord(record);
 
-        // [4.4] 自动批改客观题
+        // [5.4] 自动批改客观题
         this.correctObjectiveQuestions(record, paper);
 
-        // [4.5] 提取主观题作答，以便逐题批改
+        // [5.5] 提取主观题作答，以便逐题批改
         this.extractSubjectiveQuestionAnswer(record, paper);
 
         log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
@@ -479,14 +496,50 @@ public class ExamService extends BaseService {
     }
 
     /**
-     * 提取主观题作答
+     * 提取主观题的作答
      *
      * @param record 考试记录
      * @param paper  试卷
      */
     private void extractSubjectiveQuestionAnswer(ExamRecord record, Paper paper) {
-        // TODO
-        // 复合题小题的作答合并到复合题下，批改时按整个复合题进行批改
+        // 提示: 复合题小题的作答都展开放到复合题的 answers 中，批改时按整个复合题进行批改
+        // 1. 获取考试记录中所有题目选项的作答 optionAnswers
+        // 2. 遍历试卷中的主观题，逐个处理
+        // 3. 获取主观题的作答，从 optionAnswers 中获取
+        // 4. 主观题没有作答，则不继续处理
+        // 5. 保存主观题的作答
+
+        // [1] 获取考试记录中所有题目选项的作答 optionAnswers
+        Map<Long, QuestionOptionAnswer> optionAnswers = record.getQuestions().stream()
+                .map(QuestionForAnswer::getAnswers)
+                .flatMap(List::stream)
+                .collect(Collectors.toMap(QuestionOptionAnswer::getQuestionOptionId, o -> o, (o, n) -> n));
+
+        // [2] 遍历试卷中的主观题，逐个处理
+        paperService.getSubjectiveQuestionsOfPaper(paper).forEach(subjectiveQuestion -> {
+            QuestionForAnswer questionForAnswer = new QuestionForAnswer();
+
+            // [3] 获取主观题的作答，从 optionAnswers 中获取
+            questionService.getQuestionOptions(subjectiveQuestion).forEach(option -> {
+                QuestionOptionAnswer answer = optionAnswers.get(option.getId());
+
+                if (answer != null) {
+                    questionForAnswer.getAnswers().add(answer);
+                }
+            });
+
+            // [4] 主观题没有作答，则不继续处理
+            if (questionForAnswer.getAnswers().size() == 0) {
+                log.warn("[提取] 主观题作答: 用户 {}, 考试记录 {}, 主观题 {}，没有作答", record.getUserId(), record.getId(), subjectiveQuestion.getId());
+                return;
+            }
+
+            // [5] 保存主观题的作答
+            questionForAnswer.setExamId(record.getExamId())
+                    .setExamRecordId(record.getId())
+                    .setQuestionId(subjectiveQuestion.getId());
+            examDao.upsertSubjectiveQuestionAnswer(questionForAnswer);
+        });
     }
 
     /**
@@ -510,7 +563,7 @@ public class ExamService extends BaseService {
      * @param examId 考试 ID
      * @return 返回主观题的集合
      */
-    public Set<Question> getExamSubjectiveQuestions(long examId) {
+    public Set<Question> getSubjectiveQuestionsOfExam(long examId) {
         // 1. 查询考试
         // 2. 获取考试的所有试卷 ID
         // 3. 遍历每一个试卷，得到试卷的主观题
@@ -524,12 +577,7 @@ public class ExamService extends BaseService {
         // [3] 遍历每一个试卷，得到试卷的主观题
         for (long paperId : paperIds) {
             Paper paper = paperService.findPaper(paperId);
-
-            paper.getQuestions().forEach(question -> {
-                if (question.isSubjective()) {
-                    questions.add(question);
-                }
-            });
+            questions.addAll(paperService.getSubjectiveQuestionsOfPaper(paper));
         }
 
         return questions;
