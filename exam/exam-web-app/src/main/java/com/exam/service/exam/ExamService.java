@@ -283,7 +283,7 @@ public class ExamService extends BaseService {
         // 3. 设置选项作答的题目 ID
         // 4. 如果只是作答单个题目，保存作答记录并返回
         // 5. 如果是提交试卷:
-        //    5.1 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
+        //    5.1 考试记录中只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
         //    5.2 保存所有题目的作答到考试记录
         //    5.3 修改考试记录的状态为已提交
         //    5.4 保存所有题目的作答到考试记录
@@ -323,7 +323,7 @@ public class ExamService extends BaseService {
         //////////////////////////////////////////////////////////////////////////////////////////////////
         log.info("[开始] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
 
-        // [5.1] 只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
+        // [5.1] 考试记录中只保留主观题和客观题的作答 (过滤掉题型题、复合题大题的空白作答)
         Paper paper = paperService.findPaper(record.getPaperId());
         Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
 
@@ -334,6 +334,9 @@ public class ExamService extends BaseService {
             if (q.getType() == Question.COMPOSITE) {
                 return false;
             }
+
+            // 设置题目类型
+            qa.setQuestionType(q.getType());
 
             return q.isObjective() || q.isSubjective();
         }).collect(Collectors.toList());

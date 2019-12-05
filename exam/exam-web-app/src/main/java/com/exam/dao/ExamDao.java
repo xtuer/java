@@ -91,22 +91,24 @@ public class ExamDao {
 
     /**
      * 插入或者更新主观题的作答
-     * @param answer 题目的作答
+     *
+     * @param question 题目的作答
      */
-    public void upsertSubjectiveQuestionAnswer(QuestionForAnswer answer) {
+    public void upsertSubjectiveQuestionAnswer(QuestionForAnswer question) {
         Document document = new Document()
-                .append("examId", answer.getExamId())
-                .append("examRecordId", answer.getExamRecordId())
-                .append("questionId", answer.getQuestionId())
-                .append("teacherId", answer.getTeacherId())
-                .append("answers", answer.getAnswers())
-                .append("score", answer.getScore())
-                .append("scoreStatus", answer.getScoreStatus());
+                .append("examId", question.getExamId())
+                .append("examRecordId", question.getExamRecordId())
+                .append("questionId", question.getQuestionId())
+                .append("teacherId", question.getTeacherId())
+                .append("answers", question.getAnswers())
+                .append("score", question.getScore())
+                .append("scoreStatus", question.getScoreStatus())
+                .append("comment", question.getComment());
 
         // 更新条件: 指定考试记录的选项
         Query condition = Query.query(Criteria
-                .where("examRecordId").is(answer.getExamRecordId())
-                .and("questionId").is(answer.getQuestionId())
+                .where("examRecordId").is(question.getExamRecordId())
+                .and("questionId").is(question.getQuestionId())
         );
 
         mongoTemplate.upsert(condition, Update.fromDocument(document), QUESTION_CORRECT);
