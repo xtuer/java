@@ -26,7 +26,7 @@ public class AnswerExamRecordMessageConsumer implements MessageListener {
 
         try {
             ExamRecordAnswer examRecordAnswer = JSON.parseObject(textMsg.getText(), ExamRecordAnswer.class);
-            examService.answerExamRecord(examRecordAnswer);
+            examService.answerQuestions(examRecordAnswer);
         } catch (JMSException e) {
             log.warn(ExceptionUtils.getStackTrace(e));
         }

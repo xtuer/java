@@ -274,7 +274,7 @@ public class ExamService extends BaseService {
      * @param examRecordAnswer 作答
      * @return 成功创建回答的 payload 为选项的 ID，否则返回错误信息的 Result
      */
-    public Result<?> answerExamRecord(ExamRecordAnswer examRecordAnswer) {
+    public Result<?> answerQuestions(ExamRecordAnswer examRecordAnswer) {
         // 1. 查询考试记录
         // 2. 如果不能作答则返回
         // 3. 如果只是作答单个题目，保存作答记录
