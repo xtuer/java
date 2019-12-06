@@ -76,6 +76,7 @@ public class ExamDao {
      */
     public void upsertQuestionAnswer(QuestionForAnswer answer) {
         Document document = new Document()
+                .append("examId", answer.getExamId())
                 .append("examRecordId", answer.getExamRecordId())
                 .append("questionId", answer.getQuestionId())
                 .append("answers", answer.getAnswers());

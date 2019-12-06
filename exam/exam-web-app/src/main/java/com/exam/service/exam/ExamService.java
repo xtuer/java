@@ -312,6 +312,7 @@ public class ExamService extends BaseService {
         // [4] 如果只是作答单个题目，保存作答记录并返回
         if (!questionAnswers.isSubmitted()) {
             QuestionForAnswer question = questionAnswers.getQuestions().get(0);
+            question.setExamId(record.getExamId());
             question.setExamRecordId(recordId);
             examDao.upsertQuestionAnswer(question);
 
