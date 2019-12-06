@@ -260,8 +260,13 @@ public class ExamService extends BaseService {
         // [6] 创建考试记录，返回考试记录的 ID
         ExamRecord record = new ExamRecord();
         record.setId(super.nextId())
-                .setUserId(userId).setUsername(user.getUsername()).setNickname(user.getNickname())
-                .setExamId(examId).setPaperId(paperId).setObjective(objective).setTickAt(new Date());
+                .setUserId(userId)
+                .setUsername(user.getUsername())
+                .setNickname(user.getNickname())
+                .setExamId(examId)
+                .setPaperId(paperId)
+                .setObjective(objective)
+                .setTickAt(new Date());
         examDao.upsertExamRecord(record);
 
         log.info("[成功] 创建考试记录: 用户 {}, 考试 {}, 第 {} 个考试记录 {}，最多可以考 {} 次", userId, examId, recordCount+1, record.getId(), maxTimes);

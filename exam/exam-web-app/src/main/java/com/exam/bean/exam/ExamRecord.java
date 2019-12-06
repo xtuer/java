@@ -30,16 +30,16 @@ public class ExamRecord {
     public static final String[] STATUS_LABELS      = {"已作答", "已提交", "自动批改", "手动批改", "批改结束"};
 
     @Id
-    private long id;           // 试卷记录 ID
-    private long userId;       // 考试用户 ID
-    private long examId;       // 考试 ID
-    private long paperId;      // 试卷 ID，方便使用考试记录查找考试的试卷
-    private int  status;       // 状态: 0 (已作答)、1 (已提交)、2 (自动批改)、3 (手动批改)、4 (批改结束) [点击考试的时候才创建考试记录]
-    private int  elapsedTime;  // 已考试时间，单位为秒
-    private String username;   // 用户账号
-    private String nickname;   // 用户昵称
-    private double  score;     // 考试得分
-    private boolean objective; // true (使用的试卷全是客观题)、false (使用的试卷包含主观题)
+    private long id;          // 试卷记录 ID
+    private long userId;      // 考试用户 ID
+    private long examId;      // 考试 ID
+    private long paperId;     // 试卷 ID，方便使用考试记录查找考试的试卷
+    private int  status;      // 状态: 0 (已作答)、1 (已提交)、2 (自动批改)、3 (手动批改)、4 (批改结束) [点击考试的时候才创建考试记录]
+    private int  elapsedTime; // 已考试时间，单位为秒
+    private String username;  // 用户账号
+    private String nickname;  // 用户昵称
+    private double  score;    // 考试得分
+    private boolean objective;   // true (使用的试卷全是客观题)、false (使用的试卷包含主观题)
     private Date    submittedAt; // 提交试卷时间
     private Date    tickAt;      // 打卡时间
 
