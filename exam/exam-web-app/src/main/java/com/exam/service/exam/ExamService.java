@@ -186,7 +186,7 @@ public class ExamService extends BaseService {
         // [3] 批改客观题与提取主观题作答: 如果考试记录未批改、并且不能继续作答，则自动批改客观题
         if (record.getStatus() < ExamRecord.STATUS_AUTO_CORRECTED && !this.canDoExamination(record.getUserId(), record.getId(), record).isSuccess()) {
             this.correctObjectiveQuestions(record, paper);
-            this.extractSubjectiveQuestionAnswer(record, paper); // 提取主观题作答，以便逐题批改
+            this.extractSubjectiveQuestionsForAnswer(record, paper); // 提取主观题作答，以便逐题批改
         }
 
         // [4] 获取试卷的所有题目和选项
@@ -360,7 +360,7 @@ public class ExamService extends BaseService {
         this.correctObjectiveQuestions(record, paper);
 
         // [5.6] 提取考试记录中主观题作答，以便逐题批改
-        this.extractSubjectiveQuestionAnswer(record, paper);
+        this.extractSubjectiveQuestionsForAnswer(record, paper);
 
         log.info("[结束] 提交考试记录: 用户 {}, 考试记录 {}", userId, recordId);
         return Result.okMessage("交卷成功");
@@ -514,7 +514,7 @@ public class ExamService extends BaseService {
      * @param record 考试记录
      * @param paper  试卷
      */
-    private void extractSubjectiveQuestionAnswer(ExamRecord record, Paper paper) {
+    private void extractSubjectiveQuestionsForAnswer(ExamRecord record, Paper paper) {
         // 提示: 复合题小题的作答都展开放到复合题的 answers 中，批改时按整个复合题进行批改
         // 1. 获取考试记录中所有题目选项的作答 optionAnswers
         // 2. 遍历试卷中的主观题，逐个处理
