@@ -522,6 +522,9 @@ public class ExamService extends BaseService {
         // 4. 主观题没有作答，则不继续处理
         // 5. 保存主观题的作答
 
+        // 作答的题目
+        List<QuestionForAnswer> questionForAnswers = new LinkedList<>();
+
         // [1] 获取考试记录中所有题目选项的作答 optionAnswers
         Map<Long, QuestionOptionAnswer> optionAnswers = record.getQuestions().stream()
                 .map(QuestionForAnswer::getAnswers)
@@ -547,12 +550,14 @@ public class ExamService extends BaseService {
                 return;
             }
 
-            // [5] 保存主观题的作答
             questionForAnswer.setExamId(record.getExamId())
                     .setExamRecordId(record.getId())
                     .setQuestionId(subjectiveQuestion.getId());
-            examDao.upsertSubjectiveQuestionAnswer(questionForAnswer);
+            questionForAnswers.add(questionForAnswer);
         });
+
+        // [5] 保存主观题的作答
+        examDao.upsertSubjectiveQuestionsForAnswer(questionForAnswers);
     }
 
     /**

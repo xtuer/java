@@ -2,7 +2,10 @@ package com.exam.dao;
 
 import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.QuestionForAnswer;
+import com.exam.util.Utils;
+import com.mongodb.bulk.BulkWriteResult;
 import org.bson.Document;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -93,26 +96,34 @@ public class ExamDao {
     /**
      * 插入或者更新主观题的作答
      *
-     * @param question 题目的作答
+     * @param questions 题目的作答
      */
-    public void upsertSubjectiveQuestionAnswer(QuestionForAnswer question) {
-        Document document = new Document()
-                .append("examId", question.getExamId())
-                .append("examRecordId", question.getExamRecordId())
-                .append("questionId", question.getQuestionId())
-                .append("teacherId", question.getTeacherId())
-                .append("answers", question.getAnswers())
-                .append("score", question.getScore())
-                .append("scoreStatus", question.getScoreStatus())
-                .append("comment", question.getComment());
+    public void upsertSubjectiveQuestionsForAnswer(List<QuestionForAnswer> questions) {
+        if (questions.size() == 0) { return; }
 
-        // 更新条件: 指定考试记录的选项
-        Query condition = Query.query(Criteria
-                .where("examRecordId").is(question.getExamRecordId())
-                .and("questionId").is(question.getQuestionId())
-        );
+        // 使用批量操作
+        BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, QUESTION_CORRECT);
 
-        mongoTemplate.upsert(condition, Update.fromDocument(document), QUESTION_CORRECT);
+        for (QuestionForAnswer question : questions) {
+            Update update = Update.update("examId", question.getExamId())
+                    .set("examRecordId", question.getExamRecordId())
+                    .set("questionId", question.getQuestionId())
+                    .set("teacherId", question.getTeacherId())
+                    .set("answers", question.getAnswers())
+                    .set("score", question.getScore())
+                    .set("scoreStatus", question.getScoreStatus())
+                    .set("comment", question.getComment());
+
+            // 更新条件: 指定考试记录的题目
+            Query condition = Query.query(Criteria
+                    .where("examRecordId").is(question.getExamRecordId())
+                    .and("questionId").is(question.getQuestionId())
+            );
+
+            bulkOps.upsert(condition, update);
+        }
+
+        bulkOps.execute();
     }
 
     /**
