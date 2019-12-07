@@ -2,8 +2,6 @@ package com.exam.dao;
 
 import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.QuestionForAnswer;
-import com.exam.util.Utils;
-import com.mongodb.bulk.BulkWriteResult;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
