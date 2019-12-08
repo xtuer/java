@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
  *     mongoTemplate.findOne(): 返回查询到的对象，查询不到返回 null
  *
  * 索引:
- *     考试记录作答 exam_question_answer: 复合唯一索引 (examRecordId, questionOptionId)
- *     主观题批改 exam_question_correct:  复合唯一索引 (examRecordId, questionId), 普通索引 (examId)
+ *     选项的作答 exam_question_answer : 复合唯一索引 (examRecordId, questionOptionId)
+ *     主观题批改 exam_question_correct: 复合唯一索引 (examRecordId, questionOptionId), 普通索引 (examId, questionId)、(examId, questionOptionId)
  */
 @Service
 public class ExamDao {
@@ -146,8 +146,9 @@ public class ExamDao {
         // 3. 每个题目的作答创建一个 QuestionWithAnswer
 
         // [1] 查询考试记录下的作答
-        Criteria criteria = Criteria.where("examRecordId").is(examRecordId);
-        List<QuestionOptionAnswer> answers = mongoTemplate.find(Query.query(criteria), QuestionOptionAnswer.class, QUESTION_ANSWER);
+        Query query = Query.query(Criteria.where("examRecordId").is(examRecordId));
+        query.fields().include("questionId").include("questionOptionId").include("content");
+        List<QuestionOptionAnswer> answers = mongoTemplate.find(query, QuestionOptionAnswer.class, QUESTION_ANSWER);
 
         // [2] 作答按照题目 ID 分组
         Map<Long, List<QuestionOptionAnswer>> questionAnswers = answers.stream().collect(Collectors.groupingBy(QuestionOptionAnswer::getQuestionId));
