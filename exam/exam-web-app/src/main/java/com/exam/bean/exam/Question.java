@@ -30,6 +30,12 @@ public class Question {
     public static final int COMPOSITE       = 6; // 复合题
     public static final int DESCRIPTION     = 7; // 题型题 (大题分组、介绍)
 
+    // 得分状态
+    public static final int SCORE_STATUS_UNKNOWN    = 0; // 未知
+    public static final int SCORE_STATUS_ERROR      = 1; // 错误
+    public static final int SCORE_STATUS_HALF_RIGHT = 2; // 半对
+    public static final int SCORE_STATUS_RIGHT      = 3; // 全对
+
     private long   id;   // 题目 ID
     private String stem; // 题干
     private String key;  // 参考答案

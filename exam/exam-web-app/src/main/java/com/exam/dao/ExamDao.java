@@ -1,7 +1,8 @@
 package com.exam.dao;
 
 import com.exam.bean.exam.ExamRecord;
-import com.exam.bean.exam.QuestionForAnswer;
+import com.exam.bean.exam.QuestionOptionAnswer;
+import com.exam.bean.exam.QuestionWithAnswer;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,9 +12,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -73,22 +72,33 @@ public class ExamDao {
     /**
      * 插入或者更新题目的作答
      *
-     * @param answer 题目的作答
+     * @param question 题目的作答
      */
-    public void upsertQuestionAnswer(QuestionForAnswer answer) {
-        Document document = new Document()
-                .append("examId", answer.getExamId())
-                .append("examRecordId", answer.getExamRecordId())
-                .append("questionId", answer.getQuestionId())
-                .append("answers", answer.getAnswers());
+    public void upsertQuestionAnswer(QuestionWithAnswer question) {
+        // 1. 删除题目选项的回答
+        // 2. 插入题目选项的回答
 
-        // 更新条件: 指定考试记录的选项
+        BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, QUESTION_ANSWER);
+
+        // [1] 删除题目选项的回答
         Query condition = Query.query(Criteria
-                .where("examRecordId").is(answer.getExamRecordId())
-                .and("questionId").is(answer.getQuestionId())
+                .where("examRecordId").is(question.getExamRecordId())
+                .and("questionId").is(question.getQuestionId())
         );
+        bulkOps.remove(condition);
 
-        mongoTemplate.upsert(condition, Update.fromDocument(document), QUESTION_ANSWER);
+        for (QuestionOptionAnswer answer : question.getAnswers()) {
+            Document document = new Document()
+                    .append("examId", question.getExamId())
+                    .append("examRecordId", question.getExamRecordId())
+                    .append("questionId", question.getQuestionId())
+                    .append("questionOptionId", answer.getQuestionOptionId())
+                    .append("content", answer.getContent());
+            // [2] 插入题目选项的回答
+            bulkOps.insert(document);
+        }
+
+        bulkOps.execute();
     }
 
     /**
@@ -96,13 +106,13 @@ public class ExamDao {
      *
      * @param questions 题目的作答
      */
-    public void upsertSubjectiveQuestionsForAnswer(List<QuestionForAnswer> questions) {
+    public void upsertSubjectiveQuestionsForAnswer(List<QuestionWithAnswer> questions) {
         if (questions.size() == 0) { return; }
 
         // 使用批量操作
         BulkOperations bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, QUESTION_CORRECT);
 
-        for (QuestionForAnswer question : questions) {
+        for (QuestionWithAnswer question : questions) {
             Update update = Update.update("examId", question.getExamId())
                     .set("examRecordId", question.getExamRecordId())
                     .set("questionId", question.getQuestionId())
@@ -130,11 +140,28 @@ public class ExamDao {
      * @param examRecordId 考试记录 ID
      * @return 返回作答的数组
      */
-    public List<QuestionForAnswer> findQuestionForAnswersByExamRecordId(long examRecordId) {
-        Criteria criteria = Criteria.where("examRecordId").is(examRecordId);
-        List<QuestionForAnswer> answers = mongoTemplate.find(Query.query(criteria), QuestionForAnswer.class, QUESTION_ANSWER);
+    public List<QuestionWithAnswer> findQuestionForAnswersByExamRecordId(long examRecordId) {
+        // 1. 查询考试记录下的作答
+        // 2. 作答按照题目 ID 分组
+        // 3. 每个题目的作答创建一个 QuestionWithAnswer
 
-        return answers;
+        // [1] 查询考试记录下的作答
+        Criteria criteria = Criteria.where("examRecordId").is(examRecordId);
+        List<QuestionOptionAnswer> answers = mongoTemplate.find(Query.query(criteria), QuestionOptionAnswer.class, QUESTION_ANSWER);
+
+        // [2] 作答按照题目 ID 分组
+        Map<Long, List<QuestionOptionAnswer>> questionAnswers = answers.stream().collect(Collectors.groupingBy(QuestionOptionAnswer::getQuestionId));
+
+        // [3] 每个题目的作答创建一个 QuestionWithAnswer
+        List<QuestionWithAnswer> questions = new LinkedList<>();
+        questionAnswers.forEach((questionId, ans) -> {
+            QuestionWithAnswer question = new QuestionWithAnswer();
+            question.setQuestionId(ans.get(0).getQuestionId());
+            question.setAnswers(ans);
+            questions.add(question);
+        });
+
+        return questions;
     }
 
     /**

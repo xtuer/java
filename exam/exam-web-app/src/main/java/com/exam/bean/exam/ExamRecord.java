@@ -43,7 +43,7 @@ public class ExamRecord {
     private Date    submittedAt; // 提交试卷时间
     private Date    tickAt;      // 打卡时间
 
-    private List<QuestionForAnswer> questions = new LinkedList<>(); // 考试记录题目的作答 (不返回给前端)
+    private List<QuestionWithAnswer> questions = new LinkedList<>(); // 考试记录题目的作答 (不返回给前端)
 
     @Transient private Exam exam;   // 考试 (不保存到 Mongo)
     @Transient private Paper paper; // 试卷 (不保存到 Mongo)

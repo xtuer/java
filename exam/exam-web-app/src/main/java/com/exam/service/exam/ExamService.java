@@ -179,7 +179,7 @@ public class ExamService extends BaseService {
 
         // [2] 恢复考试状态: 如果考试记录未提交，则查询作答记录
         if (record.getStatus() < ExamRecord.STATUS_SUBMITTED) {
-            List<QuestionForAnswer> qas = examDao.findQuestionForAnswersByExamRecordId(record.getId());
+            List<QuestionWithAnswer> qas = examDao.findQuestionForAnswersByExamRecordId(record.getId());
             record.setQuestions(qas); // record 中的 questions 为题目的作答和得分
         }
 
@@ -316,7 +316,7 @@ public class ExamService extends BaseService {
 
         // [4] 如果只是作答单个题目，保存作答记录并返回
         if (!questionAnswers.isSubmitted()) {
-            QuestionForAnswer question = questionAnswers.getQuestions().get(0);
+            QuestionWithAnswer question = questionAnswers.getQuestions().get(0);
             question.setExamId(record.getExamId());
             question.setExamRecordId(recordId);
             examDao.upsertQuestionAnswer(question);
@@ -333,7 +333,7 @@ public class ExamService extends BaseService {
         Paper paper = paperService.findPaper(record.getPaperId());
         Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
 
-        List<QuestionForAnswer> qas = questionAnswers.getQuestions().stream().filter(qa -> {
+        List<QuestionWithAnswer> qas = questionAnswers.getQuestions().stream().filter(qa -> {
             Question q = questions.get(qa.getQuestionId());
 
             // 过滤掉复合题的大题
@@ -466,8 +466,8 @@ public class ExamService extends BaseService {
         Map<Long, Question> questions = paperService.getAllQuestionsOfPaper(paper);
 
         // [2] 逐个批改考试记录里作答的客观题
-        record.getQuestions().forEach(qa -> {
-            Question question = questions.get(qa.getQuestionId());
+        record.getQuestions().forEach(qwa -> {
+            Question question = questions.get(qwa.getQuestionId());
 
             // 非客观题则不进行批改
             if (question == null || !question.isObjective()) {
@@ -476,7 +476,7 @@ public class ExamService extends BaseService {
 
             // [3] 得到正批改的题目的所有正确的选项，所有作答的选项
             List<Long> correctOptions = question.getOptions().stream().filter(QuestionOption::isCorrect).map(QuestionOption::getId).collect(Collectors.toList());
-            List<Long> checkedOptions = qa.getAnswers().stream().map(QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
+            List<Long> checkedOptions = qwa.getAnswers().stream().map(QuestionOptionAnswer::getQuestionOptionId).collect(Collectors.toList());
 
             // [4] 批改客观题 (全对得满分，部分正确得一半分)
             if (!checkedOptions.isEmpty() && correctOptions.containsAll(checkedOptions)) {
@@ -484,14 +484,14 @@ public class ExamService extends BaseService {
 
                 if (correctOptions.size() == checkedOptions.size()) {
                     // [4.1.1] 全对: 个数一样
-                    qa.setScore(question.getTotalScore()).setScoreStatus(QuestionForAnswer.SCORE_STATUS_RIGHT);
+                    qwa.setScore(question.getTotalScore()).setScoreStatus(Question.SCORE_STATUS_RIGHT);
                 } else {
                     // [4.1.2] 半对: 个数不一样
-                    qa.setScore(question.getTotalScore() / 2).setScoreStatus(QuestionForAnswer.SCORE_STATUS_HALF_RIGHT);
+                    qwa.setScore(question.getTotalScore() / 2).setScoreStatus(Question.SCORE_STATUS_HALF_RIGHT);
                 }
             } else {
                 // [4.2] 错误: 未作答，或者答错任何一个选项
-                qa.setScore(0).setScoreStatus(QuestionForAnswer.SCORE_STATUS_ERROR);
+                qwa.setScore(0).setScoreStatus(Question.SCORE_STATUS_ERROR);
             }
         });
 
@@ -523,41 +523,41 @@ public class ExamService extends BaseService {
         // 5. 保存主观题的作答
 
         // 作答的题目
-        List<QuestionForAnswer> questionForAnswers = new LinkedList<>();
+        List<QuestionWithAnswer> questions = new LinkedList<>();
 
         // [1] 获取考试记录中所有题目选项的作答 optionAnswers
         Map<Long, QuestionOptionAnswer> optionAnswers = record.getQuestions().stream()
-                .map(QuestionForAnswer::getAnswers)
+                .map(QuestionWithAnswer::getAnswers)
                 .flatMap(List::stream)
                 .collect(Collectors.toMap(QuestionOptionAnswer::getQuestionOptionId, o -> o, (o, n) -> n));
 
         // [2] 遍历试卷中的主观题，逐个处理
         paperService.getSubjectiveQuestionsOfPaper(paper).forEach(subjectiveQuestion -> {
-            QuestionForAnswer questionForAnswer = new QuestionForAnswer();
+            QuestionWithAnswer question = new QuestionWithAnswer();
 
             // [3] 获取主观题的作答，从 optionAnswers 中获取
             questionService.getQuestionOptions(subjectiveQuestion).forEach(option -> {
                 QuestionOptionAnswer answer = optionAnswers.get(option.getId());
 
                 if (answer != null) {
-                    questionForAnswer.getAnswers().add(answer);
+                    question.getAnswers().add(answer);
                 }
             });
 
             // [4] 主观题没有作答，则不继续处理
-            if (questionForAnswer.getAnswers().size() == 0) {
+            if (question.getAnswers().size() == 0) {
                 log.warn("[提取] 主观题作答: 用户 {}, 考试记录 {}, 主观题 {}，没有作答", record.getUserId(), record.getId(), subjectiveQuestion.getId());
                 return;
             }
 
-            questionForAnswer.setExamId(record.getExamId())
+            question.setExamId(record.getExamId())
                     .setExamRecordId(record.getId())
                     .setQuestionId(subjectiveQuestion.getId());
-            questionForAnswers.add(questionForAnswer);
+            questions.add(question);
         });
 
         // [5] 保存主观题的作答
-        examDao.upsertSubjectiveQuestionsForAnswer(questionForAnswers);
+        examDao.upsertSubjectiveQuestionsForAnswer(questions);
     }
 
     /**
@@ -568,8 +568,8 @@ public class ExamService extends BaseService {
     private void scoringExamRecord(ExamRecord record) {
         double sum = 0;
 
-        for (QuestionForAnswer qa : record.getQuestions()) {
-            sum += qa.getScore();
+        for (QuestionWithAnswer question : record.getQuestions()) {
+            sum += question.getScore();
         }
 
         record.setScore(sum);

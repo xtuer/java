@@ -11,18 +11,12 @@ import java.util.List;
 /**
  * 保存作答信息的题目:
  * A. 考试记录中保存作答的题目: exam_record
- * B. 用于主观题逐题批改: exam_question_correct
+ * B. 用于主观题逐题批改的作答: exam_question_correct
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class QuestionForAnswer {
-    // 得分状态
-    public static final int SCORE_STATUS_UNKNOWN    = 0; // 未知
-    public static final int SCORE_STATUS_ERROR      = 1; // 错误
-    public static final int SCORE_STATUS_HALF_RIGHT = 2; // 半对
-    public static final int SCORE_STATUS_RIGHT      = 3; // 全对
-
+public class QuestionWithAnswer {
     private long questionId; // 题目 ID
     private long teacherId;  // 批改题目老师的 ID
     private double score;    // 题目得分

@@ -18,5 +18,5 @@ public class QuestionAnswers {
     private long examRecordId; // 考试记录 ID
     private boolean submitted; // 是否提交试卷
     private Date submittedAt = new Date(); // 提交试卷时间
-    List<QuestionForAnswer> questions; // 题目的作答
+    List<QuestionWithAnswer> questions; // 题目的作答
 }

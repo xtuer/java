@@ -74,7 +74,7 @@ public class ExamTest {
      */
     @Test
     public void upsertQuestionAnswerMongo() {
-        QuestionForAnswer answer = new QuestionForAnswer();
+        QuestionWithAnswer answer = new QuestionWithAnswer();
         answer.setExamRecordId(1).setQuestionId(1);
         QuestionOptionAnswer oa = new QuestionOptionAnswer();
         oa.setQuestionOptionId(1);
@@ -89,7 +89,7 @@ public class ExamTest {
     @Test
     public void findQuestionAnswersMongo() {
         long examRecordId = 1;
-        List<QuestionForAnswer> answers = examDao.findQuestionForAnswersByExamRecordId(1);
+        List<QuestionWithAnswer> answers = examDao.findQuestionForAnswersByExamRecordId(1);
         Utils.dump(answers);
     }
 
@@ -108,8 +108,8 @@ public class ExamTest {
         QuestionOptionAnswer a2 = new QuestionOptionAnswer();
         a2.setQuestionOptionId(22);
 
-        QuestionForAnswer q1 = new QuestionForAnswer();
-        QuestionForAnswer q2 = new QuestionForAnswer();
+        QuestionWithAnswer q1 = new QuestionWithAnswer();
+        QuestionWithAnswer q2 = new QuestionWithAnswer();
         q1.setQuestionId(1).setScore(4.5);
         q2.setQuestionId(2).setScore(7.5);
         q1.getAnswers().add(a1);
