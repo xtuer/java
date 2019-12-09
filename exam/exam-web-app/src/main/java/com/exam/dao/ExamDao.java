@@ -74,7 +74,7 @@ public class ExamDao {
      *
      * @param question 题目的作答
      */
-    public void upsertQuestionAnswer(QuestionWithAnswer question) {
+    public void upsertQuestionAnswers(QuestionWithAnswer question) {
         // 1. 删除题目选项的回答
         // 2. 插入题目选项的回答
 
@@ -106,7 +106,7 @@ public class ExamDao {
      *
      * @param questions 题目的作答
      */
-    public void upsertSubjectiveQuestionsForAnswer(List<QuestionWithAnswer> questions) {
+    public void upsertSubjectiveQuestionsWithAnswer(List<QuestionWithAnswer> questions) {
         if (questions.size() == 0) { return; }
 
         // 使用批量操作
@@ -140,7 +140,7 @@ public class ExamDao {
      * @param examRecordId 考试记录 ID
      * @return 返回作答的数组
      */
-    public List<QuestionWithAnswer> findQuestionForAnswersByExamRecordId(long examRecordId) {
+    public List<QuestionWithAnswer> findQuestionsWithAnswerByExamRecordId(long examRecordId) {
         // 1. 查询考试记录下的作答
         // 2. 作答按照题目 ID 分组
         // 3. 每个题目的作答创建一个 QuestionWithAnswer

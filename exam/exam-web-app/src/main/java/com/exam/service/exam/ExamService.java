@@ -179,7 +179,7 @@ public class ExamService extends BaseService {
 
         // [2] 恢复考试状态: 如果考试记录未提交，则查询作答记录
         if (record.getStatus() < ExamRecord.STATUS_SUBMITTED) {
-            List<QuestionWithAnswer> qas = examDao.findQuestionForAnswersByExamRecordId(record.getId());
+            List<QuestionWithAnswer> qas = examDao.findQuestionsWithAnswerByExamRecordId(record.getId());
             record.setQuestions(qas); // record 中的 questions 为题目的作答和得分
         }
 
@@ -319,7 +319,7 @@ public class ExamService extends BaseService {
             QuestionWithAnswer question = questionAnswers.getQuestions().get(0);
             question.setExamId(record.getExamId());
             question.setExamRecordId(recordId);
-            examDao.upsertQuestionAnswer(question);
+            examDao.upsertQuestionAnswers(question);
 
             return Result.ok(question.getQuestionId());
         }
@@ -557,7 +557,7 @@ public class ExamService extends BaseService {
         });
 
         // [5] 保存主观题的作答
-        examDao.upsertSubjectiveQuestionsForAnswer(questions);
+        examDao.upsertSubjectiveQuestionsWithAnswer(questions);
     }
 
     /**

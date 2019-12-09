@@ -80,7 +80,7 @@ public class ExamTest {
         oa.setQuestionOptionId(1);
         oa.setContent("Hello");
         answer.getAnswers().add(oa);
-        examDao.upsertQuestionAnswer(answer);
+        examDao.upsertQuestionAnswers(answer);
     }
 
     /**
@@ -89,7 +89,7 @@ public class ExamTest {
     @Test
     public void findQuestionAnswersMongo() {
         long examRecordId = 1;
-        List<QuestionWithAnswer> answers = examDao.findQuestionForAnswersByExamRecordId(1);
+        List<QuestionWithAnswer> answers = examDao.findQuestionsWithAnswerByExamRecordId(1);
         Utils.dump(answers);
     }
 
