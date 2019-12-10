@@ -4,7 +4,7 @@
 // 把下面的映射添加到 hosts 文件，如果 mysql, redis 等安装在其他机器上，修改为对应机器的 IP
 // 127.0.0.1 mysql.exam
 // 127.0.0.1 redis.exam
-// 127.0.0.1 mongodb.exam
+// 127.0.0.1 mongo.exam
 // 127.0.0.1 activemq.exam
 // 127.0.0.1 zooKeeper.exam
 // 127.0.0.1 elasticsearch.exam
