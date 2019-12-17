@@ -28,7 +28,7 @@ public class QuestionAnswersMessageConsumer implements MessageListener {
             QuestionAnswers questionAnswers = JSON.parseObject(textMsg.getText(), QuestionAnswers.class);
             examService.answerQuestions(questionAnswers);
         } catch (JMSException e) {
-            log.warn(ExceptionUtils.getStackTrace(e));
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

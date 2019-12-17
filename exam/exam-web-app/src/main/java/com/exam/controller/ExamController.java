@@ -5,6 +5,7 @@ import com.exam.bean.User;
 import com.exam.bean.exam.Exam;
 import com.exam.bean.exam.ExamRecord;
 import com.exam.bean.exam.QuestionAnswers;
+import com.exam.config.AppConfig;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.mq.MessageProducer;
 import com.exam.service.exam.ExamService;
@@ -26,6 +27,9 @@ public class ExamController extends BaseController {
 
     @Autowired
     private MessageProducer messageProducer;
+
+    @Autowired
+    private AppConfig config;
 
     /**
      * 查找当前机构的考试
@@ -145,7 +149,9 @@ public class ExamController extends BaseController {
     @PostMapping(Urls.API_USER_EXAM_ANSWER_QUESTIONS)
     public Result<Long> answerQuestions(@PathVariable long recordId, @RequestBody QuestionAnswers questionAnswers) {
         // 1. 设置考试记录的信息
-        // 2. 提交考试记录到 MQ
+        // 2. 提交考试记录
+        //    2.1 使用 MQ 时写入到 MQ
+        //    2.2 不用 MQ 时写入到 DB
         // 3. 立即返回
 
         // [1] 设置考试记录的信息
@@ -153,9 +159,19 @@ public class ExamController extends BaseController {
         questionAnswers.setUserId(super.getLoginUserId());
         questionAnswers.setExamRecordId(recordId);
 
-        // [2] 提交考试记录到 MQ
-        // messageProducer.sendAnswerQuestionsMessage(questionAnswers);
-        examService.answerQuestions(questionAnswers);
+        // [2] 提交考试记录
+        //    [2.1] 使用 MQ 时写入到 MQ
+        //    [2.2] 不用 MQ 时写入到 DB
+        if (config.isMqEnabled()) {
+            // 提交试卷时发送同步消息，题目作答时发送异步消息
+            if (questionAnswers.isSubmitted()) {
+                messageProducer.sendAnswerQuestionsMessage(questionAnswers);
+            } else {
+                messageProducer.sendAnswerQuestionsMessageAsync(questionAnswers);
+            }
+        } else {
+            examService.answerQuestions(questionAnswers); // 直接写到数据库
+        }
 
         // [3] 立即返回
         if (questionAnswers.isSubmitted()) {

@@ -11,21 +11,40 @@
     <!-- ==================================================================================== -->
     <!-- 1. 真正可以创建 Connection 的 ConnectionFactory，由对应的 JMS 服务厂商提供 -->
     <!-- ==================================================================================== -->
+    <!-- 同步消息 Producer: 消息不会丢，但是效率很低，QPS 为 150/S 左右 -->
     <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${mqBrokerUrl}"/>
+        <property name="brokerURL" value="${mq.brokerUrl}"/>
     </bean>
     <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
         <property name="connectionFactory" ref="targetConnectionFactory"/>
-        <property name="maxConnections" value="${mqMaxConnections}"/>
+        <property name="maxConnections" value="${mq.maxConnections}"/>
     </bean>
     <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
         <property name="targetConnectionFactory" ref="pooledConnectionFactory"/>
         <property name="reconnectOnException" value="true"/>
     </bean>
 
-    <!-- Spring 提供的 JMS 工具类 JmsTemplate，用来消息发送 -->
+    <!-- Spring 提供的 JMS 工具类 JmsTemplate，用来发送同步消息 -->
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+
+    <!-- 异步消息 Producer: 消息可能会丢，但是效率很高，QPS 为 10000/S 左右 -->
+    <bean id="targetConnectionFactoryAsync" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${mq.brokerUrl}?tcpNoDelay=true&amp;jms.useAsyncSend=true"/>
+    </bean>
+    <bean id="pooledConnectionFactoryAsync" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory" ref="targetConnectionFactoryAsync"/>
+        <property name="maxConnections" value="${mq.maxConnections}"/>
+    </bean>
+    <bean id="connectionFactoryAsync" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="pooledConnectionFactoryAsync"/>
+        <property name="reconnectOnException" value="true"/>
+    </bean>
+
+    <!-- Spring 提供的 JMS 工具类 JmsTemplateAsync，用来发送异步消息 -->
+    <bean id="jmsTemplateAsync" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactoryAsync"/>
     </bean>
 
     <!-- ==================================================================================== -->
@@ -56,11 +75,18 @@
     <bean id="performanceTestMessageConsumer" class="com.exam.mq.PerformanceTestMessageConsumer"/>
 
     <!-- 3.2 消息监听容器: 配置消息监听器监听的 destination -->
-    <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="transacted">
+    <jms:listener-container connection-factory="connectionFactory"
+                            destination-type="queue"
+                            prefetch="100"
+                            concurrency="8"
+                            acknowledge="client">
         <jms:listener destination="question-answers-queue" ref="questionAnswersMessageConsumer"/>
     </jms:listener-container>
 
-    <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="dups-ok">
+    <jms:listener-container connection-factory="connectionFactory"
+                            destination-type="queue"
+                            concurrency="8"
+                            acknowledge="client">
         <jms:listener destination="performance-test-queue" ref="performanceTestMessageConsumer"/>
     </jms:listener-container>
 </beans>

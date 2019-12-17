@@ -47,8 +47,10 @@
         }
 
         mq {
-            brokerUrl      = 'tcp://activemq.exam:61616?tcpNoDelay=true' // 消息队列的 Broker
-            maxConnections = 10 // 最大连接数
+            // 异步发送 (消息可能会丢失): tcpNoDelay=true&jms.useAsyncSend=true
+            brokerUrl      = 'tcp://activemq.exam:61616' // 消息队列的 Broker
+            maxConnections = 10    // 最大连接数
+            enabled        = true; // 是否启用消息队列
         }
 
         // 应用的 ID 和 key，用于生成身份认证的 token

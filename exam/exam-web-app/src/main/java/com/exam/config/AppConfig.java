@@ -55,4 +55,7 @@ public class AppConfig {
 
     @Value("${redis.maxTotal}")
     private int redisMaxTotal;
+
+    @Value("${mq.enabled}")
+    private boolean mqEnabled;
 }
