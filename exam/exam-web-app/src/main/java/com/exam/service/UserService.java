@@ -6,6 +6,7 @@ import com.exam.bean.CacheConst;
 import com.exam.bean.Result;
 import com.exam.bean.Role;
 import com.exam.bean.User;
+import com.exam.dao.UserDao;
 import com.exam.mapper.UserMapper;
 import com.exam.security.SecurityConstant;
 import com.exam.security.TokenService;
@@ -28,6 +29,9 @@ import java.io.IOException;
 public class UserService extends BaseService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private TokenService tokenService;
@@ -131,7 +135,7 @@ public class UserService extends BaseService {
      */
     public String loginToken(User user, HttpServletResponse response) {
         // 1. 创建用户的登录记录
-        userMapper.insertUserLoginRecord(user.getId(), user.getUsername());
+        userDao.insertUserLoginRecord(user);
 
         // 2. 生成用户的 token，并保存 token 到 cookie (方便浏览器端使用 Ajax 登录)
         String token = tokenService.generateToken(user);
