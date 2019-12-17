@@ -41,6 +41,11 @@
         <constructor-arg value="question-answers-queue"/>
     </bean>
 
+    <!-- 性能测试队列 -->
+    <bean id="performanceTestQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="performance-test-queue"/>
+    </bean>
+
     <!-- ==================================================================================== -->
     <!-- 3. 消息消费 -->
     <!-- ==================================================================================== -->
@@ -48,9 +53,14 @@
     <!-- 3.1 消息的消费者 -->
     <!-- 题目作答消息的消费者 -->
     <bean id="questionAnswersMessageConsumer" class="com.exam.mq.QuestionAnswersMessageConsumer"/>
+    <bean id="performanceTestMessageConsumer" class="com.exam.mq.PerformanceTestMessageConsumer"/>
 
     <!-- 3.2 消息监听容器: 配置消息监听器监听的 destination -->
     <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="transacted">
         <jms:listener destination="question-answers-queue" ref="questionAnswersMessageConsumer"/>
+    </jms:listener-container>
+
+    <jms:listener-container connection-factory="connectionFactory" destination-type="queue" acknowledge="dups-ok">
+        <jms:listener destination="performance-test-queue" ref="performanceTestMessageConsumer"/>
     </jms:listener-container>
 </beans>

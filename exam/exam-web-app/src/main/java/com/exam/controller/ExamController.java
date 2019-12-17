@@ -154,7 +154,8 @@ public class ExamController extends BaseController {
         questionAnswers.setExamRecordId(recordId);
 
         // [2] 提交考试记录到 MQ
-        messageProducer.sendAnswerQuestionsMessage(questionAnswers);
+        // messageProducer.sendAnswerQuestionsMessage(questionAnswers);
+        examService.answerQuestions(questionAnswers);
 
         // [3] 立即返回
         if (questionAnswers.isSubmitted()) {

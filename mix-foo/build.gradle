@@ -29,6 +29,7 @@ repositories {
 dependencies {
     implementation "com.aliyun.oss:aliyun-sdk-oss:3.7.0"
     implementation "com.alibaba:fastjson:1.2.59"
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
     testCompile 'junit:junit:4.12'
     compileOnly 'org.projectlombok:lombok:1.16.18'

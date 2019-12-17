@@ -13,12 +13,12 @@
 
     <mongo:mongo-client host="${mongo.host}" port="${mongo.port}"
                         credentials="${mongo.username}:${mongo.password}@${mongo.database}">
-        <mongo:client-options connections-per-host="8"
-                              threads-allowed-to-block-for-connection-multiplier="4"
-                              connect-timeout="1000"
-                              max-wait-time="1500"
+        <mongo:client-options connections-per-host="100"
+                              threads-allowed-to-block-for-connection-multiplier="10"
+                              connect-timeout="2000"
+                              max-wait-time="3000"
                               socket-keep-alive="true"
-                              socket-timeout="1500"
+                              socket-timeout="3000"
                               write-concern="SAFE"/>
     </mongo:mongo-client>
     <mongo:db-factory id="mongoFactory" dbname="${mongo.database}" mongo-ref="mongoClient"/>

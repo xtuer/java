@@ -47,7 +47,7 @@
         }
 
         mq {
-            brokerUrl      = 'tcp://activemq.exam:61616' // 消息队列的 Broker
+            brokerUrl      = 'tcp://activemq.exam:61616?tcpNoDelay=true' // 消息队列的 Broker
             maxConnections = 10 // 最大连接数
         }
 
