@@ -77,7 +77,6 @@
     <!-- 3.2 消息监听容器: 配置消息监听器监听的 destination -->
     <jms:listener-container connection-factory="connectionFactory"
                             destination-type="queue"
-                            prefetch="100"
                             concurrency="8"
                             acknowledge="client">
         <jms:listener destination="question-answers-queue" ref="questionAnswersMessageConsumer"/>
