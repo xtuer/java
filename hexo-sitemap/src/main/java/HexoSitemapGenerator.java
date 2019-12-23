@@ -113,7 +113,7 @@ public class HexoSitemapGenerator {
         System.out.println(out);
 
         // [3.3] 保存 sitemap.md 到文件
-        Files.write(Paths.get(blogDir + "/sitemap.md"), out.toString().getBytes());
+        Files.write(Paths.get(blogDir + "/all.md"), out.toString().getBytes());
     }
 
     private static Meta createMeta(Path md) {
