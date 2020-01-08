@@ -1,7 +1,7 @@
-package com.js.service;
+package com.jz.service;
 
-import com.js.bean.Urls;
-import com.js.util.Utils;
+import com.jz.bean.Urls;
+import com.jz.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

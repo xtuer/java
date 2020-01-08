@@ -1,8 +1,8 @@
-package com.js.service;
+package com.jz.service;
 
 import com.alibaba.fastjson.JSON;
-import com.js.bean.UploadedFile;
-import com.js.bean.Urls;
+import com.jz.bean.UploadedFile;
+import com.jz.bean.Urls;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

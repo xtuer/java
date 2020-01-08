@@ -1,6 +1,6 @@
-package com.js.bean;
+package com.jz.bean;
 
-import com.js.util.Utils;
+import com.jz.util.Utils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 

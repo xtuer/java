@@ -1,4 +1,4 @@
-package com.js.bean;
+package com.jz.bean;
 
 public interface Urls {
     // 上传文件、图片到临时目录，仓库中的文件为正式的文件

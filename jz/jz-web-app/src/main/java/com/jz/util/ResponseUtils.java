@@ -1,6 +1,6 @@
-package com.js.util;
+package com.jz.util;
 
-import com.js.bean.Mime;
+import com.jz.bean.Mime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;

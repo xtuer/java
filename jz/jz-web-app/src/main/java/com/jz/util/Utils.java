@@ -1,4 +1,4 @@
-package com.js.util;
+package com.jz.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;

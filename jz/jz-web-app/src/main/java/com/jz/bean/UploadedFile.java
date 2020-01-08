@@ -1,4 +1,4 @@
-package com.js.bean;
+package com.jz.bean;
 
 import lombok.Getter;
 import lombok.Setter;

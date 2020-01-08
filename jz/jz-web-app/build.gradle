@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.js'
+group = 'com.jz'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
@@ -32,4 +32,8 @@ test {
 
 bootJar {
 	archiveFileName = 'jz.jar'
+}
+
+if (project.hasProperty('rebelAgent')) {
+    bootRun.jvmArgs += rebelAgent
 }

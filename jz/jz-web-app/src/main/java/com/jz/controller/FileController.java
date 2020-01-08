@@ -1,11 +1,11 @@
-package com.js.controller;
+package com.jz.controller;
 
-import com.js.bean.Result;
-import com.js.bean.UploadedFile;
-import com.js.bean.Urls;
-import com.js.service.RepoFileService;
-import com.js.service.TempFileService;
-import com.js.util.WebUtils;
+import com.jz.bean.Result;
+import com.jz.bean.UploadedFile;
+import com.jz.bean.Urls;
+import com.jz.service.RepoFileService;
+import com.jz.service.TempFileService;
+import com.jz.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

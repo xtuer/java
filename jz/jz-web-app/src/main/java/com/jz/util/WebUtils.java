@@ -1,7 +1,7 @@
-package com.js.util;
+package com.jz.util;
 
 import com.alibaba.fastjson.JSON;
-import com.js.bean.Result;
+import com.jz.bean.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RegExUtils;
