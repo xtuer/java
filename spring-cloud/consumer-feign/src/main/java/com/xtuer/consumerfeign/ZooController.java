@@ -1,18 +1,17 @@
-package com.xtuer.consulclient;
+package com.xtuer.consumerfeign;
 
+import com.xtuer.consumerfeign.feign.ConsulClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ZooController {
     @Autowired
-    private DiscoveryClient discoveryClient;
+    private ConsulClient consulClient;
 
-    @GetMapping("/dc")
+    @GetMapping("/feign/dc")
     public String dc() {
-        System.out.println(System.currentTimeMillis());
-        return discoveryClient.getServices().toString();
+        return consulClient.dc();
     }
 }
