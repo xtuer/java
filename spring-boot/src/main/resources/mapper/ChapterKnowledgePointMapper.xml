@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
+<mapper namespace="com.xtuer.mapper.ChapterKnowledgePointMapper">
+    <select id="findChapterKnowledgePointByChapterCode" resultMap="ChapterResultMap">
+        SELECT book_code, chapter_code, chapter_comment, knowledge_point_code, knowledge_point_title
+        FROM chapter_knowledge_point
+        WHERE book_code = #{bookCode} AND chapter_code = #{chapterCode}
+    </select>
+
+    <resultMap id="ChapterResultMap" type="Chapter">
+        <id     property="code"     column="chapter_code"/>
+        <result property="bookCode" column="book_code"/>
+        <result property="comment"  column="chapter_comment"/>
+
+        <!-- 知识点 -->
+        <collection property="knowledgePoints" ofType="KnowledgePoint">
+            <id     property="code"  column="knowledge_point_code"/>
+            <result property="title" column="knowledge_point_title"/>
+        </collection>
+    </resultMap>
+</mapper>
