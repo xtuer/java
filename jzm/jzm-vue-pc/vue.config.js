@@ -21,7 +21,7 @@ module.exports = {
     },
 
     // yarn build 的输出目录
-    outputDir: '../template-web-boot/src/main/resources/page-p',
+    outputDir: '../jzm-web-boot/src/main/resources/page-p',
     assetsDir: 'static-p',
     productionSourceMap: false, // 不生成 map 文件
     configureWebpack: (config) => {
