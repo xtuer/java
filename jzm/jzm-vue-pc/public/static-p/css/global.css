@@ -92,3 +92,7 @@
 .ivu-modal-footer button {
     min-width: 90px;
 }
+
+.ivu-btn-small {
+    font-size: 12px !important;
+}

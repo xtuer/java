@@ -76,7 +76,7 @@ public class OrderController {
      */
     @DeleteMapping(Urls.API_ORDER_BY_ID)
     public Result<Boolean> deleteOrder(@PathVariable long orderId) {
-        orderMapper.deleteOrderItem(orderId);
+        orderMapper.deleteOrder(orderId);
         return Result.ok();
     }
 

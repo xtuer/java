@@ -43,6 +43,7 @@
         SELECT <include refid="order_columns"/>, <include refid="order_items_columns"/>
         FROM `order` AS o
             LEFT JOIN order_item AS oi ON oi.order_id = o.id
+        ORDER BY o.created_at DESC
     </select>
 
     <!-- 插入或者更新订单 -->

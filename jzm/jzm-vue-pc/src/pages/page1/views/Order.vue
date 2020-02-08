@@ -6,25 +6,33 @@
         </div>
 
         <!-- 显示订单 -->
-        <Table :data="orders" :columns="orderColumns">
+        <Table :data="orders" :columns="orderColumns" border>
             <template slot-scope="{ row: order }" slot="orderDate">
                 {{ order.orderDate | formatDate }}
+            </template>
+
+            <template slot-scope="{ index }" slot="action">
+                <Button size="small" type="primary" style="margin-right: 5px" @click="editOrder(index)">编辑</Button>
+                <Button size="small" type="error" @click="deleteOrder(index)">删除</Button>
+            </template>
+
+            <template slot-scope="{ row: order }" slot="orderItems">
+                <ul v-if="order.orderItems.length">
+                    <li v-for="item in order.orderItems" :key="item.id">{{ item.id }}</li>
+                </ul>
+                <div v-else>无</div>
             </template>
         </Table>
 
         <!-- 加载下一页订单按钮 -->
-        <Button :loading="loading" v-show="more" @click="fetchMoreOrders">更多...</Button>
+        <center>
+            <Button :loading="loading" v-show="more" icon="md-paw" shape="circle" @click="fetchMoreOrders">更多...</Button>
+        </center>
 
         <!-- 编辑订单对话框 -->
-        <Modal v-model="orderModal"
-                :loading="loading"
-                :mask-closable="false"
-                title="编辑订单"
-                width="600"
-                class="edit-order-modal"
-                @on-ok="saveOrder">
-            <Form :model="editedOrder" :label-width="80" class="order-form">
-                <FormItem label="客户名称:">
+        <Modal v-model="orderModal" :mask-closable="false" title="编辑订单" width="600" class="edit-order-modal">
+            <Form ref="orderForm" :model="editedOrder" :rules="orderRules" :key="editedOrder.id" :label-width="90" class="order-form">
+                <FormItem label="客户名称:" prop="customerName">
                     <Input v-model="editedOrder.customerName" placeholder="请输入客户名称"/>
                 </FormItem>
                 <FormItem label="生产进程:">
@@ -46,7 +54,7 @@
                         <Option value="其他">其他</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="软件版本:">
+                <FormItem label="软件版本:" prop="softwareVersion">
                     <Input v-model="editedOrder.softwareVersion" placeholder="请输入软件版本"/>
                 </FormItem>
                 <FormItem label="订单日期:">
@@ -65,6 +73,10 @@
                     <Button type="dashed" icon="md-add" style="float: right">添加订单项</Button>
                 </FormItem>
             </Form>
+
+            <div slot="footer">
+                <Button type="primary" :loading="loading" @click="saveOrder">保存</Button>
+            </div>
         </Modal>
 
         <!-- 编辑订单项对话框 -->
@@ -130,15 +142,27 @@ export default {
             ORDER_ITEM_TYPES    : ORDER_ITEM_TYPES, // 订单项类型
 
             orderColumns: [
-                { title: '客户名称', key: 'customerName' },
-                { title: '生产进程', key: 'process' },
-                { title: '订单类型', key: 'type' },
-                { title: '品牌',    key: 'brand' },
-                { title: '软件版本', key: 'softwareVersion' },
-                { title: '订单日期', slot: 'orderDate' },
-                { title: '负责人',   key: 'personInCharge' },
+                { title: '客户名称', key: 'customerName', width: 110 },
+                { title: '生产进程', key: 'process', width: 110 },
+                { title: '订单类型', key: 'type', width: 110 },
+                { title: '品牌',    key: 'brand', width: 110 },
+                { title: '软件版本', key: 'softwareVersion', width: 110 },
+                { title: '订单日期', slot: 'orderDate', align: 'center', width: 130 },
+                { title: '负责人',   key: 'personInCharge', width: 110 },
+                { title: '订单项', slot: 'orderItems' },
+                { title: '操作', slot: 'action', align: 'center', width: 130 },
             ],
             orderItemColumns: [],
+
+            // 订单的校验规则
+            orderRules: {
+                customerName: [
+                    { required: true, whitespace: true, message: '客户名称不能为空', trigger: 'blur' }
+                ],
+                softwareVersion: [
+                    { required: true, whitespace: true, message: '软件版本不能为空', trigger: 'blur' }
+                ],
+            },
         };
     },
     created() {
@@ -166,9 +190,13 @@ export default {
         },
         // 点击编辑按钮，在弹窗中编辑订单
         editOrder(index) {
-            // 1. 生成编辑订单的副本
-            // 2. 保存编辑的订单下标
-            // 3. 在弹窗对订单的副本进行编辑
+            // 1. 重置表单，去掉上一次的验证信息
+            // 2. 生成编辑订单的副本
+            // 3. 保存编辑的订单下标
+            // 4. 在弹窗对订单的副本进行编辑
+
+            // [1] 重置表单，去掉上一次的验证信息
+            this.$refs.orderForm.resetFields();
 
             if (index === -1) {
                 // 创建
@@ -183,28 +211,44 @@ export default {
         },
         // 保存订单
         saveOrder() {
-            this.loading = true;
+            this.$refs.orderForm.validate(valid => {
+                if (!valid) { return; }
 
-            OrderUtils.cleanOrder(this.editedOrder);
-            OrderDao.saveOrder(this.editedOrder).then((orderId) => {
-                this.editedOrder.id = orderId;
+                this.loading = true;
 
-                if (this.editedOrderIndex === -1) {
-                    // 创建的用户添加到最前面
-                    this.orders.splice(0, 0, this.editedOrder);
-                } else {
-                    // 更新则替换已有的对象
-                    this.orders.splice(this.editedOrderIndex, 1, this.editedOrder);
-                }
+                OrderUtils.cleanOrder(this.editedOrder);
+                OrderDao.saveOrder(this.editedOrder).then((orderId) => {
+                    this.editedOrder.id = orderId;
 
-                this.orderModal = false;
-                this.loading = false;
-                this.$Message.success('保存订单成功');
+                    if (this.editedOrderIndex === -1) {
+                        // 创建的用户添加到最前面
+                        this.orders.splice(0, 0, this.editedOrder);
+                    } else {
+                        // 更新则替换已有的对象
+                        this.orders.splice(this.editedOrderIndex, 1, this.editedOrder);
+                    }
+
+                    this.orderModal = false;
+                    this.loading = false;
+                    this.$Message.success('保存订单成功');
+                });
             });
         },
         // 删除订单
-        deleteOrder() {
+        deleteOrder(index) {
+            let order = this.orders[index];
 
+            this.$Modal.confirm({
+                title: `确定要删除 <font color="red">${order.customerName}</font> 的订单吗?`,
+                loading: true,
+                onOk: () => {
+                    OrderDao.deleteOrder(order.id).then(() => {
+                        this.orders.splice(index, 1); // 服务器删除成功后才从 users 中删除
+                        this.$Modal.remove();
+                        this.$Message.success('删除成功');
+                    });
+                }
+            });
         },
         // 编辑订单项
         editOrderItem(index) {
@@ -224,13 +268,15 @@ export default {
 
 <style lang="scss">
 .order {
+    display: grid;
+    grid-gap: 12px;
+
     .toolbar {
         display: grid;
         grid-template-columns: max-content 200px 100px;
         grid-gap: 12px;
         align-items: center;
     }
-
 }
 
 .edit-order-modal {

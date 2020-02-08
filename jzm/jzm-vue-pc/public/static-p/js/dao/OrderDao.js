@@ -10,7 +10,7 @@ export default class OrderDao {
      */
     static saveOrder(order) {
         return new Promise((resolve, reject) => {
-            order.orderDate = order.orderDate.toJSON();
+            order = JSON.parse(JSON.stringify(order));
 
             Rest.update({ url: Urls.API_ORDER_BY_ID, pathVariables: { orderId:  order.id }, data: order, json: true })
                 .then(({ data: orderId, success, message }) => {
@@ -41,6 +41,28 @@ export default class OrderDao {
                     resolve(orders);
                 } else {
                     Notice.error({ title: '查询订单错误', desc: message });
+                    reject(message);
+                }
+            });
+        });
+    }
+
+    /**
+     * 删除指定 ID 的订单
+     *
+     * 网址: http://localhost:8080/api/orders/{orderId}
+     * 参数: 无
+     *
+     * @param {Long} orderId 订单 ID
+     * @param {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static deleteOrder(orderId) {
+        return new Promise((resolve, reject) => {
+            Rest.remove({ url: Urls.API_ORDER_BY_ID, pathVariables: { orderId } }).then(({ success, message }) => {
+                if (success) {
+                    resolve();
+                } else {
+                    Notice.error({ title: '删除订单', desc: message });
                     reject(message);
                 }
             });
