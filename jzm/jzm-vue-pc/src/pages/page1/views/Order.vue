@@ -30,8 +30,8 @@
         </center>
 
         <!-- 编辑订单对话框 -->
-        <Modal v-model="orderModal" :mask-closable="false" title="编辑订单" width="600" class="edit-order-modal">
-            <Form ref="orderForm" :model="editedOrder" :rules="orderRules" :key="editedOrder.id" :label-width="90" class="order-form">
+        <Modal v-model="orderModal" :mask-closable="false" title="编辑订单" width="700">
+            <Form ref="orderForm" :model="editedOrder" :rules="orderRules" :key="editedOrder.id" :label-width="90" class="two-column">
                 <FormItem label="客户名称:" prop="customerName">
                     <Input v-model="editedOrder.customerName" placeholder="请输入客户名称"/>
                 </FormItem>
@@ -70,7 +70,7 @@
                     <Input v-model="editedOrder.personInCharge" placeholder="请输入负责人"/>
                 </FormItem>
                 <FormItem>
-                    <Button type="dashed" icon="md-add" style="float: right">添加订单项</Button>
+                    <Button type="dashed" icon="md-add" style="float: right" @click="editOrderItem(-1)">添加订单项</Button>
                 </FormItem>
             </Form>
 
@@ -80,22 +80,17 @@
         </Modal>
 
         <!-- 编辑订单项对话框 -->
-        <Modal v-model="orderItemModal"
-                :mask-closable="false"
-                title="编辑订单项"
-                width="500"
-                class="edit-order-item-modal"
-                @on-ok="saveOrderItem">
-            <Form :model="editedOrderItem" :label-width="90" class="order-form">
-                <FormItem label="产品型号:">
+        <Modal v-model="orderItemModal" :mask-closable="false" title="编辑订单项" width="600">
+            <Form ref="orderItemForm" :model="editedOrderItem" :rules="orderItemRules" :label-width="100" class="two-column">
+                <FormItem label="产品型号:" prop="type">
                     <Select v-model="editedOrderItem.type">
                         <Option v-for="type in ORDER_ITEM_TYPES" :value="type" :key="type">{{ type }}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="产品序列号:">
+                <FormItem label="产品序列号:" prop="sn">
                     <Input v-model="editedOrderItem.sn" placeholder="请输入产品序列号"/>
                 </FormItem>
-                <FormItem label="芯片编号:">
+                <FormItem label="芯片编号:" prop="chipSn">
                     <Input v-model="editedOrderItem.chipSn" placeholder="请输入芯片编号"/>
                 </FormItem>
                 <FormItem label="外壳颜色:">
@@ -104,6 +99,9 @@
                 <FormItem label="外壳批次:">
                     <Input v-model="editedOrderItem.shellBatch" placeholder="请输入外壳批次"/>
                 </FormItem>
+                <FormItem label="数量:">
+                    <InputNumber :min="1" v-model="editedOrderItem.count" placeholder="请输入数量" style="width: 100%"/>
+                </FormItem>
                 <FormItem label="传感器信息:">
                     <Input v-model="editedOrderItem.sensorInfo" placeholder="请输入传感器信息"/>
                 </FormItem>
@@ -111,6 +109,10 @@
                     <Input v-model="editedOrderItem.circleInfo" placeholder="请输入 Ο 型圈信息"/>
                 </FormItem>
             </Form>
+
+            <div slot="footer">
+                <Button type="primary" @click="saveOrderItem">保存</Button>
+            </div>
         </Modal>
     </div>
 </template>
@@ -163,6 +165,17 @@ export default {
                     { required: true, whitespace: true, message: '软件版本不能为空', trigger: 'blur' }
                 ],
             },
+            orderItemRules: {
+                type: [
+                    { required: true, message: '型号不能为空', trigger: 'change' }
+                ],
+                sn: [
+                    { required: true, whitespace: true, message: '序列号为空', trigger: 'blur' }
+                ],
+                chipSn: [
+                    { required: true, whitespace: true, message: '芯片编号不能为空', trigger: 'blur' }
+                ],
+            }
         };
     },
     created() {
@@ -176,7 +189,7 @@ export default {
             this.more = false;
             this.fetchMoreOrders();
         },
-        // 点击更多按钮加载下一页的用户
+        // 点击更多按钮加载下一页的订单
         fetchMoreOrders() {
             this.loading = true;
 
@@ -228,8 +241,8 @@ export default {
                         this.orders.splice(this.editedOrderIndex, 1, this.editedOrder);
                     }
 
-                    this.orderModal = false;
                     this.loading = false;
+                    this.orderModal = false;
                     this.$Message.success('保存订单成功');
                 });
             });
@@ -252,14 +265,43 @@ export default {
         },
         // 编辑订单项
         editOrderItem(index) {
+            // 1. 重置表单，去掉上一次的验证信息
+            // 2. 生成编辑订单项的副本
+            // 3. 保存编辑的订单项下标
+            // 4. 在弹窗对订单项的副本进行编辑
 
+            // [1] 重置表单，去掉上一次的验证信息
+            this.$refs.orderItemForm.resetFields();
+
+            if (index === -1) {
+                // 创建
+                this.editedOrderItem = OrderUtils.newOrderItem();
+            } else {
+                // 编辑
+                this.editedOrderItem = JSON.parse(JSON.stringify(this.orderItems[index]));
+            }
+
+            this.editedOrderItemIndex = index;
+            this.orderItemModal = true;
         },
         // 保存订单项
         saveOrderItem() {
+            this.$refs.orderItemForm.validate(valid => {
+                if (!valid) { return; }
 
+                if (this.editedOrderItemIndex === -1) {
+                    // 创建的用户添加到最前面
+                    this.editedOrder.orderItems.splice(0, 0, this.editedOrderItem);
+                } else {
+                    // 更新则替换已有的对象
+                    this.editedOrder.orderItems.splice(this.editedOrderItemIndex, 1, this.editedOrderItem);
+                }
+
+                this.orderItemModal = false;
+            });
         },
         // 删除订单项
-        deleteOrderItem() {
+        deleteOrderItem(index) {
 
         }
     }
@@ -276,13 +318,6 @@ export default {
         grid-template-columns: max-content 200px 100px;
         grid-gap: 12px;
         align-items: center;
-    }
-}
-
-.edit-order-modal {
-    .order-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
     }
 }
 </style>

@@ -20,6 +20,7 @@ public class OrderItem {
     private String shellBatch; // 外壳批次
     private String sensorInfo; // 传感器信息
     private String circleInfo; // Ο 型圈信息
-    private boolean deleted;   // 被删除的标记
     private int     status;    // 订单项的状态
+    private int     count;     // 数量
+    private boolean deleted;   // 被删除的标记
 }

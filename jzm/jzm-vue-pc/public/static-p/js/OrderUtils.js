@@ -26,14 +26,15 @@ export default class OrderUtils {
      */
     static newOrderItem() {
         return {
-            id        : '',
-            type      : '', // 型号
+            id        : Utils.nextSn(),
+            type      : 'Pro6-T', // 型号
             sn        : '', // 序列号
             chipSn    : '', // 芯片编号
             shellColor: '', // 外壳颜色
             shellBatch: '', // 外壳批次
             sensorInfo: '', // 传感器信息
             circleInfo: '', // Ο 型圈信息
+            count     : 1,  // 数量
             neu       : true,  // 新创建的订单项为 true，否则为 false
             deleted   : false, // 被删除的标记
         };

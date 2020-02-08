@@ -27,7 +27,8 @@
         oi.shell_batch AS item_shell_batch,
         oi.sensor_info AS item_sensor_info,
         oi.circle_info AS item_circle_info,
-        oi.status      AS item_status
+        oi.status      AS item_status,
+        oi.count       AS item_count
     </sql>
 
     <!-- 查找指定 ID 的订单 -->
@@ -35,7 +36,7 @@
         SELECT <include refid="order_columns"/>, <include refid="order_items_columns"/>
         FROM `order` AS o
             LEFT JOIN order_item AS oi ON oi.order_id = o.id
-        WHERE id = #{orderId}
+        WHERE o.id = #{orderId}
     </select>
 
     <!-- 查询符合条件的订单 -->
@@ -89,6 +90,19 @@
         <result property="orderDate"       column="order_date"/>
         <result property="status"          column="status"/>
 
-        <collection property="orderItems" columnPrefix="item_" ofType="OrderItem"/>
+        <collection property="orderItems" columnPrefix="item_" resultMap="OrderItemResultMap"/>
+    </resultMap>
+
+    <resultMap id="OrderItemResultMap" type="OrderItem">
+        <id     property="id"         column="id"/>
+        <result property="orderId"    column="order_id"/>
+        <result property="type"       column="type"/>
+        <result property="sn"         column="sn"/>
+        <result property="chipSn"     column="chip_sn"/>
+        <result property="shellColor" column="shell_color"/>
+        <result property="shellBatch" column="shell_batch"/>
+        <result property="sensorInfo" column="sensor_info"/>
+        <result property="circleInfo" column="circle_info"/>
+        <result property="count"      column="count"/>
     </resultMap>
 </mapper>
