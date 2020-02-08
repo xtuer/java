@@ -65,4 +65,8 @@ public interface Urls {
     String API_ORGS_BY_ID  = "/api/orgs/{orgId}";         // 指定 ID 的机构
     String API_ORGS_ENABLE = "/api/orgs/{orgId}/enabled"; // 指定 ID 的机构的启用禁用状态
 
+    // 订单
+    String API_ORDER       = "/api/orders"; // 订单
+    String API_ORDER_BY_ID = "/api/orders/{orderId}"; // 指定 ID 的订单
+    String API_ORDER_ITEM_BY_ID = "/api/orderItems/{orderItemId}"; // 指定 ID 的订单项
 }

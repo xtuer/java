@@ -88,3 +88,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.ivu-modal-footer button {
+    min-width: 90px;
+}

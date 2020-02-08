@@ -134,3 +134,6 @@ window.FORM_FIELD_TYPES = [
     { value: 'address', name: '地址' },
     { value: 'select',  name: '下拉框' },
 ];
+
+// 订单项的产品型号
+window.ORDER_ITEM_TYPES = ['Pro6-T', 'Pro6-TP', 'Pro6-TH', 'Pro5-T', 'Pro5-TP', 'MiniPRO5-T', '4T', '3TP', 'PRO3'];

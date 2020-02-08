@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
+<mapper namespace="com.xtuer.mapper.OrderMapper">
+    <!-- 订单的列 -->
+    <sql id="order_columns">
+        o.id               AS id,
+        o.customer_name    AS customer_name,
+        o.process          AS process,
+        o.type             AS type,
+        o.brand            AS brand,
+        o.software_version AS software_version,
+        o.person_in_charge AS person_in_charge,
+        o.order_date       AS order_date,
+        o.status           AS status
+    </sql>
+
+    <!-- 订单项的列 -->
+    <sql id="order_items_columns">
+        oi.id          AS item_id,
+        oi.order_id    AS item_order_id,
+        oi.type        AS item_type,
+        oi.sn          AS item_sn,
+        oi.chip_sn     AS item_chip_sn,
+        oi.shell_color AS item_shell_color,
+        oi.shell_batch AS item_shell_batch,
+        oi.sensor_info AS item_sensor_info,
+        oi.circle_info AS item_circle_info,
+        oi.status      AS item_status
+    </sql>
+
+    <!-- 查找指定 ID 的订单 -->
+    <select id="findOrderById" parameterType="long" resultMap="OrderResultMap">
+        SELECT <include refid="order_columns"/>, <include refid="order_items_columns"/>
+        FROM `order` AS o
+            LEFT JOIN order_item AS oi ON oi.order_id = o.id
+        WHERE id = #{orderId}
+    </select>
+
+    <!-- 查询符合条件的订单 -->
+    <select id="findOrders" resultMap="OrderResultMap">
+        SELECT <include refid="order_columns"/>, <include refid="order_items_columns"/>
+        FROM `order` AS o
+            LEFT JOIN order_item AS oi ON oi.order_id = o.id
+    </select>
+
+    <!-- 插入或者更新订单 -->
+    <insert id="upsertOrder" parameterType="Order">
+        INSERT INTO `order` (id, customer_name, process, type, brand, software_version, person_in_charge, order_date, status)
+        VALUES (#{id}, #{customerName}, #{process}, #{type}, #{brand}, #{softwareVersion}, #{personInCharge}, #{orderDate}, #{status})
+
+        ON DUPLICATE KEY
+        UPDATE customer_name = #{customerName}, process = #{process}, type = #{type}, brand = #{brand},
+               software_version = #{softwareVersion}, person_in_charge = #{personInCharge}, order_date = #{orderDate}, status = #{status}
+    </insert>
+
+    <!-- 删除指定 ID 的订单 (同时会删除它的订单项) -->
+    <delete id="deleteOrder" parameterType="long">
+        DELETE FROM `order` WHERE id = #{orderId};
+        DELETE FROM `order_item` WHERE order_id = #{orderId};
+    </delete>
+
+    <!-- 插入或者更新订单项 -->
+    <insert id="upsertOrderItem" parameterType="OrderItem">
+        INSERT INTO order_item (id, order_id, type, sn, chip_sn, shell_color, shell_batch, sensor_info, circle_info, status)
+        VALUES (#{id}, #{orderId}, #{type}, #{sn}, #{chipSn}, #{shellColor}, #{shellBatch}, #{sensorInfo}, #{circleInfo}, #{status})
+
+        ON DUPLICATE KEY
+        UPDATE type = #{type}, sn = #{sn}, chip_sn = #{chipSn}, shell_color = #{shellColor}, shell_batch = #{shellBatch},
+               sensor_info = #{sensorInfo}, circle_info = #{circleInfo}, status = #{status}
+    </insert>
+
+    <!-- 删除指定 ID 的订单项 -->
+    <delete id="deleteOrderItem" parameterType="long">
+        DELETE FROM order_item WHERE id = #{orderItemId}
+    </delete>
+
+    <!-- 订单的 ResultMap -->
+    <resultMap id="OrderResultMap" type="Order">
+        <id     property="id"              column="id"/>
+        <result property="customerName"    column="customer_name"/>
+        <result property="process"         column="process"/>
+        <result property="type"            column="type"/>
+        <result property="brand"           column="brand"/>
+        <result property="softwareVersion" column="software_version"/>
+        <result property="personInCharge"  column="person_in_charge"/>
+        <result property="orderDate"       column="order_date"/>
+        <result property="status"          column="status"/>
+
+        <collection property="orderItems" columnPrefix="item_" ofType="OrderItem"/>
+    </resultMap>
+</mapper>

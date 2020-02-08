@@ -31,7 +31,7 @@ export default {
         return {
             activeName: '',
             menuItems: [ // 所有菜单项，每个菜单项有不同的权限
-                { label: '问题管理', name: 'about'               },
+                { label: '订单管理', name: 'order'               },
                 { label: '任务管理', name: 'scroll'              },
                 { label: '课程处理', name: 'admin-courses'       },
                 { label: '问题统计', name: 'question-statistics' },
