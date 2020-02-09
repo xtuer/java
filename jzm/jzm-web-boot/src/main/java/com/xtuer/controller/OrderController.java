@@ -93,4 +93,24 @@ public class OrderController {
         orderMapper.deleteOrderItem(orderItemId);
         return Result.ok();
     }
+
+    /**
+     * 更新订单
+     *
+     * 网址: http://localhost:8080/api/orders/{orderId}
+     * 参数:
+     *      status [可选]: 订单状态
+     *
+     * @param orderId 订单 ID
+     * @param status  订单状态
+     */
+    @PatchMapping(Urls.API_ORDER_BY_ID)
+    public Result<Boolean> patchOrder(@PathVariable long orderId,
+                                      @RequestParam(required = false, defaultValue="-1") int status) {
+        if (status != -1) {
+            orderMapper.updateOrderStatus(orderId, status);
+        }
+
+        return Result.ok();
+    }
 }

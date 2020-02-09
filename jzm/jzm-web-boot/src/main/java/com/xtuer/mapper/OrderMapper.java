@@ -53,4 +53,12 @@ public interface OrderMapper {
      * @param orderItemId 订单项 ID
      */
     void deleteOrderItem(long orderItemId);
+
+    /**
+     * 更新订单的状态, status 为 1 时设置开始组装时间，为 2 时设置完成组装时间
+     *
+     * @param orderId 订单 ID
+     * @param status  订单状态
+     */
+    void updateOrderStatus(long orderId, int status);
 }

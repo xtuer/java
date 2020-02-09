@@ -1,15 +1,23 @@
+<!-- 订单管理 -->
 <template>
     <div class="order">
         <!-- 搜索工具栏 -->
         <div class="toolbar">
-            <Button @click="editOrder(-1)">创建订单</Button>
+            <Button @click="editOrder()">创建订单</Button>
         </div>
 
         <!-- 显示订单 -->
         <Table :data="orders" :columns="orderColumns" border>
             <!-- 订单状态 -->
             <template slot-scope="{ row: order }" slot="status">
-                <Tag :color="orderStatus(order.status).color" @click.native="clickOrderStatus(order.status)">{{ orderStatus(order.status).name }}</Tag>
+                <Poptip transfer trigger="hover">
+                    <Tag :color="orderStatus(order.status).color" @click.native="updateOrderStatus(order)">{{ orderStatus(order.status).name }}</Tag>
+
+                    <div slot="content">
+                        开始组装时间: {{ order.startAssembleDate }}<br>
+                        完成组装时间: {{ order.finishAssembleDate }}
+                    </div>
+                </Poptip>
             </template>
 
             <!-- 下单日期 -->
@@ -17,19 +25,29 @@
                 {{ order.orderDate | formatDate }}
             </template>
 
-            <template slot-scope="{ index }" slot="orderAction">
-                <Button size="small" type="primary" style="margin-right: 5px" @click="editOrder(index)">编辑</Button>
-                <Button size="small" type="error" @click="deleteOrder(index)">删除</Button>
+            <template slot-scope="{ row: order }" slot="orderAction">
+                <Button size="small" type="primary" style="margin-right: 5px" @click="editOrder(order)">编辑</Button>
+                <Button size="small" type="error" @click="deleteOrder(order)">删除</Button>
             </template>
 
             <!-- 订单项 -->
             <template slot-scope="{ row: order }" slot="orderItems">
-                <ul v-if="availableOrderItems(order).length">
-                    <li v-for="item in availableOrderItems(order)" :key="item.id">
-                        {{ item.type }} - {{ item.sn }} ({{ item.count }} 个)
-                    </li>
-                </ul>
-                <div v-else>无</div>
+                <template v-if="availableOrderItems(order).length">
+                    <Poptip transfer trigger="hover">
+                        <div style="padding: 6px 0; cursor: default">
+                            <div v-for="item in availableOrderItems(order)" :key="item.id">
+                                <Badge :text="item.count + ' 个'"/>
+                                {{ item.type }} - {{ item.sn }}
+                            </div>
+                        </div>
+                        <div slot="content">
+                            <Table :columns="orderItemColumns.slice(0, orderItemColumns.length-1)" :data="availableOrderItems(order)" width="500" border/>
+                        </div>
+                    </Poptip>
+                </template>
+                <template v-else>
+                    无
+                </template>
             </template>
         </Table>
 
@@ -38,6 +56,9 @@
             <Button :loading="loading" v-show="more" icon="md-paw" shape="circle" @click="fetchMoreOrders">更多...</Button>
         </center>
 
+        <!-------------------------------------------------------------------------------------------------------------
+                                                              编辑对话框
+        -------------------------------------------------------------------------------------------------------------->
         <!-- 编辑订单对话框 -->
         <Modal v-model="orderModal" :mask-closable="false" title="编辑订单" width="700">
             <Form ref="orderForm" :model="editedOrder" :rules="orderRules" :key="editedOrder.id" :label-width="90" class="two-column">
@@ -45,9 +66,10 @@
                     <Input v-model="editedOrder.customerName" placeholder="请输入客户名称"/>
                 </FormItem>
                 <FormItem label="生产进程:">
-                    <Select v-model="editedOrder.status">
+                    <Select v-model="editedOrder.status" :disabled="!editedOrder.neu">
                         <Option :value="0">等待备件</Option>
                         <Option :value="1">组装中</Option>
+                        <Option :value="2">完成组装</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="订单类型:">
@@ -85,9 +107,9 @@
                 <!-- 订单项列表 -->
                 <Table :columns="orderItemColumns" :data="availableOrderItems(editedOrder)" border style="grid-column: span 2">
                     <template slot-scope="{ row: item }" slot="orderItemAction">
-                        <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(item.id)">编辑</Button>
+                        <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(item)">编辑</Button>
 
-                        <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(item.id)">
+                        <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(item)">
                             <Button size="small" type="error">删除</Button>
                         </Poptip>
                     </template>
@@ -104,7 +126,7 @@
             <Form ref="orderItemForm" :model="editedOrderItem" :rules="orderItemRules" :label-width="100" :key="editedOrderItem.id" class="two-column">
                 <FormItem label="产品型号:" prop="type">
                     <Select v-model="editedOrderItem.type">
-                        <Option v-for="type in ORDER_ITEM_TYPES" :value="type" :key="type">{{ type }}</Option>
+                        <Option v-for="type in window.ORDER_ITEM_TYPES" :value="type" :key="type">{{ type }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="产品序列号:" prop="sn">
@@ -120,7 +142,7 @@
                     <Input v-model="editedOrderItem.shellBatch" placeholder="请输入外壳批次"/>
                 </FormItem>
                 <FormItem label="数量:">
-                    <InputNumber :min="1" v-model="editedOrderItem.count" placeholder="请输入数量" style="width: 100%"/>
+                    <InputNumber v-model="editedOrderItem.count" :min="1" placeholder="请输入数量" style="width: 100%"/>
                 </FormItem>
                 <FormItem label="传感器信息:">
                     <Input v-model="editedOrderItem.sensorInfo" placeholder="请输入传感器信息"/>
@@ -155,12 +177,10 @@ export default {
             loading: true,  // 加载中
 
             // 被编辑的订单和订单项
-            editedOrder         : {},
-            editedOrderItem     : {},
-            editedOrderIndex    : -1,
-            orderModal          : false, // 显示订单对话框
-            orderItemModal      : false, // 显示订单项对话框
-            ORDER_ITEM_TYPES    : ORDER_ITEM_TYPES, // 订单项类型
+            editedOrder    : {},
+            editedOrderItem: {},
+            orderModal     : false, // 显示订单对话框
+            orderItemModal : false, // 显示订单项对话框
 
             orderColumns: [
                 { title: '客户名称', key: 'customerName', width: 110 },
@@ -199,7 +219,7 @@ export default {
                     { required: true, message: '型号不能为空', trigger: 'change' }
                 ],
                 sn: [
-                    { required: true, whitespace: true, message: '序列号为空', trigger: 'blur' }
+                    { required: true, whitespace: true, message: '序列号不能为空', trigger: 'blur' }
                 ],
                 chipSn: [
                     { required: true, whitespace: true, message: '芯片编号不能为空', trigger: 'blur' }
@@ -231,24 +251,22 @@ export default {
             });
         },
         // 点击编辑按钮，在弹窗中编辑订单
-        editOrder(index) {
-            // 1. 重置表单，去掉上一次的验证信息
-            // 2. 生成编辑订单的副本
-            // 3. 保存编辑的订单下标
-            // 4. 在弹窗对订单的副本进行编辑
+        editOrder(order) {
+            // 1. 重置表单，避免上一次的验证信息影响到本次编辑
+            // 2. 生成编辑对象的副本
+            // 3. 显示编辑对话框
 
-            // [1] 重置表单，去掉上一次的验证信息
+            // [1] 重置表单，避免上一次的验证信息影响到本次编辑
             this.$refs.orderForm.resetFields();
 
-            if (index === -1) {
+            if (order) {
+                // 更新
+                this.editedOrder = OrderUtils.cloneOrder(order);
+            } else {
                 // 创建
                 this.editedOrder = OrderUtils.newOrder();
-            } else {
-                // 编辑
-                this.editedOrder = OrderUtils.cloneOrder(this.orders[index]);
             }
 
-            this.editedOrderIndex = index;
             this.orderModal = true;
         },
         // 保存订单
@@ -257,15 +275,16 @@ export default {
                 if (!valid) { return; }
 
                 this.loading = true;
-
+                const index = this.orders.findIndex(o => o.id === this.editedOrder.id);
                 OrderUtils.cleanOrder(this.editedOrder);
+
                 OrderDao.saveOrder(this.editedOrder).then((order) => {
-                    if (this.editedOrderIndex === -1) {
-                        // 创建的用户添加到最前面
-                        this.orders.insert(0, order);
+                    if (index >= 0) {
+                        // 更新: 替换已有对象
+                        this.orders.replace(index, order);
                     } else {
-                        // 更新则替换已有的对象
-                        this.orders.replace(this.editedOrderIndex, order);
+                        // 创建: 添加到最前面
+                        this.orders.insert(0, order);
                     }
 
                     this.loading = false;
@@ -275,14 +294,13 @@ export default {
             });
         },
         // 删除订单
-        deleteOrder(index) {
-            let order = this.orders[index];
-
+        deleteOrder(order) {
             this.$Modal.confirm({
-                title: `确定要删除 <font color="red">${order.customerName}</font> 的订单吗?`,
+                title: `确定删除 <font color="red">${order.customerName}</font> 的订单吗?`,
                 loading: true,
                 onOk: () => {
                     OrderDao.deleteOrder(order.id).then(() => {
+                        const index = this.orders.findIndex(o => o.id === order.id);
                         this.orders.remove(index); // 服务器删除成功后才从 users 中删除
                         this.$Modal.remove();
                         this.$Message.success('删除成功');
@@ -291,19 +309,17 @@ export default {
             });
         },
         // 编辑订单项
-        editOrderItem(orderItemId) {
-            // 1. 重置表单，去掉上一次的验证信息
-            // 2. 生成编辑订单项的副本
-            // 3. 保存编辑的订单项下标
-            // 4. 在弹窗对订单项的副本进行编辑
+        editOrderItem(orderItem) {
+            // 1. 重置表单，避免上一次的验证信息影响到本次编辑
+            // 2. 生成编辑对象的副本
+            // 3. 显示编辑对话框
 
-            // [1] 重置表单，去掉上一次的验证信息
+            // [1] 重置表单，避免上一次的验证信息影响到本次编辑
             this.$refs.orderItemForm.resetFields();
 
-            if (orderItemId) {
-                // 编辑
-                let index = this.editedOrder.orderItems.findIndex(item => item.id === orderItemId);
-                this.editedOrderItem = OrderUtils.cloneOrderItem(this.editedOrder.orderItems[index]);
+            if (orderItem) {
+                // 更新
+                this.editedOrderItem = OrderUtils.cloneOrderItem(orderItem);
             } else {
                 // 创建
                 this.editedOrderItem = OrderUtils.newOrderItem();
@@ -331,12 +347,37 @@ export default {
             });
         },
         // 删除订单项
-        deleteOrderItem(orderItemId) {
-            let index = this.editedOrder.orderItems.findIndex(item => item.id === orderItemId);
+        deleteOrderItem(orderItem) {
+            let index = this.editedOrder.orderItems.findIndex(item => item.id === orderItem.id);
             this.editedOrder.orderItems[index].deleted = true;
         },
-        clickOrderStatus(status) {
-            console.log(status);
+        // 修改订单状态
+        updateOrderStatus(order) {
+            let status = order.status;
+            let label = '';
+            order = this.orders.find(o => o.id === order.id);
+
+            if (status === 0) {
+                label = '开始组装';
+            } else if (status === 1) {
+                label = '完成组装';
+            }
+
+            status += 1; // 更新为下一个状态
+
+            if (status === 1 || status === 2) {
+                this.$Modal.confirm({
+                    title: `确定 <font color="red">${label}</font> 吗?`,
+                    loading: true,
+                    onOk: () => {
+                        OrderDao.patchOrder({ id: order.id, status }).then(() => {
+                            order.status = status;
+                            this.$Modal.remove();
+                            this.$Message.success('生产进程更新成功');
+                        });
+                    }
+                });
+            }
         },
         // 可用的订单项 (未被删除的)
         availableOrderItems(order) {
@@ -360,6 +401,11 @@ export default {
         grid-template-columns: max-content 200px 100px;
         grid-gap: 12px;
         align-items: center;
+    }
+
+    .ivu-badge-count-alone {
+        background: #ddd !important;
+        color: #888;
     }
 }
 </style>

@@ -145,3 +145,5 @@ window.ORDER_STATUS = [
     { value: 2, color: 'success', name: '完成组装' },
     { value: -1, color: 'error',  name: '未知状态' },
 ];
+
+window.SPARE_TYPES = ['Spare-1', 'Spare-2', 'Spare-3', 'Spare-4'];

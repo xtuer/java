@@ -80,6 +80,18 @@
         DELETE FROM order_item WHERE id = #{orderItemId}
     </delete>
 
+    <!-- 更新订单的状态, status 为 1 时设置开始组装时间，为 2 时设置完成组装时间 -->
+    <update id="updateOrderStatus">
+        UPDATE `order` SET status = #{status}
+            <if test="status == 1">
+                , start_assemble_date = now()
+            </if>
+            <if test="status == 2">
+                , finish_assemble_date = now()
+            </if>
+        WHERE id = #{orderId}
+    </update>
+
     <!-- 订单的 ResultMap -->
     <resultMap id="OrderResultMap" type="Order">
         <id     property="id"              column="id"/>

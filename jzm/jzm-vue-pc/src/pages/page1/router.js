@@ -9,7 +9,7 @@ export default new Router({
             path: '/',
             name: 'home',
             component: () => import(/* webpackChunkName: "common" */ './views/Home.vue'),
-            redirect: { name: 'order' },
+            redirect: { name: 'spares' },
 
             children: [
                 {
@@ -18,9 +18,14 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
                 },
                 {
-                    path: '/order',
-                    name: 'order',
-                    component: () => import(/* webpackChunkName: "about" */ './views/Order.vue'),
+                    path: '/orders',
+                    name: 'orders',
+                    component: () => import(/* webpackChunkName: "about" */ './views/Orders.vue'),
+                },
+                {
+                    path: '/spares',
+                    name: 'spares',
+                    component: () => import(/* webpackChunkName: "about" */ './views/Spares.vue'),
                 },
                 {
                     path: '/scroll',
