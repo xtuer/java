@@ -58,12 +58,12 @@ public class OrderController {
      * 请求体: JSON 格式的订单
      *
      * @param order 订单
-     * @return Payload 为订单的 ID
+     * @return Payload 为订单
      */
     @PutMapping(Urls.API_ORDER_BY_ID)
-    public Result<Long> upsertOrder(@RequestBody Order order) {
+    public Result<Order> upsertOrder(@RequestBody Order order) {
         orderService.upsertOrder(order);
-        return Result.ok(order.getId());
+        return Result.ok(order);
     }
 
     /**

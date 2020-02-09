@@ -111,3 +111,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
+
+.ivu-tag {
+    cursor: default;
+}
+
+.ivu-modal-wrap .ivu-modal {
+    margin-bottom: 40px;
+}

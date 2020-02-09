@@ -7,13 +7,14 @@
     <sql id="order_columns">
         o.id               AS id,
         o.customer_name    AS customer_name,
-        o.process          AS process,
         o.type             AS type,
         o.brand            AS brand,
         o.software_version AS software_version,
         o.person_in_charge AS person_in_charge,
-        o.order_date       AS order_date,
-        o.status           AS status
+        o.status           AS status,
+        o.order_date           AS order_date,
+        o.start_assemble_date  AS start_assemble_date,
+        o.finish_assemble_date AS finish_assemble_date
     </sql>
 
     <!-- 订单项的列 -->
@@ -49,12 +50,12 @@
 
     <!-- 插入或者更新订单 -->
     <insert id="upsertOrder" parameterType="Order">
-        INSERT INTO `order` (id, customer_name, process, type, brand, software_version, person_in_charge, order_date, status)
-        VALUES (#{id}, #{customerName}, #{process}, #{type}, #{brand}, #{softwareVersion}, #{personInCharge}, #{orderDate}, #{status})
+        INSERT INTO `order` (id, customer_name, type, brand, software_version, person_in_charge, order_date, status)
+        VALUES (#{id}, #{customerName}, #{type}, #{brand}, #{softwareVersion}, #{personInCharge}, #{orderDate}, #{status})
 
         ON DUPLICATE KEY
-        UPDATE customer_name = #{customerName}, process = #{process}, type = #{type}, brand = #{brand},
-               software_version = #{softwareVersion}, person_in_charge = #{personInCharge}, order_date = #{orderDate}, status = #{status}
+        UPDATE customer_name = #{customerName}, type = #{type}, brand = #{brand}, software_version = #{softwareVersion},
+               person_in_charge = #{personInCharge}, order_date = #{orderDate}, status = #{status}
     </insert>
 
     <!-- 删除指定 ID 的订单 (同时会删除它的订单项) -->
@@ -65,12 +66,12 @@
 
     <!-- 插入或者更新订单项 -->
     <insert id="upsertOrderItem" parameterType="OrderItem">
-        INSERT INTO order_item (id, order_id, type, sn, chip_sn, shell_color, shell_batch, sensor_info, circle_info, status)
-        VALUES (#{id}, #{orderId}, #{type}, #{sn}, #{chipSn}, #{shellColor}, #{shellBatch}, #{sensorInfo}, #{circleInfo}, #{status})
+        INSERT INTO order_item (id, order_id, type, sn, chip_sn, shell_color, shell_batch, sensor_info, circle_info, status, count)
+        VALUES (#{id}, #{orderId}, #{type}, #{sn}, #{chipSn}, #{shellColor}, #{shellBatch}, #{sensorInfo}, #{circleInfo}, #{status}, #{count})
 
         ON DUPLICATE KEY
         UPDATE type = #{type}, sn = #{sn}, chip_sn = #{chipSn}, shell_color = #{shellColor}, shell_batch = #{shellBatch},
-               sensor_info = #{sensorInfo}, circle_info = #{circleInfo}, status = #{status}
+               sensor_info = #{sensorInfo}, circle_info = #{circleInfo}, status = #{status}, count = #{count}
     </insert>
 
     <!-- 删除指定 ID 的订单项 -->
@@ -82,14 +83,16 @@
     <resultMap id="OrderResultMap" type="Order">
         <id     property="id"              column="id"/>
         <result property="customerName"    column="customer_name"/>
-        <result property="process"         column="process"/>
         <result property="type"            column="type"/>
         <result property="brand"           column="brand"/>
         <result property="softwareVersion" column="software_version"/>
         <result property="personInCharge"  column="person_in_charge"/>
-        <result property="orderDate"       column="order_date"/>
         <result property="status"          column="status"/>
+        <result property="orderDate"          column="order_date"/>
+        <result property="startAssembleDate"  column="start_assemble_date"/>
+        <result property="finishAssembleDate" column="finish_assemble_date"/>
 
+        <!-- 订单项 -->
         <collection property="orderItems" columnPrefix="item_" resultMap="OrderItemResultMap"/>
     </resultMap>
 

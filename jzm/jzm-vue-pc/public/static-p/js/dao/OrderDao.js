@@ -6,16 +6,16 @@ export default class OrderDao {
      * 保存订单
      *
      * @param {JSON} order 订单
-     * @return {Promise} 返回 Promise 对象，resolve 的参数为订单 ID，reject 的参数为错误信息
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为订单，reject 的参数为错误信息
      */
     static saveOrder(order) {
         return new Promise((resolve, reject) => {
             order = JSON.parse(JSON.stringify(order));
 
             Rest.update({ url: Urls.API_ORDER_BY_ID, pathVariables: { orderId:  order.id }, data: order, json: true })
-                .then(({ data: orderId, success, message }) => {
+                .then(({ data: updatedOrder, success, message }) => {
                     if (success) {
-                        resolve(orderId);
+                        resolve(updatedOrder);
                     } else {
                         Notice.error({ title: '保存订单错误', desc: message });
                         reject(message);

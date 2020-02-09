@@ -7,6 +7,12 @@
 
         <!-- 显示订单 -->
         <Table :data="orders" :columns="orderColumns" border>
+            <!-- 订单状态 -->
+            <template slot-scope="{ row: order }" slot="status">
+                <Tag :color="orderStatus(order.status).color" @click.native="clickOrderStatus(order.status)">{{ orderStatus(order.status).name }}</Tag>
+            </template>
+
+            <!-- 下单日期 -->
             <template slot-scope="{ row: order }" slot="orderDate">
                 {{ order.orderDate | formatDate }}
             </template>
@@ -16,9 +22,12 @@
                 <Button size="small" type="error" @click="deleteOrder(index)">删除</Button>
             </template>
 
+            <!-- 订单项 -->
             <template slot-scope="{ row: order }" slot="orderItems">
                 <ul v-if="order.orderItems.length">
-                    <li v-for="item in order.orderItems" :key="item.id">{{ item.id }}</li>
+                    <li v-for="item in order.orderItems" :key="item.id">
+                        {{ item.type }} ({{ item.count }} 个)
+                    </li>
                 </ul>
                 <div v-else>无</div>
             </template>
@@ -36,9 +45,9 @@
                     <Input v-model="editedOrder.customerName" placeholder="请输入客户名称"/>
                 </FormItem>
                 <FormItem label="生产进程:">
-                    <Select v-model="editedOrder.process">
-                        <Option value="等待备件">等待备件</Option>
-                        <Option value="组装中">组装中</Option>
+                    <Select v-model="editedOrder.status">
+                        <Option :value="0">等待备件</Option>
+                        <Option :value="1">组装中</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="订单类型:">
@@ -73,11 +82,12 @@
                     <Button type="dashed" icon="md-add" style="float: right" @click="editOrderItem(-1)">添加订单项</Button>
                 </FormItem>
 
+                <!-- 订单项列表 -->
                 <Table :columns="orderItemColumns" :data="editedOrder.orderItems" border style="grid-column: span 2">
                     <template slot-scope="{ index }" slot="orderItemAction">
-                    <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(index)">编辑</Button>
-                    <Button size="small" type="error" @click="deleteOrderItem(index)">删除</Button>
-                </template>
+                        <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(index)">编辑</Button>
+                        <Button size="small" type="error" @click="deleteOrderItem(index)">删除</Button>
+                    </template>
                 </Table>
             </Form>
 
@@ -87,8 +97,8 @@
         </Modal>
 
         <!-- 编辑订单项对话框 -->
-        <Modal v-model="orderItemModal" :mask-closable="false" title="编辑订单项" width="600">
-            <Form ref="orderItemForm" :model="editedOrderItem" :rules="orderItemRules" :label-width="100" class="two-column">
+        <Modal v-model="orderItemModal" :mask-closable="false" title="编辑订单项" width="600" :styles="{ top: '150px' }">
+            <Form ref="orderItemForm" :model="editedOrderItem" :rules="orderItemRules" :label-width="100" :key="editedOrderItem.id" class="two-column">
                 <FormItem label="产品型号:" prop="type">
                     <Select v-model="editedOrderItem.type">
                         <Option v-for="type in ORDER_ITEM_TYPES" :value="type" :key="type">{{ type }}</Option>
@@ -101,7 +111,7 @@
                     <Input v-model="editedOrderItem.chipSn" placeholder="请输入芯片编号"/>
                 </FormItem>
                 <FormItem label="外壳颜色:">
-                    <Input v-model="editedOrderItem.shellOrder" placeholder="请输入外壳颜色"/>
+                    <Input v-model="editedOrderItem.shellColor" placeholder="请输入外壳颜色"/>
                 </FormItem>
                 <FormItem label="外壳批次:">
                     <Input v-model="editedOrderItem.shellBatch" placeholder="请输入外壳批次"/>
@@ -152,7 +162,7 @@ export default {
 
             orderColumns: [
                 { title: '客户名称', key: 'customerName', width: 110 },
-                { title: '生产进程', key: 'process', width: 110 },
+                { title: '生产进程', slot: 'status', width: 110 },
                 { title: '订单类型', key: 'type', width: 110 },
                 { title: '品牌',    key: 'brand', width: 110 },
                 { title: '软件版本', key: 'softwareVersion', width: 110 },
@@ -165,11 +175,11 @@ export default {
                 { title: '产品型号', key: 'type', width: 110, fixed: 'left' },
                 { title: '产品序列号', key: 'sn', width: 110 },
                 { title: '芯片编号', key: 'chipSn', width: 110 },
+                { title: '数量', key: 'count', width: 110 },
                 { title: '外壳颜色', key: 'shellColor', width: 110 },
                 { title: '外壳批次', key: 'shellBatch', width: 110 },
-                { title: '传感器信息', key: 'sensorInfo', width: 110 },
-                { title: 'Ο 型圈信息', key: 'circleInfo', width: 110 },
-                { title: '数量', key: 'count', width: 110 },
+                { title: '传感器信息', key: 'sensorInfo', width: 200 },
+                { title: 'Ο 型圈信息', key: 'circleInfo', width: 200 },
                 { title: '操作', slot: 'orderItemAction', align: 'center', width: 130, fixed: 'right' },
             ],
 
@@ -247,15 +257,13 @@ export default {
                 this.loading = true;
 
                 OrderUtils.cleanOrder(this.editedOrder);
-                OrderDao.saveOrder(this.editedOrder).then((orderId) => {
-                    this.editedOrder.id = orderId;
-
+                OrderDao.saveOrder(this.editedOrder).then((order) => {
                     if (this.editedOrderIndex === -1) {
                         // 创建的用户添加到最前面
-                        this.orders.splice(0, 0, this.editedOrder);
+                        this.orders.insert(0, order);
                     } else {
                         // 更新则替换已有的对象
-                        this.orders.splice(this.editedOrderIndex, 1, this.editedOrder);
+                        this.orders.replace(this.editedOrderIndex, order);
                     }
 
                     this.loading = false;
@@ -273,7 +281,7 @@ export default {
                 loading: true,
                 onOk: () => {
                     OrderDao.deleteOrder(order.id).then(() => {
-                        this.orders.splice(index, 1); // 服务器删除成功后才从 users 中删除
+                        this.orders.remove(index); // 服务器删除成功后才从 users 中删除
                         this.$Modal.remove();
                         this.$Message.success('删除成功');
                     });
@@ -295,7 +303,7 @@ export default {
                 this.editedOrderItem = OrderUtils.newOrderItem();
             } else {
                 // 编辑
-                this.editedOrderItem = JSON.parse(JSON.stringify(this.orderItems[index]));
+                this.editedOrderItem = OrderUtils.cloneOrderItem(this.orderItems[index]);
             }
 
             this.editedOrderItemIndex = index;
@@ -306,12 +314,14 @@ export default {
             this.$refs.orderItemForm.validate(valid => {
                 if (!valid) { return; }
 
+                let orderItem = OrderUtils.cloneOrderItem(this.editedOrderItem);
+
                 if (this.editedOrderItemIndex === -1) {
-                    // 创建的用户添加到最前面
-                    this.editedOrder.orderItems.splice(0, 0, this.editedOrderItem);
+                    // 添加到最后面
+                    this.editedOrder.orderItems.push(orderItem);
                 } else {
                     // 更新则替换已有的对象
-                    this.editedOrder.orderItems.splice(this.editedOrderItemIndex, 1, this.editedOrderItem);
+                    this.editedOrder.orderItems.replace(this.editedOrderItemIndex, 1, orderItem);
                 }
 
                 this.orderItemModal = false;
@@ -319,7 +329,10 @@ export default {
         },
         // 删除订单项
         deleteOrderItem(index) {
-
+            this.editedOrder.orderItems.remove(index);
+        },
+        clickOrderStatus(status) {
+            console.log(status);
         }
     }
 };

@@ -8,11 +8,11 @@ export default class OrderUtils {
         return {
             id             : Utils.nextSn(),
             customerName   : '',        // 客户名称
-            process        : '等待备件', // 生产进程: 等待备件、组装中
             type           : '订货',    // 订单类型: 订货、样品
             brand          : 'P+H',    // 品牌   : P+H、BD、其他
             softwareVersion: '',       // 软件版本
             personInCharge : '',         // 负责人
+            status         : 0,          // 状态: 0 (等待备件)、1 (组装中)、2 (完成组装)
             orderDate      : new Date(), // 订单日期
             orderItems     : [],         // 订单项
             neu            : true,       // 新创建的订单为 true，否则为 false
@@ -75,5 +75,14 @@ export default class OrderUtils {
                 item.id = item.neu ? 0 : item.id; // [3] 如果是新创建的 order item，设置其 id 为 0
                 return item;
             });
+    }
+
+    /**
+     * 克隆订单项
+     *
+     * @param {JSON} orderItem
+     */
+    static cloneOrderItem(orderItem) {
+        return JSON.parse(JSON.stringify(orderItem));
     }
 }

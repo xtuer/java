@@ -137,3 +137,10 @@ window.FORM_FIELD_TYPES = [
 
 // 订单项的产品型号
 window.ORDER_ITEM_TYPES = ['Pro6-T', 'Pro6-TP', 'Pro6-TH', 'Pro5-T', 'Pro5-TP', 'MiniPRO5-T', '4T', '3TP', 'PRO3'];
+
+// 订单状态
+window.ORDER_STATUS = [
+    { value: 0, color: 'default', name: '等待备件' },
+    { value: 1, color: 'warning', name: '组装中' },
+    { value: 2, color: 'success', name: '完成组装' },
+];

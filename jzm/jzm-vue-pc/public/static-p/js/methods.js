@@ -37,7 +37,18 @@ const goBack = function() {
     window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
 };
 
+/**
+ * 根据状态值获取对应的状态
+ *
+ * @param {Integer} status 状态值
+ * @return {String} 返回状态对象
+ */
+const orderStatus = function(status) {
+    return ORDER_STATUS.filter(s => s.value === status)[0];
+};
+
 export default {
     download,
     goBack,
+    orderStatus,
 };
