@@ -24,8 +24,8 @@
 
             <!-- 订单项 -->
             <template slot-scope="{ row: order }" slot="orderItems">
-                <ul v-if="order.orderItems.length">
-                    <li v-for="item in order.orderItems" :key="item.id">
+                <ul v-if="availableOrderItems(order).length">
+                    <li v-for="item in availableOrderItems(order)" :key="item.id">
                         {{ item.type }} - {{ item.sn }} ({{ item.count }} 个)
                     </li>
                 </ul>
@@ -79,15 +79,15 @@
                     <Input v-model="editedOrder.personInCharge" placeholder="请输入负责人"/>
                 </FormItem>
                 <FormItem>
-                    <Button type="dashed" icon="md-add" style="float: right" @click="editOrderItem(-1)">添加订单项</Button>
+                    <Button type="dashed" icon="md-add" style="float: right" @click="editOrderItem()">添加订单项</Button>
                 </FormItem>
 
                 <!-- 订单项列表 -->
-                <Table :columns="orderItemColumns" :data="editedOrder.orderItems" border style="grid-column: span 2">
-                    <template slot-scope="{ index }" slot="orderItemAction">
-                        <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(index)">编辑</Button>
+                <Table :columns="orderItemColumns" :data="availableOrderItems(editedOrder)" border style="grid-column: span 2">
+                    <template slot-scope="{ row: item }" slot="orderItemAction">
+                        <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(item.id)">编辑</Button>
 
-                        <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(index)">
+                        <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(item.id)">
                             <Button size="small" type="error">删除</Button>
                         </Poptip>
                     </template>
@@ -158,7 +158,6 @@ export default {
             editedOrder         : {},
             editedOrderItem     : {},
             editedOrderIndex    : -1,
-            editedOrderItemIndex: -1,
             orderModal          : false, // 显示订单对话框
             orderItemModal      : false, // 显示订单项对话框
             ORDER_ITEM_TYPES    : ORDER_ITEM_TYPES, // 订单项类型
@@ -292,7 +291,7 @@ export default {
             });
         },
         // 编辑订单项
-        editOrderItem(index) {
+        editOrderItem(orderItemId) {
             // 1. 重置表单，去掉上一次的验证信息
             // 2. 生成编辑订单项的副本
             // 3. 保存编辑的订单项下标
@@ -301,15 +300,15 @@ export default {
             // [1] 重置表单，去掉上一次的验证信息
             this.$refs.orderItemForm.resetFields();
 
-            if (index === -1) {
+            if (orderItemId) {
+                // 编辑
+                let index = this.editedOrder.orderItems.findIndex(item => item.id === orderItemId);
+                this.editedOrderItem = OrderUtils.cloneOrderItem(this.editedOrder.orderItems[index]);
+            } else {
                 // 创建
                 this.editedOrderItem = OrderUtils.newOrderItem();
-            } else {
-                // 编辑
-                this.editedOrderItem = OrderUtils.cloneOrderItem(this.editedOrder.orderItems[index]);
             }
 
-            this.editedOrderItemIndex = index;
             this.orderItemModal = true;
         },
         // 保存订单项
@@ -318,26 +317,36 @@ export default {
                 if (!valid) { return; }
 
                 let orderItem = OrderUtils.cloneOrderItem(this.editedOrderItem);
+                let index = this.editedOrder.orderItems.findIndex(item => item.id === orderItem.id);
 
-                if (this.editedOrderItemIndex === -1) {
-                    // 添加到最后面
-                    this.editedOrder.orderItems.push(orderItem);
-                } else {
+                if (index >= 0) {
                     // 更新则替换已有的对象
-                    this.editedOrder.orderItems.replace(this.editedOrderItemIndex, orderItem);
+                    this.editedOrder.orderItems.replace(index, orderItem);
+                } else {
+                    // 创建则添加到最后面
+                    this.editedOrder.orderItems.push(orderItem);
                 }
 
                 this.orderItemModal = false;
             });
         },
         // 删除订单项
-        deleteOrderItem(index) {
-            this.editedOrder.orderItems.remove(index);
+        deleteOrderItem(orderItemId) {
+            let index = this.editedOrder.orderItems.findIndex(item => item.id === orderItemId);
+            this.editedOrder.orderItems[index].deleted = true;
         },
         clickOrderStatus(status) {
             console.log(status);
+        },
+        // 可用的订单项 (未被删除的)
+        availableOrderItems(order) {
+            try {
+                return order.orderItems.filter(oi => !oi.deleted);
+            } catch {
+                return [];
+            }
         }
-    }
+    },
 };
 </script>
 
