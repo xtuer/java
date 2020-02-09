@@ -143,4 +143,5 @@ window.ORDER_STATUS = [
     { value: 0, color: 'default', name: '等待备件' },
     { value: 1, color: 'warning', name: '组装中' },
     { value: 2, color: 'success', name: '完成组装' },
+    { value: -1, color: 'error',  name: '未知状态' },
 ];

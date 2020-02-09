@@ -26,7 +26,7 @@
             <template slot-scope="{ row: order }" slot="orderItems">
                 <ul v-if="order.orderItems.length">
                     <li v-for="item in order.orderItems" :key="item.id">
-                        {{ item.type }} ({{ item.count }} 个)
+                        {{ item.type }} - {{ item.sn }} ({{ item.count }} 个)
                     </li>
                 </ul>
                 <div v-else>无</div>
@@ -86,7 +86,10 @@
                 <Table :columns="orderItemColumns" :data="editedOrder.orderItems" border style="grid-column: span 2">
                     <template slot-scope="{ index }" slot="orderItemAction">
                         <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(index)">编辑</Button>
-                        <Button size="small" type="error" @click="deleteOrderItem(index)">删除</Button>
+
+                        <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(index)">
+                            <Button size="small" type="error">删除</Button>
+                        </Poptip>
                     </template>
                 </Table>
             </Form>
@@ -303,7 +306,7 @@ export default {
                 this.editedOrderItem = OrderUtils.newOrderItem();
             } else {
                 // 编辑
-                this.editedOrderItem = OrderUtils.cloneOrderItem(this.orderItems[index]);
+                this.editedOrderItem = OrderUtils.cloneOrderItem(this.editedOrder.orderItems[index]);
             }
 
             this.editedOrderItemIndex = index;
@@ -321,7 +324,7 @@ export default {
                     this.editedOrder.orderItems.push(orderItem);
                 } else {
                     // 更新则替换已有的对象
-                    this.editedOrder.orderItems.replace(this.editedOrderItemIndex, 1, orderItem);
+                    this.editedOrder.orderItems.replace(this.editedOrderItemIndex, orderItem);
                 }
 
                 this.orderItemModal = false;

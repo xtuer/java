@@ -40,11 +40,12 @@ const goBack = function() {
 /**
  * 根据状态值获取对应的状态
  *
- * @param {Integer} status 状态值
+ * @param {Integer} statusValue 状态值
  * @return {String} 返回状态对象
  */
-const orderStatus = function(status) {
-    return ORDER_STATUS.filter(s => s.value === status)[0];
+const orderStatus = function(statusValue) {
+    let status = ORDER_STATUS.filter(s => s.value === statusValue);
+    return status.length > 0 ? status[0] : ORDER_STATUS[ORDER_STATUS.length - 1];
 };
 
 export default {
