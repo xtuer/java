@@ -11,7 +11,7 @@
                 {{ order.orderDate | formatDate }}
             </template>
 
-            <template slot-scope="{ index }" slot="action">
+            <template slot-scope="{ index }" slot="orderAction">
                 <Button size="small" type="primary" style="margin-right: 5px" @click="editOrder(index)">编辑</Button>
                 <Button size="small" type="error" @click="deleteOrder(index)">删除</Button>
             </template>
@@ -72,6 +72,13 @@
                 <FormItem>
                     <Button type="dashed" icon="md-add" style="float: right" @click="editOrderItem(-1)">添加订单项</Button>
                 </FormItem>
+
+                <Table :columns="orderItemColumns" :data="editedOrder.orderItems" border style="grid-column: span 2">
+                    <template slot-scope="{ index }" slot="orderItemAction">
+                    <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(index)">编辑</Button>
+                    <Button size="small" type="error" @click="deleteOrderItem(index)">删除</Button>
+                </template>
+                </Table>
             </Form>
 
             <div slot="footer">
@@ -152,9 +159,19 @@ export default {
                 { title: '订单日期', slot: 'orderDate', align: 'center', width: 130 },
                 { title: '负责人',   key: 'personInCharge', width: 110 },
                 { title: '订单项', slot: 'orderItems' },
-                { title: '操作', slot: 'action', align: 'center', width: 130 },
+                { title: '操作', slot: 'orderAction', align: 'center', width: 130 },
             ],
-            orderItemColumns: [],
+            orderItemColumns: [
+                { title: '产品型号', key: 'type', width: 110, fixed: 'left' },
+                { title: '产品序列号', key: 'sn', width: 110 },
+                { title: '芯片编号', key: 'chipSn', width: 110 },
+                { title: '外壳颜色', key: 'shellColor', width: 110 },
+                { title: '外壳批次', key: 'shellBatch', width: 110 },
+                { title: '传感器信息', key: 'sensorInfo', width: 110 },
+                { title: 'Ο 型圈信息', key: 'circleInfo', width: 110 },
+                { title: '数量', key: 'count', width: 110 },
+                { title: '操作', slot: 'orderItemAction', align: 'center', width: 130, fixed: 'right' },
+            ],
 
             // 订单的校验规则
             orderRules: {

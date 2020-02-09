@@ -93,6 +93,7 @@
         <collection property="orderItems" columnPrefix="item_" resultMap="OrderItemResultMap"/>
     </resultMap>
 
+    <!-- 订单项的 ResultMap -->
     <resultMap id="OrderItemResultMap" type="OrderItem">
         <id     property="id"         column="id"/>
         <result property="orderId"    column="order_id"/>

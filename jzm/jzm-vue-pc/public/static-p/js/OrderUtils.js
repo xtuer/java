@@ -27,8 +27,8 @@ export default class OrderUtils {
     static newOrderItem() {
         return {
             id        : Utils.nextSn(),
-            type      : 'Pro6-T', // 型号
-            sn        : '', // 序列号
+            type      : 'Pro6-T', // 产品型号
+            sn        : '', // 产品序列号
             chipSn    : '', // 芯片编号
             shellColor: '', // 外壳颜色
             shellBatch: '', // 外壳批次
