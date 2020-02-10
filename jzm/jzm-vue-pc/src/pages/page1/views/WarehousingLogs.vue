@@ -32,7 +32,7 @@ export default {
             logs: [], // 库存日志
             columns: [
                 { title: '操作类型', slot: 'type', align: 'center', width: 100 },
-                { title: '操作人', key: 'username', width: 180 },
+                { title: '操作员', key: 'username', width: 140 },
                 { title: '备件入库单号', key: 'spareSn' },
                 { title: '操作前芯片数量', key: 'oldChipQuantity', width: 140 },
                 { title: '操作后芯片数量', key: 'newChipQuantity', width: 140 },

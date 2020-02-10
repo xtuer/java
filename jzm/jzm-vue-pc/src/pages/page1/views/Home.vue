@@ -6,16 +6,20 @@
 
         <!-- 左侧侧边栏 -->
         <div class="sidebar">
-            <Menu :active-name="activeName" :open-names="['1', '2']" width="auto" @on-select="navigateTo">
+            <Menu :active-name="activeName" :open-names="['1', '2', '3']" width="auto" @on-select="navigateTo">
                 <!-- <MenuItem v-for="item in menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem> -->
                 <Submenu name="1">
-                    <template slot="title"><Icon type="logo-snapchat"/> 订单管理</template>
+                    <template slot="title"><Icon type="logo-snapchat"/>订单管理</template>
                     <MenuItem name="orders">订单管理</MenuItem>
                 </Submenu>
                 <Submenu name="2">
-                    <template slot="title"><Icon type="ios-basket"/> 库存备件</template>
+                    <template slot="title"><Icon type="ios-basket"/>库存备件</template>
                     <MenuItem name="spares">备件管理</MenuItem>
                     <MenuItem name="warehousingLogs">库存跟踪</MenuItem>
+                </Submenu>
+                <Submenu name="3">
+                    <template slot="title"><Icon type="ios-construct"/>维修管理</template>
+                    <MenuItem name="spares">维修订单</MenuItem>
                 </Submenu>
             </Menu>
         </div>

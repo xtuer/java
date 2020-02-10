@@ -40,7 +40,7 @@
         <Modal v-model="modal" :mask-closable="false" title="编辑备件" width="700">
             <Form ref="spareForm" :model="editedSpare" :rules="spareRules" :key="editedSpare.id" :label-width="110" class="two-column">
                 <FormItem label="入库单号:" prop="sn">
-                    <Input v-model="editedSpare.sn" placeholder="请输入入库单号"/>
+                    <Input v-model="editedSpare.sn" :readonly="!editedSpare.neu" placeholder="请输入入库单号"/>
                 </FormItem>
                 <FormItem label="备件类型:" prop="type">
                     <Select v-model="editedSpare.type">
