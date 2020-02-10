@@ -36,7 +36,7 @@
                     <Poptip transfer trigger="hover">
                         <div style="padding: 6px 0; cursor: default">
                             <div v-for="item in availableOrderItems(order)" :key="item.id">
-                                <Badge :text="item.count + ' 个'"/>
+                                <Badge :text="item.count + ' 个'" type="normal"/>
                                 {{ item.type }} - {{ item.sn }}
                             </div>
                         </div>
@@ -401,9 +401,9 @@ export default {
         align-items: center;
     }
 
-    .ivu-badge-count-alone {
-        background: #ddd !important;
-        color: #888;
-    }
+    // .ivu-badge-count-alone {
+    //     background: #ddd !important;
+    //     color: #888;
+    // }
 }
 </style>

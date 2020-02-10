@@ -7,11 +7,11 @@ export default class SpareUtils {
             id                  : Utils.nextId(),
             sn                  : '', // 入库单号
             type                : '', // 备件类型
-            shipSn              : '', // 芯片编号
-            shipProductionDate  : '', // 芯片生产时间
-            shipAgingDate       : '', // 芯片老化时间
-            shipPowerConsumption: '', // 芯片功耗
-            shipQuantity        : 0,  // 芯片数量
+            chipSn              : '', // 芯片编号
+            chipProductionDate  : '', // 芯片生产时间
+            chipAgingDate       : '', // 芯片老化时间
+            chipPowerConsumption: '', // 芯片功耗
+            chipQuantity        : 0,  // 芯片数量
             firmwareVersion     : '', // 固件版本
             softwareVersion     : '', // 软件版本
             neu                 : true,
@@ -26,8 +26,8 @@ export default class SpareUtils {
      */
     static cloneSpare(spare) {
         let clone = JSON.parse(JSON.stringify(spare));
-        clone.shipProductionDate = spare.shipProductionDate;
-        clone.shipAgingDate      = spare.shipAgingDate;
+        clone.chipProductionDate = spare.chipProductionDate;
+        clone.chipAgingDate      = spare.chipAgingDate;
 
         return clone;
     }

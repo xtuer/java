@@ -6,8 +6,17 @@
 
         <!-- 左侧侧边栏 -->
         <div class="sidebar">
-            <Menu :active-name="activeName" :open-names="['1']" width="auto" @on-select="navigateTo">
-                <MenuItem v-for="item in menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem>
+            <Menu :active-name="activeName" :open-names="['1', '2']" width="auto" @on-select="navigateTo">
+                <!-- <MenuItem v-for="item in menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem> -->
+                <Submenu name="1">
+                    <template slot="title"><Icon type="logo-snapchat"/> 订单管理</template>
+                    <MenuItem name="orders">订单管理</MenuItem>
+                </Submenu>
+                <Submenu name="2">
+                    <template slot="title"><Icon type="ios-basket"/> 库存备件</template>
+                    <MenuItem name="spares">备件管理</MenuItem>
+                    <MenuItem name="warehousingLogs">库存跟踪</MenuItem>
+                </Submenu>
             </Menu>
         </div>
 
@@ -31,13 +40,13 @@ export default {
         return {
             activeName: '',
             menuItems: [ // 所有菜单项，每个菜单项有不同的权限
-                { label: '订单管理', name: 'orders'              },
-                { label: '备件管理', name: 'spares'              },
-                { label: '任务管理', name: 'scroll'              },
-                { label: '问题统计', name: 'question-statistics' },
-                { label: '绩效查询', name: 'performance',        },
-                { label: '问题类型', name: 'question-types',     },
-                { label: '用户管理', name: 'admin-users',        },
+                // { label: '订单管理', name: 'orders'              },
+                // { label: '备件管理', name: 'spares'              },
+                // { label: '库存跟踪', name: 'warehousingLogs'      },
+                // { label: '任务管理', name: 'scroll'              },
+                // { label: '绩效查询', name: 'performance',        },
+                // { label: '问题类型', name: 'question-types',     },
+                // { label: '用户管理', name: 'admin-users',        },
             ],
         };
     },

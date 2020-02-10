@@ -2,27 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtuer.mapper.SpareMapper">
+    <sql id="spare_columns">
+        id, sn, type, chip_sn, chip_production_date, chip_aging_date,
+        chip_power_consumption, chip_quantity, firmware_version, software_version
+    </sql>
+
     <!-- 查询符合条件的备件 -->
     <select id="findSpares" resultType="Spare">
-        SELECT * FROM spare
+        SELECT <include refid="spare_columns"/>
+        FROM spare
         ORDER BY id DESC
+    </select>
+
+    <!-- 查询指定 ID 的备件 -->
+    <select id="findSpareById" parameterType="long" resultType="Spare">
+        SELECT <include refid="spare_columns"/>
+        FROM spare
+        WHERE id = #{spareId}
     </select>
 
     <!-- 创建或者更新备件 -->
     <insert id="upsertSpare" parameterType="Spare">
-        INSERT INTO spare (id, sn, type, ship_sn, ship_production_date, ship_aging_date,
-                ship_power_consumption, ship_quantity, firmware_version, software_version)
-        VALUES (#{id}, #{sn}, #{type}, #{shipSn}, #{shipProductionDate}, #{shipAgingDate},
-                #{shipPowerConsumption}, #{shipQuantity}, #{firmwareVersion}, #{softwareVersion})
+        INSERT INTO spare (id, sn, type, chip_sn, chip_production_date, chip_aging_date,
+                chip_power_consumption, chip_quantity, firmware_version, software_version)
+        VALUES (#{id}, #{sn}, #{type}, #{chipSn}, #{chipProductionDate}, #{chipAgingDate},
+                #{chipPowerConsumption}, #{chipQuantity}, #{firmwareVersion}, #{softwareVersion})
 
         ON DUPLICATE KEY
-        UPDATE id = #{id}, sn = #{sn}, type = #{type}, ship_sn = #{shipSn}, ship_production_date = #{shipProductionDate},
-               ship_aging_date = #{shipAgingDate}, ship_power_consumption = #{shipPowerConsumption},
-               ship_quantity = #{shipQuantity}, firmware_version = #{firmwareVersion}, software_version = #{softwareVersion}
+        UPDATE id = #{id}, sn = #{sn}, type = #{type}, chip_sn = #{chipSn}, chip_production_date = #{chipProductionDate},
+               chip_aging_date = #{chipAgingDate}, chip_power_consumption = #{chipPowerConsumption},
+               chip_quantity = #{chipQuantity}, firmware_version = #{firmwareVersion}, software_version = #{softwareVersion}
     </insert>
 
     <!-- 删除指定 ID 的备件 -->
     <delete id="deleteSpare">
         DELETE FROM spare WHERE id = #{spareId}
     </delete>
+
+    <!-- 更新芯片库存 -->
+    <update id="updateChipQuantity">
+        UPDATE spare SET chip_quantity = #{chipQuantity} WHERE id = #{spareId}
+    </update>
+
+    <!-- 查询符合条件的库存日志 -->
+    <select id="findSpareWarehousingLogs" resultType="SpareWarehousingLog">
+        SELECT username, spare_id, spare_sn, old_chip_quantity, new_chip_quantity, quantity, type, `date`
+        FROM spare_warehousing_log
+        ORDER BY `date` DESC
+        LIMIT ${offset}, ${size}
+    </select>
+
+    <!-- 插入出入库操作日志 -->
+    <insert id="insertSpareWarehousingLog">
+        INSERT INTO spare_warehousing_log (username, spare_id, spare_sn, old_chip_quantity, new_chip_quantity, quantity, type, `date`)
+        VALUES (#{username}, #{spareId}, #{spareSn}, #{oldChipQuantity}, #{newChipQuantity}, #{quantity}, #{type}, #{date})
+    </insert>
 </mapper>

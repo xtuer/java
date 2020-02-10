@@ -30,6 +30,8 @@ const Urls = {
     // 备件
     API_SPARES      : '/api/spares',           // 备件
     API_SPARES_BY_ID: '/api/spares/{spareId}', // 指定 ID 的备件
+    API_SPARES_WAREHOUSING: '/api/spares/{spareId}/warehousing', // 入库 | 出库
+    API_WAREHOUSING_LOGS  : '/api/warehousing/logs', // 库存日志
 };
 
 window.Urls = Urls;

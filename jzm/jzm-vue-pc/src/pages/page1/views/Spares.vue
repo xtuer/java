@@ -9,14 +9,19 @@
         <!-- 备件列表 -->
         <div style="overflow: auto">
             <Table :data="spares" :columns="spareColumns" border style="min-width: 1000px">
+                <template slot-scope="{ row: spare }" slot="chipQuantity">
+                    <!-- 小于 20 红色 -->
+                    <Badge :text="spare.chipQuantity + ''" :type="spare.chipQuantity < 20 ? 'error' : 'success'"/>
+                </template>
+
                 <template slot-scope="{ row: spare }" slot="spareAction">
                     <Poptip trigger="hover" placement="right">
                         <Icon type="md-more"/>
                         <div slot="content" class="action-buttons">
                             <Button size="small" type="error"   @click="deleteSpare(spare)">删除</Button>
                             <Button size="small" type="primary" @click="editSpare(spare)">编辑</Button>
-                            <Button size="small" type="primary">入库</Button>
-                            <Button size="small" type="primary">出库</Button>
+                            <Button size="small" type="primary" @click="warehousing(spare.id, spare.chipQuantity, 1)">入库</Button>
+                            <Button size="small" type="primary" @click="warehousing(spare.id, spare.chipQuantity, -1)">出库</Button>
                         </div>
                     </Poptip>
                 </template>
@@ -43,19 +48,19 @@
                     </Select>
                 </FormItem>
                 <FormItem label="芯片编号:" prop="">
-                    <Input v-model="editedSpare.shipSn" placeholder="请输入芯片编号"/>
+                    <Input v-model="editedSpare.chipSn" placeholder="请输入芯片编号"/>
                 </FormItem>
                 <FormItem label="芯片生产时间:" prop="">
-                    <Input v-model="editedSpare.shipProductionDate" placeholder="请输入芯片生产时间"/>
+                    <Input v-model="editedSpare.chipProductionDate" placeholder="请输入芯片生产时间"/>
                 </FormItem>
                 <FormItem label="芯片老化时间:" prop="">
-                    <Input v-model="editedSpare.shipAgingDate" placeholder="请输入芯片老化时间"/>
+                    <Input v-model="editedSpare.chipAgingDate" placeholder="请输入芯片老化时间"/>
                 </FormItem>
                 <FormItem label="芯片功耗:" prop="">
-                    <Input v-model="editedSpare.shipPowerConsumption" placeholder="请输入芯片功耗"/>
+                    <Input v-model="editedSpare.chipPowerConsumption" placeholder="请输入芯片功耗"/>
                 </FormItem>
                 <FormItem label="芯片数量:" prop="">
-                    <InputNumber v-model="editedSpare.shipQuantity" :min="0" :readonly="!editedSpare.neu" placeholder="请输入芯片数量" style="width: 100%"/>
+                    <InputNumber v-model="editedSpare.chipQuantity" :min="0" :readonly="!editedSpare.neu" placeholder="请输入芯片数量" style="width: 100%"/>
                 </FormItem>
                 <FormItem label="固件版本:" prop="">
                     <Input v-model="editedSpare.firmwareVersion" placeholder="请输入固件版本"/>
@@ -67,6 +72,27 @@
 
             <div slot="footer">
                 <Button type="primary" :loading="saving" @click="saveSpare()">保存</Button>
+            </div>
+        </Modal>
+
+        <!-- 出库操作对话框 -->
+        <Modal v-model="warehousingData.modal" title="库存操作" width="330" class="warehousing-modal">
+            <Form :label-width="60">
+                <FormItem label="时间:">
+                    <DatePicker v-model="warehousingData.date"
+                                :editable="false"
+                                format="yyyy-MM-dd"
+                                placement="bottom-end"
+                                placeholder="请选择日期"
+                                style="width: 100%">
+                    </DatePicker>
+                </FormItem>
+                <FormItem label="数量:" prop="softwareVersion">
+                    <InputNumber v-model="warehousingData.chipQuantity" :min="1" placeholder="请输入芯片数量" style="width: 100%"/>
+                </FormItem>
+            </Form>
+            <div slot="footer">
+                <Button type="primary" :loading="saving" @click="warehousingSave()">{{ warehousingData.typeLabel }}</Button>
             </div>
         </Modal>
     </div>
@@ -103,15 +129,24 @@ export default {
             spareColumns: [
                 { title: '入库单号', key: 'sn' },
                 { title: '备件类型', key: 'type', width: 100 },
-                { title: '芯片编号', key: 'shipSn', width: 110 },
-                { title: '芯片生产时间', key: 'shipProductionDate', width: 130 },
-                { title: '芯片老化时间', key: 'shipAgingDate', width: 130 },
-                { title: '芯片功耗', key: 'shipPowerConsumption', width: 95 },
-                { title: '芯片数量', key: 'shipQuantity', width: 95 },
+                { title: '芯片编号', key: 'chipSn', width: 110 },
+                { title: '芯片生产时间', key: 'chipProductionDate', width: 130 },
+                { title: '芯片老化时间', key: 'chipAgingDate', width: 130 },
+                { title: '芯片功耗', key: 'chipPowerConsumption', width: 95 },
+                { title: '芯片数量', slot: 'chipQuantity', width: 95 },
                 { title: '固件版本', key: 'firmwareVersion' },
                 { title: '软件版本', key: 'softwareVersion' },
                 { title: '操作', slot: 'spareAction', align: 'center', width: 70 },
             ],
+            // 库存操作
+            warehousingData: {
+                modal       : false, // 显示出库入库对话框
+                spareId     : '',    // 备件 ID
+                chipQuantity: 0,     // 数量
+                type        : 1,     // 类型: -1 为出库，1 为入库
+                typeLabel   : '',    // 类型: 出库、入库
+                date        : new Date(),
+            },
         };
     },
     mounted() {
@@ -170,7 +205,7 @@ export default {
                 // [3] 找到被编辑对象的下标
                 this.saving = true;
                 const spare = SpareUtils.cloneSpare(this.editedSpare); // 重要: 克隆被编辑的对象
-                const index = this.editedSpareIndex(spare.id);
+                const index = this.spareIndex(spare.id);
 
                 SpareUtils.cleanSpare(spare);
                 SpareDao.saveSpare(spare).then((spareId) => {
@@ -204,7 +239,7 @@ export default {
                 loading: true,
                 onOk: () => {
                     SpareDao.deleteSpare(spare.id).then(() => {
-                        const index = this.editedSpareIndex(spare.id);
+                        const index = this.spareIndex(spare.id);
                         this.spares.remove(index); // [2] 从服务器删除成功后才从本地删除
                         this.$Modal.remove();
                         this.$Message.success('删除成功');
@@ -213,9 +248,33 @@ export default {
             });
         },
         // 正编辑用户的下标
-        editedSpareIndex(spareId) {
+        spareIndex(spareId) {
             return this.spares.findIndex(spare => spare.id === spareId);
         },
+        // 出库入库: type 为 -1 表示出库，1 表示入库
+        warehousing(spareId, chipQuantity, type) {
+            this.warehousingData = {
+                modal       : true, // 显示出库入库对话框
+                spareId,            // 备件 ID
+                chipQuantity: 1,    // 数量
+                type,               // 类型 : -1 为出库，1 为入库
+                typeLabel   : type === -1 ? '出库': '入库',
+                date        : new Date(), // 时间
+            };
+        },
+        // 保存库存
+        warehousingSave() {
+            const spareId      = this.warehousingData.spareId;
+            const chipQuantity = this.warehousingData.chipQuantity * this.warehousingData.type;
+            const date         = this.warehousingData.date;
+
+            SpareDao.warehousing(spareId, chipQuantity, date).then((newQuantity) => {
+                const index = this.spareIndex(spareId);
+                this.spares[index].chipQuantity = newQuantity;
+                this.$Message.success(`${this.warehousingData.typeLabel}成功`);
+                this.warehousingData.modal = false;
+            });
+        }
     }
 };
 </script>
@@ -234,6 +293,12 @@ export default {
 
     .action-buttons button:not(:first-child) {
         margin-left: 5px;
+    }
+}
+
+.warehousing-modal {
+    .ivu-modal-body {
+        padding-bottom: 0;
     }
 }
 </style>

@@ -1,13 +1,13 @@
 package com.xtuer.controller;
 
-import com.xtuer.bean.Result;
-import com.xtuer.bean.Spare;
-import com.xtuer.bean.Urls;
+import com.xtuer.bean.*;
 import com.xtuer.mapper.SpareMapper;
+import com.xtuer.service.SpareService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +17,9 @@ import java.util.List;
 public class SpareController extends BaseController {
     @Autowired
     private SpareMapper spareMapper;
+
+    @Autowired
+    private SpareService spareService;
 
     /**
      * 查询符合条件的备件
@@ -65,5 +68,41 @@ public class SpareController extends BaseController {
     public Result<Boolean> deleteSpare(@PathVariable long spareId) {
         spareMapper.deleteSpare(spareId);
         return Result.ok();
+    }
+
+    /**
+     * 查询符合条件的库存日志
+     *
+     * 网址: http://localhost:8080/api/warehousing/logs
+     * 参数:
+     *      pageNumber [可选]: 页码
+     *      pageSize   [可选]: 数量
+     *
+     * @param pageNumber 页码
+     * @param pageSize   数量
+     * @return payload 为库存日志
+     */
+    @GetMapping(Urls.API_WAREHOUSING_LOGS)
+    public Result<List<SpareWarehousingLog>> findSpareWarehousingLogs(@RequestParam(required = false, defaultValue = "1") int pageNumber,
+                                                                      @RequestParam(required = false, defaultValue = "20") int pageSize) {
+        return Result.ok(spareMapper.findSpareWarehousingLogs(Page.of(pageNumber, pageSize)));
+    }
+
+    /**
+     * 对指定 ID 的备件的芯片进行入库出库
+     *
+     * 网址: http://localhost:8080/api/spares/{spareId}/warehousing
+     * 参数:
+     *      chipQuantity: 大于 0 为入库，小于 0 为出库
+     *      date        : 操作时间
+     *
+     * @param spareId      备件 ID
+     * @param chipQuantity 芯片数量
+     * @param date         操作时间
+     * @return payload 为新的芯片数量
+     */
+    @PutMapping(Urls.API_SPARES_WAREHOUSING)
+    public Result<Integer> warehousing(@PathVariable long spareId, @RequestParam int chipQuantity, Date date) {
+        return spareService.warehousing(super.getCurrentUser().getUsername(), spareId, chipQuantity, date);
     }
 }

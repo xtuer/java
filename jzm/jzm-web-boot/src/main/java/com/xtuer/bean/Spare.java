@@ -14,11 +14,11 @@ public class Spare {
     private long   id                  ; // 备件 ID
     private String sn                  ; // 入库单号
     private String type                ; // 备件类型
-    private String shipSn              ; // 芯片编号
-    private String shipProductionDate  ; // 芯片生产时间
-    private String shipAgingDate       ; // 芯片老化时间
-    private String shipPowerConsumption; // 芯片功耗
+    private String chipSn              ; // 芯片编号
+    private String chipProductionDate  ; // 芯片生产时间
+    private String chipAgingDate       ; // 芯片老化时间
+    private String chipPowerConsumption; // 芯片功耗
     private String firmwareVersion     ; // 固件版本
     private String softwareVersion     ; // 软件版本
-    private int    shipQuantity        ; // 芯片数量
+    private int    chipQuantity        ; // 芯片数量
 }
