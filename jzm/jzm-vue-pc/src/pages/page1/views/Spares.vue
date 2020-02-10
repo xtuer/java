@@ -10,16 +10,22 @@
         <div style="overflow: auto">
             <Table :data="spares" :columns="spareColumns" border style="min-width: 1000px">
                 <template slot-scope="{ row: spare }" slot="spareAction">
-                    <Button size="small" type="primary" style="margin-right: 5px">出库</Button>
-                    <Button size="small" type="primary" style="margin-right: 5px" @click="editSpare(spare)">编辑</Button>
-                    <Button size="small" type="error" @click="deleteSpare(spare)">删除</Button>
+                    <Poptip trigger="hover" placement="right">
+                        <Icon type="md-more"/>
+                        <div slot="content" class="action-buttons">
+                            <Button size="small" type="error"   @click="deleteSpare(spare)">删除</Button>
+                            <Button size="small" type="primary" @click="editSpare(spare)">编辑</Button>
+                            <Button size="small" type="primary">入库</Button>
+                            <Button size="small" type="primary">出库</Button>
+                        </div>
+                    </Poptip>
                 </template>
             </Table>
         </div>
 
         <!-- 加载下一页按钮 -->
         <center>
-            <Button :loading="loading" v-show="more" icon="md-paw" shape="circle" @click="fetchMoreSpares">更多...</Button>
+            <Button v-show="more" :loading="loading" icon="md-boat" shape="circle" @click="fetchMoreSpares">更多...</Button>
         </center>
 
         <!-------------------------------------------------------------------------------------------------------------
@@ -49,7 +55,7 @@
                     <Input v-model="editedSpare.shipPowerConsumption" placeholder="请输入芯片功耗"/>
                 </FormItem>
                 <FormItem label="芯片数量:" prop="">
-                    <InputNumber v-model="editedSpare.shipQuantity" :min="0" placeholder="请输入芯片数量" style="width: 100%"/>
+                    <InputNumber v-model="editedSpare.shipQuantity" :min="0" :readonly="!editedSpare.neu" placeholder="请输入芯片数量" style="width: 100%"/>
                 </FormItem>
                 <FormItem label="固件版本:" prop="">
                     <Input v-model="editedSpare.firmwareVersion" placeholder="请输入固件版本"/>
@@ -96,15 +102,15 @@ export default {
             },
             spareColumns: [
                 { title: '入库单号', key: 'sn' },
-                { title: '备件类型', key: 'type', width: 110 },
-                { title: '芯片编号', key: 'shipSn' },
+                { title: '备件类型', key: 'type', width: 100 },
+                { title: '芯片编号', key: 'shipSn', width: 110 },
                 { title: '芯片生产时间', key: 'shipProductionDate', width: 130 },
                 { title: '芯片老化时间', key: 'shipAgingDate', width: 130 },
-                { title: '芯片功耗', key: 'shipPowerConsumption' },
-                { title: '芯片数量', key: 'shipQuantity', width: 100 },
+                { title: '芯片功耗', key: 'shipPowerConsumption', width: 95 },
+                { title: '芯片数量', key: 'shipQuantity', width: 95 },
                 { title: '固件版本', key: 'firmwareVersion' },
                 { title: '软件版本', key: 'softwareVersion' },
-                { title: '操作', slot: 'spareAction', align: 'center', width: 180 },
+                { title: '操作', slot: 'spareAction', align: 'center', width: 70 },
             ],
         };
     },
@@ -162,12 +168,16 @@ export default {
 
                 // [2] 克隆被编辑对象
                 // [3] 找到被编辑对象的下标
-                this.saving  = true;
-                const spare  = SpareUtils.cloneSpare(this.editedSpare); // 重要: 克隆被编辑的对象
-                const index  = this.editedSpareIndex(spare.id);
+                this.saving = true;
+                const spare = SpareUtils.cloneSpare(this.editedSpare); // 重要: 克隆被编辑的对象
+                const index = this.editedSpareIndex(spare.id);
 
-                SpareDao.saveSpare(spare).then(() => {
+                SpareUtils.cleanSpare(spare);
+                SpareDao.saveSpare(spare).then((spareId) => {
                     // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
+                    spare.id  = spareId;
+                    spare.neu = false;
+
                     if (index >= 0) {
                         // 更新: 替换已有对象
                         this.spares.replace(index, spare);
@@ -220,6 +230,10 @@ export default {
         grid-template-columns: max-content 200px 100px;
         grid-gap: 12px;
         align-items: center;
+    }
+
+    .action-buttons button:not(:first-child) {
+        margin-left: 5px;
     }
 }
 </style>

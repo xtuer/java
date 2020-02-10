@@ -53,7 +53,7 @@
 
         <!-- 加载下一页订单按钮 -->
         <center>
-            <Button :loading="loading" v-show="more" icon="md-paw" shape="circle" @click="fetchMoreOrders">更多...</Button>
+            <Button v-show="more" :loading="loading" icon="md-boat" shape="circle" @click="fetchMoreOrders">更多...</Button>
         </center>
 
         <!-------------------------------------------------------------------------------------------------------------
@@ -277,8 +277,8 @@ export default {
 
                 this.saving = true;
                 const index = this.orders.findIndex(o => o.id === this.editedOrder.id);
-                OrderUtils.cleanOrder(this.editedOrder);
 
+                OrderUtils.cleanOrder(this.editedOrder);
                 OrderDao.saveOrder(this.editedOrder).then((order) => {
                     if (index >= 0) {
                         // 更新: 替换已有对象

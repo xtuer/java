@@ -16,7 +16,7 @@ export default class OrderDao {
         return new Promise((resolve, reject) => {
             order = JSON.parse(JSON.stringify(order));
 
-            Rest.update({ url: Urls.API_ORDER_BY_ID, pathVariables: { orderId:  order.id }, data: order, json: true })
+            Rest.update({ url: Urls.API_ORDERS_BY_ID, pathVariables: { orderId:  order.id }, data: order, json: true })
                 .then(({ data: updatedOrder, success, message }) => {
                     if (success) {
                         resolve(updatedOrder);
@@ -38,11 +38,11 @@ export default class OrderDao {
      *      pageNumber [可选]: 页码，如无则默认为 1
      *
      * @param {JSON} filter 过滤条件
-     * @param {Promise} 返回 Promise 对象，resolve 的参数为订单数组，reject 的参数为错误信息
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为订单数组，reject 的参数为错误信息
      */
     static findOrders(filter) {
         return new Promise((resolve, reject) => {
-            Rest.get({ url: Urls.API_ORDER, data: filter }).then(({ data: orders, success, message }) => {
+            Rest.get({ url: Urls.API_ORDERS, data: filter }).then(({ data: orders, success, message }) => {
                 if (success) {
                     resolve(orders);
                 } else {
@@ -60,11 +60,11 @@ export default class OrderDao {
      * 参数: 无
      *
      * @param {Long} orderId 订单 ID
-     * @param {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
      */
     static deleteOrder(orderId) {
         return new Promise((resolve, reject) => {
-            Rest.remove({ url: Urls.API_ORDER_BY_ID, pathVariables: { orderId } }).then(({ success, message }) => {
+            Rest.remove({ url: Urls.API_ORDERS_BY_ID, pathVariables: { orderId } }).then(({ success, message }) => {
                 if (success) {
                     resolve();
                 } else {
@@ -87,7 +87,7 @@ export default class OrderDao {
      */
     static patchOrder(order) {
         return new Promise((resolve, reject) => {
-            Rest.patch({ url: Urls.API_ORDER_BY_ID, pathVariables: { orderId: order.id }, data: order }).then(({ data, success, message }) => {
+            Rest.patch({ url: Urls.API_ORDERS_BY_ID, pathVariables: { orderId: order.id }, data: order }).then(({ data, success, message }) => {
                 if (success) {
                     resolve(data);
                 } else {

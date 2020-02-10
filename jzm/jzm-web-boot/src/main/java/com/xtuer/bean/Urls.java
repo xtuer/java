@@ -61,12 +61,16 @@ public interface Urls {
     String URL_REPO_FILE_DOWNLOAD = "/file/download/**";       // 下载仓库文件的 URL
 
     // 机构
-    String API_ORGS        = "/api/orgs";                 // 所有机构
-    String API_ORGS_BY_ID  = "/api/orgs/{orgId}";         // 指定 ID 的机构
-    String API_ORGS_ENABLE = "/api/orgs/{orgId}/enabled"; // 指定 ID 的机构的启用禁用状态
+    String API_ORGS         = "/api/orgs";                 // 所有机构
+    String API_ORGS_BY_ID   = "/api/orgs/{orgId}";         // 指定 ID 的机构
+    String API_ORGS_ENABLED = "/api/orgs/{orgId}/enabled"; // 指定 ID 的机构的启用禁用状态
 
     // 订单
-    String API_ORDER       = "/api/orders"; // 订单
-    String API_ORDER_BY_ID = "/api/orders/{orderId}"; // 指定 ID 的订单
-    String API_ORDER_ITEM_BY_ID = "/api/orderItems/{orderItemId}"; // 指定 ID 的订单项
+    String API_ORDERS            = "/api/orders";                   // 订单
+    String API_ORDERS_BY_ID      = "/api/orders/{orderId}";         // 指定 ID 的订单
+    String API_ORDERS_ITEM_BY_ID = "/api/orderItems/{orderItemId}"; // 指定 ID 的订单项
+
+    // 备件
+    String API_SPARES       = "/api/spares";           // 备件
+    String API_SPARES_BY_ID = "/api/spares/{spareId}"; // 指定 ID 的备件
 }

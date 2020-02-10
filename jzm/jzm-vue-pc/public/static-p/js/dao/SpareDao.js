@@ -11,11 +11,18 @@ export default class SpareDao {
      *      pageNumber [可选]: 页码，如无则默认为 1
      *
      * @param {JSON} filter 过滤条件
-     * @param {Promise} 返回 Promise 对象，resolve 的参数为备件数组，reject 的参数为错误信息
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为备件数组，reject 的参数为错误信息
      */
     static findSpares(filter) {
         return new Promise((resolve, reject) => {
-            resolve([]);
+            Rest.get({ url: Urls.API_SPARES }).then(({ data: spares, success, message }) => {
+                if (success) {
+                    resolve(spares);
+                } else {
+                    Notice.error({ title: '查询备件错误', desc: message });
+                    reject(message);
+                }
+            });
         });
     }
 
@@ -30,7 +37,14 @@ export default class SpareDao {
      */
     static saveSpare(spare) {
         return new Promise((resolve, reject) => {
-            resolve(spare.id);
+            Rest.update({ url: Urls.API_SPARES_BY_ID, data: spare }).then(({ data: spareId, success, message }) => {
+                if (success) {
+                    resolve(spareId);
+                } else {
+                    Notice.error({ title: '保存备件错误', desc: message });
+                    reject(message);
+                }
+            });
         });
     }
 
@@ -41,11 +55,18 @@ export default class SpareDao {
      * 参数: 无
      *
      * @param {Long} spareId 备件 ID
-     * @param {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
      */
     static deleteSpare(spareId) {
         return new Promise((resolve, reject) => {
-            resolve([]);
+            Rest.remove({ url: Urls.API_SPARES_BY_ID, pathVariables: { spareId } }).then(({ success, message }) => {
+                if (success) {
+                    resolve();
+                } else {
+                    Notice.error({ title: '删除备件错误', desc: message });
+                    reject(message);
+                }
+            });
         });
     }
 }

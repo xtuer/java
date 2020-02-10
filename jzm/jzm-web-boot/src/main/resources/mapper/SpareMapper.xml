@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xtuer.mapper.SpareMapper">
+    <!-- 查询符合条件的备件 -->
+    <select id="findSpares" resultType="Spare">
+        SELECT * FROM spare
+        ORDER BY id DESC
+    </select>
+
+    <!-- 创建或者更新备件 -->
+    <insert id="upsertSpare" parameterType="Spare">
+        INSERT INTO spare (id, sn, type, ship_sn, ship_production_date, ship_aging_date,
+                ship_power_consumption, ship_quantity, firmware_version, software_version)
+        VALUES (#{id}, #{sn}, #{type}, #{shipSn}, #{shipProductionDate}, #{shipAgingDate},
+                #{shipPowerConsumption}, #{shipQuantity}, #{firmwareVersion}, #{softwareVersion})
+
+        ON DUPLICATE KEY
+        UPDATE id = #{id}, sn = #{sn}, type = #{type}, ship_sn = #{shipSn}, ship_production_date = #{shipProductionDate},
+               ship_aging_date = #{shipAgingDate}, ship_power_consumption = #{shipPowerConsumption},
+               ship_quantity = #{shipQuantity}, firmware_version = #{firmwareVersion}, software_version = #{softwareVersion}
+    </insert>
+
+    <!-- 删除指定 ID 的备件 -->
+    <delete id="deleteSpare">
+        DELETE FROM spare WHERE id = #{spareId}
+    </delete>
+</mapper>

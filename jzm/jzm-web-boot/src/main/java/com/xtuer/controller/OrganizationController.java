@@ -88,7 +88,7 @@ public class OrganizationController extends BaseController {
      * @param orgId 机构 ID
      * @param value 启用禁用的 boolean 值
      */
-    @PutMapping(Urls.API_ORGS_ENABLE)
+    @PutMapping(Urls.API_ORGS_ENABLED)
     public Result<String> enableOrganization(@PathVariable long orgId, @RequestParam boolean value) {
         orgService.enableOrganization(orgId, value);
         return Result.ok();

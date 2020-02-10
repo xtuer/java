@@ -14,6 +14,7 @@ export default class SpareUtils {
             shipQuantity        : 0,  // 芯片数量
             firmwareVersion     : '', // 固件版本
             softwareVersion     : '', // 软件版本
+            neu                 : true,
         };
     }
 
@@ -29,5 +30,17 @@ export default class SpareUtils {
         clone.shipAgingDate      = spare.shipAgingDate;
 
         return clone;
+    }
+
+    /**
+     * 清理备件
+     *
+     * @param {JSON} order 订单
+     * @return 无返回值
+     */
+    static cleanSpare(spare) {
+        if (spare.neu) {
+            spare.id = 0;
+        }
     }
 }

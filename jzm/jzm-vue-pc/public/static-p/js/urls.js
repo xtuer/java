@@ -14,17 +14,22 @@ const Urls = {
     MESSAGE_WEBSOCKET_URL: `ws://${window.location.hostname}:3721`,
 
     // 机构
-    API_ORGS       : '/api/orgs',         // 所有机构
-    API_ORGS_BY_ID : '/api/orgs/{orgId}', // 指定 ID 的机构
-    API_ORGS_ENABLE: '/api/orgs/{orgId}/enabled', // 指定 ID 的机构的启用禁用状态
+    API_ORGS        : '/api/orgs',         // 所有机构
+    API_ORGS_BY_ID  : '/api/orgs/{orgId}', // 指定 ID 的机构
+    API_ORGS_ENABLED: '/api/orgs/{orgId}/enabled', // 指定 ID 的机构的启用禁用状态
 
     // 字典
     API_DICTS_ID : '/api/dicts/{dictId}',   // 单个查询/修改/删除
     API_DICTS    : '/api/currentOrg/dicts', // 查询当前机构字典列表
 
     // 订单
-    API_ORDER      : '/api/orders', // 订单
-    API_ORDER_BY_ID: '/api/orders/{orderId}', // 指定 ID 的订单
+    API_ORDERS           : '/api/orders',                   // 订单
+    API_ORDERS_BY_ID     : '/api/orders/{orderId}',         // 指定 ID 的订单
+    API_ORDERS_ITEM_BY_ID: '/api/orderItems/{orderItemId}', // 指定 ID 的订单项
+
+    // 备件
+    API_SPARES      : '/api/spares',           // 备件
+    API_SPARES_BY_ID: '/api/spares/{spareId}', // 指定 ID 的备件
 };
 
 window.Urls = Urls;

@@ -30,7 +30,7 @@ public class OrderController {
      * @param orderId 订单 ID
      * @return payload 为查询到的订单，查询不到时为 null
      */
-    @GetMapping(Urls.API_ORDER_BY_ID)
+    @GetMapping(Urls.API_ORDERS_BY_ID)
     public Result<Order> findOrderById(@PathVariable long orderId) {
         Order order = orderMapper.findOrderById(orderId);
         return Result.single(order, "查找不到订单 " + orderId);
@@ -44,7 +44,7 @@ public class OrderController {
      *
      * @return payload 为订单数组
      */
-    @GetMapping(Urls.API_ORDER)
+    @GetMapping(Urls.API_ORDERS)
     public Result<List<Order>> findOrders() {
         List<Order> orders = orderMapper.findOrders();
         return Result.ok(orders);
@@ -60,7 +60,7 @@ public class OrderController {
      * @param order 订单
      * @return Payload 为订单
      */
-    @PutMapping(Urls.API_ORDER_BY_ID)
+    @PutMapping(Urls.API_ORDERS_BY_ID)
     public Result<Order> upsertOrder(@RequestBody Order order) {
         orderService.upsertOrder(order);
         return Result.ok(order);
@@ -74,7 +74,7 @@ public class OrderController {
      *
      * @param orderId 订单 ID
      */
-    @DeleteMapping(Urls.API_ORDER_BY_ID)
+    @DeleteMapping(Urls.API_ORDERS_BY_ID)
     public Result<Boolean> deleteOrder(@PathVariable long orderId) {
         orderMapper.deleteOrder(orderId);
         return Result.ok();
@@ -88,7 +88,7 @@ public class OrderController {
      *
      * @param orderItemId 订单项 ID
      */
-    @DeleteMapping(Urls.API_ORDER_ITEM_BY_ID)
+    @DeleteMapping(Urls.API_ORDERS_ITEM_BY_ID)
     public Result<Boolean> deleteOrderItem(@PathVariable long orderItemId) {
         orderMapper.deleteOrderItem(orderItemId);
         return Result.ok();
@@ -104,7 +104,7 @@ public class OrderController {
      * @param orderId 订单 ID
      * @param status  订单状态
      */
-    @PatchMapping(Urls.API_ORDER_BY_ID)
+    @PatchMapping(Urls.API_ORDERS_BY_ID)
     public Result<Boolean> patchOrder(@PathVariable long orderId,
                                       @RequestParam(required = false, defaultValue="-1") int status) {
         if (status != -1) {
