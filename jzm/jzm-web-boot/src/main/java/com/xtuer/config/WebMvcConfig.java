@@ -13,13 +13,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index.html"); // index 和 index.html 都可以
         registry.addViewController("/door").setViewName("door.html");
+        registry.addViewController("/admin").setViewName("../page-p/page1.html");
     }
 
     // 静态资源的路径映射
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/static-p/**").addResourceLocations("classpath:/page-m/static-p/");
+        registry.addResourceHandler("/static-p/**").addResourceLocations("classpath:/page-p/static-p/");
         registry.addResourceHandler("/static-m/**").addResourceLocations("classpath:/page-m/static-m/");
     }
 
