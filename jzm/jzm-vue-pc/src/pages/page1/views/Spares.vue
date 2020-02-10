@@ -60,7 +60,7 @@
             </Form>
 
             <div slot="footer">
-                <Button type="primary" @click="saveSpare()">保存</Button>
+                <Button type="primary" :loading="saving" @click="saveSpare()">保存</Button>
             </div>
         </Modal>
     </div>
@@ -76,7 +76,8 @@ export default {
             spares     : [],
             editedSpare: {},
             modal      : false,
-            loading    : false,
+            loading    : false, // 加载中
+            saving     : false, // 保存中
             more       : false, // 是否还有更多用户
 
             filter: { // 搜索条件
@@ -161,7 +162,7 @@ export default {
 
                 // [2] 克隆被编辑对象
                 // [3] 找到被编辑对象的下标
-                this.loading = true;
+                this.saving  = true;
                 const spare  = SpareUtils.cloneSpare(this.editedSpare); // 重要: 克隆被编辑的对象
                 const index  = this.editedSpareIndex(spare.id);
 
@@ -176,8 +177,8 @@ export default {
                     }
 
                     // [5] 提示保存成功，隐藏编辑对话框
-                    this.loading = false;
-                    this.modal   = false;
+                    this.saving = false;
+                    this.modal  = false;
                     this.$Message.success('保存成功');
                 });
             });

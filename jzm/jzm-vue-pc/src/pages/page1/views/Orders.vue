@@ -11,7 +11,7 @@
             <!-- 订单状态 -->
             <template slot-scope="{ row: order }" slot="status">
                 <Poptip transfer trigger="hover">
-                    <Tag :color="orderStatus(order.status).color" @click.native="updateOrderStatus(order)">{{ orderStatus(order.status).name }}</Tag>
+                    <Tag :color="orderStatus(order.status).color" @click.native="nextOrderStatus(order)">{{ orderStatus(order.status).name }}</Tag>
 
                     <div slot="content">
                         开始组装时间: {{ order.startAssembleDate }}<br>
@@ -117,7 +117,7 @@
             </Form>
 
             <div slot="footer">
-                <Button type="primary" :loading="loading" @click="saveOrder">保存</Button>
+                <Button type="primary" :loading="saving" @click="saveOrder()">保存</Button>
             </div>
         </Modal>
 
@@ -174,7 +174,8 @@ export default {
             },
 
             more   : false, // 是否还有更多用户
-            loading: true,  // 加载中
+            loading: false, // 加载中
+            saving : false, // 保存中
 
             // 被编辑的订单和订单项
             editedOrder    : {},
@@ -274,7 +275,7 @@ export default {
             this.$refs.orderForm.validate(valid => {
                 if (!valid) { return; }
 
-                this.loading = true;
+                this.saving = true;
                 const index = this.orders.findIndex(o => o.id === this.editedOrder.id);
                 OrderUtils.cleanOrder(this.editedOrder);
 
@@ -287,7 +288,7 @@ export default {
                         this.orders.insert(0, order);
                     }
 
-                    this.loading = false;
+                    this.saving = false;
                     this.orderModal = false;
                     this.$Message.success('保存订单成功');
                 });
@@ -352,26 +353,23 @@ export default {
             this.editedOrder.orderItems[index].deleted = true;
         },
         // 修改订单状态
-        updateOrderStatus(order) {
-            let status = order.status;
-            let label = '';
-            order = this.orders.find(o => o.id === order.id);
+        nextOrderStatus(order) {
+            // 状态变化:
+            //     0 -> 1 == 等待备件 -> 开始组装
+            //     1 -> 2 == 开始组装 -> 完成组装
 
-            if (status === 0) {
-                label = '开始组装';
-            } else if (status === 1) {
-                label = '完成组装';
-            }
-
-            status += 1; // 更新为下一个状态
+            let status = order.status + 1; // 更新为下一个状态
 
             if (status === 1 || status === 2) {
+                let label = status === 1 ? '开始组装' : '完成组装';
+
                 this.$Modal.confirm({
                     title: `确定 <font color="red">${label}</font> 吗?`,
                     loading: true,
                     onOk: () => {
                         OrderDao.patchOrder({ id: order.id, status }).then(() => {
-                            order.status = status;
+                            const originalOrder = this.orders.find(o => o.id === order.id);
+                            originalOrder.status = status;
                             this.$Modal.remove();
                             this.$Message.success('生产进程更新成功');
                         });
