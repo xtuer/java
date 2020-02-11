@@ -28,6 +28,11 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "spare" */ './views/WarehousingLogs.vue'),
                 },
                 {
+                    path: '/work-orders',
+                    name: 'workOrders',
+                    component: () => import(/* webpackChunkName: "spare" */ './views/WorkOrders.vue'),
+                },
+                {
                     path: '/scroll',
                     name: 'scroll',
                     component: () => import(/* webpackChunkName: "about" */ './views/Scroll.vue'),

@@ -1,6 +1,6 @@
 <!-- 订单管理 -->
 <template>
-    <div class="order">
+    <div class="orders">
         <!-- 搜索工具栏 -->
         <div class="toolbar">
             <Button @click="editOrder()">创建订单</Button>
@@ -100,9 +100,7 @@
                 <FormItem label="负责人:">
                     <Input v-model="editedOrder.personInCharge" placeholder="请输入负责人"/>
                 </FormItem>
-                <FormItem>
-                    <Button type="dashed" icon="md-add" style="float: right" @click="editOrderItem()">添加订单项</Button>
-                </FormItem>
+                <Button type="dashed" icon="md-add" style="justify-self: end" @click="editOrderItem()">添加订单项</Button>
 
                 <!-- 订单项列表 -->
                 <Table :columns="orderItemColumns" :data="availableOrderItems(editedOrder)" border style="grid-column: span 2">
@@ -390,7 +388,7 @@ export default {
 </script>
 
 <style lang="scss">
-.order {
+.orders {
     display: grid;
     grid-gap: 12px;
 

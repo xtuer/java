@@ -1,5 +1,5 @@
 <template>
-    <div class="warehousing-log">
+    <div class="warehousing-logs">
         <Table :data="logs" :columns="columns" border>
             <template slot-scope="{ row: log }" slot="type">
                 <!-- 入库绿色，出库红色 -->
@@ -75,7 +75,7 @@ export default {
 </script>
 
 <style lang="scss">
-.warehousing-log {
+.warehousing-logs {
     display: grid;
     grid-gap: 12px;
 }

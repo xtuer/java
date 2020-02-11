@@ -19,7 +19,7 @@
                 </Submenu>
                 <Submenu name="3">
                     <template slot="title"><Icon type="ios-construct"/>维修管理</template>
-                    <MenuItem name="spares">维修订单</MenuItem>
+                    <MenuItem name="workOrders">维修订单</MenuItem>
                 </Submenu>
             </Menu>
         </div>

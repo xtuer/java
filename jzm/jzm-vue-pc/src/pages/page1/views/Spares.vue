@@ -1,6 +1,6 @@
 <!-- 备件管理: 备件入库出库 -->
 <template>
-    <div class="spare">
+    <div class="spares">
         <!-- 搜索工具栏 -->
         <div class="toolbar">
             <Button @click="editSpare()">创建备件</Button>
@@ -280,7 +280,7 @@ export default {
 </script>
 
 <style lang="scss">
-.spare {
+.spares {
     display: grid;
     grid-gap: 12px;
 
