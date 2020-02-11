@@ -101,18 +101,18 @@
                     <Input v-model="editedOrder.personInCharge" placeholder="请输入负责人"/>
                 </FormItem>
                 <Button type="dashed" icon="md-add" style="justify-self: end" @click="editOrderItem()">添加订单项</Button>
-
-                <!-- 订单项列表 -->
-                <Table :columns="orderItemColumns" :data="availableOrderItems(editedOrder)" border style="grid-column: span 2">
-                    <template slot-scope="{ row: item }" slot="orderItemAction">
-                        <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(item)">编辑</Button>
-
-                        <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(item)">
-                            <Button size="small" type="error">删除</Button>
-                        </Poptip>
-                    </template>
-                </Table>
             </Form>
+
+            <!-- 订单项列表 -->
+            <Table :columns="orderItemColumns" :data="availableOrderItems(editedOrder)" border style="grid-column: span 2">
+                <template slot-scope="{ row: item }" slot="orderItemAction">
+                    <Button size="small" type="primary" style="margin-right: 5px" @click="editOrderItem(item)">编辑</Button>
+
+                    <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteOrderItem(item)">
+                        <Button size="small" type="error">删除</Button>
+                    </Poptip>
+                </template>
+            </Table>
 
             <div slot="footer">
                 <Button type="primary" :loading="saving" @click="saveOrder()">保存</Button>

@@ -27,7 +27,7 @@
 
             <template slot-scope="{ row: order }" slot="action">
                 <Button size="small" type="primary" style="margin-right: 5px" @click="editWorkOrder(order)">编辑</Button>
-                <Button size="small" type="error" @click="editWorkOrder(order)">删除</Button>
+                <Button size="small" type="error" @click="deleteWorkOrder(order)">删除</Button>
             </template>
         </Table>
 
@@ -72,11 +72,15 @@
                 </FormItem>
                 <Button type="dashed" icon="md-add" style="justify-self: end" @click="editWorkOrderItem()">添加芯片</Button>
             </Form>
+
             <!-- 显示工单项 -->
-            <Table :data="editedWorkOrder.orderItems" :columns="workOrderItemColumns" border>
+            <Table :data="availableWorkOrderItems(editedWorkOrder)" :columns="workOrderItemColumns" border>
                 <template slot-scope="{ row: item }" slot="action">
                     <Button size="small" type="primary" style="margin-right: 5px" @click="editWorkOrderItem(item)">编辑</Button>
-                    <Button size="small" type="error" @click="editWorkOrderItem(item)">删除</Button>
+
+                    <Poptip confirm title="确认删除订单项吗?" transfer @on-ok="deleteWorkOrderItem(item)">
+                        <Button size="small" type="error">删除</Button>
+                    </Poptip>
                 </template>
             </Table>
 
@@ -282,12 +286,12 @@ export default {
             // 3. 提示删除成功
 
             this.$Modal.confirm({
-                title: `确定删除 <font color="red">${order.username}</font> 吗?`,
+                title: `确定删除 <font color="red">${order.customerName}</font> 的维修订单吗?`,
                 loading: true,
                 onOk: () => {
                     // UserDao.deleteUser(user.id).then(() => {
                         const index = this.workOrderIndex(order.id);
-                        this.workOrders.remove(1); // [2] 从服务器删除成功后才从本地删除
+                        this.workOrders.remove(index); // [2] 从服务器删除成功后才从本地删除
                         this.$Modal.remove();
                         this.$Message.success('删除成功');
                     // });
@@ -318,33 +322,41 @@ export default {
             // 2. 克隆被编辑对象
             // 3. 找到被编辑对象的下标
             // 4. 保存成功后如果是更新则替换已有对象，创建则添加到最前面
-            // 5. 提示保存成功，隐藏编辑对话框
+            // 5. 隐藏编辑对话框
 
             this.$refs.workOrderItemForm.validate(valid => {
                 if (!valid) { return; }
 
                 // [2] 克隆被编辑对象
                 // [3] 找到被编辑对象的下标
-                this.saving = true;
                 const item  = WorkOrderUtils.cloneWorkOrderItem(this.editedWorkOrderItem); // 重要: 克隆被编辑的对象
                 const index = this.workOrderItemIndex(item.id);
 
-                // UserDao.saveUser(user).then(() => {
-                    // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
-                    if (index >= 0) {
-                        // 更新: 替换已有对象
-                        this.editedWorkOrder.orderItems.replace(index, item);
-                    } else {
-                        // 创建: 添加到最后面
-                        this.editedWorkOrder.orderItems.push(item);
-                    }
+                // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
+                if (index >= 0) {
+                    // 更新: 替换已有对象
+                    this.editedWorkOrder.orderItems.replace(index, item);
+                } else {
+                    // 创建: 添加到最后面
+                    this.editedWorkOrder.orderItems.push(item);
+                }
 
-                    // [5] 提示保存成功，隐藏编辑对话框
-                    this.saving = false;
-                    this.orderItemModal = false;
-                    this.$Message.success('保存成功');
-                // });
+                // [5] 隐藏编辑对话框
+                this.orderItemModal = false;
             });
+        },
+        // 删除工单
+        deleteWorkOrderItem(orderItem) {
+            const index = this.workOrderItemIndex(orderItem.id);
+            this.editedWorkOrder.orderItems[index].deleted = true;
+        },
+        // 可用的订单项 (未被删除的)
+        availableWorkOrderItems(order) {
+            try {
+                return order.orderItems.filter(oi => !oi.deleted);
+            } catch {
+                return [];
+            }
         },
         // 工单的下标
         workOrderIndex(workOrderId) {
