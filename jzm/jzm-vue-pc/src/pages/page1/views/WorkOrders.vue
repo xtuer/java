@@ -60,7 +60,7 @@
 
 <script>
 import WorkOrderDao from '@/../public/static-p/js/dao/WorkOrderDao';
-import WorkOrderUtils from '@/../public/static-p/js/WorkOrderUtils';
+import WorkOrderUtils from '@/../public/static-p/js/utils/WorkOrderUtils';
 
 export default {
     data() {

@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import SpareUtils from '@/../public/static-p/js/SpareUtils';
+import SpareUtils from '@/../public/static-p/js/utils/SpareUtils';
 import SpareDao from '@/../public/static-p/js/dao/SpareDao';
 
 export default {

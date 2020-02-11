@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import OrderUtils from '@/../public/static-p/js/OrderUtils';
+import OrderUtils from '@/../public/static-p/js/utils/OrderUtils';
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 
 export default {

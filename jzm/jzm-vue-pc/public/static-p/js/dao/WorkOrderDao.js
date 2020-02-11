@@ -26,4 +26,26 @@ export default class WorkOrderDao {
             });
         });
     }
+
+    /**
+     * 删除指定 ID 的工单
+     *
+     * 网址: http://localhost:8080/api/workOrders/{workOrderId}
+     * 参数: 无
+     *
+     * @param {Long} workOrderId 工单 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static deleteOrder(orderId) {
+        return new Promise((resolve, reject) => {
+            Rest.remove({ url: Urls.API_ORDERS_BY_ID, pathVariables: { orderId } }).then(({ success, message }) => {
+                if (success) {
+                    resolve();
+                } else {
+                    Notice.error({ title: '删除工单错误', desc: message });
+                    reject(message);
+                }
+            });
+        });
+    }
 }
