@@ -46,7 +46,7 @@
 
     <!-- 查询符合条件的库存日志 -->
     <select id="findSpareWarehousingLogs" resultType="SpareWarehousingLog">
-        SELECT username, spare_id, spare_sn, old_chip_quantity, new_chip_quantity, quantity, type, `date`
+        SELECT username, spare_id, spare_sn, old_chip_quantity, new_chip_quantity, quantity, type, `date`, `desc`
         FROM spare_warehousing_log
         ORDER BY `date` DESC
         LIMIT ${offset}, ${size}
@@ -54,7 +54,7 @@
 
     <!-- 插入出入库操作日志 -->
     <insert id="insertSpareWarehousingLog">
-        INSERT INTO spare_warehousing_log (username, spare_id, spare_sn, old_chip_quantity, new_chip_quantity, quantity, type, `date`)
-        VALUES (#{username}, #{spareId}, #{spareSn}, #{oldChipQuantity}, #{newChipQuantity}, #{quantity}, #{type}, #{date})
+        INSERT INTO spare_warehousing_log (username, spare_id, spare_sn, old_chip_quantity, new_chip_quantity, quantity, type, `date`, `desc`)
+        VALUES (#{username}, #{spareId}, #{spareSn}, #{oldChipQuantity}, #{newChipQuantity}, #{quantity}, #{type}, #{date}, #{desc})
     </insert>
 </mapper>

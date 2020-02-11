@@ -95,14 +95,16 @@ public class SpareController extends BaseController {
      * 参数:
      *      chipQuantity: 大于 0 为入库，小于 0 为出库
      *      date        : 操作时间
+     *      desc        : 说明
      *
      * @param spareId      备件 ID
      * @param chipQuantity 芯片数量
      * @param date         操作时间
+     * @param desc         说明
      * @return payload 为新的芯片数量
      */
     @PutMapping(Urls.API_SPARES_WAREHOUSING)
-    public Result<Integer> warehousing(@PathVariable long spareId, @RequestParam int chipQuantity, Date date) {
-        return spareService.warehousing(super.getCurrentUser().getUsername(), spareId, chipQuantity, date);
+    public Result<Integer> warehousing(@PathVariable long spareId, @RequestParam int chipQuantity, Date date, String desc) {
+        return spareService.warehousing(super.getCurrentUser().getUsername(), spareId, chipQuantity, date, desc);
     }
 }

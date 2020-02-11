@@ -262,15 +262,19 @@ export default {
         },
         // 保存库存
         warehousingSave() {
+            this.saving = true;
+
             const spareId      = this.warehousingData.spareId;
             const chipQuantity = this.warehousingData.chipQuantity * this.warehousingData.type;
             const date         = this.warehousingData.date;
+            const desc         = `手动${this.warehousingData.typeLabel}`;
 
-            SpareDao.warehousing(spareId, chipQuantity, date).then((newQuantity) => {
+            SpareDao.warehousing(spareId, chipQuantity, date, desc).then((newQuantity) => {
                 const index = this.spareIndex(spareId);
                 this.spares[index].chipQuantity = newQuantity;
                 this.$Message.success(`${this.warehousingData.typeLabel}成功`);
                 this.warehousingData.modal = false;
+                this.saving = false;
             });
         }
     }

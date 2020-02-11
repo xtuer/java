@@ -97,19 +97,23 @@ export default class SpareDao {
      * 对指定 ID 的备件的芯片进行入库出库
      *
      * 网址: http://localhost:8080/api/spares/{spareId}/warehousing
-     * 参数: chipQuantity: 大于 0 为入库，小于 0 为出库
+     * 参数:
+     *      chipQuantity: 大于 0 为入库，小于 0 为出库
+     *      date        : 时间
+     *      desc        : 说明
      *
-     * @param spareId      {Long} 备件 ID
-     * @param chipQuantity {Int}  芯片数量
-     * @param date         {Date} 时间
+     * @param spareId      {Long}   备件 ID
+     * @param chipQuantity {Int}    芯片数量
+     * @param date         {Date}   时间
+     * @param desc         {String} 说明
      * @return {Promise} 返回 Promise 对象，resolve 的参数为新的芯片数量，reject 的参数为错误信息
      */
-    static warehousing(spareId, chipQuantity, date) {
+    static warehousing(spareId, chipQuantity, date, desc) {
         console.log(date);
         date = date.toJSON();
 
         return new Promise((resolve, reject) => {
-            Rest.update({ url: Urls.API_SPARES_WAREHOUSING, pathVariables: { spareId }, data: { chipQuantity, date } })
+            Rest.update({ url: Urls.API_SPARES_WAREHOUSING, pathVariables: { spareId }, data: { chipQuantity, date, desc } })
                 .then(({ data: newQuantity, success, message }) => {
                     if (success) {
                         resolve(newQuantity);

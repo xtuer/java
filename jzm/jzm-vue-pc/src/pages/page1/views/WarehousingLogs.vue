@@ -14,6 +14,10 @@
             <template slot-scope="{ row: log }" slot="date">
                 {{ log.date | formatDate }}
             </template>
+
+            <template slot-scope="{ row: log }" slot="desc">
+                {{ log.desc }}
+            </template>
         </Table>
 
         <!-- 加载下一页按钮 -->
@@ -33,11 +37,12 @@ export default {
             columns: [
                 { title: '操作类型', slot: 'type', align: 'center', width: 100 },
                 { title: '操作员', key: 'username', width: 140 },
-                { title: '备件入库单号', key: 'spareSn', minWidth: 200 },
+                { title: '备件入库单号', key: 'spareSn', width: 140 },
                 { title: '操作前芯片数量', key: 'oldChipQuantity', width: 140 },
                 { title: '操作后芯片数量', key: 'newChipQuantity', width: 140 },
                 { title: '数量', slot: 'quantity', width: 140 },
                 { title: '时间', slot: 'date', align: 'center', width: 130 },
+                { title: '说明', slot: 'desc' },
             ],
             filter: { // 搜索条件
                 pageSize  : 20,

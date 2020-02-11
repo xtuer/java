@@ -21,6 +21,7 @@ public class SpareWarehousingLog {
     private int    newChipQuantity; // 操作后芯片数量
     private int    quantity       ; // 出入库的数量
     private Date   date           ; // 操作时间
+    private String desc           ; // 说明
 
     public String getType() {
         return quantity > 0 ? "入库" : "出库";

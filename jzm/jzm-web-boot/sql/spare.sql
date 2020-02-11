@@ -43,6 +43,7 @@ CREATE TABLE `spare_warehousing_log` (
     new_chip_quantity int(11)  DEFAULT 0  COMMENT '操作后芯片数量',
     quantity      int(11)      DEFAULT 0  COMMENT '出入库的数量',
     `date`        datetime  NOT NULL      COMMENT '操作时间',
+    `desc`        varchar(256) DEFAULT '' COMMENT '说明',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

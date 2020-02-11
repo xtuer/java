@@ -23,10 +23,12 @@ public class SpareService {
      *
      * @param spareId      备件 ID
      * @param chipQuantity 芯片数量
+     * @param date         操作日期
+     * @param desc         说明
      * @return payload 为新的芯片数量
      */
     @Transactional(rollbackFor = RuntimeException.class)
-    public Result<Integer> warehousing(String username, long spareId, int chipQuantity, Date date) {
+    public Result<Integer> warehousing(String username, long spareId, int chipQuantity, Date date, String desc) {
         // 1. 查询备件，如果不存在则返回
         // 2. 校验芯片数量
         // 3. 保存操作日志
@@ -54,7 +56,8 @@ public class SpareService {
                 .setOldChipQuantity(oldQuantity)
                 .setNewChipQuantity(newQuantity)
                 .setQuantity(chipQuantity)
-                .setDate(date);
+                .setDate(date)
+                .setDesc(desc);
         spareMapper.insertSpareWarehousingLog(log);
 
         if (chipQuantity > 0) {
