@@ -7,26 +7,24 @@
         </div>
 
         <!-- 备件列表 -->
-        <div style="overflow: auto">
-            <Table :data="spares" :columns="spareColumns" border style="min-width: 1000px">
-                <template slot-scope="{ row: spare }" slot="chipQuantity">
-                    <!-- 小于 20 红色 -->
-                    <Badge :text="spare.chipQuantity + ''" :type="spare.chipQuantity < 20 ? 'error' : 'success'"/>
-                </template>
+        <Table :data="spares" :columns="spareColumns" border>
+            <template slot-scope="{ row: spare }" slot="chipQuantity">
+                <!-- 小于 20 红色 -->
+                <Badge :text="spare.chipQuantity + ''" :type="spare.chipQuantity < 20 ? 'error' : 'success'"/>
+            </template>
 
-                <template slot-scope="{ row: spare }" slot="spareAction">
-                    <Poptip trigger="hover" placement="right">
-                        <Icon type="md-more"/>
-                        <div slot="content" class="action-buttons">
-                            <Button size="small" type="error"   @click="deleteSpare(spare)">删除</Button>
-                            <Button size="small" type="primary" @click="editSpare(spare)">编辑</Button>
-                            <Button size="small" type="primary" @click="warehousing(spare.id, spare.chipQuantity, 1)">入库</Button>
-                            <Button size="small" type="primary" @click="warehousing(spare.id, spare.chipQuantity, -1)">出库</Button>
-                        </div>
-                    </Poptip>
-                </template>
-            </Table>
-        </div>
+            <template slot-scope="{ row: spare }" slot="spareAction">
+                <Poptip trigger="hover" placement="right">
+                    <Icon type="md-more"/>
+                    <div slot="content" class="action-buttons">
+                        <Button size="small" type="error"   @click="deleteSpare(spare)">删除</Button>
+                        <Button size="small" type="primary" @click="editSpare(spare)">编辑</Button>
+                        <Button size="small" type="primary" @click="warehousing(spare.id, spare.chipQuantity, 1)">入库</Button>
+                        <Button size="small" type="primary" @click="warehousing(spare.id, spare.chipQuantity, -1)">出库</Button>
+                    </div>
+                </Poptip>
+            </template>
+        </Table>
 
         <!-- 加载下一页按钮 -->
         <center>
@@ -127,15 +125,15 @@ export default {
                 ],
             },
             spareColumns: [
-                { title: '入库单号', key: 'sn' },
-                { title: '备件类型', key: 'type', width: 100 },
+                { title: '入库单号', key: 'sn', width: 110 },
+                { title: '备件类型', key: 'type', width: 110 },
                 { title: '芯片编号', key: 'chipSn', width: 110 },
-                { title: '芯片生产时间', key: 'chipProductionDate', width: 130 },
-                { title: '芯片老化时间', key: 'chipAgingDate', width: 130 },
+                { title: '芯片生产时间', key: 'chipProductionDate', width: 125 },
+                { title: '芯片老化时间', key: 'chipAgingDate', width: 125 },
                 { title: '芯片功耗', key: 'chipPowerConsumption', width: 95 },
                 { title: '芯片数量', slot: 'chipQuantity', width: 95 },
-                { title: '固件版本', key: 'firmwareVersion' },
-                { title: '软件版本', key: 'softwareVersion' },
+                { title: '固件版本', key: 'firmwareVersion', minWidth: 140 },
+                { title: '软件版本', key: 'softwareVersion', minWidth: 140 },
                 { title: '操作', slot: 'spareAction', align: 'center', width: 70 },
             ],
             // 库存操作

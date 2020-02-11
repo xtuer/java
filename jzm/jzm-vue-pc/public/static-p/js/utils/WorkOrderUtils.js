@@ -4,6 +4,8 @@
 export default class WorkOrderUtils {
     /**
      * 创建新工单
+     *
+     * @return 返回工单
      */
     static newWorkOrder() {
         return {
@@ -20,6 +22,8 @@ export default class WorkOrderUtils {
 
     /**
      * 克隆工单
+     *
+     * @return 返回工单
      */
     static cloneWorkOrder(workOrder) {
         let clone  = JSON.parse(JSON.stringify(workOrder));
@@ -30,6 +34,8 @@ export default class WorkOrderUtils {
 
     /**
      * 创建新的工单项
+     *
+     * @return 返回工单项
      */
     static newWorkOrderItem() {
         return {
@@ -54,16 +60,42 @@ export default class WorkOrderUtils {
             afterSoftwareVersion      : '', // 维修后的软件版本
             afterPowerConsumption     : '', // 维修后的功耗
 
-            neu: true,
+            neu    : true,
             deleted: false,
         };
     }
 
     /**
      * 克隆工单项
+     *
+     * @return 返回克隆后的工单项
      */
     static cloneWorkOrderItem(item) {
         let clone = JSON.parse(JSON.stringify(item));
         return clone;
+    }
+
+    /**
+     * 清理工单
+     *
+     * @param {JSON} order 工单
+     * @return 无返回值
+     */
+    static cleanWorkOrder(order) {
+        // 1. 如果是新创建的 order，设置其 id 为 0
+        // 2. 过滤掉新创建并且删除掉的 order item
+        // 3. 如果是新创建的 order item，设置其 id 为 0
+
+        // [1] 如果是新创建的 order，设置其 id 为 0
+        if (order.neu) {
+            order.id = 0;
+        }
+
+        order.orderItems = order.orderItems
+            .filter(item => !(item.neu && item.deleted)) // [2] 过滤掉新创建并且删除掉的 order item
+            .map(item => {
+                item.id = item.neu ? 0 : item.id; // [3] 如果是新创建的 order item，设置其 id 为 0
+                return item;
+            });
     }
 }

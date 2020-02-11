@@ -189,7 +189,7 @@ export default {
                 { title: '软件版本', key: 'softwareVersion', width: 110 },
                 { title: '订单日期', slot: 'orderDate', align: 'center', width: 130 },
                 { title: '负责人',   key: 'personInCharge', width: 110 },
-                { title: '订单项', slot: 'orderItems' },
+                { title: '订单项', slot: 'orderItems', minWidth: 160 },
                 { title: '操作', slot: 'orderAction', align: 'center', width: 130 },
             ],
             orderItemColumns: [
