@@ -13,10 +13,13 @@ export default class WorkOrderUtils {
             customerName   : '', // 客户名称
             softwareVersion: '', // 软件版本
             personInCharge : '', // 负责人
-            status         : 0,          // 状态: 0 (等待备件)、1 (组装中)、2 (完成组装)
+            accessory      : '', // 配件
+            status         : 0,  // 状态: 0 (等待备件)、1 (组装中)、2 (完成组装)
             orderDate      : new Date(), // 订单日期
-            orderItems     : [],         // 维修项
-            neu            : true,       // 新创建的订单为 true，否则为 false
+            startAssembleDate : '', // 开始组装时间
+            finishAssembleDate: '', // 完成组装时间
+            orderItems     : [],    // 维修项
+            neu            : true,  // 新创建的订单为 true，否则为 false
         };
     }
 
@@ -48,8 +51,8 @@ export default class WorkOrderUtils {
 
             // 维修明细
             feedback                  : '', // 客户反馈
-            beforeElectricQuantity    : '', // 维修前电量
-            beforeHighTemperatureTimes: '', // 维修前高温次数
+            beforeElectricQuantity    : 0, // 维修前电量
+            beforeHighTemperatureTimes: 0, // 维修前高温次数
             testDetails               : '', // 检测明细
 
             // 维修细节

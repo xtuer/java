@@ -78,14 +78,12 @@ public class SpareController extends BaseController {
      *      pageNumber [可选]: 页码
      *      pageSize   [可选]: 数量
      *
-     * @param pageNumber 页码
-     * @param pageSize   数量
+     * @param page 分页对象
      * @return payload 为库存日志
      */
     @GetMapping(Urls.API_WAREHOUSING_LOGS)
-    public Result<List<SpareWarehousingLog>> findSpareWarehousingLogs(@RequestParam(required = false, defaultValue = "1") int pageNumber,
-                                                                      @RequestParam(required = false, defaultValue = "20") int pageSize) {
-        return Result.ok(spareMapper.findSpareWarehousingLogs(Page.of(pageNumber, pageSize)));
+    public Result<List<SpareWarehousingLog>> findSpareWarehousingLogs(Page page) {
+        return Result.ok(spareMapper.findSpareWarehousingLogs(page));
     }
 
     /**

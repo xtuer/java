@@ -215,7 +215,7 @@ export default {
             },
             orderItemRules: {
                 type: [
-                    { required: true, message: '型号不能为空', trigger: 'change' }
+                    { required: true, message: '请选择型号', trigger: 'change' }
                 ],
                 sn: [
                     { required: true, whitespace: true, message: '序列号不能为空', trigger: 'blur' }
