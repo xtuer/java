@@ -90,7 +90,7 @@
         </Modal>
 
         <!-- 编辑工单对话框 -->
-        <Modal v-model="orderItemModal" :mask-closable="false" title="编辑维修订单" width="700" class="order-item-modal">
+        <Modal v-model="orderItemModal" :mask-closable="false" title="编辑芯片" width="700" class="order-item-modal">
             <Form ref="workOrderItemForm"
                     :model="editedWorkOrderItem"
                     :rules="orderItemrules"

@@ -361,14 +361,15 @@ public final class Utils {
      * @return 返回服务器 ID，如果没有设置环境变量 SERVER_ID 则抛出异常
      */
     public static int getServerId() {
-        String id = System.getenv("SERVER_ID");
+        // String id = System.getenv("SERVER_ID");
 
-        // 是整数则为有效的 ID
-        if (NumberUtils.isDigits(id)) {
-            return NumberUtils.toInt(id);
-        } else {
-            throw new RuntimeException("请设置正确的环境变量 SERVER_ID，范围是 [0, 1023]");
-        }
+        // // 是整数则为有效的 ID
+        // if (NumberUtils.isDigits(id)) {
+        //     return NumberUtils.toInt(id);
+        // } else {
+        //     throw new RuntimeException("请设置正确的环境变量 SERVER_ID，范围是 [0, 1023]");
+        // }
+        return 2;
     }
 
     public static void main(String[] args) {

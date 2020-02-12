@@ -56,7 +56,7 @@ test {
 }
 
 bootJar {
-    archiveFileName = 'xtuer.jar'
+    archiveFileName = 'jzm.jar'
 }
 
 ext {
