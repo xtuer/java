@@ -1,51 +1,49 @@
-import bean.ChapterKnowledgePoint;
-import cn.afterturn.easypoi.excel.ExcelImportUtil;
-import cn.afterturn.easypoi.excel.entity.ImportParams;
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class Test {
     public static void main(String[] args) throws Exception {
-        File ckpsFile = new File("/Users/Biao/Desktop/chapter-kps.xlsx");
-        List<ChapterKnowledgePoint> ckps = importCkps(ckpsFile);
-        System.out.println(JSON.toJSONString(ckps));
+        System.out.println(toCn(0));
+        System.out.println(toCn(3));
+        System.out.println(toCn(10));
+        System.out.println(toCn(18));
+        System.out.println(toCn(22));
+        System.out.println(toCn(123));
+        System.out.println(toCn(120));
+        System.out.println(toCn(102));
+        System.out.println(toCn(1000));
+        System.out.println(toCn(1001));
+        System.out.println(toCn(1111));
+        System.out.println(toCn(1101));
+        System.out.println(toCn(320_5123_2018_0912_3460L));
     }
 
-    /**
-     * 从 Excel 中导入章节知识点关系
-     *
-     * @param ckpsFile Excel 文件
-     * @return 返回章节知识点关系的数组
-     */
-    public static List<ChapterKnowledgePoint> importCkps(File ckpsFile) {
-        ImportParams params = new ImportParams();
-        List<ChapterKnowledgePoint> ckps = ExcelImportUtil.importExcel(ckpsFile, ChapterKnowledgePoint.class, params);
+    private static final String[] UNITS = { "万", "亿", "兆", "京", "垓", "秭" };
+    public static String toCn(long n) {
+        int u = 0;
+        String cn = "";
 
-        ckps = ckps.stream().filter(ckp -> !ckp.getBookAndChapterCode().isEmpty()).peek(ckp -> {
-            // [1] 分离 bookCode 和 chapterCode: gz_hx_rjb_bx01:01-01
-            String[] codes = StringUtils.split(ckp.getBookAndChapterCode(), ":");
-            ckp.setBookCode(codes[0].trim());
-            ckp.setChapterCode(codes[1].trim());
+        while (n > 0) {
+            cn = toCnBeforeWan((int)(n%10000)) + cn; // 从后往前每 4 位分割处理
+            n /= 10000;
 
-            // [2] 分离知识点: 物质的提纯方法，10010402019941；粗盐提纯，10010402020241；
-            String[] tokens = StringUtils.split(ckp.getKnowledgePointsString(), "；");
+            if (n > 0) {
+                cn = UNITS[u++] + cn;
+            }
+        }
 
-            Stream.of(tokens).filter(StringUtils::isNotBlank).forEach(token -> {
-                String[] temp = StringUtils.split(token, "，");
-                ckp.getKnowledgePoints().put(temp[1].trim(), temp[0].trim());
-            });
+        return cn;
+    }
 
-            // [3] 去掉无用的数据
-            ckp.setBookAndChapterCode(null);
-            ckp.setKnowledgePointsString(null);
-        }).collect(Collectors.toList());
+    private static final String[] CN_DIGITS = { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+    private static String toCnBeforeWan(int n) {
+        if (n == 0) {
+            return "零";
+        }
 
-        return ckps;
+        String result = CN_DIGITS[n/1000] + "千" + CN_DIGITS[(n%1000/100)] + "百" + CN_DIGITS[(n%100/10)] + "十" + CN_DIGITS[(n%10)];
+        result = result.replaceAll("零千|零百|零十", "零");
+        result = result.replaceAll("零+", "零");
+        result = result.replaceAll("^零|零$", "");
+        result = result.replaceAll("^一十", "十");
+
+        return result;
     }
 }
