@@ -1,5 +1,7 @@
 package btree;
 
+import com.github.afkbrb.btp.BTPrinter;
+
 /**
  * 二叉搜索树、二叉排序树，中序遍历为升序排列
  */
@@ -201,6 +203,7 @@ public class BSTree {
             // node 的值为 max 的值
             node.data = max.data;
 
+            // if (maxParent.left == max)
             if (maxParent == node) {
                 // node 的左孩子就是最大值的节点
                 maxParent.left = max.left;
@@ -211,31 +214,20 @@ public class BSTree {
     }
 
     public static void main(String[] args) {
+        // 1. 构造排序二叉树
         BSTree tree = BSTree.build(5, 4, 2, 3, 10, 7, 6, 9, 8, 13, 11, 12);
-        BTree.preorderTraversal(tree.root);
+        System.out.print("中序遍历: ");
+        BTree.inorderTraversal(tree.root); // 中序遍历得到升序序列
         System.out.println();
-        BTree.inorderTraversal(tree.root);
-        System.out.println("\n------------------------");
 
-        Node node = tree.find(10);
-        BTree.visit(node);
-        BTree.visit(node.left);
-        BTree.visit(node.right);
-        System.out.println("\n------------------------");
+        System.out.println("树的结构:");
+        BTree.print(tree.root);
 
-        BTree.visit(tree.findParent(7));
-        BTree.visit(tree.findParent(11));
-        System.out.println("\n------------------------");
-
-        tree.delete(7);
-        BTree.inorderTraversal(tree.root);
-        BTree.preorderTraversal(tree.root);
-
-        System.out.println("\n------------------------");
-        tree.delete(10);
-        tree.delete(5);
-        tree.delete(11);
-        BTree.inorderTraversal(tree.root);
-        BTree.preorderTraversal(tree.root);
+        int[] dataList = { 7, 10, 5, 11, 8, 2, 13 };
+        for (int data : dataList) {
+            System.out.println("删除 " + data + ":");
+            tree.delete(data);
+            BTree.print(tree.root);
+        }
     }
 }

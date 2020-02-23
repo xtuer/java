@@ -1,5 +1,7 @@
 package btree;
 
+import com.github.afkbrb.btp.BTPrinter;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -184,6 +186,41 @@ public class BTree {
         }
     }
 
+    /**
+     * 返回完全二叉树的字符串表示
+     */
+    public static String toPerfectBinaryTree(Node root) {
+        StringBuilder sb = new StringBuilder();
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+
+            if (node == null) {
+                sb.append("#").append(",");
+                continue;
+            }
+
+            sb.append(node.data).append(",");
+
+            queue.offer(node.left);
+            queue.offer(node.right);
+        }
+
+        return sb.toString().replaceAll("(#,)+$", "").replaceAll(",$", "");
+    }
+
+    /**
+     * 打印树
+     *
+     * @param root 树的根节点
+     */
+    public static void print(Node root) {
+        BTPrinter.printTree(BTree.toPerfectBinaryTree(root));
+        System.out.println();
+    }
+
     public static void main(String[] args) {
         /*
                         1
@@ -192,6 +229,7 @@ public class BTree {
                8   9
          */
         BTree tree = BTree.build(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        BTree.print(tree.root);
 
         System.out.println("先序遍历:");
         tree.preorderTraversal(); // 1, 2, 4, 8, 9, 5, 3, 6, 7

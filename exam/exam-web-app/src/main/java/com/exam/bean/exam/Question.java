@@ -66,7 +66,7 @@ public class Question {
     }
 
     // MyBatis 使用
-    public void setOptionsJson(String optionsJson) {
+    public Question setOptionsJson(String optionsJson) {
         this.optionsJson = optionsJson;
 
         if (optionsJson == null) {
@@ -74,6 +74,8 @@ public class Question {
         } else {
             this.options = JSON.parseObject(optionsJson, new TypeReference<LinkedList<QuestionOption>>() {});
         }
+
+        return this;
     }
 
     /**
