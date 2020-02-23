@@ -1,14 +1,17 @@
+import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        String text = "<a>Bob</a><span>Google</span>";
-        Pattern pattern = Pattern.compile("<(\\w+)>(.*)</\\1>"); // 正则表达式中 \1 表示引用组 1
-        Matcher matcher = pattern.matcher(text);
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        queue.offer(1);
+        queue.offer(3);
+        queue.offer(2);
+        queue.offer(4);
 
-        while (matcher.find()) {
-            System.out.println(matcher.group(2));
+        while (!queue.isEmpty()) {
+            System.out.println(queue.poll());
         }
     }
 }
