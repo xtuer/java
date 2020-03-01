@@ -46,13 +46,18 @@ public class Graph {
         return adjacentList.get(vertex);
     }
 
+    public static Graph build(String edges) {
+        return build(edges, false);
+    }
+
     /**
      * 使用图的边构建图，边的格式为 start-end:weight，边之间使用逗号分隔，例如 A-B:10,A-G:5
      *
      * @param edges 图的所有边
+     * @param directed true 表示有向图，false 表示无向图
      * @return 返回图的对象
      */
-    public static Graph build(String edges) {
+    public static Graph build(String edges, boolean directed) {
         Graph graph = new Graph();
 
         for (String edgeContent : StringUtils.split(edges, ",")) {
@@ -63,13 +68,17 @@ public class Graph {
             String vertex2   = edgeContent.substring(indexOfDash+1, indexOfColon);
             double weight    = Double.parseDouble(edgeContent.substring(indexOfColon+1));
 
-            // 找到顶点 vertex1 的边集，添加它的边
             graph.adjacentList.putIfAbsent(vertex1, new LinkedList<>());
+            graph.adjacentList.putIfAbsent(vertex2, new LinkedList<>());
+
+            // 找到顶点 vertex1 的边集，添加它的边
             graph.adjacentList.get(vertex1).add(new Edge(vertex1, vertex2, weight));
 
-            // 找到顶点 vertex2 的边集，添加它的边
-            graph.adjacentList.putIfAbsent(vertex2, new LinkedList<>());
-            graph.adjacentList.get(vertex2).add(new Edge(vertex2, vertex1, weight));
+            // 无向图添加对应的边
+            if (!directed) {
+                // 找到顶点 vertex2 的边集，添加它的边
+                graph.adjacentList.get(vertex2).add(new Edge(vertex2, vertex1, weight));
+            }
         }
 
         return graph;

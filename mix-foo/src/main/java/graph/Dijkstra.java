@@ -51,7 +51,7 @@ public class Dijkstra {
         }
 
         // 输出最短距离的顶点信息，可以得到起点到它的距离、前驱
-        System.out.println(JSON.toJSONString(visited));
+        System.out.println(JSON.toJSONString(visited, true));
 
         // 输出起点到其他点的最短路径
         for (String vertex : graph.getVertices()) {
