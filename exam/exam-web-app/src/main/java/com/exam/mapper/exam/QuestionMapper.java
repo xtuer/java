@@ -32,13 +32,4 @@ public interface QuestionMapper {
      * @param questionId 题目 ID
      */
     void deleteQuestion(long questionId);
-
-    /**
-     * 查找试卷的题目
-     * [注意]: 不要直接使用这个方法，应该使用 QuestionService.findPaperQuestions(paperId)
-     *
-     * @param paperId 试卷 ID
-     * @return 返回题目的数组
-     */
-    List<Question> findPaperQuestions(long paperId);
 }

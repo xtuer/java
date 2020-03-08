@@ -5,7 +5,7 @@
 <mapper namespace="com.exam.mapper.exam.PaperMapper">
     <!-- 试卷的列 -->
     <sql id="paper_columns">
-        id, title, type, total_score AS totalScore, is_objective AS objective, org_id AS orgId
+        id, title, type, total_score, is_objective AS objective, org_id
     </sql>
 
     <!-- 查找指定 ID 的试卷 -->
@@ -26,12 +26,12 @@
 
     <!-- 判断 ID 为传入的 paperId 的试卷是否存在 -->
     <select id="paperExists" parameterType="long" resultType="boolean">
-        SELECT EXISTS ( SELECT 1 FROM exam_paper WHERE id = #{paperId})
+        SELECT EXISTS (SELECT 1 FROM exam_paper WHERE id = #{paperId})
     </select>
 
     <!-- 判断试卷是否客观题试卷 -->
     <select id="isObjectivePaper" parameterType="long" resultType="boolean">
-        SELECT EXISTS ( SELECT 1 FROM exam_paper WHERE id = #{paperId} AND is_objective = 1)
+        SELECT EXISTS (SELECT 1 FROM exam_paper WHERE id = #{paperId} AND is_objective = 1)
     </select>
 
     <!-- 插入或者更新试卷 -->
@@ -58,4 +58,24 @@
         DELETE FROM exam_paper_question WHERE question_id = #{questionId};
         DELETE FROM exam_paper_question WHERE parent_question_id = #{questionId};
     </delete>
+
+    <!--
+        查找试卷的题目:
+        查询条件: 在试卷的题目表中找到试卷 paperId 的所有题目，然后和题目表、题目选项表进行左连接
+        排序顺序: 题型 group_sn、在试卷中的位置、小题的位置、选项的位置
+    -->
+    <select id="findPaperQuestionsByPaperId" parameterType="long" resultType="Question">
+        SELECT
+            pq.paper_id    AS paper_id,
+            pq.group_sn    AS group_sn,
+            pq.position    AS position_in_paper,
+            pq.score       AS score,
+            pq.total_score AS total_score,
+            pq.sn_label    AS sn_label,
+            <include refid="com.exam.mapper.exam.QuestionMapper.question_columns"/>
+        FROM exam_paper_question pq
+            LEFT JOIN exam_question q ON q.id = pq.question_id
+        WHERE pq.paper_id = #{paperId}
+        ORDER BY group_sn, position_in_paper, position
+    </select>
 </mapper>

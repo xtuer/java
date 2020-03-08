@@ -2,6 +2,7 @@ package com.exam.service.exam;
 
 import com.exam.bean.exam.Question;
 import com.exam.bean.exam.QuestionOption;
+import com.exam.mapper.exam.PaperMapper;
 import com.exam.mapper.exam.QuestionMapper;
 import com.exam.service.BaseService;
 import com.exam.util.Utils;
@@ -27,6 +28,9 @@ public class QuestionService extends BaseService {
     @Autowired
     private QuestionMapper questionMapper;
 
+    @Autowired
+    private PaperMapper paperMapper;
+
     /**
      * 查找指定 ID 的题目
      *
@@ -43,23 +47,12 @@ public class QuestionService extends BaseService {
     }
 
     /**
-     * 查找试卷的题目 (复合题的小题被合并到复合题下了)
-     *
-     * @param paperId 试卷 ID
-     * @return 返回题目的数组
-     */
-    public List<Question> findPaperQuestions(long paperId) {
-        List<Question> questions = questionMapper.findPaperQuestions(paperId);
-        return this.hierarchyQuestions(questions);
-    }
-
-    /**
      * 把平铺的题目层级化 (复合题的小题被合并到复合题下了)
      *
      * @param questions 题目数组
      * @return 返回层级化的题目数组
      */
-    private List<Question> hierarchyQuestions(List<Question> questions) {
+    public List<Question> hierarchyQuestions(List<Question> questions) {
         // 1. 找到第一级题目
         // 2. 找到第二级题目 (小题: parentId 有效 ID)
         // 3. 把一级题目放到 Map，加速查找

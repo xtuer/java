@@ -51,10 +51,21 @@ public class PaperService extends BaseService {
         Paper paper = paperMapper.findPaperById(paperId);
 
         if (paper != null) {
-            paper.setQuestions(questionService.findPaperQuestions(paperId));
+            paper.setQuestions(this.findPaperQuestions(paperId));
         }
 
         return paper;
+    }
+
+    /**
+     * 查找试卷的题目 (复合题的小题被合并到复合题下了)
+     *
+     * @param paperId 试卷 ID
+     * @return 返回题目的数组
+     */
+    public List<Question> findPaperQuestions(long paperId) {
+        List<Question> questions = paperMapper.findPaperQuestionsByPaperId(paperId);
+        return questionService.hierarchyQuestions(questions);
     }
 
     /**

@@ -5,13 +5,13 @@
 <mapper namespace="com.exam.mapper.exam.QuestionMapper">
     <!-- 题目的列 -->
     <sql id="question_columns">
-        q.id AS question_id, q.stem AS question_stem, q.key AS question_key, q.analysis AS question_analysis,
-        q.type AS question_type, q.difficulty AS question_difficulty, q.position AS question_position,
-        q.purpose AS question_purpose, q.parent_id AS question_parent_id, q.options_json AS question_options_json
+        q.id AS id, q.stem AS stem, q.key AS `key`, q.analysis AS analysis,
+        q.type AS type, q.difficulty AS difficulty, q.position AS position,
+        q.purpose AS purpose, q.parent_id AS parent_id, q.options_json AS options_json
     </sql>
 
     <!-- 查找指定 ID 的题目 (如有小题，同时查出) -->
-    <select id="findQuestionById" parameterType="long" resultMap="QuestionResultMap">
+    <select id="findQuestionById" parameterType="long" resultType="Question">
         (
             SELECT <include refid="question_columns"/>
             FROM exam_question q
@@ -44,46 +44,4 @@
         DELETE FROM exam_question WHERE id = #{questionId};
         DELETE FROM exam_question WHERE parent_id = #{questionId};
     </delete>
-
-    <!--
-        查找试卷的题目:
-        查询条件: 在试卷的题目表中找到试卷 paperId 的所有题目，然后和题目表、题目选项表进行左连接
-        排序顺序: 题型 group_sn、在试卷中的位置、小题的位置、选项的位置
-    -->
-    <select id="findPaperQuestions" parameterType="long" resultMap="QuestionResultMap">
-        SELECT
-            pq.paper_id    AS paper_id,
-            pq.group_sn    AS paper_question_group_sn,
-            pq.position    AS paper_question_position,
-            pq.score       AS paper_question_score,
-            pq.total_score AS paper_question_total_score,
-            pq.sn_label    AS paper_question_sn_label,
-            <include refid="question_columns"/>
-        FROM exam_paper_question pq
-            LEFT JOIN exam_question q ON q.id = pq.question_id
-        WHERE pq.paper_id = #{paperId}
-        ORDER BY paper_question_group_sn, paper_question_position, question_position
-    </select>
-
-    <!-- 题目: 包含选项 -->
-    <resultMap id="QuestionResultMap" type="Question">
-        <id property="id" column="question_id"/>
-        <result property="stem"        column="question_stem"/>
-        <result property="key"         column="question_key"/>
-        <result property="analysis"    column="question_analysis"/>
-        <result property="type"        column="question_type"/>
-        <result property="difficulty"  column="question_difficulty"/>
-        <result property="position"    column="question_position"/>
-        <result property="purpose"     column="question_purpose"/>
-        <result property="parentId"    column="question_parent_id"/>
-        <result property="optionsJson" column="question_options_json"/>
-
-        <!-- 试卷相关属性  -->
-        <result property="paperId"         column="paper_id"/>
-        <result property="groupSn"         column="paper_question_group_sn"/>
-        <result property="positionInPaper" column="paper_question_position"/>
-        <result property="score"           column="paper_question_score"/>
-        <result property="totalScore"      column="paper_question_total_score"/>
-        <result property="snLabel"         column="paper_question_sn_label"/>
-    </resultMap>
 </mapper>
