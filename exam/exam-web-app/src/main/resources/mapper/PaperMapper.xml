@@ -21,7 +21,7 @@
                 AND title LIKE CONCAT('%', #{title},'%')
             </if>
         ORDER BY created_at DESC
-        LIMIT ${offset}, ${count}
+        LIMIT ${page.offset}, ${page.size}
     </select>
 
     <!-- 判断 ID 为传入的 paperId 的试卷是否存在 -->

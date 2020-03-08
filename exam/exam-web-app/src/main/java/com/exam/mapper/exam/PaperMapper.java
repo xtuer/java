@@ -1,5 +1,6 @@
 package com.exam.mapper.exam;
 
+import com.exam.bean.Page;
 import com.exam.bean.exam.Paper;
 import com.exam.bean.exam.Question;
 
@@ -21,13 +22,12 @@ public interface PaperMapper {
     /**
      * 查询指定机构 ID 的试卷
      *
-     * @param orgId  机构 ID
-     * @param title  试卷标题，可模糊搜索
-     * @param offset 分页的起始位置
-     * @param count  分页的记录数量
+     * @param orgId 机构 ID
+     * @param title 试卷标题，可模糊搜索
+     * @param page  分页对象
      * @return 返回机构的试卷数组
      */
-    List<Paper> findPapersByOrgId(long orgId, String title, int offset, int count);
+    List<Paper> findPapersByOrgId(long orgId, String title, Page page);
 
     /**
      * 判断 ID 为传入的 paperId 的试卷是否存在

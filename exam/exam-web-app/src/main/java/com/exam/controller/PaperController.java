@@ -1,5 +1,6 @@
 package com.exam.controller;
 
+import com.exam.bean.Page;
 import com.exam.bean.Result;
 import com.exam.bean.exam.Paper;
 import com.exam.mapper.exam.PaperMapper;
@@ -43,24 +44,20 @@ public class PaperController extends BaseController {
     /**
      * 更新创建试卷
      *
-     * 网址: http://localhost:8080/api/exam/papers/currentOrg
+     * 网址: http://localhost:8080/api/exam/papers/ofCurrentOrg
      * 参数:
      *     title     [可选]: 试卷标题，可模糊搜索
      *     pageSize  [可选]: 数量
      *     pageNumber[可选]: 页码
      *
-     * @param title      试卷标题
-     * @param pageSize   数量
-     * @param pageNumber 页码
+     * @param title 试卷标题
+     * @param page  分页对象
      * @return payload 为试卷的 ID
      */
     @GetMapping(Urls.API_PAPERS_OF_CURRENT_ORG)
-    public Result<List<Paper>> findPapersOfCurrentOrg(@RequestParam(required = false) String title,
-                                                      @RequestParam(required = false, defaultValue = "20") int pageSize,
-                                                      @RequestParam(required = false, defaultValue = "1") int pageNumber) {
-        int offset = PageUtils.offset(pageNumber, pageSize);
+    public Result<List<Paper>> findPapersOfCurrentOrg(@RequestParam(required = false) String title, Page page) {
         long orgId = super.getCurrentOrganizationId();
-        return Result.ok(paperMapper.findPapersByOrgId(orgId, title, offset, pageSize));
+        return Result.ok(paperMapper.findPapersByOrgId(orgId, title, page));
     }
 
     /**
