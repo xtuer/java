@@ -93,8 +93,8 @@ public class QuestionService extends BaseService {
         // 2. 更新题目选项的 mark
         // 3. 更新小题和选项的位置
         // 4. 如果 question.deleted 为 true，删除题目，返回
-        // 5. 插入或者更新题目
-        // 6. 去掉被删除的选项
+        // 5. 去掉被删除的选项
+        // 6. 插入或者更新题目
         // 7. 插入或者更新小题
 
         // [1] 确保题目的 ID
@@ -110,11 +110,11 @@ public class QuestionService extends BaseService {
             return question.getId();
         }
 
-        // [5] 插入或者更新题目
-        questionMapper.upsertQuestion(question);
-
-        // [6] 去掉被删除的选项
+        // [5] 去掉被删除的选项
         question.setOptions(question.getOptions().stream().filter(o -> !o.isDeleted()).collect(Collectors.toList()));
+
+        // [6] 插入或者更新题目
+        questionMapper.upsertQuestion(question);
 
         // [7] 插入或者更新小题 (递归)
         for (Question subQuestion : question.getSubQuestions()) {
@@ -242,7 +242,7 @@ public class QuestionService extends BaseService {
         // 2. 更新小题的选项 mark
 
         // [1] 更新题目的选项 mark
-        char sn = 65;
+        char sn = 'A';
         for (QuestionOption option : question.getOptions()) {
             if (!option.isDeleted()) {
                 option.setMark("" + (sn++));
