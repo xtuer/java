@@ -20,7 +20,7 @@ public class QuestionWithAnswer {
     private long questionId; // 题目 ID
     private long teacherId;  // 批改题目老师的 ID
     private double score;    // 题目得分
-    private int scoreStatus; // 得分状态: 0 (未知)、1 (错误)、2 (半对)、3 (全对)
+    private int scoreStatus; // 得分状态: 0 (未知)、1 (错误)、2 (半对)、3 (全对)，参考 Question.SCORE_STATUS_XXX
     private String comment = ""; // 批改意见
     private int questionType;    // 题目类型 (方便批改时使用, 主观题为 4 和 5)
 

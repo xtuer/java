@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.exam.bean.exam.QuestionAnswers;
 import com.exam.service.exam.ExamService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jms.JMSException;

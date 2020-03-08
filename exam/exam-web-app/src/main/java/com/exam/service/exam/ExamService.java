@@ -6,6 +6,7 @@ import com.exam.bean.CacheConst;
 import com.exam.bean.Result;
 import com.exam.bean.User;
 import com.exam.bean.exam.*;
+import com.exam.bean.exam.QuestionAnswers;
 import com.exam.dao.ExamDao;
 import com.exam.mapper.exam.ExamMapper;
 import com.exam.mapper.exam.PaperMapper;
@@ -351,7 +352,7 @@ public class ExamService extends BaseService {
 
         // [5.3] 修改考试记录的状态为已提交
         record.setStatus(ExamRecord.STATUS_SUBMITTED);
-        record.setSubmittedAt(questionAnswers.getSubmittedAt());
+        record.setSubmittedAt(questionAnswers.getCreatedAt());
 
         // [5.4] 保存考试记录
         examDao.upsertExamRecord(record);

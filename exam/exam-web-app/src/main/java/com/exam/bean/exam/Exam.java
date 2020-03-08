@@ -24,7 +24,7 @@ public class Exam {
     public static final int STATUS_NOT_STARTED = 0; // 未开始
     public static final int STATUS_STARTED     = 1; // 考试中
     public static final int STATUS_ENDED       = 2; // 已结束
-    public static final String[] STATUS_LABELS = {"未开始", "考试中", "已结束"};
+    public static final String[] STATUS_LABELS = { "未开始", "考试中", "已结束" };
 
     private long id;        // 考试 ID
     private long holderId;  // 考试拥有者 ID，例如机构 ID、班级 ID 等，根据业务需求而定

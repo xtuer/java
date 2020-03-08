@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JSONType(ignores = {"optionsJson"})
+@JSONType(ignores = { "optionsJson" })
 public class Question {
     // 题目类型
     public static final int SINGLE_CHOICE   = 1; // 单选题
@@ -36,9 +36,9 @@ public class Question {
     public static final int SCORE_STATUS_HALF_RIGHT = 2; // 半对
     public static final int SCORE_STATUS_RIGHT      = 3; // 全对
 
-    private long   id;   // 题目 ID
-    private String stem; // 题干
-    private String key;  // 参考答案
+    private long   id;         // 题目 ID
+    private String stem;       // 题干
+    private String key;        // 参考答案
     private String analysis;   // 题目解析
     private int    type;       // 题目类型: 0 (未知)、1 (单选题)、2 (多选题)、3 (判断题)、4 (填空题)、5 (问答题)、6 (复合题)、7 (题型题)
     private int    difficulty; // 题目难度: 0 (未知)、1 (容易)、2 (较易)、3 (一般)、4 (较难)、5 (困难)
@@ -58,7 +58,7 @@ public class Question {
     private int    scoreStatus;     // 作答: 状态为 0 (未知)、1 (错误)、2 (半对)、3 (全对)
     private int    positionInPaper; // 试卷: 题目在试卷中的位置
 
-    private String optionsJson; // 选项的 JSON 字符串
+    private String optionsJson; // 数据库: 选项的 JSON 字符串
 
     // MyBatis 使用
     public String getOptionsJson() {
@@ -72,7 +72,12 @@ public class Question {
         if (optionsJson == null) {
             this.options = new LinkedList<>();
         } else {
-            this.options = JSON.parseObject(optionsJson, new TypeReference<LinkedList<QuestionOption>>() {});
+            try {
+                // JSON 解析的时候有可能抛异常
+                this.options = JSON.parseObject(optionsJson, new TypeReference<LinkedList<QuestionOption>>() {});
+            } catch (Exception ex) {
+                this.options = new LinkedList<>();
+            }
         }
 
         return this;
@@ -84,7 +89,18 @@ public class Question {
      * @return 客观题返回 true，否则返回 false
      */
     public boolean isObjective() {
-        return type == SINGLE_CHOICE || type == MULTIPLE_CHOICE || type == TFNG;
+        if (type == SINGLE_CHOICE || type == MULTIPLE_CHOICE || type == TFNG) {
+            return true;
+        }
+
+        // 复合题中任意一个小题是填空题和问答题，则此复合题为非客观题
+        for (Question sub : subQuestions) {
+            if (sub.type == FITB || sub.type == ESSAY) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

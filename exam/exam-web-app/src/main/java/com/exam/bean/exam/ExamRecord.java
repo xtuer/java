@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JSONType(ignores = {"questions"})
+@JSONType(ignores = { "questions" })
 @Document
 public class ExamRecord {
     // 考试记录状态
@@ -27,7 +27,7 @@ public class ExamRecord {
     public static final int STATUS_AUTO_CORRECTED   = 2; // 自动批改
     public static final int STATUS_MANUAL_CORRECTED = 3; // 手动批改
     public static final int STATUS_FINISH_CORRECTED = 4; // 批改结束
-    public static final String[] STATUS_LABELS      = {"已作答", "已提交", "自动批改", "手动批改", "批改结束"};
+    public static final String[] STATUS_LABELS      = { "已作答", "已提交", "自动批改", "手动批改", "批改结束" };
 
     @Id
     private long id;          // 试卷记录 ID

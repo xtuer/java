@@ -1,5 +1,6 @@
 package com.exam.bean.exam;
 
+import com.exam.bean.exam.QuestionWithAnswer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,6 +18,6 @@ public class QuestionAnswers {
     private long userId;       // 用户 ID
     private long examRecordId; // 考试记录 ID
     private boolean submitted; // 是否提交试卷
-    private Date submittedAt = new Date(); // 提交试卷时间
-    List<QuestionWithAnswer> questions; // 题目的作答
+    private Date createdAt = new Date(); // 作答时间，使用消息队列异步保存时非常重要
+    List<QuestionWithAnswer> questions;  // 题目的作答
 }
