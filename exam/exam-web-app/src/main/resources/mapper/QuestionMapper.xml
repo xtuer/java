@@ -7,7 +7,7 @@
     <sql id="question_columns">
         q.id AS question_id, q.stem AS question_stem, q.key AS question_key, q.analysis AS question_analysis,
         q.type AS question_type, q.difficulty AS question_difficulty, q.position AS question_position,
-        q.purpose AS question_purpose, q.parent_id AS question_parent_id, q.options_json AS options_json
+        q.purpose AS question_purpose, q.parent_id AS question_parent_id, q.options_json AS question_options_json
     </sql>
 
     <!-- 查找指定 ID 的题目 (如有小题，同时查出) -->
@@ -68,15 +68,15 @@
     <!-- 题目: 包含选项 -->
     <resultMap id="QuestionResultMap" type="Question">
         <id property="id" column="question_id"/>
-        <result property="stem"       column="question_stem"/>
-        <result property="key"        column="question_key"/>
-        <result property="analysis"   column="question_analysis"/>
-        <result property="type"       column="question_type"/>
-        <result property="difficulty" column="question_difficulty"/>
-        <result property="position"   column="question_position"/>
-        <result property="purpose"    column="question_purpose"/>
-        <result property="parentId"   column="question_parent_id"/>
-        <result property="optionsJson" column="options_json"/>
+        <result property="stem"        column="question_stem"/>
+        <result property="key"         column="question_key"/>
+        <result property="analysis"    column="question_analysis"/>
+        <result property="type"        column="question_type"/>
+        <result property="difficulty"  column="question_difficulty"/>
+        <result property="position"    column="question_position"/>
+        <result property="purpose"     column="question_purpose"/>
+        <result property="parentId"    column="question_parent_id"/>
+        <result property="optionsJson" column="question_options_json"/>
 
         <!-- 试卷相关属性  -->
         <result property="paperId"         column="paper_id"/>
