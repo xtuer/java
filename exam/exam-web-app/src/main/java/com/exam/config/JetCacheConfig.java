@@ -60,14 +60,14 @@ public class JetCacheConfig {
     @Bean
     public GlobalCacheConfig config(SpringConfigProvider configProvider, Pool<Jedis> pool) {
         Map<String, CacheBuilder> localBuilders = new HashMap<>();
-        EmbeddedCacheBuilder localBuilder = LinkedHashMapCacheBuilder.createLinkedHashMapCacheBuilder()
+        EmbeddedCacheBuilder<?> localBuilder = LinkedHashMapCacheBuilder.createLinkedHashMapCacheBuilder()
                 .keyConvertor(FastjsonKeyConvertor.INSTANCE)
                 .expireAfterWrite(1000, TimeUnit.SECONDS) // 全局 expire，@Cached 能够指定自己的 expire
                 .limit(3000);
         localBuilders.put(CacheConsts.DEFAULT_AREA, localBuilder);
 
         Map<String, CacheBuilder> remoteBuilders = new HashMap<>();
-        RedisCacheBuilder remoteCacheBuilder = RedisCacheBuilder.createRedisCacheBuilder()
+        RedisCacheBuilder<?> remoteCacheBuilder = RedisCacheBuilder.createRedisCacheBuilder()
                 .keyConvertor(FastjsonKeyConvertor.INSTANCE)
                 .valueEncoder(KryoValueEncoder.INSTANCE)
                 .valueDecoder(KryoValueDecoder.INSTANCE)
