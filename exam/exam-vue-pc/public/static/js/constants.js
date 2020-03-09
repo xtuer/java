@@ -23,6 +23,12 @@ window.QUESTION_TYPES = [
     { value: 6, name: '复合题' },
 ];
 
+// 试卷类型
+window.PAPER_TYPES = [
+    { value: 0, name: '试卷' },
+    { value: 1, name: '问卷' },
+];
+
 // 项目的状态
 window.PROJECT_STATUS = [
     { value: 0, color: '#aaa',    label: '未提交', img: '' },

@@ -78,6 +78,7 @@
             "prefer-const": 0,
             "no-unused-expressions": 0,
             "no-irregular-whitespace": 0,
+            "quote-props": 0,
             "yoda": 0
         },
         "parserOptions": {

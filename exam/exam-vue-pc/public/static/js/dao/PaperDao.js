@@ -29,6 +29,7 @@ export default class PaperDao {
      *
      * 网址: http://localhost:8080/api/currentOrg/papers
      * 参数: filter 可包含下面几个属性
+     *      type      [可选]: 试卷类型
      *      title     [可选]: 试卷标题，可模糊搜索
      *      pageSize  [可选]: 数量
      *      pageNumber[可选]: 页码

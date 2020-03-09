@@ -369,7 +369,7 @@ export default class QuestionUtils {
      */
     static isScoreSelfQuestion(question) {
         // 复合题的小题或问答题
-        return Utils.idIdValid(question.parentId) || question.type === QUESTION_TYPE.ESSAY;
+        return Utils.isValidId(question.parentId) || question.type === QUESTION_TYPE.ESSAY;
     }
 
     /**

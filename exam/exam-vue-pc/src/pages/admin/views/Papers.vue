@@ -33,6 +33,7 @@ export default {
             papers: [],
             filter: { // 搜索条件
                 title: '',
+                type : 0,
                 pageSize  : 10,
                 pageNumber: 1,
             },

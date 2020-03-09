@@ -1,10 +1,10 @@
-package com.exam.service;
+package com.edu.training.service;
 
-import com.exam.bean.UploadedFile;
-import com.exam.config.AppConfig;
-import com.exam.controller.Urls;
-import com.exam.mapper.FileMapper;
-import com.exam.util.Utils;
+import com.edu.training.bean.UploadedFile;
+import com.edu.training.config.AppConfig;
+import com.edu.training.controller.Urls;
+import com.edu.training.mapper.FileMapper;
+import com.edu.training.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

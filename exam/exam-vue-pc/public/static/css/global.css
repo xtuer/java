@@ -92,3 +92,8 @@
 .ivu-btn-small {
     font-size: 12px !important;
 }
+
+/* block 的 Poptip */
+.block-poptip.ivu-poptip, .block-poptip .ivu-poptip-rel {
+    display: block;
+}
