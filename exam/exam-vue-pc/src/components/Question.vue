@@ -17,6 +17,8 @@ on-delete-question-click(question): 点击删除题目按钮触发，参数为�
 on-append-sub-question(): 添加小题时触发，参数无
 on-delete-sub-question(): 删除小题时触发，参数无
 on-score-change(question): 题目的满分变化时触发，参数为题目
+on-move-up-click(question)  : 点击移动向上按钮触发，参数为移动的题目
+on-move-down-click(question): 点击移动向下按钮触发，参数为移动的题目
 
 Slot: 无
 
@@ -93,8 +95,8 @@ question
                     <Icon v-if="question.type===7" type="md-add-circle" @click="$emit('on-append-question-to-group-click', question)"/>
                     <Icon v-if="question.type!==7" type="ios-create" @click="$emit('on-edit-question-click', question)"/>
                     <Icon type="md-trash" @click="$emit('on-delete-question-click', question)"/>
-                    <Icon v-if="question.type!==7" type="md-arrow-round-down"/>
-                    <Icon v-if="question.type!==7" type="md-arrow-round-up"/>
+                    <Icon v-if="question.type!==7" type="md-arrow-round-up" @click="$emit('on-move-up-click', question)"/>
+                    <Icon v-if="question.type!==7" type="md-arrow-round-down" @click="$emit('on-move-down-click', question)"/>
                 </div>
             </div>
 

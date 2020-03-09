@@ -54,7 +54,9 @@ Slot: 无
                       @on-append-question-to-group-click="appendQuestionToGroup"
                       @on-delete-question-click="deleteQuestion"
                       @on-edit-question-click="editQuestion"
-                      @on-score-change="updateQuestionStatus"/>
+                      @on-score-change="updateQuestionStatus"
+                      @on-move-up-click="moveQuestionUp"
+                      @on-move-down-click="moveQuestionDown"/>
         </div>
 
         <!-- 工具栏 -->
@@ -215,6 +217,82 @@ export default {
             }).then(newPaper => {
                 this.paper = newPaper;
             });
+        },
+        // 向上移动题目
+        moveQuestionUp(question) {
+            // 1. 找到题目的下标
+            // 2. 找到前一个 groupSn 相同的题目: 非题型题、未被删除的题目
+            // 3. 把题目从 questions 中删除，然后插入到找到的位置
+            // 4. 更新题目的 snLabel
+
+            // [1] 找到题目的下标
+            const questions = this.paper.questions;
+            const position  = questions.findIndex(q => q.id === question.id);
+
+            // [2] 找到前一个 groupSn 相同的题目: 非题型题、未被删除的题目
+            for (let i = position - 1; i >= 0; i--) {
+                const prev = questions[i];
+
+                if (prev.deleted) {
+                    continue;
+                }
+
+                if (prev.groupSn !== question.groupSn) {
+                    break;
+                }
+
+                if (prev.type === QUESTION_TYPE.DESCRIPTION) {
+                    break;
+                }
+
+                // [3] 把题目从 questions 中删除，然后插入到找到的位置
+                // 向上移动
+                questions.remove(position);
+                questions.insert(i, question);
+
+                // [4] 更新题目的 snLabel
+                this.updateQuestionStatus();
+
+                break;
+            }
+        },
+        // 向下移动题目
+        moveQuestionDown(question) {
+            // 1. 找到题目的下标
+            // 2. 找到下一个 groupSn 相同的题目: 非题型题、未被删除的题目
+            // 3. 把题目从 questions 中删除，然后插入到找到的位置
+            // 4. 更新题目的 snLabel
+
+            // [1] 找到题目的下标
+            const questions = this.paper.questions;
+            const position = questions.findIndex(q => q.id === question.id);
+
+            // [2] 找到下一个 groupSn 相同的题目: 非题型题、未被删除的题目
+            for (let i = position + 1; i < questions.length; i++) {
+                const next = questions[i];
+
+                if (next.deleted) {
+                    continue;
+                }
+
+                if (next.groupSn !== question.groupSn) {
+                    break;
+                }
+
+                if (next.type === QUESTION_TYPE.DESCRIPTION) {
+                    break;
+                }
+
+                // [3] 把题目从 questions 中删除，然后插入到找到的位置
+                // 向下移动
+                questions.insert(i+1, question);
+                questions.remove(position);
+
+                // [4] 更新题目的 snLabel
+                this.updateQuestionStatus();
+
+                break;
+            }
         },
         // 初始化
         init() {
