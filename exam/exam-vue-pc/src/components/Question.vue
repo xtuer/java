@@ -95,8 +95,8 @@ question
                     <Icon v-if="question.type===7" type="md-add-circle" @click="$emit('on-append-question-to-group-click', question)"/>
                     <Icon v-if="question.type!==7" type="ios-create" @click="$emit('on-edit-question-click', question)"/>
                     <Icon type="md-trash" @click="$emit('on-delete-question-click', question)"/>
-                    <Icon v-if="question.type!==7" type="md-arrow-round-up" @click="$emit('on-move-up-click', question)"/>
                     <Icon v-if="question.type!==7" type="md-arrow-round-down" @click="$emit('on-move-down-click', question)"/>
+                    <Icon v-if="question.type!==7" type="md-arrow-round-up" @click="$emit('on-move-up-click', question)"/>
                 </div>
             </div>
 
