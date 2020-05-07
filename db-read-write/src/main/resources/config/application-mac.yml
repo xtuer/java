@@ -1,0 +1,7 @@
+# 选择 Mac 开发环境，开启应用的 DEBUG 日志
+# gradle bootRun --args='--spring.profiles.active=mac'
+
+app.dir.base: /usr/local/temp/xtuer
+logging.level.com.xtuer: DEBUG
+logging.level.com.zaxxer.hikari: DEBUG
+spring.thymeleaf.cache : false
