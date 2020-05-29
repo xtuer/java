@@ -1,18 +1,21 @@
 package com.xtuer.util;
 
 import com.alibaba.fastjson.JSON;
+import com.xtuer.bean.Mime;
 import com.xtuer.bean.Result;
+import com.xtuer.bean.SecurityConst;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
@@ -21,18 +24,16 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Web 操作相关的辅助工具，例如:
- * 获取客户端 IP
- * 读写删除 Cookie
- * 读取文件到 HttpServletResponse
- * 向 HttpServletResponse 写入 Ajax 响应
- * 判断请求是否使用 Ajax，获取 URI 的文件名
- * <p>
+ *     获取客户端 IP
+ *     读写删除 Cookie
+ *     读取文件到 HttpServletResponse
+ *     向 HttpServletResponse 写入 Ajax 响应
+ *     判断请求是否使用 Ajax，获取 URI 的文件名
  * 提示:
- * 1. HttpServletRequest.getRequestURI() 返回的 URI 不带有参数
+ *     1. HttpServletRequest.getRequestURI() 返回的 URI 不带有参数
  */
+@Slf4j
 public final class WebUtils {
-    private static Logger logger = LoggerFactory.getLogger(WebUtils.class);
-
     public static final String UNKNOWN = "unknown";
 
     /**
@@ -51,7 +52,7 @@ public final class WebUtils {
      * @param response HttpServletResponse 对象，用于写入请求的响应
      * @param result   响应的数据
      */
-    public static void ajaxResponse(HttpServletResponse response, Result result) {
+    public static void ajaxResponse(HttpServletResponse response, Result<?> result) {
         ajaxResponse(response, result, 200);
     }
 
@@ -62,7 +63,7 @@ public final class WebUtils {
      * @param result   响应的数据
      * @param statusCode HTTP 状态码
      */
-    public static void ajaxResponse(HttpServletResponse response, Result result, int statusCode) {
+    public static void ajaxResponse(HttpServletResponse response, Result<?> result, int statusCode) {
         ajaxResponse(response, JSON.toJSONString(result), statusCode);
     }
 
@@ -85,7 +86,7 @@ public final class WebUtils {
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            logger.warn(ExceptionUtils.getStackTrace(ex));
+            log.warn(ExceptionUtils.getStackTrace(ex));
         }
     }
 
@@ -157,6 +158,22 @@ public final class WebUtils {
     }
 
     /**
+     * 从 header 或者 cookie 里获取 auth-token
+     *
+     * @param request HttpServletRequest 对象
+     * @return 返回登录生成的 token
+     */
+    public static String getAuthToken(HttpServletRequest request) {
+        String token = request.getHeader(SecurityConst.AUTH_TOKEN_KEY);
+
+        if (token == null) {
+            token = WebUtils.getCookie(request, SecurityConst.AUTH_TOKEN_KEY);
+        }
+
+        return token;
+    }
+
+    /**
      * 获取客户端的 IP
      *
      * @param request HttpServletRequest 对象
@@ -201,12 +218,26 @@ public final class WebUtils {
      */
     public static String getHost() {
         try {
-            return new URL(WebUtils.getRequest().getRequestURL().toString()).getHost();
+            String host = new URL(WebUtils.getRequest().getRequestURL().toString()).getHost();
+            return WebUtils.simplifyHost(host);
         } catch (MalformedURLException e) {
-            logger.warn(ExceptionUtils.getStackTrace(e));
+            log.warn(ExceptionUtils.getStackTrace(e));
         }
 
         return null;
+    }
+
+    /**
+     * 根据文件名向 response 中写入对应的 content type，如无对应的 content type 则使用 application/octet-stream 表示文件要进行下载。
+     * 注意: 访问图片的时候只有设置正确的 content type 浏览器才能正确的显示图片，否则有的时候会把图片作为普通文件进行下载。
+     * 文件的 content type 请参考 http://tool.oschina.net/commons
+     *
+     * @param filename 文件名
+     * @param response HttpServletResponse 对象
+     */
+    public static void setContentType(String filename, HttpServletResponse response) {
+        String contentType = Mime.getContentType(filename);
+        response.setContentType(contentType);
     }
 
     /**
@@ -231,5 +262,90 @@ public final class WebUtils {
         String filename = FilenameUtils.getName(uri);
 
         return filename;
+    }
+
+    /**
+     * 读取文件到 HttpServletResponse
+     *
+     * @param file     文件
+     * @param response HttpServletResponse 对象
+     */
+    public static void readFileToResponse(File file, HttpServletResponse response) throws IOException {
+        readFileToResponse(file.getAbsolutePath(), file.getName(), WebUtils.getRequest(), response);
+    }
+
+    /**
+     * 读取文件到 HttpServletResponse
+     *
+     * @param path     // 文件的路径
+     * @param filename // 文件名，因为文件的路径中的文件名是编码过的，而真实的文件名保存在数据库，所以 path 中的文件名很可能不是真正的文件名
+     * @param request  // HttpServletRequest 对象
+     * @param response // HttpServletResponse 对象
+     * @throws IOException 访问文件发生异常时抛出
+     */
+    public static void readFileToResponse(String path, String filename, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ResponseUtils.readFileToResponse(path, filename, request, response);
+
+        // // 1. 如果文件不存在则返回 404 页面
+        // // 2. 文件存在，写入文件名
+        // // 3. 根据文件名写入对应的 Content-Type
+        // // 4. 设置文件的大小，浏览器就能够知道下载进度了
+        // // 5. 读取文件到 response 的输出流中
+        //
+        // if (!Files.exists(Paths.get(path))) {
+        //     // [1] 如果文件不存在则返回 404 页面
+        //     log.warn("文件 {} 不存在", path);
+        //     response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        //     return;
+        // }
+        //
+        // File file = new File(path);
+        // log.debug("访问文件 {}", path);
+        //
+        // WebUtils.setResponseFilename(filename, response);  // [2] 写入文件名
+        // WebUtils.setContentType(file.getName(), response); // [3] 设置 content type，让浏览器能正确的知道文件的处理方式
+        // response.setContentLengthLong(file.length());      // [4] 设置文件的大小，浏览器就能够知道下载进度了
+        //
+        // // [5] 读取文件到 response 的输出流中 (使用 try 自动关闭流)
+        // try (InputStream in = new FileInputStream(file); OutputStream out = response.getOutputStream()) {
+        //     IOUtils.copy(in, out);
+        // }
+    }
+
+
+    /**
+     * 向 response 中写入文件名
+     *
+     * @param filename 文件名
+     * @param response HttpServletResponse 对象
+     */
+    public static void setResponseFilename(String filename, HttpServletResponse response) {
+        // 正确显示文件名: inline 和 attachment 要分别处理:
+        // 1. 如果文件可以在浏览器中直接显示则把文件名写入 inline 的 Content-Disposition
+        // 2. 如果文件不可以在浏览器中显示则把文件名写入 attachment 的 Content-Disposition 用于下载
+
+        if (StringUtils.isNotBlank(filename)) {
+            filename = new String(filename.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1); // 解决乱码问题
+
+            if (Utils.isInlineFileForBrowser(filename)) {
+                // 浏览器内嵌显示的文件，例如图片，普通文本文件
+                response.setHeader("Content-Disposition", "inline;filename=" + filename);
+            } else {
+                // 浏览器中弹出下载对话框进行下载的文件，例如 rar, zip
+                response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+            }
+        }
+    }
+
+    /**
+     * 把域名前后的空白字符去掉，去掉域名前的 www. :
+     * google.com     返回 google.com
+     * www.google.com 返回 google.com
+     *
+     * @param host 域名
+     * @return 返回简化后的域名
+     */
+    public static String simplifyHost(String host) {
+        return RegExUtils.removePattern(StringUtils.trim(host), "^www\\.");
     }
 }

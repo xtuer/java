@@ -1,28 +1,26 @@
-// gradle clean build -Denv=production
+// 部署: gradle clean deploy -Denv=test1
+
+////////////////////////////////////////////////////////////////////////////////////
+//                               定义所有环境下都有的通用配置
+////////////////////////////////////////////////////////////////////////////////////
+//environments {
+//  usedByAllEnvironments {
+        deploy {
+            dir  = '/www.xtuer.com' // 部署目录
+            port = 8080             // 程序端口
+            username = 'root'       // 服务器账号
+            password = 'root'       // 服务器密码
+        }
+//  }
+//}
+
 environments {
-    development {
-        database {
-            driverClassName = 'com.mysql.jdbc.Driver'
-            url = 'jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8'
+    test1 {
+        deploy {
+            port     = 8888
+            host     = '192.168.10.173'
             username = 'root'
-            password = 'root'
+            password = 'tiger_sun'
         }
-
-        logDir = "/temp/logs"
-        staticPath =""
-        thymeleafCacheable = false
-    }
-
-    production {
-        database {
-            driverClassName = 'com.mysql.jdbc.Driver'
-            url = 'jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8'
-            username = 'root'
-            password = 'huaxia-123'
-        }
-
-        logDir = "/temp/logs"
-        staticPath =""
-        thymeleafCacheable = true
     }
 }
