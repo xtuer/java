@@ -17,6 +17,9 @@ page-m/
 ### Gradle ###
 build/
 .gradle/
+gradle/
+gradlew
+gradlew.bat
 
 ### LOG ###
 *.log
