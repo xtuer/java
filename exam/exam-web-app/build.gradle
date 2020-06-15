@@ -1,128 +1,73 @@
 plugins {
-    id 'war'
     id 'java'
-    id 'org.gretty' version '2.3.1'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'org.hidetake.ssh' version '2.9.0'
 }
 
-gretty {
-    httpPort         = 8080
-    contextPath      = ''
-    servletContainer = 'tomcat8'
+group   = 'com.xtuer'
+version = '0.0.1-SNAPSHOT'
 
-    inplaceMode  = 'hard'
-    debugSuspend = false
-    managedClassReload      = true
-    recompileOnSourceChange = true
-
-    // 升级 gretty 自带的 springloaded
-    // jvmArgs = ["-javaagent:${project.projectDir}/springloaded-1.2.8.RELEASE.jar", '-noverify', '-Djava.awt.headless=true']
-    jvmArgs = ["-agentpath:/usr/local/jrebel/lib/libjrebel64.dylib", '-Djava.awt.headless=true']
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//                                   Maven 依赖                               //
-////////////////////////////////////////////////////////////////////////////////
 repositories {
     mavenCentral()
 }
 
 ext.versions = [
-        spring        : '5.0.2.RELEASE',
-        springSecurity: '5.0.0.RELEASE',
-        redisClient   : '2.9.0',
-        servlet       : '4.0.0',
-        lombok        : '1.16.20',
-        fastjson      : '1.2.59',
-        thymeleaf     : '3.0.9.RELEASE',
-        mysql         : '5.1.46',
-        mybatis       : '3.5.0',
-        mybatisSpring : '1.3.1',
-        druid         : '1.1.17',
-        mongo         : '2.2.2.RELEASE',
-        validator     : '6.0.5.Final',
-        commonsLang   : '3.7',
-        commonsText   : '1.7',
-        commonsFileupload: '1.3.3',
-        easyPoi       : '3.0.3',
-        easyOkHttp    : '1.1.3',
-        jmsApi        : '2.0.1',
-        activeMq      : '5.7.0',
-        activeMqPool  : '5.14.1',
-        junit         : '4.12',
-        logback       : '1.3.0-alpha4',
-        slf4j         : '1.7.25',
-        jsoup         : '1.12.1',
-        jetCache      : '2.5.13',
+        lombok     : '1.18.10',
+        commonsIO  : '2.6',
+        commonsLang: '3.8',
+        commonsText: '1.7',
+        fastjson   : '1.2.70',
+        mybatis    : '2.1.1',
+        mysql      : '5.1.46',
+        jetcache   : '2.5.14',
+        redis      : '2.9.0',
+        jsoup      : '1.12.1',
+        uid        : '1.0.2.RELEASE',
 ]
 
 dependencies {
-    compile(
-            "org.springframework:spring-webmvc:${versions.spring}",
-            "org.springframework:spring-context-support:${versions.spring}",
-            "org.springframework.security:spring-security-web:${versions.springSecurity}",
-            "org.springframework.security:spring-security-config:${versions.springSecurity}",
-            "org.springframework:spring-jms:${versions.spring}",
-            "redis.clients:jedis:${versions.redisClient}",
-            "com.alibaba:fastjson:${versions.fastjson}",
-            "org.thymeleaf:thymeleaf-spring5:${versions.thymeleaf}",
-            "mysql:mysql-connector-java:${versions.mysql}",
-            "org.springframework:spring-jdbc:${versions.spring}",
-            "org.mybatis:mybatis-spring:${versions.mybatisSpring}",
-            "org.mybatis:mybatis:${versions.mybatis}",
-            "com.alibaba:druid:${versions.druid}",
-            "org.springframework.data:spring-data-mongodb:${versions.mongo}",
-            "org.hibernate.validator:hibernate-validator:${versions.validator}",
+    implementation (
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-security',
+            'org.springframework.boot:spring-boot-starter-thymeleaf',
+            'org.springframework.boot:spring-boot-starter-validation',
+
+            "commons-io:commons-io:${versions.commonsIO}",
             "org.apache.commons:commons-lang3:${versions.commonsLang}",
             "org.apache.commons:commons-text:${versions.commonsText}",
-            "commons-fileupload:commons-fileupload:${versions.commonsFileupload}",
-            "cn.afterturn:easypoi-base:${versions.easyPoi}",
-            "com.mzlion:easy-okhttp:${versions.easyOkHttp}",
-            "org.apache.activemq:activemq-core:${versions.activeMq}",
-            "org.apache.activemq:activemq-pool:${versions.activeMqPool}",
-            "javax.jms:javax.jms-api:${versions.jmsApi}",
+            "com.alibaba:fastjson:${versions.fastjson}",
+            "org.mybatis.spring.boot:mybatis-spring-boot-starter:${versions.mybatis}",
+            "com.alicp.jetcache:jetcache-starter-redis:${versions.jetcache}",
+            "redis.clients:jedis:${versions.redis}",
             "org.jsoup:jsoup:${versions.jsoup}",
-            "com.alicp.jetcache:jetcache-anno:${versions.jetCache}",
-            "com.alicp.jetcache:jetcache-redis:${versions.jetCache}",
+            "com.github.wujun234:uid-generator-spring-boot-starter:${versions.uid}"
     )
 
-    // Log dependencies
-    compile(
-            "ch.qos.logback:logback-classic:${versions.logback}", // slf4j-logback绑定
-            "org.slf4j:jcl-over-slf4j:${versions.slf4j}",         // redirect apache commons logging
-            "org.slf4j:jul-to-slf4j:${versions.slf4j}",           // redirect jdk util logging
-            "org.slf4j:log4j-over-slf4j:${versions.slf4j}",       // redirect log4j
-    )
+    runtimeOnly("mysql:mysql-connector-java:${versions.mysql}")
 
-    compileOnly("org.projectlombok:lombok:${versions.lombok}")
-    compileOnly("javax.servlet:javax.servlet-api:${versions.servlet}")
-    testCompile("org.springframework:spring-test:${versions.spring}")
-    testCompile("junit:junit:${versions.junit}")
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${versions.lombok}"
     annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
 }
 
-ext {
-    // 运行、打包以及部署的环境选择, 默认是开发环境(即命令没有 -Denv 参数)
-    // 运行: gradle clean appStart, gradle clean appStartDebug
-    // 构建: gradle clean assemble, gradle clean assemble -Denv=production
-    // 部署: gradle clean deploy,   gradle clean deploy   -Denv=production
-    environment     = System.getProperty("env", "dev") // 获取 gradle 参数中 env 的值，选择环境
-    war.archiveFileName = "training-${environment}.zip"                 // 打包的文件名，不用 war 包自动解压的话，用 .zip 会更好一些
-    config          = new ConfigSlurper(environment).parse(file('config.groovy').toURI().toURL()).toProperties()
-
-    println "\n::--o 加载配置用于环境: ${environment}\n"
+test {
+    useJUnitPlatform()
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//                                  资源动态替换                                //
-////////////////////////////////////////////////////////////////////////////////
-processResources {
-    // src/main/resources 下所有文件中 @key@ 的内容使用 config.groovy 里对应的进行替换
-    filteringCharset = 'UTF-8'
-    from(sourceSets.main.resources.srcDirs) {
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: config)
-    }
+bootJar {
+    archiveFileName = 'xtuer.jar'
+}
+
+ext {
+    // 运行: gradle bootRun --args='--spring.profiles.active=mac'
+    // 部署: gradle clean deploy -Denv=production
+    environment = System.getProperty("env", "dev") // 获取 gradle 参数中 env 的值，选择环境
+    config      = new ConfigSlurper(environment).parse(file('config.groovy').toURI().toURL()).toProperties()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,20 +85,21 @@ ssh.settings {
     knownHosts = allowAnyHosts
 }
 
-task deploy(dependsOn: war) {
-    def targetDir = '/www.training.com'
+task deploy(dependsOn: bootJar) {
+    def jar  = bootJar.archiveFileName.get()
+    def dir  = config.getProperty('deploy.dir')
+    def path = "${dir}/${jar}"
+    def port = config.getProperty('deploy.port')
+
     doLast {
         ssh.run {
             session(remotes.server) {
-                put from: "${buildDir}/libs/${war.archiveFileName}", into: "${targetDir}"
+                put from: "${buildDir}/libs/${jar}", into: "${path}.bak"
                 execute """
                     source /root/.bash_profile;
-                    sh /usr/local/edu/tomcat/bin/shutdown.sh;
-                    rm -rf   ${targetDir}/ROOT;
-                    unzip -u ${targetDir}/${war.archiveFileName} -d ${targetDir}/ROOT > /dev/null;
-                    rm -rf   ${targetDir}/${war.archiveFileName};
-                    kill `ps aux | grep -i tomcat | grep -v grep | awk '{print \$2}'`;
-                    sh /usr/local/edu/tomcat/bin/startup.sh;
+                    kill `ps aux | grep -i ${jar} | grep -v grep | awk '{print \$2}'`;
+                    mv -f ${path}.bak ${path};
+                    nohup java -jar -Dfile.encoding=UTF-8 ${path} --server.port=${port} > /dev/null 2>&1 &
                 """
             }
         }
@@ -172,12 +118,7 @@ compileJava {
     options.forkOptions.jvmArgs << '-parameters'
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//                                   Test                                     //
-////////////////////////////////////////////////////////////////////////////////
-test {
-    // we want display the following test events
-    testLogging {
-        events "PASSED", "STARTED", "FAILED", "SKIPPED"
-    }
+// 如果设置了 JRebel，则使用 JRebel 进行热更新
+if (project.hasProperty('rebelAgent')) {
+    bootRun.jvmArgs += rebelAgent
 }
