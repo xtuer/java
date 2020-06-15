@@ -69,8 +69,8 @@ public class FileController extends BaseController {
         File   repoFile = repoFileService.getRepoFile(repoPath);
 
         // [3] 查询上传时的文件信息，获取文件的原始名字
-        String originalName = null;           // 文件的原始名
-        String uploadedName = repoFile.getName(); // 文件的原始名
+        String originalName = null;               // 文件的原名
+        String uploadedName = repoFile.getName(); // 文件的名字
         UploadedFile upFile = repoFileService.findUploadedFile(uploadedName);
 
         if (upFile != null) {
