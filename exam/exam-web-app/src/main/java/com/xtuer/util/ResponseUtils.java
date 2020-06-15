@@ -54,7 +54,7 @@ public final class ResponseUtils {
 
         // [1] 如果文件不存在则返回 404 页面
         if (!Files.exists(Paths.get(path))) {
-            log.warn("文件 {} 不存在", path);
+            log.warn("文件不存在: {}", path);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
