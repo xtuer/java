@@ -50,12 +50,14 @@
 
     <!-- 插入或者更新试卷的题目到试卷题目表 (不会更新小题的，因为逻辑复杂) -->
     <insert id="upsertPaperQuestion" parameterType="Question">
-        INSERT INTO exam_paper_question (paper_id, question_id, group_sn, position, score, total_score, sn_label, parent_question_id)
-        VALUES (#{paperId}, #{id}, #{groupSn}, #{positionInPaper}, #{score}, #{totalScore}, #{snLabel}, #{parentId})
+        INSERT INTO exam_paper_question
+            (paper_id, question_id, group_sn, position, score, total_score, sn_label, parent_question_id)
+        VALUES
+            (#{paperId}, #{id}, #{groupSn}, #{positionInPaper}, #{score}, #{totalScore}, #{snLabel}, #{parentId})
 
-        ON DUPLICATE KEY
-        UPDATE group_sn = #{groupSn}, position = #{positionInPaper}, score = #{score}, total_score = #{totalScore},
-               sn_label = #{snLabel}, parent_question_id = #{parentId}
+        ON DUPLICATE KEY UPDATE
+            group_sn = #{groupSn}, position = #{positionInPaper}, score = #{score}, total_score = #{totalScore},
+            sn_label = #{snLabel}, parent_question_id = #{parentId}
     </insert>
 
     <!-- 试卷题目表中删除题目，同时删除题目表中题目的小题 -->
