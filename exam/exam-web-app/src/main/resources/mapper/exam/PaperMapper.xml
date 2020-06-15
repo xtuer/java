@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
+<mapper namespace="com.xtuer.mapper.exam.PaperMapper">
+    <!-- 试卷的列 -->
+    <sql id="paper_columns">
+        id, title, type, total_score, is_objective AS objective, org_id, question_count, created_at, updated_at
+    </sql>
+
+    <!-- 查找指定 ID 的试卷 -->
+    <select id="findPaperById" parameterType="long" resultType="Paper">
+        SELECT <include refid="paper_columns"/>, info
+        FROM exam_paper
+        WHERE id = #{paperId}
+    </select>
+
+    <!-- 查询指定机构 ID 的试卷 -->
+    <select id="findPapersByOrgId" parameterType="long" resultType="Paper">
+        SELECT <include refid="paper_columns"/>
+        FROM exam_paper
+        WHERE org_id = #{orgId} AND type = #{type}
+            <if test="title!=null and title!='' ">
+                AND title LIKE CONCAT('%', #{title},'%')
+            </if>
+        ORDER BY created_at DESC
+        LIMIT ${page.offset}, ${page.size}
+    </select>
+
+    <!-- 判断 ID 为传入的 paperId 的试卷是否存在 -->
+    <select id="paperExists" parameterType="long" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM exam_paper WHERE id = #{paperId})
+    </select>
+
+    <!-- 判断试卷是否客观题试卷 -->
+    <select id="isObjectivePaper" parameterType="long" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM exam_paper WHERE id = #{paperId} AND is_objective = 1)
+    </select>
+
+    <!-- 插入或者更新试卷 -->
+    <insert id="upsertPaper" parameterType="Paper">
+        INSERT INTO exam_paper (id, title, type, total_score, is_objective, org_id, info, question_count)
+        VALUES (#{id}, #{title}, #{type}, #{totalScore}, #{objective}, #{orgId},
+                #{info}, #{questionCount})
+
+        ON DUPLICATE KEY
+        UPDATE title = #{title}, type = #{type}, total_score = #{totalScore}, is_objective = #{objective}, org_id = #{orgId},
+               info = #{info}, question_count = #{questionCount}
+    </insert>
+
+    <!-- 插入或者更新试卷的题目到试卷题目表 (不会更新小题的，因为逻辑复杂) -->
+    <insert id="upsertPaperQuestion" parameterType="Question">
+        INSERT INTO exam_paper_question (paper_id, question_id, group_sn, position, score, total_score, sn_label, parent_question_id)
+        VALUES (#{paperId}, #{id}, #{groupSn}, #{positionInPaper}, #{score}, #{totalScore}, #{snLabel}, #{parentId})
+
+        ON DUPLICATE KEY
+        UPDATE group_sn = #{groupSn}, position = #{positionInPaper}, score = #{score}, total_score = #{totalScore},
+               sn_label = #{snLabel}, parent_question_id = #{parentId}
+    </insert>
+
+    <!-- 试卷题目表中删除题目，同时删除题目表中题目的小题 -->
+    <delete id="deletePaperQuestion" parameterType="long">
+        DELETE FROM exam_paper_question WHERE question_id = #{questionId};
+        DELETE FROM exam_paper_question WHERE parent_question_id = #{questionId};
+    </delete>
+
+    <!-- 删除试卷: 删除试卷同时删除试卷的题目 -->
+    <delete id="deletePaper" parameterType="long">
+        DELETE FROM exam_paper WHERE id = #{paperId};
+        DELETE FROM exam_paper_question WHERE paper_id = #{paperId};
+    </delete>
+
+    <!--
+        查找试卷的题目:
+        查询条件: 在试卷的题目表中找到试卷 paperId 的所有题目，然后和题目表、题目选项表进行左连接
+        排序顺序: 题型 group_sn、在试卷中的位置、小题的位置、选项的位置
+    -->
+    <select id="findPaperQuestionsByPaperId" parameterType="long" resultType="Question">
+        SELECT
+            pq.paper_id    AS paper_id,
+            pq.group_sn    AS group_sn,
+            pq.position    AS position_in_paper,
+            pq.score       AS score,
+            pq.total_score AS total_score,
+            pq.sn_label    AS sn_label,
+            <include refid="com.edu.training.mapper.exam.QuestionMapper.question_columns"/>
+        FROM exam_paper_question pq
+            LEFT JOIN exam_question q ON q.id = pq.question_id
+        WHERE pq.paper_id = #{paperId}
+        ORDER BY group_sn, position_in_paper, position
+    </select>
+</mapper>

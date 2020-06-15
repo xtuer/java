@@ -26,6 +26,20 @@ public class OrganizationController extends BaseController {
     private OrganizationMapper orgMapper;
 
     /**
+     * 使用域名对应的当前机构
+     *
+     * 网址: http://localhost:8080/api/orgs/current
+     * 参数: 无
+     *
+     * @return payload 为查询到的机构
+     */
+    @GetMapping(Urls.API_ORGS_CURRENT)
+    public Result<Organization> findCurrentOrg() {
+        Organization org = orgService.getCurrentOrganization();
+        return Result.single(org, "当前域名没有机构");
+    }
+
+    /**
      * 使用机构 ID 查询机构，同时会查询出机构的管理员
      *
      * 网址: http://localhost:8080/api/orgs/{orgId}
