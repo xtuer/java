@@ -3,11 +3,14 @@
 1. 安装 MySQL:
    * 账号: root
    * 密码: root
-   * 创建数据库 exam
-2. 安装 Redis
-3. 安装 Gradle
-4. 启动项目: 
-   * gradle `bootRun`
+   * 数据库: exam
+2. 安装 MongoDB:
+   * 账号: exam
+   * 密码: exam
+   * 数据库: exam
+3. 安装 Redis
+4. 安装 Gradle 6.5 及更新版本
+5. 启动项目: 
    * Mac: `gradle bootRun --args='--spring.profiles.active=mac'`
    * Win: `gradle bootRun --args='--spring.profiles.active=win'`
 
