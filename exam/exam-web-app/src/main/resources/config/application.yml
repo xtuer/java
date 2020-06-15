@@ -51,7 +51,7 @@ mybatis.type-aliases-package: com.xtuer.bean
 mybatis.configuration.map-underscore-to-camel-case: true
 
 # MongoDB
-spring.data.mongodb.uri: mongodb://exam:exam@localhost:27017/exam?connectTimeoutMS=30000&minPoolSize=0&maxPoolSize=100&maxIdleTimeMS=900000
+spring.data.mongodb.uri: mongodb://exam:exam@${app.mongo}:27017/exam?connectTimeoutMS=30000&minPoolSize=0&maxPoolSize=100&maxIdleTimeMS=900000
 
 ###############################################################################
 #                             Redis: JetCache                                 #
