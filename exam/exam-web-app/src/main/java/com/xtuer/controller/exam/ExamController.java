@@ -44,7 +44,7 @@ public class ExamController extends BaseController {
     @GetMapping(Urls.API_EXAMS_BY_ID)
     public Result<Exam> findExamById(@PathVariable long examId) {
         Exam exam = examService.findExam(examId);
-        return Result.single(exam, "试卷不存在: " + examId);
+        return Result.single(exam, "考试不存在: " + examId);
     }
 
     /**

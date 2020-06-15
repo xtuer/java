@@ -51,7 +51,7 @@ public class OrganizationController extends BaseController {
     @GetMapping(Urls.API_ORGS_BY_ID)
     public Result<Organization> findOrganization(@PathVariable long orgId) {
         Organization org = orgService.findOrganization(orgId);
-        return Result.single(org, "ID 为 " + orgId + " 的机构不存在");
+        return Result.single(org, "机构不存在: " + orgId);
     }
 
     /**

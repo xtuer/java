@@ -37,12 +37,7 @@ public class PaperController extends BaseController {
     @GetMapping(Urls.API_PAPERS_BY_ID)
     public Result<Paper> findPaperById(@PathVariable long paperId) {
         Paper paper = paperService.findPaper(paperId);
-
-        if (paper != null) {
-            return Result.ok(paper);
-        } else {
-            return Result.fail("查询不到 ID 为 " + paperId + " 的试卷");
-        }
+        return Result.single(paper, "试卷不存在: " + paperId);
     }
 
     /**
