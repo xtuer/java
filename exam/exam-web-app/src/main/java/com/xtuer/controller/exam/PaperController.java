@@ -55,7 +55,9 @@ public class PaperController extends BaseController {
      * @return payload 为试卷的 ID
      */
     @GetMapping(Urls.API_PAPERS_OF_CURRENT_ORG)
-    public Result<List<Paper>> findPapersOfCurrentOrg(@RequestParam int type, @RequestParam(required = false) String title, Page page) {
+    public Result<List<Paper>> findPapersOfCurrentOrg(@RequestParam(required = false, defaultValue = "0") int type,
+                                                      @RequestParam(required = false) String title,
+                                                      Page page) {
         long orgId = super.getCurrentOrganizationId();
         return Result.ok(paperMapper.findPapersByHolderId(orgId, type, title, page));
     }

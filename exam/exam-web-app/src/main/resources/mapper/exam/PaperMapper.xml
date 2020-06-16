@@ -16,7 +16,7 @@
     </select>
 
     <!-- 查询指定机构 ID 的试卷 -->
-    <select id="findPapersByHolderId" parameterType="long" resultType="Paper">
+    <select id="findPapersByHolderId" resultType="Paper">
         SELECT <include refid="paper_columns"/>
         FROM exam_paper
         WHERE holder_id = #{holderId} AND type = #{type}
