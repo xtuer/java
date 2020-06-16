@@ -24,7 +24,7 @@
 DROP TABLE IF EXISTS exam_question;
 
 CREATE TABLE exam_question (
-    id         bigint(20) NOT NULL   COMMENT '题目 ID',
+    id         bigint(20)  NOT NULL  COMMENT '题目 ID',
     stem       text                  COMMENT '题干',
     `key`      text                  COMMENT '参考答案',
     analysis   text                  COMMENT '题目解析',
@@ -33,6 +33,7 @@ CREATE TABLE exam_question (
     position   int(11)     DEFAULT 0 COMMENT '复合题的小题在题目中的位置',
     purpose    int(11)     DEFAULT 0 COMMENT '题目用途: 0 (考试题目)、1 (问卷题目)',
     parent_id  bigint(20)  DEFAULT 0 COMMENT '复合题的小题所属大题 ID',
+    options_json mediumtext          COMMENT '选项的 JSON 字符串',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -56,7 +57,7 @@ CREATE TABLE exam_paper_question (
     question_id        bigint(20)   DEFAULT 0  COMMENT '题目 ID',
     group_sn           int(11)      DEFAULT 0  COMMENT '大题 (题型) 分组序号，例如属于第一大题单选题组，顺序表示在试卷中的位置',
     position           int(11)      DEFAULT 0  COMMENT '题目在试卷里的位置',
-    score              double       DEFAULT 0  COMMENT '每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 单选题，每题 5 分，共 30 分',
+    score              double       DEFAULT 0  COMMENT '题型题的每题得分 (创建试卷时题型题下的题目每题得分，方便构造题干): 如单选题，每题 5 分，共 30 分',
     total_score        double       DEFAULT 0  COMMENT '题目满分 (题目、题型题、复合题的满分)',
     sn_label           varchar(128) DEFAULT '' COMMENT '试卷中题目的可读序号，例如 一、二、1、2、❶、❷ 等',
     parent_question_id bigint(20)   DEFAULT 0  COMMENT '小题所属复合题的 ID',
@@ -80,11 +81,14 @@ CREATE TABLE exam_paper_question (
 DROP TABLE IF EXISTS exam_paper;
 
 CREATE TABLE exam_paper (
-    id            bigint(20)    NOT NULL   COMMENT '试卷 ID',
-    title         varchar(2048) DEFAULT '' COMMENT '试卷标题',
-    type          int(11)       DEFAULT 0  COMMENT '试卷类型: 0 (普通试卷)、1 (调查问卷)',
-    total_score   int(11)       DEFAULT 0  COMMENT '试卷总分',
-    is_subjective tinyint(4)    DEFAULT 0  COMMENT '0 (全是客观题)、1 (包含主观题)',
+    id             bigint(20)    NOT NULL   COMMENT '试卷 ID',
+    title          varchar(2048) DEFAULT '' COMMENT '试卷标题',
+    info           text                     COMMENT '试卷介绍',
+    type           tinyint(11)   DEFAULT 0  COMMENT '试卷类型: 0 (普通试卷)、1 (调查问卷)',
+    total_score    double        DEFAULT 0  COMMENT '试卷总分',
+    is_objective   tinyint(4)    DEFAULT 0  COMMENT '0 (包含主观题)、1 (全是客观题)',
+    org_id         bigint(20)    DEFAULT 0  COMMENT '机构 ID',
+    question_count int(11)       DEFAULT 0  COMMENT '题目数量',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
