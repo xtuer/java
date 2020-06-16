@@ -65,7 +65,7 @@ public class PaperService extends BaseService {
      */
     public List<Question> findPaperQuestions(long paperId) {
         List<Question> questions = paperMapper.findPaperQuestionsByPaperId(paperId);
-        return questionService.hierarchyQuestions(questions);
+        return questionService.treefyQuestions(questions);
     }
 
     /**

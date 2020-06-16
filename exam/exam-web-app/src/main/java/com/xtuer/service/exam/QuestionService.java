@@ -41,7 +41,7 @@ public class QuestionService extends BaseService {
         // 1. 查找 ID 为 questionId 的题目，并且查询出它的小题
         // 2. 把小题放置到 subQuestions 中
         List<Question> questions = questionMapper.findQuestionById(questionId);
-        questions = this.hierarchyQuestions(questions);
+        questions = this.treefyQuestions(questions);
 
         return questions.size() > 0 ? questions.get(0) : null;
     }
@@ -52,7 +52,7 @@ public class QuestionService extends BaseService {
      * @param questions 题目数组
      * @return 返回层级化的题目数组
      */
-    public List<Question> hierarchyQuestions(List<Question> questions) {
+    public List<Question> treefyQuestions(List<Question> questions) {
         // 1. 找到第一级题目
         // 2. 找到第二级题目 (小题: parentId 有效 ID)
         // 3. 把一级题目放到 Map，加速查找
@@ -301,10 +301,9 @@ public class QuestionService extends BaseService {
      * @return 客观题类型返回 true，否则返回 false
      */
     public boolean isObjectiveQuestionType(int questionType) {
-        return questionType == Question.SINGLE_CHOICE
-                || questionType == Question.MULTIPLE_CHOICE
-                || questionType == Question.TFNG
-                || questionType == Question.STAR;
+        return new Question()
+                .setType(questionType)
+                .isObjective();
     }
 
     /**
@@ -314,6 +313,8 @@ public class QuestionService extends BaseService {
      * @return 主观题类型返回 true，否则返回 false
      */
     public boolean isSubjectiveQuestionType(int questionType) {
-        return questionType == Question.FITB || questionType == Question.ESSAY;
+        return new Question()
+                .setType(questionType)
+                .isSubjective();
     }
 }
