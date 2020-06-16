@@ -1,23 +1,26 @@
 <!-- 试卷列表 -->
 <template>
-    <div class="about">
+    <div class="papers">
         <!-- 顶部工具栏 -->
         <div class="toolbar-1">
-            <Input search enter-button placeholder="请输入试卷名" @on-search="searchPapers"/>
-            <Button type="primary" icon="md-add">添加试卷</Button>
+            <Input v-model="filter.title" search enter-button placeholder="请输入试卷名" @on-search="searchPapers"/>
+            <Button type="primary" icon="md-add" @click="createPaper()">添加试卷</Button>
         </div>
 
         <!-- 试卷列表 -->
         <Table :data="papers" :columns="columns" :loading="reloading" border>
-            <!-- 介绍信息 -->
-            <template slot-scope="{ row: paper }" slot="info">
-                ---
+            <!-- 时间 -->
+            <template slot-scope="{ row: paper }" slot="createdAt">
+                {{ paper.createdAt | formatDate('YYYY-MM-DD') }}
+            </template>
+            <template slot-scope="{ row: paper }" slot="updatedAt">
+                {{ paper.updatedAt | formatDate('YYYY-MM-DD') }}
             </template>
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: paper }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" @click="toPaperEdit(paper.id)">编辑</Button>
+                <Button type="error" size="small" @click="deletePaper(paper)">删除</Button>
             </template>
         </Table>
 
@@ -34,10 +37,10 @@ import ExamDao from '@/../public/static-p/js/dao/ExamDao';
 export default {
     data() {
         return {
-            papers : [],
+            papers: [],
             filter: { // 搜索条件
                 title     : '',
-                pageSize  : 2,
+                pageSize  : 20,
                 pageNumber: 1,
             },
             more     : false, // 是否还有更多试卷
@@ -45,9 +48,12 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'title',  title: '名字', width: 150 },
-                { slot: 'info',   title: '介绍', minWidth: 500 },
-                { slot: 'action', title: '操作', width: 150, align: 'center' },
+                { key : 'title',         title: '试卷标题', minWidth: 150 },
+                { key : 'totalScore',    title: '满分', width: 150, align: 'center' },
+                { key : 'questionCount', title: '题目数量', width: 150, align: 'center' },
+                { slot: 'createdAt',     title: '创建时间', width: 150, align: 'center' },
+                { slot: 'updatedAt',     title: '修改时间', width: 150, align: 'center' },
+                { slot: 'action',        title: '操作', width: 150, align: 'center' },
             ]
         };
     },
@@ -77,12 +83,43 @@ export default {
                 this.filter.pageNumber++;
             });
         },
+        // 创建试卷
+        createPaper() {
+            const paper = { id: '0', title: '新创建的试卷' };
+
+            ExamDao.upsertPaper(paper).then(newPaper => {
+                this.toPaperEdit(newPaper.id);
+            });
+        },
+        // 删除试卷
+        deletePaper(paper) {
+            // 1. 删除提示
+            // 2. 从服务器删除成功后才从本地删除
+            // 3. 提示删除成功
+
+            this.$Modal.confirm({
+                title: `确定删除 <font color="red">${paper.title}</font> 吗?`,
+                loading: true,
+                onOk: () => {
+                    ExamDao.deletePaper(paper.id).then(() => {
+                        const index = this.papers.findIndex(p => p.id === paper.id); // 试卷下标
+                        this.papers.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
+                        this.$Modal.remove();
+                        this.$Message.success('删除成功');
+                    });
+                }
+            });
+        },
+        // 跳转到试卷编辑页面
+        toPaperEdit(paperId) {
+            this.$router.push({ name: 'paper-edit', params: { paperId } });
+        }
     }
 };
 </script>
 
 <style lang="scss">
-.about {
+.papers {
     display: grid;
     grid-gap: 24px;
 

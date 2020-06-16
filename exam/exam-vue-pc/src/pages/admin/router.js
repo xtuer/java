@@ -9,28 +9,38 @@ export default new Router({
             path: '/',
             name: 'home',
             component: () => import(/* webpackChunkName: "common" */ './views/Home.vue'),
-            redirect: { name: 'about' },
+            redirect: { name: 'papers' },
 
             children: [
                 {
+                    // 试卷管理
                     path: '/papers',
                     name: 'papers',
                     component: () => import(/* webpackChunkName: "exam" */ './views/Papers.vue'),
                 },
                 {
+                    // 考试管理
                     path: '/exams',
                     name: 'exams',
                     component: () => import(/* webpackChunkName: "exam" */ './views/Exams.vue'),
                 },
                 {
+                    // 整卷批改
                     path: '/correct-papers',
                     name: 'correct-papers',
                     component: () => import(/* webpackChunkName: "exam" */ './views/CorrectPapers.vue'),
                 },
                 {
+                    // 逐题批改
                     path: '/correct-questions',
                     name: 'correct-questions',
                     component: () => import(/* webpackChunkName: "exam" */ './views/CorrectQuestions.vue'),
+                },
+                {
+                    // 试卷编辑
+                    path: '/papers/:paperId/edit',
+                    name: 'paper-edit',
+                    component: () => import(/* webpackChunkName: "exam" */ './views/PaperEdit.vue'),
                 },
                 {
                     path: '/exams',

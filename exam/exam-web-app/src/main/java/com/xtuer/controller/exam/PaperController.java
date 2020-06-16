@@ -73,12 +73,13 @@ public class PaperController extends BaseController {
      * @return payload 为试卷的 ID
      */
     @PutMapping(Urls.API_PAPERS_BY_ID)
-    public Result<Long> upsertPaper(@RequestBody Paper paper) {
+    public Result<Paper> upsertPaper(@RequestBody Paper paper) {
         // 设置试卷的拥有者 ID 为当前域名机构的 ID，实际项目中可根据业务需求进行调整
         long holderId = super.getCurrentOrganizationId();
         paper.setHolderId(holderId);
+        paperService.upsertPaper(paper);
 
-        return Result.ok(paperService.upsertPaper(paper));
+        return Result.ok(paper);
     }
 
     /**
