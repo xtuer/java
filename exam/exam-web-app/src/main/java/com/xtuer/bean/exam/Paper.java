@@ -21,7 +21,7 @@ public class Paper {
     private int     type;       // 试卷类型: 0 (普通试卷)、1 (调查问卷)
     private double  totalScore; // 试卷总分
     private boolean objective;  // true (全是客观题)、false (包含主观题)
-    private long    orgId;      // 机构 ID
+    private long    holderId;   // 拥有者 ID
     private Date    createdAt;  // 创建时间
     private Date    updatedAt;  // 更新时间
     private int questionCount;  // 题目数量

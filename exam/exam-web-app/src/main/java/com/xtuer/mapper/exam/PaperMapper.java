@@ -24,13 +24,13 @@ public interface PaperMapper {
     /**
      * 查询指定机构 ID 的试卷
      *
-     * @param orgId 机构 ID
-     * @param type  试卷类型
-     * @param title 试卷标题，可模糊搜索
-     * @param page  分页对象
+     * @param holderId 拥有者 ID
+     * @param type     试卷类型
+     * @param title    试卷标题，可模糊搜索
+     * @param page     分页对象
      * @return 返回机构的试卷数组
      */
-    List<Paper> findPapersByOrgId(long orgId, int type, String title, Page page);
+    List<Paper> findPapersByHolderId(long holderId, int type, String title, Page page);
 
     /**
      * 判断 ID 为传入的 paperId 的试卷是否存在

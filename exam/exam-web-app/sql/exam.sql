@@ -87,7 +87,7 @@ CREATE TABLE exam_paper (
     type           tinyint(11)   DEFAULT 0  COMMENT '试卷类型: 0 (普通试卷)、1 (调查问卷)',
     total_score    double        DEFAULT 0  COMMENT '试卷总分',
     is_objective   tinyint(4)    DEFAULT 0  COMMENT '0 (包含主观题)、1 (全是客观题)',
-    org_id         bigint(20)    DEFAULT 0  COMMENT '机构 ID',
+    holder_id      bigint(20)    DEFAULT 0  COMMENT '拥有者 ID',
     question_count int(11)       DEFAULT 0  COMMENT '题目数量',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -114,7 +114,7 @@ CREATE TABLE exam_exam (
     end_time                    datetime      DEFAULT NULL COMMENT '考试结束时间',
     duration                    int(11)       DEFAULT 0    COMMENT '考试持续时间, 单位为秒',
     max_times                   int(11)       DEFAULT 1    COMMENT '最多允许考试次数',
-    holder_id                   bigint(20)    DEFAULT 0    COMMENT '持有者 ID',
+    holder_id                   bigint(20)    DEFAULT 0    COMMENT '拥有者 ID',
     paper_ids_json              varchar(2048) DEFAULT ''   COMMENT '试卷 IDs',
 
     is_question_shuffled        tinyint(4)    DEFAULT 0    COMMENT '是否打乱题目',
@@ -128,5 +128,5 @@ CREATE TABLE exam_exam (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (id),
-    KEY idx_holder (holder_id) COMMENT '加速查找持有者的试卷'
+    KEY idx_holder (holder_id) COMMENT '加速查找拥有者的试卷'
 ) ENGINE=InnoDB;

@@ -31,13 +31,10 @@ export default {
         return {
             activeName: '',
             menuItems: [ // 所有菜单项，每个菜单项有不同的权限
-                { label: '问题管理', name: 'about'               },
-                { label: '任务管理', name: 'scroll'              },
-                { label: '课程处理', name: 'admin-courses'       },
-                { label: '问题统计', name: 'question-statistics' },
-                { label: '绩效查询', name: 'performance',        },
-                { label: '问题类型', name: 'question-types',     },
-                { label: '用户管理', name: 'admin-users',        },
+                { label: '试卷管理', name: 'about'               },
+                { label: '考试管理', name: 'scroll'              },
+                { label: '整卷批改', name: 'admin-courses'       },
+                { label: '逐题批改', name: 'question-statistics' },
             ],
         };
     },

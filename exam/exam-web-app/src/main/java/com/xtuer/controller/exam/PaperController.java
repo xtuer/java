@@ -57,7 +57,7 @@ public class PaperController extends BaseController {
     @GetMapping(Urls.API_PAPERS_OF_CURRENT_ORG)
     public Result<List<Paper>> findPapersOfCurrentOrg(@RequestParam int type, @RequestParam(required = false) String title, Page page) {
         long orgId = super.getCurrentOrganizationId();
-        return Result.ok(paperMapper.findPapersByOrgId(orgId, type, title, page));
+        return Result.ok(paperMapper.findPapersByHolderId(orgId, type, title, page));
     }
 
     /**
@@ -72,9 +72,9 @@ public class PaperController extends BaseController {
      */
     @PutMapping(Urls.API_PAPERS_BY_ID)
     public Result<Long> upsertPaper(@RequestBody Paper paper) {
-        // 设置试卷的机构 ID 为当前域名机构的 ID
-        long orgId = super.getCurrentOrganizationId();
-        paper.setOrgId(orgId);
+        // 设置试卷的拥有者 ID 为当前域名机构的 ID，实际项目中可根据业务需求进行调整
+        long holderId = super.getCurrentOrganizationId();
+        paper.setHolderId(holderId);
 
         return Result.ok(paperService.upsertPaper(paper));
     }
