@@ -2,7 +2,7 @@
 <template>
     <div class="papers">
         <!-- 顶部工具栏 -->
-        <div class="toolbar-1">
+        <div class="toolbar-1-top">
             <Input v-model="filter.title" search enter-button placeholder="请输入试卷名" @on-search="searchPapers"/>
             <Button type="primary" icon="md-add" @click="createPaper()">添加试卷</Button>
         </div>
@@ -25,7 +25,7 @@
         </Table>
 
         <!-- 底部工具栏 -->
-        <div class="toolbar-2">
+        <div class="toolbar-1-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMorePapers">更多...</Button>
         </div>
     </div>
@@ -122,17 +122,5 @@ export default {
 .papers {
     display: grid;
     grid-gap: 24px;
-
-    .toolbar-1 {
-        display: grid;
-        grid-template-columns: 400px max-content;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .toolbar-2 {
-        display: grid;
-        justify-content: center;
-        align-items: center;
-    }
 }
 </style>
