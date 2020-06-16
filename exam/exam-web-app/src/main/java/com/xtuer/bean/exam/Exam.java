@@ -88,8 +88,7 @@ public class Exam {
         try {
             // JSON 解析的时候有可能抛异常
             this.paperIds = JSON.parseObject(paperIdsJson, new TypeReference<HashSet<Long>>() {});
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
 
         this.paperIds = (this.paperIds != null) ? this.paperIds : new HashSet<>();
         this.paperIdsJson = paperIdsJson;

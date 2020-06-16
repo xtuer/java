@@ -70,8 +70,7 @@ public class Question {
         try {
             // JSON 解析的时候有可能抛异常
             this.options = JSON.parseObject(optionsJson, new TypeReference<LinkedList<QuestionOption>>() {});
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
 
         this.options = (this.options != null) ? this.options : new LinkedList<>();
         this.optionsJson = optionsJson;
