@@ -8,7 +8,7 @@ module.exports = {
         disableHostCheck: true,
     },
     pages: {
-        page1: 'src/pages/page1/main.js',
+        admin: 'src/pages/admin/main.js',
     },
     css: {
         loaderOptions: {

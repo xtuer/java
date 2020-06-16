@@ -31,10 +31,10 @@ export default {
         return {
             activeName: '',
             menuItems: [ // 所有菜单项，每个菜单项有不同的权限
-                { label: '试卷管理', name: 'about'               },
-                { label: '考试管理', name: 'scroll'              },
-                { label: '整卷批改', name: 'admin-courses'       },
-                { label: '逐题批改', name: 'question-statistics' },
+                { label: '试卷管理', name: 'papers'            },
+                { label: '考试管理', name: 'exams'             },
+                { label: '整卷批改', name: 'correct-papers'    },
+                { label: '逐题批改', name: 'correct-questions' },
             ],
         };
     },
@@ -48,7 +48,7 @@ export default {
     },
     watch: {
         // 监听路由变化时高亮对应的菜单项
-        '$route'(to, from) {
+        $route(to, from) {
             if (this.menuItems.some(item => item.name === to.name)) {
                 this.activeName = to.name;
             }
