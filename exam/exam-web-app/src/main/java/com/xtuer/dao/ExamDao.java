@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ExamDao {
+    private static final String EXAM_RECORD      = "exam_record";
     private static final String QUESTION_ANSWER  = "exam_question_answer";
     private static final String QUESTION_CORRECT = "exam_question_correct";
-    private static final String EXAM_RECORD      = "exam_record";
     private static final int ELAPSED_TIME_DELTA  = 5; // 计时的时间差
 
     @Resource(name = "mongoTemplate")
