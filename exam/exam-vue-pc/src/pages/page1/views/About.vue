@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <Richtext v-for="sn in 1" :key="sn" :min-height="200" inline/>
+        <Richtext v-for="sn in 1" :key="sn" :min-height="200" inline placeholder="题干"/>
     </div>
 </template>
 
