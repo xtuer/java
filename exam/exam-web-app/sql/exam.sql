@@ -39,7 +39,7 @@ CREATE TABLE exam_question (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (id),
-    KEY index_parent_id (parent_id) COMMENT '加速查找复合题的小题'
+    KEY idx_parent (parent_id) COMMENT '加速查找复合题的小题'
 ) ENGINE=InnoDB;
 
 #-------------------------------------------
@@ -66,8 +66,8 @@ CREATE TABLE exam_paper_question (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义的主键 ID',
-    KEY index_paper_id (paper_id),
-    UNIQUE KEY index_paper_question (paper_id, question_id) COMMENT '同一个题在同一份试卷中只能出现一次'
+    KEY idx_paper (paper_id),
+    UNIQUE KEY idx_paper_question (paper_id, question_id) COMMENT '同一个题在同一份试卷中只能出现一次'
 ) ENGINE=InnoDB;
 
 #-------------------------------------------
@@ -128,5 +128,5 @@ CREATE TABLE exam_exam (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (id),
-    KEY idx_holder_id (holder_id) COMMENT '加速查找持有者的试卷'
+    KEY idx_holder (holder_id) COMMENT '加速查找持有者的试卷'
 ) ENGINE=InnoDB;
