@@ -109,7 +109,7 @@ public class ExamService extends BaseService {
         }
 
         // [5] 试卷必须存在
-        Set<Long> paperIds = exam.getPaperIdsList();
+        Set<Long> paperIds = exam.getPaperIds();
 
         if (paperIds.isEmpty()) {
             return Result.fail("没有试卷");
@@ -469,7 +469,7 @@ public class ExamService extends BaseService {
         // 3. 如果所有试卷都做过了，随机从所有的试卷中分配一个
 
         // [1] 查找出考试的所有试卷 ID、做过的试卷 ID、未做过的试卷 ID
-        Set<Long> allPaperIds  = exam.getPaperIdsList(); // 考试所有的 paperId
+        Set<Long> allPaperIds  = exam.getPaperIds(); // 考试所有的 paperId
         Set<Long> usedPaperIds = examDao.findPaperIdsByUserIdAndExamId(userId, exam.getId()); // 已经使用过的 paperId
         Set<Long> restPaperIds = allPaperIds.stream().filter(id -> !usedPaperIds.contains(id)).collect(Collectors.toSet()); // 未使用过的 paperId
 
@@ -749,7 +749,7 @@ public class ExamService extends BaseService {
         // [1] 查询考试
         // [2] 获取考试的所有试卷 ID
         Exam exam = self.findExam(examId);
-        Set<Long> paperIds  = exam.getPaperIdsList();
+        Set<Long> paperIds  = exam.getPaperIds();
         Set<Question> questions = new TreeSet<>((a, b) -> (int) (a.getId() - b.getId()));
 
         // [3] 遍历每一个试卷，得到试卷的主观题
