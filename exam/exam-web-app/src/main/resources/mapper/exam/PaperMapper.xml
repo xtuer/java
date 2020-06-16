@@ -84,7 +84,7 @@
             pq.score       AS score,
             pq.total_score AS total_score,
             pq.sn_label    AS sn_label,
-            <include refid="com.edu.training.mapper.exam.QuestionMapper.question_columns"/>
+            <include refid="com.xtuer.mapper.exam.QuestionMapper.question_columns"/>
         FROM exam_paper_question pq
             LEFT JOIN exam_question q ON q.id = pq.question_id
         WHERE pq.paper_id = #{paperId}
