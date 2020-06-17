@@ -89,6 +89,7 @@ export default {
             editedQuestion: { stem: '' },
             modal : false,
             saving: false,
+            paperType: 0,
         };
     },
     mounted() {
@@ -269,25 +270,10 @@ export default {
 
             // [3] 保存到服务器
             this.saving = true;
-            PaperDao.upsertPaper(paper).then(paperId => {
+            PaperDao.upsertPaper(paper).then(newPaper => {
                 this.saving = false;
-
-                if (Utils.isValidId(this.paper.id)) {
-                    // 编辑试卷时从服务器加载最新的试卷
-                    return PaperDao.findPaper(paperId);
-                } else if (this.paperType === 0) {
-                    // 创建试卷时跳转到试卷编辑页面
-                    this.$router.replace({ name: 'paper-edit', params: { id: paperId } });
-                } else if (this.paperType === 1) {
-                    // 创建问卷时跳转到问卷编辑页面
-                    this.$router.replace({ name: 'questionaire-edit', params: { id: paperId } });
-                }
-
-                return null;
-            }).then(newPaper => {
-                if (newPaper) {
-                    this.paper = newPaper;
-                }
+                this.paper  = newPaper;
+                this.$Message.success('保存成功');
             });
         },
     },
