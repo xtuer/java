@@ -83,7 +83,7 @@ question
                         </div>
 
                         <!-- 总分: 题型题 (非复合题的题型题) -->
-                        <div v-if="question.type===7 && question.purpose!==6">
+                        <div v-if="question.type===window.QUESTION_TYPE.DESCRIPTION && question.purpose!==window.QUESTION_TYPE.COMPOSITE">
                             ，共 {{ question.totalScore }} 分
                         </div>
                     </template>
@@ -98,7 +98,7 @@ question
             </div>
 
             <!-- [2] 选择题: 选项 -->
-            <template v-if="question.type===1 || question.type===2">
+            <template v-if="question.type===window.QUESTION_TYPE.SINGLE_CHOICE || question.type===window.QUESTION_TYPE.MULTIPLE_CHOICE">
                 <div v-for="option in options" :key="option.id" class="option" :class="optionClass(option)">
                     <div class="mark">{{ option.mark }}</div>
                     <div class="description" v-html="option.description"></div>
@@ -106,14 +106,14 @@ question
             </template>
 
             <!-- [3] 判断题: 选项 (正确、错误) -->
-            <template v-if="question.type===3">
+            <template v-if="question.type===window.QUESTION_TYPE.TFNG">
                 <div v-for="(option, index) in question.options" :key="option.id" class="option tfng" :class="optionClass(option)">
                     <Icon :type="tfngIconName(option, index)"/>{{ option.description }}
                 </div>
             </template>
 
             <!-- [4] 星级题 -->
-            <template v-if="question.type===8">
+            <template v-if="question.type===window.QUESTION_TYPE.STAR">
                 <Rate :value="2"/>
             </template>
 
@@ -129,7 +129,7 @@ question
                              @on-move-up-click="$emit('on-move-up-click', question)"/>
 
             <!-- [8] 复合题: 递归显示小题 -->
-            <template v-if="question.type===6">
+            <template v-if="question.type===window.QUESTION_TYPE.COMPOSITE">
                 <Question v-for="subQuestion in subQuestions"
                           :key="subQuestion.id"
                           :question="subQuestion"
@@ -147,7 +147,7 @@ question
         -------------------------------------------------------------------------------------------------------------->
         <template v-else>
             <!-- 复合题 -->
-            <template v-if="question.type===6">
+            <template v-if="question.type===window.QUESTION_TYPE.COMPOSITE">
                 <!-- 1. 复合题: 题干，递归显示小题 -->
                 <Tabs v-model="activeTabName" :animated="false" type="card" :before-remove="confirmDeleteSubQuestion" @on-tab-remove="deleteSubQuestion">
                     <!-- 复合题大题: 只有题干 -->
@@ -171,7 +171,7 @@ question
             </template>
 
             <!-- 题型题: 题干 -->
-            <template v-else-if="question.type===7">
+            <template v-else-if="question.type===window.QUESTION_TYPE.DESCRIPTION">
                 <Richtext v-model="question.stem" :min-height="150" inline placeholder="请输入题干"/>
             </template>
 
@@ -188,7 +188,7 @@ question
                 <Richtext v-model="question.stem" :min-height="150" inline placeholder="请输入题干"/>
 
                 <!-- [3] 选择题: 题干、选项、答案、解析 -->
-                <template v-if="question.type===1 || question.type===2">
+                <template v-if="question.type===window.QUESTION_TYPE.SINGLE_CHOICE || question.type===window.QUESTION_TYPE.MULTIPLE_CHOICE">
                     <div v-for="option in options" :key="option.id" class="option" :class="optionClass(option)">
                         <div class="mark" @click="markCorrectOption(option)">{{ option.mark }}</div>
                         <Richtext v-model="option.description" inline class="description" placeholder="请输入选项"/>
@@ -198,7 +198,7 @@ question
                 </template>
 
                 <!-- [4] 判断题: 选项 (正确、错误) -->
-                <template v-if="question.type===3">
+                <template v-if="question.type===window.QUESTION_TYPE.TFNG">
                     <div v-for="(option, index) in question.options" :key="option.id"
                             class="option tfng" :class="optionClass(option)"
                             @click="markCorrectOption(option)">
@@ -212,7 +212,7 @@ question
                 </template>
 
                 <!-- 答案 (填空题和问答题才需要答案) -->
-                <div v-if="analysisShow && (question.type===4 || question.type===5)" class="key">
+                <div v-if="analysisShow && (question.type===window.QUESTION_TYPE.FITB || question.type===window.QUESTION_TYPE.ESSAY)" class="key">
                     <div>答案:</div>
                     <Richtext v-model="question.key" :min-height="150" inline placeholder="请输入题目的参考答案"/>
                 </div>
@@ -321,8 +321,8 @@ export default {
                 correct: option.correct,
                 right  : option.checked && option.correct,  // 回答正确: 选择且是正确答案
                 wrong  : option.checked && !option.correct, // 回答错误: 选择但非正确答案
-                single : this.question.type === 1, // 单选题
-                multi  : this.question.type === 2, // 多选题
+                single : this.question.type === QUESTION_TYPE.SINGLE_CHOICE,   // 单选题
+                multi  : this.question.type === QUESTION_TYPE.MULTIPLE_CHOICE, // 多选题
             };
         },
         // 判断题选项的图标名字
@@ -367,7 +367,7 @@ export default {
         },
         // 复合题小题的类型
         subQuestionTypes() {
-            return QUESTION_TYPES.filter(q => q.value < window.QUESTION_TYPE.COMPOSITE);
+            return QUESTION_TYPES.filter(q => q.value < QUESTION_TYPE.COMPOSITE);
         },
         // 给小组打分的题型: 每题得分都一样
         scoreGroup() {
