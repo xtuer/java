@@ -8,9 +8,10 @@ window.QUESTION_TYPE = {
     MULTIPLE_CHOICE: 2, // 多选题
     TFNG           : 3, // 判断题: true(是), false(否), not given(未提及)
     FITB           : 4, // 填空题: fill in the blank
-    ESSAY_QUESTION : 5, // 问答题
-    COMPLEX        : 6, // 复合题
+    ESSAY          : 5, // 问答题
+    COMPOSITE        : 6, // 复合题
     DESCRIPTION    : 7, // 题型题 (大题分组、介绍)
+    STAR           : 8, // 标星题
 };
 
 // 题目类型 (value 在前，name 在后，好排版)
@@ -21,6 +22,8 @@ window.QUESTION_TYPES = [
     { value: 4, name: '填空题' },
     { value: 5, name: '问答题' },
     { value: 6, name: '复合题' },
+    { value: 7, name: '题型题' },
+    { value: 8, name: '标星题' },
 ];
 
 // 项目的状态

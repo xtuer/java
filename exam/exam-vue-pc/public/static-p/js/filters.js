@@ -88,6 +88,16 @@ const trim = function(str, defaultValue = '') {
     return text || defaultValue;
 };
 
+/**
+ * 根据题目的类型值得到类型的名称
+ *
+ * @param  {Integer} type 题目类型
+ * @return {String} 返回类型名
+ */
+const questionTypeName = function(type) {
+    return QUESTION_TYPES.filter(t => t.value === type).map(t => t.name).join('') || '无';
+};
+
 export default {
     formatDate,
     roleName,
@@ -95,4 +105,5 @@ export default {
     idCardName,
     repoUrlToDownloadUrl,
     trim,
+    questionTypeName,
 };

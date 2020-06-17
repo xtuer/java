@@ -37,7 +37,18 @@ const goBack = function() {
     window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
 };
 
+/**
+ * 根据题目的类型值得到类型的名称
+ *
+ * @param  {Integer} type 题目类型
+ * @return {String} 返回类型名
+ */
+const questionTypeName = function(type) {
+    return QUESTION_TYPES.filter(t => t.value === type).map(t => t.name).join('') || '无';
+};
+
 export default {
     download,
     goBack,
+    questionTypeName,
 };

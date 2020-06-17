@@ -23,7 +23,7 @@ public class Question {
     // 题目类型
     public static final int SINGLE_CHOICE   = 1; // 单选题
     public static final int MULTIPLE_CHOICE = 2; // 多选题
-    public static final int TFNG            = 3; // 判断题: true(是), false(否), not given(未提及)
+    public static final int TFNG            = 3; // 判断题: true (是), false (否), not given (未提及)
     public static final int FITB            = 4; // 填空题: fill in the blank
     public static final int ESSAY           = 5; // 问答题
     public static final int COMPOSITE       = 6; // 复合题

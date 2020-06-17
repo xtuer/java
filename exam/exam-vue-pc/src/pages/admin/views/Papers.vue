@@ -3,7 +3,7 @@
     <div class="papers">
         <!-- 顶部工具栏 -->
         <div class="toolbar-1-top">
-            <Input v-model="filter.title" search enter-button placeholder="请输入试卷名" @on-search="searchPapers"/>
+            <Input v-model="filter.title" search enter-button placeholder="请输入试卷标题" @on-search="searchPapers"/>
             <Button type="primary" icon="md-add" @click="createPaper()">添加试卷</Button>
         </div>
 
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import ExamDao from '@/../public/static-p/js/dao/ExamDao';
+import PaperDao from '@/../public/static-p/js/dao/PaperDao';
 
 export default {
     data() {
@@ -74,7 +74,7 @@ export default {
         fetchMorePapers() {
             this.loading = true;
 
-            ExamDao.findPapersOfCurrentOrg(this.filter).then(papers => {
+            PaperDao.findPapersOfCurrentOrg(this.filter).then(papers => {
                 this.papers.push(...papers);
 
                 this.more      = papers.length >= this.filter.pageSize;
@@ -87,7 +87,7 @@ export default {
         createPaper() {
             const paper = { id: '0', title: '新创建的试卷' };
 
-            ExamDao.upsertPaper(paper).then(newPaper => {
+            PaperDao.upsertPaper(paper).then(newPaper => {
                 this.toPaperEdit(newPaper.id);
             });
         },
@@ -101,7 +101,7 @@ export default {
                 title: `确定删除 <font color="red">${paper.title}</font> 吗?`,
                 loading: true,
                 onOk: () => {
-                    ExamDao.deletePaper(paper.id).then(() => {
+                    PaperDao.deletePaper(paper.id).then(() => {
                         const index = this.papers.findIndex(p => p.id === paper.id); // 试卷下标
                         this.papers.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
                         this.$Modal.remove();

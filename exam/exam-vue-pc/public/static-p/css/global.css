@@ -112,7 +112,7 @@
 }
 
 .ivu-icon.clickable:hover {
-    color: #2d8cf0;
+    color: #2d8cf0 !important;
     cursor: pointer;
     transition: all .6s;
 }

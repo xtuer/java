@@ -1,7 +1,7 @@
 /**
- * 考试相关的 Dao
+ * 试卷的 Dao
  */
-export default class ExamDao {
+export default class PaperDao {
     /**
      * 查询当前机构的试卷
      *
@@ -20,6 +20,28 @@ export default class ExamDao {
             Rest.get(Urls.API_PAPERS_OF_CURRENT_ORG, { data: filter }).then(({ data: papers, success, message }) => {
                 if (success) {
                     resolve(papers);
+                } else {
+                    Notice.error({ title: '查询错误', desc: message });
+                    reject(message);
+                }
+            });
+        });
+    }
+
+    /**
+     * 查询指定 ID 的试卷
+     *
+     * 网址: http://localhost:8080/api/exam/papers/{paperId}
+     * 参数: 无
+     *
+     * @param {Long} paperId 试卷 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为试卷，reject 的参数为错误信息
+     */
+    static findPaperById(paperId) {
+        return new Promise((resolve, reject) => {
+            Rest.get(Urls.API_PAPERS_BY_ID, { params: { paperId } }).then(({ data: paper, success, message }) => {
+                if (success) {
+                    resolve(paper);
                 } else {
                     Notice.error({ title: '查询错误', desc: message });
                     reject(message);
