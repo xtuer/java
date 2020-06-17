@@ -75,6 +75,10 @@ export default {
         .ivu-menu-vertical.ivu-menu-light:after {
             display: none;
         }
+
+        .ivu-menu-item-active::after {
+            background: #5cadff !important;
+        }
     }
 
     > .content {
