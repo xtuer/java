@@ -26,6 +26,11 @@ app.key: xxxx
 # 身份认证 token 的有效期: 30 天，单位秒
 app.authTokenDuration: 2592000
 
+# 上传一个文件最大值, 50MB, 默认 1MB
+spring.servlet.multipart.max-file-size: 50MB
+# 上传多个文件最大值, 500M, 默认 10MB
+spring.servlet.multipart.max-request-size: 500MB
+
 # 日志配置
 logging.file.path: ${app.dir.base}/logs
 
