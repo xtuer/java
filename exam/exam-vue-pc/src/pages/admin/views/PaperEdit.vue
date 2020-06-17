@@ -293,6 +293,9 @@ export default {
 <style lang="scss">
 .paper-edit {
     margin: 0 150px;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 
     .questions {
         > .question {
