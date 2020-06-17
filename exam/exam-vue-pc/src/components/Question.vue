@@ -91,10 +91,10 @@ question
 
                 <!-- 批改题目时显示得分 (提示: 不放在题目上是因为题目的 position 为 relative 时复合题的小题滚动有问题) -->
                 <Score v-if="correct && isAnswerable"
-                        v-model="question.score"
-                        :max="question.totalScore"
-                        :editable="isSubjectiveQuestion"
-                        @on-change="$emit('on-score-change', question)"/>
+                       v-model="question.score"
+                       :max="question.totalScore"
+                       :editable="isSubjectiveQuestion"
+                       @on-change="$emit('on-score-change', question)"/>
             </div>
 
             <!-- [2] 选择题: 选项 -->
