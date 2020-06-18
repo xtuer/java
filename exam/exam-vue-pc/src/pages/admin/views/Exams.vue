@@ -24,8 +24,10 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: exam }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="editExam(exam)">编辑</Button>
-                <Button type="error" size="small" @click="deleteExam(exam)">删除</Button>
+                <div class="column-buttons">
+                    <Button type="primary" size="small" @click="editExam(exam)">编辑</Button>
+                    <Button type="error" size="small" @click="deleteExam(exam)">删除</Button>
+                </div>
             </template>
         </Table>
 

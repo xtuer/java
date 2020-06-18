@@ -19,8 +19,10 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: paper }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="toPaperEdit(paper.id)">编辑</Button>
-                <Button type="error" size="small" @click="deletePaper(paper)">删除</Button>
+                <div class="column-buttons">
+                    <Button type="primary" size="small" @click="toPaperEdit(paper.id)">编辑</Button>
+                    <Button type="error" size="small" @click="deletePaper(paper)">删除</Button>
+                </div>
             </template>
         </Table>
 
