@@ -86,7 +86,7 @@ public class ExamService extends BaseService {
      * @return 成功操作的 payload 为考试 ID
      */
     @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM)
-    public Result<Long> upsertExam(Exam exam) {
+    public Result<Exam> upsertExam(Exam exam) {
         // 1. 分配考试 ID
         // 2. 考试标题不能为空
         // 3. 检查考试时间，有效时间条件为:
@@ -95,7 +95,7 @@ public class ExamService extends BaseService {
         // 4. 检查最大次数: maxTimes >= 1
         // 5. 试卷必须存在
         // 6. 插入数据库
-        // 7. 返回考试 ID
+        // 7. 返回考试
 
         // [1] 分配考试 ID
         if (Utils.isInvalidId(exam.getId())) {
@@ -103,7 +103,7 @@ public class ExamService extends BaseService {
         }
 
         // [2]、[3]、[4] 验证考试
-        Result<Long> validateResult = this.validateExam(exam);
+        Result<Exam> validateResult = this.validateExam(exam);
         if (!validateResult.isSuccess()) {
             return validateResult;
         }
@@ -118,7 +118,7 @@ public class ExamService extends BaseService {
         for (long paperId : paperIds) {
             if (!paperMapper.paperExists(paperId)) {
                 log.warn("[失败] 创建考试: 试卷 {} 不存在", paperId);
-                return Result.fail("试卷 " +paperId + " 不存在");
+                return Result.fail("试卷不存在: " + paperId);
             }
         }
 
@@ -128,7 +128,7 @@ public class ExamService extends BaseService {
         log.info("[结束] 创建考试: 考试 ID {}，标题: {}", exam.getId(), exam.getTitle());
 
         // [7] 返回考试 ID
-        return Result.ok(exam.getId());
+        return Result.ok(exam);
     }
 
     /**
@@ -142,7 +142,7 @@ public class ExamService extends BaseService {
         // 2. 保存到数据库
 
         // [1] 数据校验
-        Result<Long> validateResult = this.validateExam(exam);
+        Result<Exam> validateResult = this.validateExam(exam);
         if (!validateResult.isSuccess()) {
             return validateResult;
         }
@@ -766,7 +766,7 @@ public class ExamService extends BaseService {
      *
      * @param exam 考试
      */
-    private Result<Long> validateExam(Exam exam) {
+    private Result<Exam> validateExam(Exam exam) {
         // 1. 考试标题不能为空
         // 2. 检查考试时间，有效时间条件为:
         //    2.1 startTime < endTime

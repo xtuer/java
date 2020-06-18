@@ -2,11 +2,11 @@ package com.xtuer.controller.exam;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xtuer.bean.Result;
+import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
 import com.xtuer.bean.exam.*;
 import com.xtuer.config.AppConfig;
 import com.xtuer.controller.BaseController;
-import com.xtuer.bean.Urls;
 import com.xtuer.dao.ExamDao;
 import com.xtuer.mapper.exam.ExamMapper;
 import com.xtuer.service.exam.ExamService;
@@ -64,10 +64,10 @@ public class ExamController extends BaseController {
     /**
      * 创建或者更新考试
      *
-     * 网址: http://localhost:8080/api/exam/exams/ofCurrentOrg
+     * 网址: http://localhost:8080/api/exam/exams/{examId}
      * 参数:
      *      title     [必选]: 考试标题
-     *      paperId   [必选]: 试卷 ID
+     *      paperIds  [必选]: 试卷 ID 数组
      *      startTime [必选]: 考试开始时间
      *      endTime   [必选]: 考试结束时间
      *      duration  [必选]: 考试时长
@@ -76,32 +76,12 @@ public class ExamController extends BaseController {
      * @param exam 考试对象
      * @return 成功的 payload 为考试的 ID
      */
-    @PutMapping(Urls.API_EXAMS_OF_CURRENT_ORG)
-    public Result<Long> upsertExam(Exam exam) {
+    @PutMapping(Urls.API_EXAMS_BY_ID)
+    public Result<Exam> upsertExam(@RequestBody Exam exam) {
         long orgId = super.getCurrentOrganizationId();
         exam.setHolderId(orgId);
 
         return examService.upsertExam(exam);
-    }
-
-    /**
-     * 更新考试的基本信息 (名字、开始时间、结束时间、考试时间、最大考试次数)
-     *
-     * 网址: http://localhost:8080/api/exam/exams/{examId}
-     * 参数:
-     *      id       : 考试 ID
-     *      title    : 考试名字
-     *      startTime: 开始时间
-     *      endTime  : 结束时间
-     *      duration : 考试时长
-     *      maxTimes : 最多考试次数
-     *
-     * @param exam 考试
-     * @return payload 为考试
-     */
-    @PutMapping(Urls.API_EXAMS_BY_ID)
-    public Result<?> updateExamBaseInfo(Exam exam) {
-        return examService.updateExamBaseInfo(exam);
     }
 
     /**

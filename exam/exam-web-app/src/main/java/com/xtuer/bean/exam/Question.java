@@ -2,7 +2,7 @@ package com.xtuer.bean.exam;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.annotation.JSONType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JSONType(ignores = { "optionsJson" })
+@JsonIgnoreProperties({ "optionsJson" })
 public class Question {
     // 题目类型
     public static final int SINGLE_CHOICE   = 1; // 单选题

@@ -2,7 +2,7 @@ package com.xtuer.bean.exam;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.annotation.JSONType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,7 +15,7 @@ import java.util.*;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JSONType(ignores = { "paperIdsJson" })
+@JsonIgnoreProperties({ "paperIdsJson" })
 public class Exam {
     // 状态值
     public static final int STATUS_NOT_STARTED = 0; // 未开始
