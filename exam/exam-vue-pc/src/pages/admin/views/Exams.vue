@@ -9,9 +9,17 @@
 
         <!-- 考试列表 -->
         <Table :data="exams" :columns="columns" :loading="reloading" border>
-            <!-- 介绍信息 -->
-            <template slot-scope="{ row: exam }" slot="info">
-                ---
+            <!-- 试卷套数 -->
+            <template slot-scope="{ row: exam }" slot="paperCount">
+                {{ exam.paperIds.length }}
+            </template>
+
+            <!-- 考试时间 -->
+            <template slot-scope="{ row: exam }" slot="duration">
+                {{ exam.duration / 60 }} 分钟
+            </template>
+            <template slot-scope="{ row: exam }" slot="examTime">
+                {{ exam.startTime | formatDate('YYYY-MM-DD HH:mm') }} 到 {{ exam.endTime | formatDate('YYYY-MM-DD HH:mm') }}
             </template>
 
             <!-- 操作按钮 -->
@@ -80,9 +88,12 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'title',   title: '考试的名字', width: 150 },
-                { slot: 'info',   title: '介绍', minWidth: 500 },
-                { slot: 'action', title: '操作', width: 150, align: 'center' },
+                { key : 'title',      title: '考试名字', minWidth: 150 },
+                { slot: 'paperCount', title: '试卷套数', width: 120, align: 'center' },
+                { key : 'maxTimes',   title: '考试次数', width: 120, align: 'center' },
+                { slot: 'duration',   title: '考试时长', width: 120, align: 'center' },
+                { slot: 'examTime',   title: '考试时间', width: 280, align: 'center' },
+                { slot: 'action',     title: '操作', width: 150, align: 'center' },
             ],
             examRules: {}, // 考试的验证规则
             papers   : [], // 可用试卷
