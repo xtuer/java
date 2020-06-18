@@ -70,7 +70,7 @@ question
                         <div v-if="scoreGroup && scoreEdit" class="group-score-edit">
                             ，每题 <InputNumber v-model="question.score" :min="1" :step="0.5" size="small" @on-change="$emit('on-score-change', question)"/> 分
                         </div>
-                        <div v-else-if="scoreGroup && question.type===7">
+                        <div v-else-if="scoreGroup && question.type===window.QUESTION_TYPE.DESCRIPTION">
                             ，每题 {{ question.score }} 分
                         </div>
 
@@ -83,7 +83,8 @@ question
                         </div>
 
                         <!-- 总分: 题型题 (非复合题的题型题) -->
-                        <div v-if="question.type===window.QUESTION_TYPE.DESCRIPTION && question.purpose!==window.QUESTION_TYPE.COMPOSITE">
+                        <!-- <div v-if="question.type===window.QUESTION_TYPE.DESCRIPTION && question.purpose!==window.QUESTION_TYPE.COMPOSITE"> -->
+                        <div v-if="question.type===window.QUESTION_TYPE.DESCRIPTION">
                             ，共 {{ question.totalScore }} 分
                         </div>
                     </template>
@@ -502,6 +503,16 @@ export default {
         .question-toolbar {
             transition: all 1s;
             opacity: 1;
+        }
+    }
+}
+
+.question-with-toolbar.question-group {
+    &:hover {
+        border-color: $warningColor;
+
+        .question-toolbar {
+            background: $warningColor;
         }
     }
 }
