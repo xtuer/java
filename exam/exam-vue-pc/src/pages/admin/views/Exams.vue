@@ -179,8 +179,8 @@ export default {
                         // 更新: 替换已有对象
                         this.exams.splice(index, 1, newExam);
                     } else {
-                        // 创建: 添加到最前面
-                        this.exams.splice(0, 0, newExam);
+                        // 创建: 添加到最后面
+                        this.exams.push(newExam);
                     }
 
                     // [5] 提示保存成功，隐藏编辑对话框
