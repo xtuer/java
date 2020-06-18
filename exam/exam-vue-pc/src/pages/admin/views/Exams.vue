@@ -143,9 +143,8 @@ export default {
 
             if (exam) {
                 // 更新
-                this.examClone = JSON.parse(JSON.stringify(exam)); // 重要: 克隆对象
-                this.examClone.duration = exam.duration / 60;      // 秒变分
-                console.log(this.examClone);
+                this.examClone = Utils.clone(exam);           // 重要: 克隆对象
+                this.examClone.duration = exam.duration / 60; // 秒变分
             } else {
                 // 创建
                 this.examClone = this.newExam();
@@ -166,15 +165,16 @@ export default {
 
                 // [2] 克隆被编辑对象
                 // [3] 找到被编辑对象的下标
-                this.saving = true;
-                const exam  = JSON.parse(JSON.stringify(this.examClone));  // 重要: 克隆被编辑的对象
+                this.saving    = true;
+                const exam     = Utils.clone(this.examClone); // 重要: 克隆被编辑的对象
                 exam.duration *= 60;
-                const index = this.exams.findIndex(e => e.id === exam.id); // 考试下标
+                const index    = this.exams.findIndex(e => e.id === exam.id); // 考试下标
 
                 ExamDao.upsertExam(exam).then((newExam) => {
                     // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
                     //     有时服务器保存后会返回 user 对象，例如给 user 分配 ID 等以及修改其他属性，
                     //     这时应该添加服务器返回的对象到 users
+
                     if (index >= 0) {
                         // 更新: 替换已有对象
                         this.exams.splice(index, 1, newExam);

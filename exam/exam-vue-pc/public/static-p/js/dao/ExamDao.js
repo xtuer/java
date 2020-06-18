@@ -14,6 +14,11 @@ export default class ExamDao {
         return new Promise((resolve, reject) => {
             Rest.get(Urls.API_EXAMS_OF_CURRENT_ORG).then(({ data: exams, success, message }) => {
                 if (success) {
+                    exams.forEach(exam => {
+                        exam.startTime = dayjs(exam.startTime).toDate();
+                        exam.endTime   = dayjs(exam.endTime).toDate();
+                    });
+
                     resolve(exams);
                 } else {
                     Notice.error({ title: '查询错误', desc: message });
@@ -39,6 +44,8 @@ export default class ExamDao {
      * @return {Promise} 返回 Promise 对象，resolve 的参数为更新后的考试，reject 的参数为错误信息
      */
     static upsertExam(exam) {
+        exam = JSON.parse(JSON.stringify(exam)); // 时间对象序列化
+
         return new Promise((resolve, reject) => {
             Rest.update(Urls.API_EXAMS_BY_ID, {
                 params: { examId: exam.id },
@@ -46,6 +53,9 @@ export default class ExamDao {
                 json  : true,
             }).then(({ data: newExam, success, message }) => {
                 if (success) {
+                    newExam.startTime = dayjs(newExam.startTime).toDate();
+                    newExam.endTime   = dayjs(newExam.endTime).toDate();
+
                     resolve(newExam);
                 } else {
                     Notice.error({ title: '保存错误', desc: message });
