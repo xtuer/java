@@ -1,8 +1,8 @@
 <!-- 考试管理 -->
 <template>
-    <div class="exams">
+    <div class="exams layout-list">
         <!-- 顶部工具栏 -->
-        <div class="toolbar-1-top">
+        <div class="layout-list-toolbar-top">
             <Input search enter-button placeholder="请输入考试名字" @on-search="searchExams"/>
             <Button type="primary" icon="md-add" @click="editExam()">添加考试</Button>
         </div>
@@ -32,7 +32,7 @@
         </Table>
 
         <!-- 底部工具栏 -->
-        <div class="toolbar-1-bottom">
+        <div class="layout-list-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreExams">更多...</Button>
         </div>
 
@@ -305,8 +305,4 @@ export default {
 </script>
 
 <style lang="scss">
-.exams {
-    display: grid;
-    grid-gap: 24px;
-}
 </style>

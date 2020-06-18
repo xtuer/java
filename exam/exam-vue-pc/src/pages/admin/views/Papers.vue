@@ -1,8 +1,8 @@
 <!-- 试卷列表 -->
 <template>
-    <div class="papers">
+    <div class="papers layout-list">
         <!-- 顶部工具栏 -->
-        <div class="toolbar-1-top">
+        <div class="layout-list-toolbar-top">
             <Input v-model="filter.title" search enter-button placeholder="请输入试卷标题" @on-search="searchPapers"/>
             <Button type="primary" icon="md-add" @click="createPaper()">添加试卷</Button>
         </div>
@@ -27,7 +27,7 @@
         </Table>
 
         <!-- 底部工具栏 -->
-        <div class="toolbar-1-bottom">
+        <div class="layout-list-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMorePapers">更多...</Button>
         </div>
     </div>
@@ -121,8 +121,4 @@ export default {
 </script>
 
 <style lang="scss">
-.papers {
-    display: grid;
-    grid-gap: 24px;
-}
 </style>
