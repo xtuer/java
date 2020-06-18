@@ -15,8 +15,8 @@ export default class ExamDao {
             Rest.get(Urls.API_EXAMS_OF_CURRENT_ORG).then(({ data: exams, success, message }) => {
                 if (success) {
                     exams.forEach(exam => {
-                        exam.startTime = dayjs(exam.startTime).toDate();
-                        exam.endTime   = dayjs(exam.endTime).toDate();
+                        exam.startTime = exam.startTime.toDate();
+                        exam.endTime   = exam.endTime.toDate();
                     });
 
                     resolve(exams);
@@ -53,8 +53,8 @@ export default class ExamDao {
                 json  : true,
             }).then(({ data: newExam, success, message }) => {
                 if (success) {
-                    newExam.startTime = dayjs(newExam.startTime).toDate();
-                    newExam.endTime   = dayjs(newExam.endTime).toDate();
+                    newExam.startTime = newExam.startTime.toDate();
+                    newExam.endTime   = newExam.endTime.toDate();
 
                     resolve(newExam);
                 } else {
