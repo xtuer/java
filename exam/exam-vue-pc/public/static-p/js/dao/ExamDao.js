@@ -54,4 +54,26 @@ export default class ExamDao {
             });
         });
     }
+
+    /**
+     * 删除考试
+     *
+     * 网址: http://localhost:8080/api/exam/exams/{examId}
+     * 参数: 无
+     *
+     * @param examId 考试 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数无，reject 的参数为错误信息
+     */
+    static deleteExam(examId) {
+        return new Promise((resolve, reject) => {
+            Rest.remove(Urls.API_EXAMS_BY_ID, { params: { examId } }).then(({ success, message }) => {
+                if (success) {
+                    resolve();
+                } else {
+                    Notice.error({ title: '删除错误', desc: message });
+                    reject(message);
+                }
+            });
+        });
+    }
 }

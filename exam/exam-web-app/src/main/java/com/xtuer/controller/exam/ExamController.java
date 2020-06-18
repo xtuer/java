@@ -85,6 +85,20 @@ public class ExamController extends BaseController {
     }
 
     /**
+     * 删除考试
+     *
+     * 网址: http://localhost:8080/api/exam/exams/{examId}
+     * 参数: 无
+     *
+     * @param examId 考试 ID
+     */
+    @DeleteMapping(Urls.API_EXAMS_BY_ID)
+    public Result<Boolean> deleteExam(@PathVariable long examId) {
+        examService.deleteExam(examId);
+        return Result.ok();
+    }
+
+    /**
      * 查找用户的考试信息，如果用户在此考试中进行过作答，同时查找出所有相关的考试记录
      *
      * 网址: http://localhost:8080/api/exam/users/{userId}/exams/{examId}

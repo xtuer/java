@@ -864,4 +864,14 @@ public class ExamService extends BaseService {
     public List<String> findEssayQuestionAnswers(long examId, long questionId) {
         return examDao.findEssayQuestionAnswers(examId, questionId);
     }
+
+    /**
+     * 删除考试
+     *
+     * @param examId 考试 ID
+     */
+    @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_EXAM_ID)
+    public void deleteExam(long examId) {
+        examMapper.deleteExam(examId);
+    }
 }

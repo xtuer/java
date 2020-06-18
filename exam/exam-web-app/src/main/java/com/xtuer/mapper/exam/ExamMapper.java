@@ -36,4 +36,11 @@ public interface ExamMapper {
      * @param exam 考试
      */
     void updateExamBaseInfo(Exam exam);
+
+    /**
+     * 删除考试
+     *
+     * @param examId 考试 ID
+     */
+    void deleteExam(long examId);
 }

@@ -17,7 +17,7 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: exam }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="editExam(exam)">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+                <Button type="error" size="small" @click="deleteExam(exam)">删除</Button>
             </template>
         </Table>
 
@@ -181,22 +181,22 @@ export default {
                 });
             });
         },
-        // 删除用户
-        deleteUser(user) {
+        // 删除考试
+        deleteExam(exam) {
             // 1. 删除提示
             // 2. 从服务器删除成功后才从本地删除
             // 3. 提示删除成功
 
             this.$Modal.confirm({
-                title: `确定删除 <font color="red">${user.username}</font> 吗?`,
+                title: `确定删除 <font color="red">${exam.title}</font> 吗?`,
                 loading: true,
                 onOk: () => {
-                    // UserDao.deleteUser(user.id).then(() => {
-                        const index = this.users.findIndex(u => u.id === user.id); // 用户下标
-                        this.users.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
+                    ExamDao.deleteExam(exam.id).then(() => {
+                        const index = this.exams.findIndex(e => e.id === exam.id); // 考试下标
+                        this.exams.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
                         this.$Modal.remove();
                         this.$Message.success('删除成功');
-                    // });
+                    });
                 }
             });
         },
