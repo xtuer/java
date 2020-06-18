@@ -90,7 +90,7 @@ export default {
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'title',      title: '考试名字', minWidth: 150 },
                 { slot: 'paperCount', title: '试卷套数', width: 120, align: 'center' },
-                { key : 'maxTimes',   title: '考试次数', width: 120, align: 'center' },
+                { key : 'maxTimes',   title: '可作答次数', width: 120, align: 'center' },
                 { slot: 'duration',   title: '考试时长', width: 120, align: 'center' },
                 { slot: 'examTime',   title: '考试时间', width: 280, align: 'center' },
                 { slot: 'action',     title: '操作', width: 150, align: 'center' },
