@@ -25,6 +25,8 @@ const Urls = {
 
     // 考试
     API_EXAMS_OF_CURRENT_ORG: '/api/exam/exams/ofCurrentOrg',  // 当前机构的考试
+    API_EXAMS_BY_ID         : '/api/exam/exams/{examId}',      // 指定 ID 的考试
+    API_USER_EXAMS          : '/api/exam/users/{userId}/exams/{examId}', // 用户的某次考试 (同时得到此次考试的所有考试记录)
 };
 
 window.Urls = Urls;

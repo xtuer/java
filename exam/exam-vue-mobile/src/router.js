@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from './views/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -8,12 +7,22 @@ const routes = [
     {
         path: '/',
         name: 'home',
-        component: Home,
+        redirect: { name: 'exams' },
     },
     {
         path: '/login',
         name: 'login',
         component: () => import(/* webpackChunkName: "about" */ './views/Login.vue'),
+    },
+    {
+        path: '/exams',
+        name: 'exams',
+        component: () => import(/* webpackChunkName: "about" */ './views/Exams.vue'),
+    },
+    {
+        path: '/exams/:examId',
+        name: 'exam',
+        component: () => import(/* webpackChunkName: "about" */ './views/Exam.vue'),
     },
     {
         path: '/about',

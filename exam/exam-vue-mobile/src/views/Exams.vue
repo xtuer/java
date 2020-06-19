@@ -1,10 +1,11 @@
+<!-- 考试列表 -->
 <template>
-    <div class="home">
+    <div class="exams-page">
         <Navigator title="所有考试"/>
 
         <van-skeleton title :row="3" :loading="loading">
             <div class="exams">
-                <van-button v-for="exam in exams" :key="exam.id" block class="exam">
+                <van-button v-for="exam in exams" :key="exam.id" block class="exam" @click="toExam(exam)">
                     {{ exam.title }}
                 </van-button>
             </div>
@@ -30,15 +31,16 @@ export default {
         });
     },
     methods: {
+        // 跳转到考试页
         toExam(exam) {
-            this.$router.push({ name: 'exam' });
+            this.$router.push({ name: 'exam', params: { examId: exam.id } });
         }
     }
 };
 </script>
 
 <style lang="scss">
-.home {
+.exams-page {
     width: 100%;
     height: 100%;
 

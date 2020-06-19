@@ -5,14 +5,24 @@
 
 // 颜色定义
 //    使用 iView 的颜色 https://www.iviewui.com/components/color
+
+// Vant 移动端使用
+$smallFontSize : 12px;
+$normalFontSize: 14px;
+$bigFontSize   : 16px;
+$headerFontSize: 18px;
+$padding       : 20px;
+$normalColor   : #17233D;
+$separatorColor: rgba(232, 234, 236, .5); // 分割线
+$disabledColor : #c5c8ce; // 失效
+$primaryColor  : #4c9afc; // Primary
+
+// 原 iView 的
 $borderColor      : #dcdee2; // 边框
-$separatorColor   : #e8eaec; // 分割线
 $backgroundColor  : #f8f8f9; // 背景色
-$disabledColor    : #c5c8ce; // 失效
 $iconColor        : #808695; // 图标
 $textColor        : #515a6e; // 正文
 $titleColor       : #17233d; // 标题
-$primaryColor     : #2d8cf0; // Primary
 $lightPrimaryColor: #5cadff; // Light Primary
 $darkPrimaryColor : #2b85e4; // Dark Primary
 $infoColor        : #2db7f5; // 信息
