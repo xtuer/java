@@ -1,7 +1,10 @@
 package com.xtuer.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.xtuer.bean.Mime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -195,7 +198,23 @@ public final class Utils {
      * @return 返回对象的 Json 字符串表示
      */
     public static String toJson(Object object) {
-        return JSON.toJSONStringWithDateFormat(object, "yyyy-MM-dd HH:mm:ss.SSS", SerializerFeature.PrettyFormat);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Date format
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+
+        // Indent
+        // objectMapper.enable(SerializationFeature.INDENT_OUTPUT); // 2 个空格
+        DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
+        DefaultPrettyPrinter.Indenter indenter = new DefaultIndenter("    ", DefaultIndenter.SYS_LF);
+        printer.indentObjectsWith(indenter); // Indent JSON objects
+        printer.indentArraysWith(indenter);  // Indent JSON arrays
+
+        try {
+            return objectMapper.writer(printer).writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            return "{}";
+        }
     }
 
     /**
