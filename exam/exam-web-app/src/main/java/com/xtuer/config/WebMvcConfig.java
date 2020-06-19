@@ -13,6 +13,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index.html"); // index 和 index.html 都可以
         registry.addViewController("/door").setViewName("door.html");
+        registry.addViewController("/admin").setViewName("../page-p/admin.html");
+        registry.addViewController("/student").setViewName("../page-m/index.html");
     }
 
     // 静态资源的路径映射

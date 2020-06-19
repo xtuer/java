@@ -10,7 +10,7 @@ module.exports = {
     },
 
     // yarn build 的输出目录
-    outputDir: '../template-web-boot/src/main/resources/page-m',
+    outputDir: '../exam-web-app/src/main/resources/page-m',
     assetsDir: 'static-m',
 
     css: {
