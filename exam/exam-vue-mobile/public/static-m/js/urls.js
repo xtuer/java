@@ -22,6 +22,9 @@ const Urls = {
     // 字典
     API_DICTS_ID : '/api/dicts/{dictId}',   // 单个查询/修改/删除
     API_DICTS    : '/api/currentOrg/dicts', // 查询当前机构字典列表
+
+    // 考试
+    API_EXAMS_OF_CURRENT_ORG: '/api/exam/exams/ofCurrentOrg',  // 当前机构的考试
 };
 
 window.Urls = Urls;
