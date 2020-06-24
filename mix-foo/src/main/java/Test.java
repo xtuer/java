@@ -1,17 +1,9 @@
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Test {
     public static void main(String[] args) {
-        CopyOnWriteArrayList<Integer> ns = new CopyOnWriteArrayList<>();
-        ns.add(1);
-        ns.add(2);
-        ns.add(3);
-        ns.add(4);
-
-        CopyOnWriteArrayList<Integer> ns2 = ns;
-        ns2.add(5);
-
-        System.out.println(ns);
-        System.out.println(ns2);
+        Pair<String, String> pair = ImmutablePair.of("Alice", "Passw0rd");
+        System.out.println(pair);
     }
 }
