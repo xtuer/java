@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 必须是接口 Mapper 的全路径 -->
+<mapper namespace="com.ndt.mapper.JobMapper">
+    <!-- Task 的列 -->
+    <sql id="taskColumns">
+        task_id, job_id, execution_id, start_at, end_at, log, status, in_degree, auto,
+        next_task_ids_json, success_previous_task_ids_json, params_json, task_class_name
+    </sql>
+
+    <!-- 查询 Job -->
+    <select id="findJobById" resultType="Job">
+        SELECT job_id, simple, cron, tasks_json
+        FROM job
+        WHERE job_id = #{jobId}
+    </select>
+
+    <!-- 插入或者更新 Job -->
+    <insert id="upsertJob">
+        INSERT INTO job (job_id, simple, cron, tasks_json)
+        VALUES (#{jobId}, #{simple}, #{cron}, #{tasksJson})
+
+        ON DUPLICATE KEY
+        UPDATE simple = #{simple}, cron = #{cron}, tasks_json = #{tasksJson}
+    </insert>
+
+    <!-- 查找执行的 Task -->
+    <select id="findTasksByExecutionId" resultType="Task">
+        SELECT <include refid="taskColumns"/>
+        FROM  task
+        WHERE execution_id = #{executionId}
+    </select>
+
+    <!-- 查找执行的 Task -->
+    <select id="findTaskByTaskIdAndExecutionId" resultType="Task">
+        SELECT <include refid="taskColumns"/>
+        FROM  task
+        WHERE execution_id = #{executionId} AND task_id = #{taskId}
+    </select>
+
+    <!-- 插入 Task -->
+    <insert id="insertTask">
+        INSERT INTO task (task_id, job_id, execution_id, start_at, end_at, log, status, in_degree,
+            next_task_ids_json, success_previous_task_ids_json, params_json, task_class_name)
+        VALUES (#{taskId}, #{jobId}, #{executionId}, #{startAt}, #{endAt}, #{log}, #{status}, #{inDegree},
+            #{nextTaskIdsJson}, #{successPreviousTaskIdsJson}, #{paramsJson}, #{taskClassName})
+    </insert>
+
+    <!-- 更新任务的状态 (执行状态、时间、入度、成功的前驱) -->
+    <update id="updateTaskStatus">
+        UPDATE task
+        SET status = #{status}, start_at = #{startAt}, end_at = #{endAt}, in_degree = #{inDegree},
+            success_previous_task_ids_json = #{successPreviousTaskIdsJson}
+        WHERE execution_id = #{executionId} AND task_id = #{taskId}
+    </update>
+
+    <!-- 更新任务的日志 -->
+    <update id="updateTaskLog">
+        UPDATE task SET log = #{log} WHERE execution_id = #{executionId} AND task_id = #{taskId}
+    </update>
+</mapper>
