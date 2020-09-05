@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    // id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,10 @@ ext {
 }
 
 // [2] 打包: gradle clean shadowJar [-DmainClass=HexoSitemapGenerator]
-shadowJar {
-    mergeServiceFiles('META-INF/spring.*')
-    archiveName = 'sitemap.jar'
-}
+// shadowJar {
+//     mergeServiceFiles('META-INF/spring.*')
+//     archiveName = 'sitemap.jar'
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                 [3] Maven 依赖                             //

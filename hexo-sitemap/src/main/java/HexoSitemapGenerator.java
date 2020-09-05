@@ -45,7 +45,7 @@ tags: Index
 */
 public class HexoSitemapGenerator {
     // Hexo Blog 的默认目录
-    private static final String DEFAULT_BLOG_DIR = "/Users/Biao/Documents/workspace/Blog/source/_posts";
+    private static final String DEFAULT_BLOG_DIR = "D:/workspace/Blog/source/_posts" ; // "/Users/Biao/Documents/workspace/Blog/source/_posts";
 
     // Sitemap 的头部
     private static final String SITEMAP_HEADER = "---\n" +
@@ -87,9 +87,14 @@ public class HexoSitemapGenerator {
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(blogDir), "*.md")) {
             stream.forEach(md -> {
+                if (md.endsWith("all.md")) {
+                    return;
+                }
+
                 // [1] 遍历 md 文件
                 // [2] 抽取 md 文件的 title 和 tags，创建 meta 对象
                 Meta meta = createMeta(md);
+                System.out.println(md);
 
                 // [3.1] meta 按 tag 分组
                 for (String tag : meta.tags) {
