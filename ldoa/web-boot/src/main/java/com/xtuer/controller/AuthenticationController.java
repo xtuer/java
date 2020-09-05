@@ -99,6 +99,7 @@ public class AuthenticationController extends BaseController {
         User user = super.getCurrentUser();
 
         if (user != null) {
+            user = userService.findUser(user.getUserId());
             return Result.ok(user);
         } else {
             return Result.fail("还没有登录");

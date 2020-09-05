@@ -60,7 +60,7 @@ test {
 }
 
 bootJar {
-    archiveFileName = 'xtuer.jar'
+    archiveFileName = 'ldoa.jar'
 }
 
 ext {
