@@ -87,6 +87,24 @@
         </foreach>
     </insert>
 
+    <!-- 检测产品项编码是否可用 (没有被其他产品项使用即为可用) -->
+    <select id="isProductItemCodeAvailable" resultType="boolean">
+        SELECT NOT EXISTS (
+            SELECT 1 FROM product_item
+            WHERE product_item_id != #{productItemId} and code = #{code}
+        )
+    </select>
+
+    <!-- 创建或者更新产品项 -->
+    <insert id="upsertProductItem">
+        INSERT INTO product_item (product_item_id, name, code, type, `desc`, model, standard, material)
+        VALUES (#{productItemId}, #{name}, #{code}, #{type}, #{desc}, #{model}, #{standard}, #{material})
+
+        ON DUPLICATE KEY
+        UPDATE product_item_id = #{productItemId}, name = #{name}, code = #{code},
+            type = #{type}, `desc` = #{desc}, model = #{model}, standard = #{standard}, material = #{material}
+    </insert>
+
     <!-- 产品的结果映射 -->
     <resultMap id="productMap" type="Product">
         <id property="productId" column="product_id"/>

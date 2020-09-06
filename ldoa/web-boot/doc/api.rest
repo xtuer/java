@@ -57,3 +57,11 @@ auth-token: {{token}}
         { "productItemId": 1, "count": 13 }
     ]
 }
+
+### 创建或者更新产品项
+PUT {{host}}/api/productItems/0
+Content-Type: application/x-www-form-urlencoded
+X-Requested-With: XMLHttpRequest
+auth-token: {{token}}
+
+name=摄像头&code=SXT-1&type=配件&model=SXT&standard=GB12&material=玻璃

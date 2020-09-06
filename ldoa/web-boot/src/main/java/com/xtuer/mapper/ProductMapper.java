@@ -66,4 +66,20 @@ public interface ProductMapper {
      * @param items 产品项数组
      */
     void insertProductItems(List<ProductItem> items);
+
+    /**
+     * 检测产品项编码是否可用 (没有被其他产品项使用即为可用)
+     *
+     * @param productItemId 产品项 ID
+     * @param code          产品项编码
+     * @return 产品项编码可用返回 true，否则返回 false
+     */
+    boolean isProductItemCodeAvailable(long productItemId, String code);
+
+    /**
+     * 创建或者更新产品项
+     *
+     * @param item 产品项
+     */
+    void upsertProductItem(ProductItem item);
 }

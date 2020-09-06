@@ -1,6 +1,7 @@
 package com.xtuer.service;
 
 import com.xtuer.bean.Product;
+import com.xtuer.bean.ProductItem;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.mapper.ProductMapper;
@@ -22,7 +23,7 @@ public class ProductService extends BaseService {
      *
      * @param product 产品
      * @param user    用户
-     * @return 返回更新后的产品
+     * @return payload 为更新后的产品
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<Product> upsertProduct(Product product, User user) {
@@ -57,5 +58,34 @@ public class ProductService extends BaseService {
         productMapper.upsertProduct(product);
 
         return Result.ok(product);
+    }
+
+    /**
+     * 创建或者更新产品项
+     *
+     * @param item 产品项
+     * @param user 用户
+     * @return payload 为更新后的产品项
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Result<ProductItem> upsertProductItem(ProductItem item, User user) {
+        // 1. 如果产品项 ID 无效，则分配一个
+        // 2. 如果产品项编码被其他产品项使用了，则失败
+        // 3. 保存产品项到数据库
+
+        // [1] 如果产品项 ID 无效，则分配一个
+        if (Utils.isInvalidId(item.getProductItemId())) {
+            item.setProductItemId(super.nextId());
+        }
+
+        // [2] 如果产品项编码被其他产品项使用了，则失败
+        if (!productMapper.isProductItemCodeAvailable(item.getProductItemId(), item.getCode())) {
+            return Result.fail("物料编码不可用: " + item.getCode());
+        }
+
+        // [3] 保存产品项到数据库
+        productMapper.upsertProductItem(item);
+
+        return Result.ok(item);
     }
 }

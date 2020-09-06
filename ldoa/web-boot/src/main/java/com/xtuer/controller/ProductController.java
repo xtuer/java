@@ -6,10 +6,7 @@ import com.xtuer.service.ProductService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -49,24 +46,56 @@ public class ProductController extends BaseController {
      * 网址: http://localhost:8080/api/products/{productId}
      * 参数: 无
      * 请求体: 产品的 JSON 字符串
-     *     productId: 产品 ID
-     *     name: 产品名称
-     *     code: 产品编码
-     *     desc: 产品描述
-     *     model: 产品规格/型号
-     *     items: [ { productItemId, count } ] 产品项的数组
+     *     name  (必要): 产品名称
+     *     code  (必要): 产品编码
+     *     desc  [可选]: 产品描述
+     *     model (必要): 产品规格/型号
+     *     items (必要): [ { productItemId, count } ] 产品项的数组，但数组可以为空
      *
      * @param product 产品
      * @return payload 为更新后的产品
      */
     @PutMapping(Urls.API_PRODUCTS_BY_ID)
-    public Result<Product> upsertProduct(@RequestBody @Valid Product product, BindingResult bindingResult) {
+    public Result<Product> upsertProduct(@PathVariable long productId,
+                                         @RequestBody @Valid Product product,
+                                         BindingResult bindingResult) {
         // 如有参数错误，则返回错误信息给客户端
         if (bindingResult.hasErrors()) {
             return Result.fail(Utils.getBindingMessage(bindingResult));
         }
 
         User user = super.getCurrentUser();
+        product.setProductId(productId);
         return productService.upsertProduct(product, user);
+    }
+
+    /**
+     * 创建或者更新产品项 (物料)
+     *
+     * 网址: http://localhost:8080/api/productItems/{productItemId}
+     * 参数:
+     *     name     (必要): 物料名称
+     *     code     (必要): 物料编码
+     *     type     (必要): 物料类型
+     *     desc     [可选]: 物料描述
+     *     model    (必要): 物料规格/型号
+     *     standard (必要): 标准/规范
+     *     material (必要): 材质
+     *
+     * @param item 产品项
+     * @return payload 为更新后的产品项
+     */
+    @PutMapping(Urls.API_PRODUCT_ITEMS_BY_ID)
+    public Result<ProductItem> upsertProductItem(@PathVariable long productItemId,
+                                                 @Valid ProductItem item,
+                                                 BindingResult bindingResult) {
+        // 如有参数错误，则返回错误信息给客户端
+        if (bindingResult.hasErrors()) {
+            return Result.fail(Utils.getBindingMessage(bindingResult));
+        }
+
+        User user = super.getCurrentUser();
+        item.setProductItemId(productItemId);
+        return productService.upsertProductItem(item, user);
     }
 }
