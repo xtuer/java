@@ -42,9 +42,10 @@ public class OrganizationService extends BaseService {
      */
     public long getCurrentOrganizationId() {
         // 如果没有找到域名对应的机构，则返回 1，表明是系统管理员的机构
-        Organization org = self.getCurrentOrganization();
+        // Organization org = self.getCurrentOrganization();
 
-        return org != null ? org.getOrgId() : 1;
+        // return org != null ? org.getOrgId() : 1;
+        return 1;
     }
 
     /**

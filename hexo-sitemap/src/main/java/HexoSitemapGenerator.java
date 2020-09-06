@@ -94,7 +94,7 @@ public class HexoSitemapGenerator {
                 // [1] 遍历 md 文件
                 // [2] 抽取 md 文件的 title 和 tags，创建 meta 对象
                 Meta meta = createMeta(md);
-                System.out.println(md);
+                // System.out.println(md);
 
                 // [3.1] meta 按 tag 分组
                 for (String tag : meta.tags) {
