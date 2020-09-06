@@ -54,6 +54,6 @@ auth-token: {{token}}
     "code": "MOBILE-1",
     "model": "MOBILE",
     "items": [
-
+        { "productItemId": 1, "count": 13 }
     ]
 }

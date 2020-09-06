@@ -1,18 +1,18 @@
 package com.xtuer.controller;
 
-import com.xtuer.bean.Product;
-import com.xtuer.bean.Result;
-import com.xtuer.bean.Urls;
-import com.xtuer.bean.User;
+import com.xtuer.bean.*;
+import com.xtuer.mapper.ProductMapper;
 import com.xtuer.service.ProductService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 产品控制器
@@ -21,6 +21,27 @@ import javax.validation.Valid;
 public class ProductController extends BaseController {
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    /**
+     * 查询符合条件的产品
+     * 网址: http://localhost:8080/api/products
+     * 参数:
+     *      name       [可选]: 名字
+     *      code       [可选]: 编码
+     *      pageNumber [可选]: 页码
+     *      pageSize   [可选]: 数量
+     *
+     * @param filter 过滤条件
+     * @param page   分页
+     * @return payload 为查询到的产品数组
+     */
+    @GetMapping(Urls.API_PRODUCTS)
+    public Result<List<Product>> findProducts(Product filter, Page page) {
+        return Result.ok(productMapper.findProducts(filter, page));
+    }
 
     /**
      * 创建或者更新产品
