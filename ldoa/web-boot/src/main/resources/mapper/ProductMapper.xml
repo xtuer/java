@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 必须是接口 Mapper 的全路径 -->
+<mapper namespace="com.xtuer.mapper.ProductMapper">
+    <!-- 产品的列 -->
+    <sql id="productColumns">
+        p.product_id AS product_id, p.name AS product_name, p.code AS product_code,
+        p.desc AS product_desc, p.model AS product_model,
+
+        pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
+        pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
+        pi.material AS item_material, pwi.product_item_count AS item_count
+    </sql>
+
+    <!-- 产品项的列 -->
+    <sql id="productItemColumns">
+        pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
+        pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
+        pi.material AS item_material, pi.count AS item_count
+    </sql>
+
+    <!-- 查询指定 ID 的产品 -->
+    <select id="findProductById" resultMap="productMap">
+        SELECT <include refid="productColumns"/>
+        FROM product p
+             LEFT JOIN product_with_item pwi ON p.product_id = pwi.product_id
+             LEFT JOIN product_item pi ON pi.product_item_id = pwi.product_item_id
+        WHERE p.product_id = #{productId}
+    </select>
+
+    <!-- 查询符合条件的产品 -->
+    <select id="findProducts" resultMap="productMap">
+        SELECT <include refid="productColumns"/>
+        FROM product p
+             LEFT JOIN product_with_item pwi ON p.product_id = pwi.product_id
+             LEFT JOIN product_item pi ON pi.product_item_id = pwi.product_item_id
+        LIMIT ${page.offset}, ${page.size}
+    </select>
+
+    <!-- 查询指定 ID 的产品项 -->
+    <select id="findProductItemById" resultMap="productItemMap">
+        SELECT <include refid="productItemColumns"/>
+        FROM product_item pi
+        WHERE pi.product_item_id = #{productItemId}
+    </select>
+
+    <!-- 检测产品编码是否可用 (没有被其他产品使用即为可用) -->
+    <select id="isProductCodeAvailable" resultType="boolean">
+        SELECT NOT EXISTS (
+            SELECT 1 FROM product
+            WHERE product_id != #{productId} and code = #{code}
+        )
+    </select>
+
+    <!-- 创建或者更新产品 -->
+    <update id="upsertProduct">
+        INSERT INTO product (product_id, name, code, `desc`, model)
+        VALUES (#{productId}, #{name}, #{code}, #{desc}, #{model})
+
+        ON DUPLICATE KEY
+        UPDATE name = #{name}, code = #{code}, `desc` = #{desc}, model = #{model}
+    </update>
+
+    <!-- 删除产品的产品项 -->
+    <delete id="deleteProductItems">
+        DELETE FROM product_with_item WHERE product_id = #{productId}
+    </delete>
+
+    <!-- 添加产品项 -->
+    <insert id="insertProductItems">
+        <foreach collection="list" item="item" separator=";">
+            INSERT IGNORE INTO product_with_item (product_id, product_item_id, product_item_count)
+            VALUES (#{item.productId}, #{item.productItemId}, #{item.count})
+        </foreach>
+    </insert>
+
+    <!-- 产品的结果映射 -->
+    <resultMap id="productMap" type="Product">
+        <id property="productId" column="product_id"/>
+        <result property="name"  column="product_name"/>
+        <result property="code"  column="product_code"/>
+        <result property="desc"  column="product_desc"/>
+        <result property="model" column="product_model"/>
+
+        <collection  property="items" ofType="ProductItem" resultMap="productItemMap"/>
+    </resultMap>
+
+    <!-- 产品项的结果映射 -->
+    <resultMap id="productItemMap" type="ProductItem">
+        <id property="productItemId" column="item_id"/>
+        <result property="name"      column="item_name"/>
+        <result property="code"      column="item_code"/>
+        <result property="type"      column="item_type"/>
+        <result property="desc"      column="item_desc"/>
+        <result property="model"     column="item_model"/>
+        <result property="standard"  column="item_standard"/>
+        <result property="material"  column="item_material"/>
+        <result property="count"     column="item_count"/>
+    </resultMap>
+</mapper>

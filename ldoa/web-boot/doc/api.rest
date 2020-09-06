@@ -3,7 +3,7 @@
 @host = http://localhost:8080
 @json = Content-Type: application/json
 @form = application/x-www-form-urlencoded
-@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjAxODY3OTU5NDg0IiwiaWQiOiIxIiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNTk5Mjc1OTU5NTAyIiwidXNlcm5hbWUiOiJhZG1pbiJ9.f7bbc7ea20080300e449a1d609b5a610
+@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjAxOTcwNzYzMDM5Iiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNTk5Mzc4NzYzMDU3IiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.92689f353b70a68ac795b9ba9ac7126c
 
 ### 机构
 GET {{host}}/api/orgs
@@ -42,14 +42,18 @@ name=中文字符串
 
 ############################################### 任务调度
 
-### 创建 Job
-POST http://localhost:8090/api/jobs
+### 创建或者更新产品
+PUT {{host}}/api/products/0
+Content-Type: application/json
 X-Requested-With: XMLHttpRequest
+auth-token: {{token}}
 
-### Job 执行准备
-POST http://localhost:8090/api/jobs/1/prepare
-X-Requested-With: XMLHttpRequest
+{
+    "productId": "409255664418822",
+    "name": "手机",
+    "code": "MOBILE-1",
+    "model": "MOBILE",
+    "items": [
 
-### 执行 Job
-POST http://localhost:8090/api/jobs/1/executions/1596167137391/execute
-X-Requested-With: XMLHttpRequest
+    ]
+}
