@@ -144,7 +144,7 @@
 
 .list-page-toolbar-top {
     display: grid;
-    grid-template-columns: 400px max-content;
+    grid-template-columns: max-content max-content;
     justify-content: space-between;
     align-items: center;
 }

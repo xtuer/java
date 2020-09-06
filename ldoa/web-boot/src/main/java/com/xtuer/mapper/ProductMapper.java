@@ -30,14 +30,6 @@ public interface ProductMapper {
     List<Product> findProducts(Product filter, Page page);
 
     /**
-     * 查询指定 ID 的产品项
-     *
-     * @param productItemId 产品项 ID
-     * @return 返回查询到的产品项，查询不到时返回 null
-     */
-    ProductItem findProductItemById(long productItemId);
-
-    /**
      * 检测产品编码是否可用 (没有被其他产品使用即为可用)
      *
      * @param productId 产品 ID
@@ -75,6 +67,24 @@ public interface ProductMapper {
      * @return 产品项编码可用返回 true，否则返回 false
      */
     boolean isProductItemCodeAvailable(long productItemId, String code);
+
+
+    /**
+     * 查询指定 ID 的产品项
+     *
+     * @param productItemId 产品项 ID
+     * @return 返回查询到的产品项，查询不到时返回 null
+     */
+    ProductItem findProductItemById(long productItemId);
+
+    /**
+     * 查询符合条件的产品项
+     *
+     * @param filter 过滤条件
+     * @param page   分页
+     * @return 返回产品项数组
+     */
+    List<ProductItem> findProductItems(ProductItem filter, Page page);
 
     /**
      * 创建或者更新产品项

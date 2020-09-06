@@ -50,13 +50,6 @@
         ORDER BY p.created_at DESC
     </select>
 
-    <!-- 查询指定 ID 的产品项 -->
-    <select id="findProductItemById" resultMap="productItemMap">
-        SELECT <include refid="productItemColumns"/>
-        FROM product_item pi
-        WHERE pi.product_item_id = #{productItemId}
-    </select>
-
     <!-- 检测产品编码是否可用 (没有被其他产品使用即为可用) -->
     <select id="isProductCodeAvailable" resultType="boolean">
         SELECT NOT EXISTS (
@@ -86,6 +79,29 @@
             VALUES (#{item.productId}, #{item.productItemId}, #{item.count})
         </foreach>
     </insert>
+
+    <!-- 查询指定 ID 的产品项 -->
+    <select id="findProductItemById" resultMap="productItemMap">
+        SELECT <include refid="productItemColumns"/>
+        FROM product_item pi
+        WHERE pi.product_item_id = #{productItemId}
+    </select>
+
+    <!-- 查询符合条件的产品项 -->
+    <select id="findProductItems" resultMap="productItemMap">
+        SELECT <include refid="productItemColumns"/>
+        FROM product_item pi
+        <where>
+            <if test="filter.name!=null and filter.name!='' ">
+                AND name LIKE CONCAT('%', #{filter.name},'%')
+            </if>
+            <if test="filter.code!=null and filter.code!='' ">
+                AND code LIKE CONCAT('%', #{filter.code},'%')
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT ${page.offset}, ${page.size}
+    </select>
 
     <!-- 检测产品项编码是否可用 (没有被其他产品项使用即为可用) -->
     <select id="isProductItemCodeAvailable" resultType="boolean">

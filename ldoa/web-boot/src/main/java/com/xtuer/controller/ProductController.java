@@ -70,19 +70,39 @@ public class ProductController extends BaseController {
     }
 
     /**
+     * 查询符合条件的产品项
+     *
+     * 网址: http://localhost:8080/api/productItems
+     * 参数:
+     *      name       [可选]: 物料名称
+     *      code       [可选]: 物料编码
+     *      pageNumber [可选]: 页码
+     *      pageSize   [可选]: 页码
+     *
+     * @param filter 过滤条件
+     * @param page   分页
+     * @return payload 为产品项的数组
+     */
+    @GetMapping(Urls.API_PRODUCT_ITEMS)
+    public Result<List<ProductItem>> findProductItems(ProductItem filter, Page page) {
+        return Result.ok(productMapper.findProductItems(filter, page));
+    }
+
+    /**
      * 创建或者更新产品项 (物料)
      *
      * 网址: http://localhost:8080/api/productItems/{productItemId}
      * 参数:
-     *     name     (必要): 物料名称
-     *     code     (必要): 物料编码
-     *     type     (必要): 物料类型
-     *     desc     [可选]: 物料描述
-     *     model    (必要): 物料规格/型号
-     *     standard (必要): 标准/规范
-     *     material (必要): 材质
+     *      name     (必要): 物料名称
+     *      code     (必要): 物料编码
+     *      type     (必要): 物料类型
+     *      desc     [可选]: 物料描述
+     *      model    (必要): 物料规格/型号
+     *      standard (必要): 标准/规范
+     *      material (必要): 材质
      *
-     * @param item 产品项
+     * @param productItemId 产品项 ID
+     * @param item          产品项
      * @return payload 为更新后的产品项
      */
     @PutMapping(Urls.API_PRODUCT_ITEMS_BY_ID)

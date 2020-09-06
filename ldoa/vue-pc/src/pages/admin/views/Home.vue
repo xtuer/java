@@ -2,7 +2,7 @@
 <template>
     <div class="home">
         <!-- Header -->
-        <Header>Magic 管理系统</Header>
+        <Header>LDOA</Header>
 
         <div class="main">
             <!-- 左侧侧边栏 -->
@@ -35,7 +35,7 @@ export default {
         return {
             activeName: '',
             menuItems: [ // 所有菜单项，每个菜单项有不同的权限
-                { label: '物料管理', name: 'about'               },
+                { label: '物料管理', name: 'product-item'        },
                 { label: '产品管理', name: 'scroll'              },
                 { label: '订单管理', name: 'admin-courses'       },
                 { label: '用户管理', name: 'question-statistics' },

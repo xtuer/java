@@ -9,9 +9,15 @@ export default new Router({
             path: '/',
             name: 'home',
             component: () => import(/* webpackChunkName: "common" */ './views/Home.vue'),
-            redirect: { name: 'about' },
+            redirect: { name: 'product-item' },
 
             children: [
+                // 产品项管理
+                {
+                    path: '/product-item',
+                    name: 'product-item',
+                    component: () => import(/* webpackChunkName: "product" */ './views/ProductItemManage.vue'),
+                },
                 {
                     path: '/about',
                     name: 'about',

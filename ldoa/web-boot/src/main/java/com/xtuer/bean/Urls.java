@@ -66,8 +66,8 @@ public interface Urls {
     String API_ORGS_ENABLE = "/api/orgs/{orgId}/enabled"; // 指定 ID 的机构的启用禁用状态
 
     // 产品
-    String API_PRODUCTS            = "/api/products"; // 所有产品
+    String API_PRODUCTS            = "/api/products";             // 所有产品
     String API_PRODUCTS_BY_ID      = "/api/products/{productId}"; // 指定 ID 的产品
-    String API_PRODUCT_ITEMS       = "/api/productItems"; // 所有产品项
+    String API_PRODUCT_ITEMS       = "/api/productItems";         // 所有产品项
     String API_PRODUCT_ITEMS_BY_ID = "/api/productItems/{productItemId}"; // 指定 ID 的产品项
 }
