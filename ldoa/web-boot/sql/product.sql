@@ -43,3 +43,23 @@ CREATE TABLE product (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (product_id)
 ) ENGINE=InnoDB COMMENT '产品表';
+
+#-------------------------------------------
+# 表名: product_with_item
+# 作者: 公孙二狗
+# 日期: 2020-09-06
+# 版本: 1.0
+# 描述: 产品及产品项关联表
+#------------------------------------------
+DROP TABLE IF EXISTS product_with_item;
+
+CREATE TABLE product_with_item (
+    product_id      bigint(20) unsigned NOT NULL COMMENT '产品 ID',
+    product_item_id bigint(20) unsigned NOT NULL COMMENT '产品项 ID',
+
+    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY idx_pi (product_id, product_item_id) COMMENT '产品及产品项唯一',
+
+    id int(11) PRIMARY KEY AUTO_INCREMENT COMMENT '无意义自增 ID'
+) ENGINE=InnoDB COMMENT '产品及产品项关联表';
