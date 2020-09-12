@@ -121,6 +121,11 @@
             type = #{type}, `desc` = #{desc}, model = #{model}, standard = #{standard}, material = #{material}
     </insert>
 
+    <!-- 删除产品项 -->
+    <delete id="deleteProductItem">
+        DELETE FROM product_item WHERE product_item_id = #{productItem}
+    </delete>
+
     <!-- 产品的结果映射 -->
     <resultMap id="productMap" type="Product">
         <id property="productId" column="product_id"/>

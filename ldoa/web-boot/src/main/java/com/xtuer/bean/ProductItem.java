@@ -42,11 +42,6 @@ public class ProductItem {
     private String type;
 
     /**
-     * 物料描述
-     */
-    private String desc;
-
-    /**
      * 物料规格/型号
      */
     @NotBlank(message="物料规格/型号不能为空")
@@ -63,6 +58,11 @@ public class ProductItem {
      */
     @NotBlank(message="材质不能为空")
     private String material;
+
+    /**
+     * 物料描述
+     */
+    private String desc;
 
     /**
      * 数量

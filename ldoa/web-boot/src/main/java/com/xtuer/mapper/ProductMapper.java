@@ -92,4 +92,11 @@ public interface ProductMapper {
      * @param item 产品项
      */
     void upsertProductItem(ProductItem item);
+
+    /**
+     * 删除产品项
+     *
+     * @param productItemId 产品项 ID
+     */
+    void deleteProductItem(long productItemId);
 }

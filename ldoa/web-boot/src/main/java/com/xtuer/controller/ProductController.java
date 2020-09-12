@@ -118,4 +118,18 @@ public class ProductController extends BaseController {
         item.setProductItemId(productItemId);
         return productService.upsertProductItem(item, user);
     }
+
+    /**
+     * 删除产品项
+     *
+     * 网址: http://localhost:8080/api/productItems/{productItemId}
+     * 参数: 无
+     *
+     * @param productItemId 产品项 ID
+     */
+    @DeleteMapping(Urls.API_PRODUCT_ITEMS_BY_ID)
+    public Result<Boolean> deleteProductItem(@PathVariable long productItemId) {
+        productMapper.deleteProductItem(productItemId);
+        return Result.ok();
+    }
 }
