@@ -53,12 +53,12 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'name',   title: '物料名称', width: 150 },
-                { key : 'code',   title: '物料编码', width: 150 },
-                { key : 'type',   title: '物料类型', width: 150 },
-                { key : 'model',   title: '规格/型号', width: 150 },
-                { key : 'standard',   title: '标准/规范', width: 150 },
-                { key : 'material',   title: '材质', width: 150 },
+                { key : 'name',   title: '物料名称', width: 200 },
+                { key : 'code',   title: '物料编码', width: 130 },
+                { key : 'type',   title: '物料类型', width: 130 },
+                { key : 'model',   title: '规格/型号', width: 130 },
+                { key : 'standard',   title: '标准/规范', width: 130 },
+                { key : 'material',   title: '材质', width: 130 },
                 { key : 'desc',   title: '物料描述', minWidth: 150 },
                 { slot: 'action', title: '操作', width: 150, align: 'center' },
             ]
