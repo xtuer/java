@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <!--
 搜索产品、分页加载 (加载下一页的产品)
 -->
@@ -63,18 +64,23 @@
             </Form>
 
             <div slot="footer">
-                <Button type="dashed" icon="md-add" style="float: left">添加物料</Button>
+                <Button type="dashed" icon="md-add" style="float: left" @click="itemSelect = true">添加物料</Button>
                 <Button type="text" @click="modal = false">取消</Button>
                 <Button type="primary" :loading="saving" @click="saveProduct">保存</Button>
             </div>
         </Modal>
+
+        <!-- 物料选择弹窗 -->
+        <ProductItemSelect v-model="itemSelect" @on-ok="addProductItem"/>
     </div>
 </template>
 
 <script>
 import ProductDao from '@/../public/static-p/js/dao/ProductDao';
+import ProductItemSelect from '@/components/ProductItemSelect.vue';
 
 export default {
+    components: { ProductItemSelect },
     data() {
         return {
             products: [],
@@ -84,11 +90,12 @@ export default {
                 pageSize  : 20,
                 pageNumber: 1,
             },
-            more     : false, // 是否还有更多产品
-            loading  : false, // 加载中
-            reloading: false,
-            modal    : false, // 是否显示编辑对话框
-            saving   : false, // 保存中
+            more      : false, // 是否还有更多产品
+            loading   : false, // 加载中
+            reloading : false,
+            modal     : false, // 是否显示编辑对话框
+            saving    : false, // 保存中
+            itemSelect: false, // 物料选择弹窗是否可见
             // 产品的列
             productColumns: [
                 { key : 'name',   title: '物料名称', width: 200 },
@@ -215,6 +222,17 @@ export default {
                     });
                 }
             });
+        },
+        // 添加产品项
+        addProductItem(productItem) {
+            // 如果物料已经存在，不需要重复添加
+            const found = this.productClone.items.find(item => item.productItemId === productItem.productItemId);
+
+            if (found) {
+                this.$Message.warning('子项物料已经存在');
+            } else {
+                this.productClone.items.push(productItem);
+            }
         },
         // 新产品
         newProduct() {
