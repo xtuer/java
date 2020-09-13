@@ -160,6 +160,15 @@ Date.prototype.format = function(fmt) {
     return fmt;
 };
 
+/**
+ * 日期转为 JSON 字符串
+ *
+ * @return {String} 返回日期的字符串表示
+ */
+Date.prototype.toJSON = function() {
+    return dayjs(this).format('YYYY-MM-DD HH:mm:ss'); // 使用 dayjs，输出 2019-09-30 11:10:53
+};
+
 /*-----------------------------------------------------------------------------|
  |                                   Utils                                     |
  |----------------------------------------------------------------------------*/
@@ -430,15 +439,6 @@ Utils.canPreview = function({ uri, ready, progress, complete, timeout }) {
 
     requestPreviewInfo(); // 立即执行请求
     timerId = window.setInterval(requestPreviewInfo, 3000); // 每 3 秒执行请求一次
-};
-
-/**
- * 日期转为 JSON 字符串
- *
- * @return {String} 返回日期的字符串表示
- */
-Date.prototype.toJSON = function() {
-    return dayjs(this).format('YYYY-MM-DD HH:mm:ss'); // 使用 dayjs，输出 2019-09-30 11:10:53
 };
 
 /**
