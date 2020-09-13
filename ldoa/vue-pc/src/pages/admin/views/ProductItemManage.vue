@@ -56,6 +56,9 @@
                 <FormItem label="物料材质:" prop="material">
                     <Input v-model="itemClone.material" placeholder="请输入物料材质"/>
                 </FormItem>
+                <FormItem label="物料单位:">
+                    <Input v-model="itemClone.unit" placeholder="请输入物料单位"/>
+                </FormItem>
                 <FormItem label="物料描述:">
                     <Input v-model="itemClone.desc" type="textarea" :rows="4" placeholder="请输入物料描述"/>
                 </FormItem>
@@ -91,11 +94,12 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'name',     title: '物料名称', width: 200 },
-                { key : 'code',     title: '物料编码', width: 130 },
-                { key : 'type',     title: '物料类型', width: 130 },
-                { key : 'model',    title: '规格/型号', width: 130 },
-                { key : 'standard', title: '标准/规范', width: 130 },
-                { key : 'material', title: '材质', width: 130 },
+                { key : 'code',     title: '物料编码', width: 110 },
+                { key : 'type',     title: '物料类型', width: 110 },
+                { key : 'model',    title: '规格/型号', width: 110 },
+                { key : 'standard', title: '标准/规范', width: 110 },
+                { key : 'material', title: '材质', width: 110 },
+                { key : 'unit',     title: '单位', width: 110 },
                 { key : 'desc',     title: '物料描述', minWidth: 150 },
                 { slot: 'action',   title: '操作', width: 150, align: 'center' },
             ],

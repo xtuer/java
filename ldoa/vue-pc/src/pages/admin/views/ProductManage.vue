@@ -82,9 +82,10 @@
 <script>
 import ProductDao from '@/../public/static-p/js/dao/ProductDao';
 import ProductItemSelect from '@/components/ProductItemSelect.vue';
+import ProductItemExpand from '@/components/ProductItemExpand.vue';
 
 export default {
-    components: { ProductItemSelect },
+    components: { ProductItemSelect, ProductItemExpand },
     data() {
         return {
             products: [],
@@ -102,6 +103,17 @@ export default {
             itemSelect: false, // 物料选择弹窗是否可见
             // 产品的列
             productColumns: [
+                {
+                    type: 'expand',
+                    width: 50,
+                    render: (h, params) => {
+                        return h(ProductItemExpand, {
+                            props: {
+                                row: params.row
+                            }
+                        });
+                    }
+                },
                 { key : 'name',   title: '物料名称', width: 200 },
                 { key : 'code',   title: '物料编码', width: 130 },
                 { key : 'model',  title: '规格/型号', width: 130 },

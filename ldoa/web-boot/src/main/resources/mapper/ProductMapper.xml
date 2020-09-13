@@ -10,14 +10,15 @@
 
         pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
         pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
-        pi.material AS item_material, pwi.product_item_count AS item_count
+        pi.material AS item_material, pi.unit AS item_unit,
+        pwi.product_item_count AS item_count
     </sql>
 
     <!-- 产品项的列 -->
     <sql id="productItemColumns">
         pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
         pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
-        pi.material AS item_material, pi.count AS item_count
+        pi.material AS item_material, pi.unit AS item_unit, pi.count AS item_count
     </sql>
 
     <!-- 查询指定 ID 的产品 -->
@@ -120,12 +121,13 @@
 
     <!-- 创建或者更新产品项 -->
     <insert id="upsertProductItem">
-        INSERT INTO product_item (product_item_id, name, code, type, `desc`, model, standard, material)
-        VALUES (#{productItemId}, #{name}, #{code}, #{type}, #{desc}, #{model}, #{standard}, #{material})
+        INSERT INTO product_item (product_item_id, name, code, type, `desc`, model, standard, material, unit)
+        VALUES (#{productItemId}, #{name}, #{code}, #{type}, #{desc}, #{model}, #{standard}, #{material}, #{unit})
 
         ON DUPLICATE KEY
         UPDATE product_item_id = #{productItemId}, name = #{name}, code = #{code},
-            type = #{type}, `desc` = #{desc}, model = #{model}, standard = #{standard}, material = #{material}
+            type = #{type}, `desc` = #{desc}, model = #{model}, standard = #{standard}, material = #{material},
+            unit = #{unit}
     </insert>
 
     <!-- 删除产品项 -->
@@ -154,6 +156,7 @@
         <result property="model"     column="item_model"/>
         <result property="standard"  column="item_standard"/>
         <result property="material"  column="item_material"/>
+        <result property="unit"      column="item_unit"/>
         <result property="count"     column="item_count"/>
     </resultMap>
 </mapper>

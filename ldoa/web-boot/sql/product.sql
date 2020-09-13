@@ -37,6 +37,7 @@ CREATE TABLE product_item (
     model    varchar(128) DEFAULT '' COMMENT '物料规格/型号',
     standard varchar(128) DEFAULT '' COMMENT '标准/规范',
     material varchar(128) DEFAULT '' COMMENT '材质',
+    unit     varchar(128) DEFAULT '' COMMENT '单位',
     count    int(11)      DEFAULT 0  COMMENT '数量',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

@@ -65,6 +65,11 @@ public class ProductItem {
     private String desc;
 
     /**
+     * 单位
+     */
+    private String unit;
+
+    /**
      * 数量
      */
     private int count;
