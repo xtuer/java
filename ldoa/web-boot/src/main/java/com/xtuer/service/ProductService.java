@@ -61,6 +61,17 @@ public class ProductService extends BaseService {
     }
 
     /**
+     * 删除产品
+     *
+     * @param productId 产品 ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteProduct(long productId) {
+        productMapper.deleteProduct(productId);
+        productMapper.deleteProductItems(productId); // 同时删除与产品项的关联关系
+    }
+
+    /**
      * 创建或者更新产品项
      *
      * @param item 产品项

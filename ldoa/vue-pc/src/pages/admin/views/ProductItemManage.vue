@@ -37,7 +37,7 @@
 
         <!-- 编辑物料对话框 -->
         <Modal v-model="modal" :mask-closable="false" title="物料编辑" class="edit-item-modal" :styles="{ top: '60px'}">
-            <Form ref="form" :model="itemClone" :rules="itemRules" :key="itemClone.id" :label-width="90">
+            <Form ref="form" :model="itemClone" :rules="itemRules" :key="itemClone.productItemId" :label-width="90">
                 <FormItem label="物料编码:" prop="code">
                     <Input v-model="itemClone.code" placeholder="请输入物料编码"/>
                 </FormItem>

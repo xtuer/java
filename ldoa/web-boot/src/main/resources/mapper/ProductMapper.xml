@@ -43,6 +43,7 @@
                         AND code LIKE CONCAT('%', #{filter.code},'%')
                     </if>
                 </where>
+                ORDER BY created_at DESC
                 LIMIT ${page.offset}, ${page.size}
              ) as t ON t.product_id = p.product_id
              LEFT JOIN product_with_item pwi ON p.product_id = pwi.product_id
@@ -66,6 +67,11 @@
         ON DUPLICATE KEY
         UPDATE name = #{name}, code = #{code}, `desc` = #{desc}, model = #{model}
     </update>
+
+    <!-- 删除产品 -->
+    <delete id="deleteProduct">
+        DELETE FROM product WHERE product_id = #{productId};
+    </delete>
 
     <!-- 删除产品的产品项 -->
     <delete id="deleteProductItems">

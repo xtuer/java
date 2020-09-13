@@ -1,0 +1,248 @@
+<!--
+搜索产品、分页加载 (加载下一页的产品)
+-->
+<template>
+    <div class="product-manage list-page">
+        <!-- 顶部工具栏 -->
+        <div class="list-page-toolbar-top">
+            <div style="display: flex">
+                <Input v-model="filter.name" placeholder="请输入产品名称">
+                    <span slot="prepend">产品名称</span>
+                </Input>
+                <Input v-model="filter.code" placeholder="请输入产品编码">
+                    <span slot="prepend">产品编码</span>
+                </Input>
+                <Button type="primary" icon="ios-search" @click="searchProducts">搜索</Button>
+            </div>
+
+            <Button type="primary" icon="md-add" @click="editProduct()">添加产品</Button>
+        </div>
+
+        <!-- 产品列表 -->
+        <Table :data="products" :columns="productColumns" :loading="reloading" border>
+            <!-- 操作按钮 -->
+            <template slot-scope="{ row: product }" slot="action">
+                <div class="column-buttons">
+                    <Button type="primary" size="small" @click="editProduct(product)">编辑</Button>
+                    <Button type="error" size="small" @click="deleteProduct(product)">删除</Button>
+                </div>
+            </template>
+        </Table>
+
+        <!-- 底部工具栏 -->
+        <div class="list-page-toolbar-bottom">
+            <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreProducts">更多...</Button>
+        </div>
+
+        <!-- 编辑产品对话框 -->
+        <Modal v-model="modal" :mask-closable="false" title="产品编辑" width="600" class="edit-product-modal" :styles="{ top: '60px' }">
+            <Form ref="form" :model="productClone" :rules="productRules" :key="productClone.productId" :label-width="90">
+                <FormItem label="产品编码:" prop="code">
+                    <Input v-model="productClone.code" placeholder="请输入产品编码"/>
+                </FormItem>
+                <FormItem label="产品名称:" prop="name">
+                    <Input v-model="productClone.name" placeholder="请输入产品名称"/>
+                </FormItem>
+                <FormItem label="规格/型号:" prop="model">
+                    <Input v-model="productClone.model" placeholder="请输入规格/型号"/>
+                </FormItem>
+               <FormItem label="产品描述:">
+                    <Input v-model="productClone.desc" type="textarea" :rows="4" placeholder="请输入产品描述"/>
+                </FormItem>
+                <FormItem label="子项物料:">
+                    <Table :data="productClone.items" :columns="itemColumns" border>
+                        <!-- 操作按钮 -->
+                        <template slot-scope="{ index }" slot="action">
+                            <div class="column-buttons">
+                                <!-- 删除子项物料 -->
+                                <Icon type="ios-close-circle" size="18" class="clickable" @click="productClone.items.remove(index)"/>
+                            </div>
+                        </template>
+                    </Table>
+                </FormItem>
+            </Form>
+
+            <div slot="footer">
+                <Button type="dashed" icon="md-add" style="float: left">添加物料</Button>
+                <Button type="text" @click="modal = false">取消</Button>
+                <Button type="primary" :loading="saving" @click="saveProduct">保存</Button>
+            </div>
+        </Modal>
+    </div>
+</template>
+
+<script>
+import ProductDao from '@/../public/static-p/js/dao/ProductDao';
+
+export default {
+    data() {
+        return {
+            products: [],
+            productClone: { items: [] },
+            filter: { // 搜索条件
+                name      : '',
+                pageSize  : 20,
+                pageNumber: 1,
+            },
+            more     : false, // 是否还有更多产品
+            loading  : false, // 加载中
+            reloading: false,
+            modal    : false, // 是否显示编辑对话框
+            saving   : false, // 保存中
+            // 产品的列
+            productColumns: [
+                { key : 'name',   title: '物料名称', width: 200 },
+                { key : 'code',   title: '物料编码', width: 130 },
+                { key : 'model',  title: '规格/型号', width: 130 },
+                { key : 'desc',   title: '物料描述', minWidth: 150 },
+                { slot: 'action', title: '操作', width: 150, align: 'center' },
+            ],
+            // 产品校验规则
+            productRules: {
+                code: [
+                    { required: true, whitespace: true, message: '产品编码不能为空', trigger: 'blur' }
+                ],
+                name: [
+                    { required: true, whitespace: true, message: '产品名称不能为空', trigger: 'blur' }
+                ],
+                model: [
+                    { required: true, whitespace: true, message: '规格/型号不能为空', trigger: 'blur' }
+                ],
+            },
+            // 子项物料的列
+            itemColumns: [
+                { key : 'name', title: '物料名称', width: 200 },
+                { key : 'code', title: '物料编码', minWidth: 130 },
+                { slot: 'action', title: '操作', width: 70, align: 'center' },
+            ],
+        };
+    },
+    mounted() {
+        this.searchProducts();
+    },
+    methods: {
+        // 搜索产品
+        searchProducts() {
+            this.products          = [];
+            this.more              = false;
+            this.reloading         = true;
+            this.filter.pageNumber = 1;
+
+            this.fetchMoreProducts();
+        },
+        // 点击更多按钮加载下一页的产品
+        fetchMoreProducts() {
+            this.loading = true;
+
+            ProductDao.findProducts(this.filter).then(products => {
+                this.products.push(...products);
+
+                this.more      = products.length >= this.filter.pageSize;
+                this.loading   = false;
+                this.reloading = false;
+                this.filter.pageNumber++;
+            });
+        },
+        // 编辑产品: product 为 undefined 表示创建，否则表示更新
+        editProduct(product) {
+            // 1. 重置表单，避免上一次的验证信息影响到本次编辑
+            // 2. 生成编辑对象的副本
+            // 3. 显示编辑对话框
+
+            this.$refs.form.resetFields();
+
+            if (product) {
+                // 更新
+                this.productClone = Utils.clone(product); // 重要: 克隆对象
+            } else {
+                // 创建
+                this.productClone = this.newProduct();
+            }
+
+            this.modal = true;
+        },
+        // 保存编辑后的产品
+        saveProduct() {
+            // 1. 表单验证不通过则返回
+            // 2. 克隆被编辑对象
+            // 3. 找到被编辑对象的下标
+            // 4. 保存成功后如果是更新则替换已有对象，创建则添加到最前面
+            // 5. 提示保存成功，隐藏编辑对话框
+
+            this.$refs.form.validate(valid => {
+                if (!valid) { return; }
+
+                // [2] 克隆被编辑对象
+                // [3] 找到被编辑对象的下标
+                this.saving = true;
+                const product = Utils.clone(this.productClone);  // 重要: 克隆被编辑的对象
+                const index = this.products.findIndex(p => p.productId === product.productId); // 产品下标
+
+                ProductDao.upsertProduct(product).then((newProduct) => {
+                    // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
+                    if (index >= 0) {
+                        // 更新: 替换已有对象
+                        this.products.replace(index, product);
+                    } else {
+                        // 创建: 添加到最前面
+                        this.products.insert(0, product);
+                    }
+
+                    // [5] 提示保存成功，隐藏编辑对话框
+                    this.saving = false;
+                    this.modal  = false;
+                    this.$Message.success('保存成功');
+                }).catch(() => {
+                    this.saving = false;
+                });
+            });
+        },
+        // 删除产品
+        deleteProduct(product) {
+            // 1. 删除提示
+            // 2. 从服务器删除成功后才从本地删除
+            // 3. 提示删除成功
+
+            this.$Modal.confirm({
+                title: `确定删除 <font color="red">${product.name}</font> 吗?`,
+                loading: true,
+                onOk: () => {
+                    ProductDao.deleteProduct(product.productId).then(() => {
+                        const index = this.products.findIndex(p => p.productId === product.productId); // 产品下标
+                        this.products.remove(index); // [2] 从服务器删除成功后才从本地删除
+                        this.$Modal.remove();
+                        this.$Message.success('删除成功');
+                    });
+                }
+            });
+        },
+        // 新产品
+        newProduct() {
+            return {
+                productId: '0',
+                name : '',
+                code : '',
+                model: '',
+                desc : '',
+            };
+        }
+    }
+};
+</script>
+
+<style lang="scss">
+.product-manage {
+    .list-page-toolbar-top {
+        .ivu-input-wrapper {
+            width: 250px;
+            margin-right: 10px;
+        }
+    }
+}
+
+.edit-product-modal {
+    .ivu-table-header thead tr th {
+        padding: 0 !important;
+    }
+}
+</style>

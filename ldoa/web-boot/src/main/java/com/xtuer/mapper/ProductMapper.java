@@ -46,6 +46,13 @@ public interface ProductMapper {
     void upsertProduct(Product product);
 
     /**
+     * 删除产品
+     *
+     * @param productId 产品 ID
+     */
+    void deleteProduct(long productId);
+
+    /**
      * 删除产品的产品项
      *
      * @param productId 产品 ID

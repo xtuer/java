@@ -70,6 +70,20 @@ public class ProductController extends BaseController {
     }
 
     /**
+     * 删除产品
+     *
+     * 网址: http://localhost:8080/api/products/{productId}
+     * 参数: 无
+     *
+     * @param productId 产品 ID
+     */
+    @DeleteMapping(Urls.API_PRODUCTS_BY_ID)
+    public Result<Boolean> deleteProduct(@PathVariable long productId) {
+        productService.deleteProduct(productId);
+        return Result.ok();
+    }
+
+    /**
      * 查询符合条件的产品项
      *
      * 网址: http://localhost:8080/api/productItems

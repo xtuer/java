@@ -33,15 +33,15 @@ public class Product {
     private String code;
 
     /**
-     * 产品描述
-     */
-    private String desc;
-
-    /**
      * 产品规格/型号
      */
     @NotBlank(message="产品规格/型号不能为空")
     private String model;
+
+    /**
+     * 产品描述
+     */
+    private String desc;
 
     /**
      * 产品项

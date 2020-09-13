@@ -26,6 +26,56 @@ export default class ProductDao {
     }
 
     /**
+     * 创建或者更新产品
+     *
+     * 网址: http://localhost:8080/api/products/{productId}
+     * 参数: 无
+     * 请求体: 产品的 JSON 字符串
+     *     name  (必要): 产品名称
+     *     code  (必要): 产品编码
+     *     desc  [可选]: 产品描述
+     *     model (必要): 产品规格/型号
+     *     items (必要): [ { productItemId, count } ] 产品项的数组，但数组可以为空
+     *
+     * @param {JSON} product 产品
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为更新后的产品，reject 的参数为错误信息
+     */
+    static upsertProduct(product) {
+        return Rest.update(Urls.API_PRODUCTS_BY_ID, {
+            params: { productId: product.productId },
+            data: product,
+            json: true,
+        }).then(({ data: newProduct, success, message }) => {
+            if (success) {
+                return Promise.resolve(newProduct);
+            } else {
+                Message.error(message);
+                return Promise.reject(message);
+            }
+        });
+    }
+
+    /**
+     * 删除产品
+     *
+     * 网址: http://localhost:8080/api/products/{productId}
+     * 参数: 无
+     *
+     * @param {Long} productId 产品 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static deleteProduct(productId) {
+        return Rest.del(Urls.API_PRODUCTS_BY_ID, { params: { productId } }).then(({ success, message }) => {
+            if (success) {
+                return Promise.resolve();
+            } else {
+                Message.error(message);
+                return Promise.reject(message);
+            }
+        });
+    }
+
+    /**
      * 查询符合条件的产品项
      *
      * 网址: http://localhost:8080/api/productItems

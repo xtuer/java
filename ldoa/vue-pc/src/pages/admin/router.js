@@ -9,14 +9,20 @@ export default new Router({
             path: '/',
             name: 'home',
             component: () => import(/* webpackChunkName: "common" */ './views/Home.vue'),
-            redirect: { name: 'product-item' },
+            redirect: { name: 'product-items' },
 
             children: [
                 // 产品项管理
                 {
-                    path: '/product-item',
-                    name: 'product-item',
+                    path: '/product-items',
+                    name: 'product-items',
                     component: () => import(/* webpackChunkName: "product" */ './views/ProductItemManage.vue'),
+                },
+                // 产品管理
+                {
+                    path: '/products',
+                    name: 'products',
+                    component: () => import(/* webpackChunkName: "product" */ './views/ProductManage.vue'),
                 },
                 {
                     path: '/about',
