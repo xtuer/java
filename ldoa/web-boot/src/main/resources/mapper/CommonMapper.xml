@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 必须是接口 Mapper 的全路径 -->
+<mapper namespace="com.xtuer.mapper.CommonMapper">
+    <!-- 查询序列号 -->
+    <select id="findSequenceByName" resultType="int">
+        SELECT value FROM sequence WHERE name = #{sequenceName}
+    </select>
+
+    <!-- 序列号增加 1 -->
+    <update id="increaseSequenceByName">
+        INSERT INTO sequence(name, value) VALUES (#{sequenceName}, 1)
+        ON DUPLICATE KEY
+        UPDATE value = value + 1
+    </update>
+</mapper>

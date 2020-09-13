@@ -2,16 +2,28 @@ package com.xtuer.controller;
 
 import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
+import com.xtuer.service.CommonService;
+import com.xtuer.service.OrderService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
 @RestController
 public class ZooController extends BaseController {
+    @Autowired
+    private CommonService commonService;
+
+    @Autowired
+    private OrderService orderService;
+
     /**
      * 把字符串自动转为日期
      *
@@ -88,5 +100,36 @@ public class ZooController extends BaseController {
     @GetMapping("/api/demo/array")
     public Result<List<Integer>> array(@RequestParam List<Integer> ids) {
         return Result.ok(ids);
+    }
+
+    /**
+     * 获取下一个序列号
+     *
+     * 网址: http://localhost:8080/api/demo/nextSequence
+     * 参数: 无
+     *
+     * @return payload 为序列号
+     */
+    @GetMapping("/api/demo/nextSequence")
+    public Result<Integer> nextSequence() {
+        // XSDD-20200806-0001
+        String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
+        String name = "DEMO-" + date;
+        System.out.println(StringUtils.leftPad("23", 4, "0"));
+
+        return Result.ok(commonService.nextSequence(name));
+    }
+
+    /**
+     * 获取下一个订单号
+     *
+     * 网址: http://localhost:8080/api/demo/nextOrderSn
+     * 参数: 无
+     *
+     * @return payload 为序列号
+     */
+    @GetMapping("/api/demo/nextOrderSn")
+    public Result<String> nextOrderSn() {
+        return Result.ok(orderService.generateOrderSn());
     }
 }
