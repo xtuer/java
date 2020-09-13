@@ -36,7 +36,7 @@
         </div>
 
         <!-- 编辑产品对话框 -->
-        <Modal v-model="modal" :mask-closable="false" title="产品编辑" width="600" class="edit-product-modal" :styles="{ top: '60px' }">
+        <Modal v-model="modal" :mask-closable="false" title="产品编辑" width="650" class="edit-product-modal" :styles="{ top: '60px' }">
             <Form ref="form" :model="productClone" :rules="productRules" :key="productClone.productId" :label-width="90">
                 <FormItem label="产品编码:" prop="code">
                     <Input v-model="productClone.code" placeholder="请输入产品编码"/>
@@ -52,6 +52,10 @@
                 </FormItem>
                 <FormItem label="子项物料:">
                     <Table :data="productClone.items" :columns="itemColumns" border>
+                        <!-- 操作按钮 -->
+                        <template slot-scope="{ index }" slot="count">
+                            <InputNumber :min="1" :step="1" v-model="productClone.items[index].count" style="width: 60px"></InputNumber>
+                        </template>
                         <!-- 操作按钮 -->
                         <template slot-scope="{ index }" slot="action">
                             <div class="column-buttons">
@@ -118,8 +122,9 @@ export default {
             },
             // 子项物料的列
             itemColumns: [
-                { key : 'name', title: '物料名称', width: 200 },
-                { key : 'code', title: '物料编码', minWidth: 130 },
+                { key : 'name',   title: '物料名称' },
+                { key : 'code',   title: '物料编码', width: 130 },
+                { slot: 'count',  title: '数量', width: 100, align: 'center' },
                 { slot: 'action', title: '操作', width: 70, align: 'center' },
             ],
         };

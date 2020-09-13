@@ -96,6 +96,7 @@ export default {
                 return;
             }
 
+            this.itemSelected.count = 1;
             this.$emit('on-ok', this.itemSelected);
             this.showEvent(false); // 关闭弹窗
         },

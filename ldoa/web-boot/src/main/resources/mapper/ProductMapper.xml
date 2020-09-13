@@ -27,6 +27,7 @@
              LEFT JOIN product_with_item pwi ON p.product_id = pwi.product_id
              LEFT JOIN product_item pi ON pi.product_item_id = pwi.product_item_id
         WHERE p.product_id = #{productId}
+        ORDER BY pwi.created_at ASC
     </select>
 
     <!-- 查询符合条件的产品 -->
@@ -48,7 +49,7 @@
              ) as t ON t.product_id = p.product_id
              LEFT JOIN product_with_item pwi ON p.product_id = pwi.product_id
              LEFT JOIN product_item pi ON pi.product_item_id = pwi.product_item_id
-        ORDER BY p.created_at DESC
+        ORDER BY p.created_at DESC, pwi.created_at ASC
     </select>
 
     <!-- 检测产品编码是否可用 (没有被其他产品使用即为可用) -->
