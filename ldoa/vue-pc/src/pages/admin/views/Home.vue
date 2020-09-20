@@ -49,7 +49,7 @@ export default {
                 },
                 { label: '订单系统', icon: 'logo-usd', menuItems:
                     [
-                        { label: '销售订单', name: 'admin-courses'       },
+                        { label: '销售订单', name: 'orders' },
                         { label: '维修/保养订单', name: 'question-statistics' },
                     ]
                 },

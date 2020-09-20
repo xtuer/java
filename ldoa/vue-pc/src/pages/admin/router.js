@@ -16,13 +16,19 @@ export default new Router({
                 {
                     path: '/product-items',
                     name: 'product-items',
-                    component: () => import(/* webpackChunkName: "product" */ './views/ProductItemManage.vue'),
+                    component: () => import(/* webpackChunkName: "product" */ './views/ProductItems.vue'),
                 },
                 // 产品管理
                 {
                     path: '/products',
                     name: 'products',
-                    component: () => import(/* webpackChunkName: "product" */ './views/ProductManage.vue'),
+                    component: () => import(/* webpackChunkName: "product" */ './views/Products.vue'),
+                },
+                // 销售订单
+                {
+                    path: '/orders',
+                    name: 'orders',
+                    component: () => import(/* webpackChunkName: "product" */ './views/Orders.vue'),
                 },
                 {
                     path: '/about',

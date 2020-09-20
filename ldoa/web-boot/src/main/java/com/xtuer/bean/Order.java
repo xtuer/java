@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单
@@ -77,4 +78,9 @@ public class Order {
      * 订单创建日期
      */
     private Date createdAt;
+
+    /**
+     * 订单项
+     */
+    private List<OrderItem> items;
 }
