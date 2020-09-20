@@ -130,6 +130,6 @@ public class ZooController extends BaseController {
      */
     @GetMapping("/api/demo/nextOrderSn")
     public Result<String> nextOrderSn() {
-        return Result.ok(orderService.generateOrderSn());
+        return Result.ok(orderService.nextOrderSn());
     }
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 必须是接口 Mapper 的全路径 -->
+<mapper namespace="com.xtuer.mapper.OrderMapper">
+    <!-- 订单全部的列 -->
+    <sql id="orderFullColumns">
+        o.order_id, o.order_sn, o.customer_company, o.customer_contact, o.customer_address,
+        o.order_date, o.delivery_date, o.salesperson_id, o.calibrated, o.calibration_info,
+        o.requirement, o.attachment, o.created_at,
+
+        oi.order_item_id, oi.count, oi.comment,
+
+        p.product_id AS product_id, p.name AS product_name, p.code AS product_code, p.model AS product_model,
+
+        user.user_id AS salesperson_id, user.nickname AS salesperson_nickname
+    </sql>
+
+    <!-- 查询指定 ID 的订单 -->
+    <select id="findOrderById" resultMap="orderMap">
+        SELECT <include refid="orderFullColumns"/>
+        FROM `order` o
+            LEFT JOIN order_item oi ON o.order_id = oi.order_id
+            LEFT JOIN product p ON p.product_id = oi.product_id
+            LEFT JOIN user ON user.user_id = o.salesperson_id
+        WHERE o.order_id = #{orderId}
+    </select>
+
+    <!-- 插入或者更新订单 -->
+    <update id="upsertOrder">
+        INSERT INTO `order` (order_id, order_sn, customer_company, customer_contact, customer_address,
+            order_date, delivery_date, salesperson_id, calibrated, calibration_info, requirement, attachment)
+        VALUES (#{orderId}, #{orderSn}, #{customerCompany}, #{customerContact}, #{customerAddress},
+            #{orderDate}, #{deliveryDate}, #{salespersonId}, #{calibrated}, #{calibrationInfo}, #{requirement}, #{attachment})
+
+        ON DUPLICATE KEY
+        UPDATE customer_company = #{customerCompany}, customer_contact = #{customerContact}, customer_address = #{customerAddress},
+            order_date = #{orderDate}, delivery_date = #{deliveryDate}, calibrated = #{calibrated},
+            calibration_info = #{calibrationInfo}, requirement = #{requirement}, attachment = #{attachment}
+    </update>
+
+    <!-- 插入订单项 -->
+    <insert id="insertOrderItems">
+        <foreach collection="list" item="item" separator=";">
+            INSERT INTO order_item (order_id, order_item_id, product_id, count, comment)
+            VALUES (#{item.orderId}, #{item.orderItemId}, #{item.productId}, #{item.count}, #{item.comment})
+        </foreach>
+    </insert>
+
+    <!-- 删除订单的订单项 -->
+    <delete id="deleteOrderItems">
+        DELETE FROM order_item WHERE order_id = #{orderId}
+    </delete>
+
+    <!-- 订单的结果映射 -->
+    <resultMap id="orderMap" type="Order">
+        <id property="orderId"             column="order_id"/>
+        <result property="customerCompany" column="customer_company"/>
+        <result property="customerContact" column="customer_contact"/>
+        <result property="customerAddress" column="customer_address"/>
+        <result property="orderDate"       column="order_date"/>
+        <result property="deliveryDate"    column="delivery_date"/>
+        <result property="salespersonId"   column="salesperson_id"/>
+        <result property="calibrated"      column="calibrated"/>
+        <result property="calibrationInfo" column="calibration_info"/>
+        <result property="requirement"     column="requirement"/>
+        <result property="attachment"      column="attachment"/>
+        <result property="createdAt"       column="created_at"/>
+
+        <association property="salesperson" resultMap="salespersonMap"/>
+        <collection property="items" ofType="OrderItem" resultMap="orderItemMap"/>
+    </resultMap>
+
+    <!-- 订单项的结果映射 -->
+    <resultMap id="orderItemMap" type="OrderItem">
+        <id property="orderItemId"   column="order_item_id"/>
+        <result property="orderId"   column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="count"     column="count"/>
+        <result property="comment"   column="comment"/>
+
+        <association property="product" resultMap="com.xtuer.mapper.ProductMapper.productMap"/>
+    </resultMap>
+
+    <!-- 销售员的结果映射 -->
+    <resultMap id="salespersonMap" type="User">
+        <id property="userId"       column="salesperson_id"/>
+        <result property="nickname" column="salesperson_nickname"/>
+    </resultMap>
+</mapper>

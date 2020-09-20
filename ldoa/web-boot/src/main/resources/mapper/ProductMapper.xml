@@ -143,7 +143,7 @@
         <result property="desc"  column="product_desc"/>
         <result property="model" column="product_model"/>
 
-        <collection  property="items" ofType="ProductItem" resultMap="productItemMap"/>
+        <collection property="items" ofType="ProductItem" resultMap="productItemMap"/>
     </resultMap>
 
     <!-- 产品项的结果映射 -->

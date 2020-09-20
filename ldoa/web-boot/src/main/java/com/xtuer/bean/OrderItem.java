@@ -34,5 +34,10 @@ public class OrderItem {
     /**
      * 备注
      */
-    private String requirement;
+    private String comment;
+
+    /**
+     * 订单项的产品，每个产品项对应一个产品
+     */
+    private Product product;
 }

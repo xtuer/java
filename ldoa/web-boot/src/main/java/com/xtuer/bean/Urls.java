@@ -70,4 +70,7 @@ public interface Urls {
     String API_PRODUCTS_BY_ID      = "/api/products/{productId}"; // 指定 ID 的产品
     String API_PRODUCT_ITEMS       = "/api/productItems";         // 所有产品项
     String API_PRODUCT_ITEMS_BY_ID = "/api/productItems/{productItemId}"; // 指定 ID 的产品项
+
+    // 订单
+    String API_ORDERS_BY_ID = "/api/orders/{orderId}"; // 指定 ID 的订单
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,19 +41,19 @@ public class Order {
     private String customerAddress;
 
     /**
-     * 下订单日期
+     * 下订日期
      */
     private Date orderDate;
 
     /**
-     * 要求交货日期
+     * 交货日期
      */
     private Date deliveryDate;
 
     /**
-     * 销售员
+     * 销售员 ID
      */
-    private String salesperson;
+    private long salespersonId;
 
     /**
      * 是否校准
@@ -82,5 +83,10 @@ public class Order {
     /**
      * 订单项
      */
-    private List<OrderItem> items;
+    private List<OrderItem> items = new LinkedList<>();
+
+    /**
+     * 销售员
+     */
+    private User salesperson = new User();
 }
