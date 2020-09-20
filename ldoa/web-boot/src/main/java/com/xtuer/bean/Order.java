@@ -42,12 +42,12 @@ public class Order {
     /**
      * 下订单日期
      */
-    private Date createDate;
+    private Date orderDate;
 
     /**
      * 要求交货日期
      */
-    private Date releaseDate;
+    private Date deliveryDate;
 
     /**
      * 销售员
