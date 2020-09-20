@@ -2,6 +2,7 @@
 .gitkeep
 dump.rdb
 consul
+~*
 
 ### iView ###
 !template-vue-app/build/

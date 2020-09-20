@@ -68,7 +68,7 @@
             </Form>
 
             <div slot="footer">
-                <Button type="dashed" icon="md-add" style="float: left" @click="itemSelect = true">添加物料</Button>
+                <Button type="dashed" icon="md-add" style="float: left" @click="itemSelect = true">添加子项物料</Button>
                 <Button type="text" @click="modal = false">取消</Button>
                 <Button type="primary" :loading="saving" @click="saveProduct">保存</Button>
             </div>
@@ -85,6 +85,7 @@ import ProductItemSelect from '@/components/ProductItemSelect.vue';
 import ProductItemExpand from '@/components/ProductItemExpand.vue';
 
 export default {
+    // eslint-disable-next-line vue/no-unused-components
     components: { ProductItemSelect, ProductItemExpand },
     data() {
         return {

@@ -7,8 +7,11 @@
         <div class="main">
             <!-- 左侧侧边栏 -->
             <div class="sidebar">
-                <Menu :active-name="activeName" :open-names="['1']" width="auto" @on-select="navigateTo">
-                    <MenuItem v-for="item in menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem>
+                <Menu :active-name="activeName" :open-names="[0, 1]" width="auto" @on-select="navigateTo">
+                    <Submenu v-for="(sm, index) in subMenus" :key="index" :name="index">
+                        <template slot="title"><Icon :type="sm.icon" /> {{ sm.label }}</template>
+                        <MenuItem v-for="item in sm.menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem>
+                    </Submenu>
                 </Menu>
             </div>
 
@@ -34,14 +37,20 @@ export default {
     data() {
         return {
             activeName: '',
-            menuItems: [ // 所有菜单项，每个菜单项有不同的权限
-                { label: '物料管理', name: 'product-items'       },
-                { label: '产品管理', name: 'products'            },
-                { label: '订单管理', name: 'admin-courses'       },
-                { label: '用户管理', name: 'question-statistics' },
-                { label: '绩效查询', name: 'performance',        },
-                { label: '问题类型', name: 'question-types',     },
-                { label: '用户管理', name: 'admin-users',        },
+            // 所有菜单项，每个菜单项有不同的权限
+            subMenus: [
+                { label: '产品管理', icon: 'md-construct', menuItems:
+                    [
+                        { label: '物料管理', name: 'product-items' },
+                        { label: '产品管理', name: 'products'      },
+                    ]
+                },
+                { label: '其他菜单', icon: 'md-cog', menuItems:
+                    [
+                        { label: '订单管理', name: 'admin-courses'       },
+                        { label: '用户管理', name: 'question-statistics' },
+                    ]
+                },
             ],
         };
     },
@@ -56,7 +65,8 @@ export default {
     watch: {
         // 监听路由变化时高亮对应的菜单项
         $route(to, from) {
-            if (this.menuItems.some(item => item.name === to.name)) {
+            const menuItems = this.subMenus.map(m => m.menuItems).flat();
+            if (menuItems.some(item => item.name === to.name)) {
                 this.activeName = to.name;
             }
         }
