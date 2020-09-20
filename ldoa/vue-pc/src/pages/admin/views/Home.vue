@@ -7,7 +7,7 @@
         <div class="main">
             <!-- 左侧侧边栏 -->
             <div class="sidebar">
-                <Menu :active-name="activeName" :open-names="[0, 1]" width="auto" @on-select="navigateTo">
+                <Menu :active-name="activeMenuItemName" :open-names="openSubMenuIndexes" width="auto" @on-select="navigateTo">
                     <Submenu v-for="(sm, index) in subMenus" :key="index" :name="index">
                         <template slot="title"><Icon :type="sm.icon" /> {{ sm.label }}</template>
                         <MenuItem v-for="item in sm.menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem>
@@ -36,7 +36,9 @@ export default {
     },
     data() {
         return {
-            activeName: '',
+            activeMenuItemName: '', // 当前菜单项名字
+            openSubMenuIndexes: [], // 展开的子菜单下标
+
             // 所有菜单项，每个菜单项有不同的权限
             subMenus: [
                 { label: '产品管理', icon: 'md-construct', menuItems:
@@ -55,19 +57,32 @@ export default {
         };
     },
     mounted() {
-        this.activeName = this.$route.name;
+        this.activeMenuItemName = this.$route.name;
     },
     methods: {
+        // 路由跳转
         navigateTo(name) {
             this.$router.push({ name });
         },
+        // 高亮菜单栏
+        highlightMenu(menuItemName) {
+            this.subMenus.forEach((sm, index) => {
+                if (sm.menuItems.some(item => item.name === menuItemName)) {
+                    this.activeMenuItemName = menuItemName;
+
+                    if (!this.openSubMenuIndexes.includes(index)) {
+                        this.openSubMenuIndexes.push(index);
+                    }
+                }
+            });
+        }
     },
     watch: {
         // 监听路由变化时高亮对应的菜单项
-        $route(to, from) {
-            const menuItems = this.subMenus.map(m => m.menuItems).flat();
-            if (menuItems.some(item => item.name === to.name)) {
-                this.activeName = to.name;
+        $route: {
+            immediate: true,
+            handler(to, from) {
+                this.highlightMenu(to.name);
             }
         }
     }
