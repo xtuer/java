@@ -41,10 +41,16 @@ export default {
 
             // 所有菜单项，每个菜单项有不同的权限
             subMenus: [
-                { label: '产品管理', icon: 'md-construct', menuItems:
+                { label: '产品系统', icon: 'md-construct', menuItems:
                     [
                         { label: '物料管理', name: 'product-items' },
                         { label: '产品管理', name: 'products'      },
+                    ]
+                },
+                { label: '订单系统', icon: 'logo-usd', menuItems:
+                    [
+                        { label: '销售订单', name: 'admin-courses'       },
+                        { label: '维修/保养订单', name: 'question-statistics' },
                     ]
                 },
                 { label: '其他菜单', icon: 'md-cog', menuItems:

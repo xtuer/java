@@ -115,10 +115,10 @@ export default {
                         });
                     }
                 },
-                { key : 'name',   title: '物料名称', width: 200 },
-                { key : 'code',   title: '物料编码', width: 130 },
+                { key : 'name',   title: '产品名称', width: 200 },
+                { key : 'code',   title: '产品编码', width: 130 },
                 { key : 'model',  title: '规格/型号', width: 130 },
-                { key : 'desc',   title: '物料描述', minWidth: 150 },
+                { key : 'desc',   title: '产品描述', minWidth: 150 },
                 { slot: 'action', title: '操作', width: 150, align: 'center' },
             ],
             // 产品校验规则
