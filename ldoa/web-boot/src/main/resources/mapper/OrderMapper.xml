@@ -7,7 +7,7 @@
     <sql id="orderFullColumns">
         o.order_id, o.order_sn, o.customer_company, o.customer_contact, o.customer_address,
         o.order_date, o.delivery_date, o.salesperson_id, o.calibrated, o.calibration_info,
-        o.requirement, o.attachment, o.created_at,
+        o.requirement, o.status, o.attachment, o.created_at,
 
         oi.order_item_id, oi.count, oi.comment,
 
@@ -65,6 +65,7 @@
         <result property="calibrationInfo" column="calibration_info"/>
         <result property="requirement"     column="requirement"/>
         <result property="attachment"      column="attachment"/>
+        <result property="status"          column="status"/>
         <result property="createdAt"       column="created_at"/>
 
         <association property="salesperson" resultMap="salespersonMap"/>

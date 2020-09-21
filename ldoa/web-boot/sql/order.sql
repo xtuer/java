@@ -18,6 +18,7 @@ CREATE TABLE `order` (
     calibration_info varchar(1024) DEFAULT '' COMMENT '校准信息',
     requirement      text                     COMMENT '要求',
     attachment       varchar(128)  DEFAULT '' COMMENT '附件 URL',
+    status           int(11)       DEFAULT 1  COMMENT '状态: 0 (已完成), 1 (流转中)',
     order_date       datetime NOT NULL        COMMENT '下订日期',
     delivery_date    datetime NOT NULL        COMMENT '交货日期',
 

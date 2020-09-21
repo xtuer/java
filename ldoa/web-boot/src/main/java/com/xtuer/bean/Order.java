@@ -15,6 +15,8 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class Order {
+    private static final String[] STATUS_LABELS = { "已完成", "流转中" };
+
     /**
      * 订单 ID
      */
@@ -81,6 +83,11 @@ public class Order {
     private Date createdAt;
 
     /**
+     * 状态
+     */
+    private int status;
+
+    /**
      * 订单项
      */
     private List<OrderItem> items = new LinkedList<>();
@@ -89,4 +96,17 @@ public class Order {
      * 销售员
      */
     private User salesperson = new User();
+
+    /**
+     * 获取订单状态 Label
+     *
+     * @return 返回订单状态的 Label
+     */
+    public String getStatuesLabel() {
+        if (status == 0) {
+            return STATUS_LABELS[0];
+        } else {
+            return STATUS_LABELS[1];
+        }
+    }
 }

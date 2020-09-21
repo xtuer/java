@@ -32,7 +32,8 @@ public class OrderService extends BaseService {
         // 1. 如果订单 ID 无效，则说明是创建，分配订单 ID 和订单号
         // 2. 删除订单的订单项
         // 3. 重新创建订单项
-        // 4. 保存订单到数据库
+        // 4. 保存附件
+        // 5. 保存订单到数据库
 
         // [1] 如果订单 ID 无效，则说明是创建，分配订单 ID 和订单号
         if (Utils.isInvalidId(order.getOrderId())) {
@@ -48,7 +49,10 @@ public class OrderService extends BaseService {
             orderMapper.insertOrderItems(order.getItems());
         }
 
-        // [4] 保存订单到数据库
+        // [4] 保存附件
+        order.setAttachment(repoFileService.moveTempFileToRepo(order.getAttachment()));
+
+        // [5] 保存订单到数据库
         orderMapper.upsertOrder(order);
     }
 
