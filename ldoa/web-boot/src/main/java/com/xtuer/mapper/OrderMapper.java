@@ -2,6 +2,7 @@ package com.xtuer.mapper;
 
 import com.xtuer.bean.Order;
 import com.xtuer.bean.OrderItem;
+import com.xtuer.bean.Page;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -18,6 +19,15 @@ public interface OrderMapper {
      * @return 返回查询到的订单，查询不到返回 null
      */
     Order findOrderById(long orderId);
+
+    /**
+     * 查询符合条件的订单
+     *
+     * @param filter 过滤器
+     * @param page   分页对象
+     * @return 返回查询到的订单，查询不到返回空 List
+     */
+    List<Order> findOrders(Order filter, Page page);
 
     /**
      * 插入或者更新订单

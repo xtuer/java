@@ -26,17 +26,45 @@
         WHERE o.order_id = #{orderId}
     </select>
 
+    <!-- 查询符合条件的订单 -->
+    <select id="findOrders" resultMap="orderMap">
+        SELECT <include refid="orderFullColumns"/>
+        FROM `order` o
+            JOIN (
+                SELECT order_id FROM `order`
+                <where>
+                    <if test="filter.orderSn!=null and filter.orderSn!='' ">
+                        AND order_sn LIKE CONCAT('%', #{filter.orderSn},'%')
+                    </if>
+                    <if test="filter.productCodes!=null and filter.productCodes!='' ">
+                        AND product_codes LIKE CONCAT('%', #{filter.productCodes},'%')
+                    </if>
+                    <if test="filter.status > 0">
+                        AND status = #{filter.status}
+                    </if>
+                </where>
+                ORDER BY created_at DESC
+                LIMIT ${page.offset}, ${page.count}
+            ) t ON t.order_id = o.order_id
+            LEFT JOIN order_item oi ON o.order_id = oi.order_id
+            LEFT JOIN product p ON p.product_id = oi.product_id
+            LEFT JOIN user ON user.user_id = o.salesperson_id
+    </select>
+
     <!-- 插入或者更新订单 -->
     <update id="upsertOrder">
         INSERT INTO `order` (order_id, order_sn, customer_company, customer_contact, customer_address,
-            order_date, delivery_date, salesperson_id, calibrated, calibration_info, requirement, attachment)
+            order_date, delivery_date, salesperson_id, calibrated, calibration_info,
+            requirement, attachment, product_codes)
         VALUES (#{orderId}, #{orderSn}, #{customerCompany}, #{customerContact}, #{customerAddress},
-            #{orderDate}, #{deliveryDate}, #{salespersonId}, #{calibrated}, #{calibrationInfo}, #{requirement}, #{attachment})
+            #{orderDate}, #{deliveryDate}, #{salespersonId}, #{calibrated}, #{calibrationInfo},
+            #{requirement}, #{attachment}, #{productCodes})
 
         ON DUPLICATE KEY
         UPDATE customer_company = #{customerCompany}, customer_contact = #{customerContact}, customer_address = #{customerAddress},
             order_date = #{orderDate}, delivery_date = #{deliveryDate}, calibrated = #{calibrated},
-            calibration_info = #{calibrationInfo}, requirement = #{requirement}, attachment = #{attachment}
+            calibration_info = #{calibrationInfo}, requirement = #{requirement},
+            attachment = #{attachment}, product_codes = #{productCodes}
     </update>
 
     <!-- 插入订单项 -->
@@ -55,6 +83,7 @@
     <!-- 订单的结果映射 -->
     <resultMap id="orderMap" type="Order">
         <id property="orderId"             column="order_id"/>
+        <result property="orderSn"         column="order_sn"/>
         <result property="customerCompany" column="customer_company"/>
         <result property="customerContact" column="customer_contact"/>
         <result property="customerAddress" column="customer_address"/>

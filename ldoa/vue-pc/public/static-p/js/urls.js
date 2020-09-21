@@ -30,6 +30,10 @@ const Urls = {
     API_PRODUCTS_BY_ID     : '/api/products/{productId}', // 指定 ID 的产品
     API_PRODUCT_ITEMS      : '/api/productItems',         // 所有产品项
     API_PRODUCT_ITEMS_BY_ID: '/api/productItems/{productItemId}', // 指定 ID 的产品项
+
+    // 订单
+    API_ORDERS: '/api/orders', // 订单
+    API_ORDERS_BY_ID: '/api/orders/{orderId}', // 指定 ID 的订单
 };
 
 window.Urls = Urls;

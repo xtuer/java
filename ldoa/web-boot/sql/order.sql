@@ -18,9 +18,10 @@ CREATE TABLE `order` (
     calibration_info varchar(1024) DEFAULT '' COMMENT '校准信息',
     requirement      text                     COMMENT '要求',
     attachment       varchar(128)  DEFAULT '' COMMENT '附件 URL',
-    status           int(11)       DEFAULT 1  COMMENT '状态: 0 (已完成), 1 (流转中)',
     order_date       datetime NOT NULL        COMMENT '下订日期',
     delivery_date    datetime NOT NULL        COMMENT '交货日期',
+    status           int(11)       DEFAULT 0  COMMENT '状态: 0 (已完成), 1 (流转中)',
+    product_codes    varchar(512)  DEFAULT '' COMMENT '产品编码，使用逗号分隔',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
