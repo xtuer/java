@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `order`;
 
 CREATE TABLE `order` (
     order_id bigint(20) NOT NULL              COMMENT '订单 ID',
-    order_sn varchar(8) NOT NULL              COMMENT '题目类型',
+    order_sn varchar(64) NOT NULL             COMMENT '题目类型',
     customer_company varchar(256)  DEFAULT '' COMMENT '客户单位',
     customer_contact varchar(64)   DEFAULT '' COMMENT '客户联系人',
     customer_address varchar(512)  DEFAULT '' COMMENT '客户收件地址',

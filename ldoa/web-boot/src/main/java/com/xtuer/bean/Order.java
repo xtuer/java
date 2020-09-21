@@ -90,6 +90,11 @@ public class Order {
     private int status;
 
     /**
+     * 订单的产品编码，使用逗号分隔
+     */
+    private String productCodes;
+
+    /**
      * 订单项
      */
     private List<OrderItem> items = new LinkedList<>();
@@ -104,24 +109,11 @@ public class Order {
      *
      * @return 返回订单状态的 Label
      */
-    public String getStatuesLabel() {
+    public String getStatusLabel() {
         if (status >= 0 && status < STATUS_LABELS.length) {
             return STATUS_LABELS[status];
         } else {
             return "未知";
         }
-    }
-
-    /**
-     * 获取订单的产品编码，使用逗号分隔
-     *
-     * @return 返回产品编码字符串
-     */
-    public String getProductCodes() {
-        return items.stream()
-                .map(OrderItem::getProduct)
-                .filter(Objects::nonNull)
-                .map(Product::getCode)
-                .collect(Collectors.joining(", "));
     }
 }

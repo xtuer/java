@@ -33,7 +33,7 @@ public class OrderTest {
 
         Order order = new Order();
         order.setOrderId(1)
-                .setOrderSn("SN-1")
+                .setOrderSn(orderService.nextOrderSn())
                 .setCustomerCompany("Salmon")
                 .setCustomerContact("Alice")
                 .setCustomerAddress("北京")

@@ -7,10 +7,10 @@
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <div style="display: flex">
-                <Input v-model="filter.orderSn" placeholder="请输入订单编号">
-                    <span slot="prepend">订单编号</span>
+                <Input v-model="filter.orderSn" placeholder="请输入订单号">
+                    <span slot="prepend">订单号</span>
                 </Input>
-                <Input v-model="filter.code" placeholder="请输入产品编码">
+                <Input v-model="filter.productCodes" placeholder="请输入产品编码">
                     <span slot="prepend">产品编码</span>
                 </Input>
                 <Button type="primary" icon="ios-search" @click="searchOrders">搜索</Button>
@@ -21,8 +21,8 @@
         <!-- 订单列表 -->
         <Table :data="orders" :columns="columns" :loading="reloading" border>
             <!-- 介绍信息 -->
-            <template slot-scope="{ row: order }" slot="info">
-                ---
+            <template slot-scope="{ row: order }" slot="salesperson">
+                {{ order.salesperson && order.salesperson.nickname }}
             </template>
 
             <!-- 操作按钮 -->
@@ -57,8 +57,10 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'orderSn',   title: '名字', width: 150 },
-                // { slot: 'info',   title: '介绍', minWidth: 500 },
+                { key : 'orderSn',   title: '订单号', width: 180 },
+                { slot: 'salesperson',   title: '销售负责人', minWidth: 500 },
+                { key : 'statusLabel',   title: '状态', width: 150 },
+                { key : 'productCodes',   title: '产品编码 / 数量', width: 150 },
                 { slot: 'action', title: '操作', width: 150, align: 'center' },
             ]
         };
