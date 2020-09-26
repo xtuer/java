@@ -7,8 +7,6 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 订单
@@ -90,7 +88,7 @@ public class Order {
     private int status;
 
     /**
-     * 订单的产品编码，使用逗号分隔
+     * 订单的产品编码，使用逗号分隔，方便搜索
      */
     private String productCodes;
 
