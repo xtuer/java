@@ -1,6 +1,6 @@
 package com.xtuer.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xtuer.util.SecurityUtils;
@@ -21,7 +21,6 @@ import java.util.Set;
 @Setter
 @ToString
 @Accessors(chain = true)
-@JsonIgnoreProperties({ "password" })
 public class User {
     private long userId; // 用户 ID
 
@@ -29,9 +28,12 @@ public class User {
     private String username; // 账号
 
     @NotBlank(message = "密码不能为空")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password; // 密码
 
+    @NotBlank(message = "姓名不能为空")
     private String  nickname; // 姓名或昵称
+
     private String  email;    // 邮件地址
     private String  mobile;   // 手机号码
     private String  phone;    // 固定电话
@@ -85,7 +87,7 @@ public class User {
         Utils.dump(user1);
         System.out.println(user1.getRoles());
 
-        User user2 = new User("Bob", "Passw0rd", Role.ROLE_USER);
+        User user2 = new User("Bob", "Passw0rd", Role.ROLE_SALESPERSON);
         Utils.dump(user2);
         System.out.println(user2.getRoles());
 

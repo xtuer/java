@@ -9,7 +9,7 @@ export default new Router({
             path: '/',
             name: 'home',
             component: () => import(/* webpackChunkName: "common" */ './views/Home.vue'),
-            redirect: { name: 'product-items' },
+            redirect: { name: 'users' },
 
             children: [
                 // 产品项管理
@@ -29,6 +29,12 @@ export default new Router({
                     path: '/orders',
                     name: 'orders',
                     component: () => import(/* webpackChunkName: "product" */ './views/Orders.vue'),
+                },
+                // 系统管理-用户管理
+                {
+                    path: '/users',
+                    name: 'users',
+                    component: () => import(/* webpackChunkName: "product" */ './views/Users.vue'),
                 },
                 {
                     path: '/about',

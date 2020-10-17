@@ -35,7 +35,7 @@ const formatDate = function(date) {
  * @return {String} 返回角色的名字
  */
 const roleName = function(role) {
-    return ROLES.filter(r => r.value === role).map(r => r.name).join('');
+    return ROLES.filter(r => r.value === role).map(r => r.name).join('') || '未知';
 };
 
 /**

@@ -37,7 +37,18 @@ const goBack = function() {
     window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
 };
 
+/**
+ * 判断是否系统管理员
+ *
+ * @param {String} role 角色
+ * @return 是系统管理员返回 true，否则返回 false
+ */
+const isSystemAdmin = function(user) {
+    return user.roles.includes('ROLE_ADMIN_SYSTEM');
+};
+
 export default {
     download,
     goBack,
+    isSystemAdmin,
 };

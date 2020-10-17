@@ -1,12 +1,19 @@
 package com.xtuer.controller;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
+import com.xtuer.mapper.UserMapper;
 import com.xtuer.service.UserService;
+import com.xtuer.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 操作用户信息的控制器
@@ -18,10 +25,14 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     /**
      * 使用用户 ID 查询用户信息
      *
      * 网址: http://localhost:8080/api/users/{userId}
+     * 参数: 无
      *
      * @param userId 用户的 ID
      * @return 查询到时 payload 为用户对象, success 为 true，查询不到时 success 为 false, payload 为 null
@@ -30,6 +41,47 @@ public class UserController extends BaseController {
     public Result<User> findUserById(@PathVariable long userId) {
         User user = userService.findUser(userId);
         return Result.single(user, "ID 为 " + userId + "的用户不存在");
+    }
+
+    /**
+     * 查询用户，nickname 不为空时使用 LIKE 匹配，为空时返回所有用户
+     *
+     * 网址: http://localhost:8080/api/users
+     * 参数:
+     *      nickname   [可选]: 姓名 (使用 LIKE 匹配)
+     *      pageNumber [可选]: 页码
+     *      pageSize   [可选]: 页码
+     *
+     * @param nickname 姓名
+     * @param page     分页
+     * @return payload 为用户数组
+     */
+    @GetMapping(Urls.API_USERS)
+    public Result<List<User>> findUsers(@RequestParam String nickname, Page page) {
+        nickname = StringUtils.trim(nickname);
+        return Result.ok(userMapper.findUsersLikeNickname(nickname, page));
+    }
+
+    /**
+     * 创建用户
+     *
+     * 网址: http://localhost:8080/api/users
+     * 参数: 无
+     * 请求体: 用户的 JSON 字符串
+     *      username (必要): 账号
+     *      nickname (必要): 姓名
+     *      password (必要): 密码
+     *      roles    [可选]: 角色数组
+     *
+     * @param user 用户
+     * @return payload 为用户信息
+     */
+    @PostMapping(Urls.API_USERS)
+    public Result<User> createUser(@RequestBody User user) {
+        // 设置用户的机构 ID，然后再创建
+        long orgId = super.getCurrentOrganizationId();
+        user.setOrgId(orgId);
+        return userService.createUser(user);
     }
 
     /**
@@ -101,13 +153,27 @@ public class UserController extends BaseController {
     /**
      * 重置用户的密码
      * 网址: http://localhost:8080/api/users/{userId}/passwords/reset
+     * 参数: 无
      *
      * @param userId 用户的 ID
      */
     @PutMapping(Urls.API_USER_PASSWORDS_RESET)
-    @ResponseBody
     public Result<String> resetUserPassword(@PathVariable long userId) {
         userService.resetUserPassword(userId);
+        return Result.ok();
+    }
+
+    /**
+     * 删除用户
+     *
+     * 网址: http://localhost:8080/api/users/{userId}
+     * 参数: 无
+     *
+     * @param userId 用户 ID
+     */
+    @DeleteMapping(Urls.API_USERS_BY_ID)
+    public Result<Boolean> deleteUser(@PathVariable long userId) {
+        userService.deleteUser(userId);
         return Result.ok();
     }
 }

@@ -32,13 +32,26 @@
         SELECT <include refid="userColumns"/>
         FROM  user
         WHERE org_id = #{orgId}
-        LIMIT ${offset}, ${count}
+        LIMIT ${page.offset}, ${page.count}
+    </select>
+
+    <!-- 查询用户，nickname 不为空时使用 LIKE 匹配，为空时返回所有用户 -->
+    <select id="findUsersLikeNickname" resultMap="userWithRoles">
+        SELECT <include refid="userColumns"/>, user_role.role AS role
+        FROM  user
+        LEFT JOIN user_role ON user.user_id = user_role.user_id
+        <where>
+            <if test="nickname!=null and nickname!='' ">
+                AND nickname LIKE CONCAT('%', #{nickname},'%')
+            </if>
+        </where>
+        LIMIT ${page.offset}, ${page.count}
     </select>
 
     <!-- 插入或更新用户: 如果 ID 存在或者 org_id + username 的组合存在则进行更新 -->
     <insert id="upsertUser">
         INSERT INTO user (user_id, username, password, nickname, email, mobile, phone, gender, org_id)
-        VALUES (#{userUd}, #{username}, #{password}, #{nickname}, #{email}, #{mobile}, #{phone}, #{gender}, #{orgId})
+        VALUES (#{userId}, #{username}, #{password}, #{nickname}, #{email}, #{mobile}, #{phone}, #{gender}, #{orgId})
 
         ON DUPLICATE KEY
         UPDATE username = #{username}, nickname = #{nickname}, email = #{email}, mobile = #{mobile}, phone = #{phone}
@@ -79,6 +92,16 @@
         INSERT IGNORE INTO user_role(user_id, role) VALUES (#{userId}, #{role})
     </insert>
 
+    <!-- 删除用户 -->
+    <delete id="deleteUser">
+        DELETE FROM user WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 删除用户的所有角色 -->
+    <delete id="deleteUserRoles">
+        DELETE FROM user_role WHERE user_id = #{userId}
+    </delete>
+
     <!-- 用户，包含角色信息 -->
     <resultMap id="userWithRoles" type="User">
         <id     property="userId"   column="user_id"/>
@@ -89,7 +112,7 @@
         <result property="mobile"   column="mobile"/>
         <result property="phone"    column="phone"/>
         <result property="avatar"   column="avatar"/>
-        <result property="orgId"    column="orgId"/>
+        <result property="orgId"    column="org_id"/>
         <result property="gender"   column="gender"/>
         <result property="enabled"  column="enabled"/>
 

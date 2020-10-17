@@ -84,12 +84,43 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 创建用户
+     *
+     * @param user 用户
+     * @return payload 为用户
+     */
+    public Result<User> createUser(User user) {
+        // 1. 账号不能被使用
+        // 2. 数据校验: 账号、姓名和密码不能为空
+        // 3. 创建用户
+
+        // [1] 账号不能被使用
+        if (isUsernameUsed(user.getUsername(), user.getOrgId())) {
+            return Result.fail("账号已经被使用");
+        }
+
+        // [2] 数据校验
+        if (StringUtils.isBlank(user.getUsername())) {
+            return Result.fail("账号不能为空");
+        }
+        if (StringUtils.isBlank(user.getNickname())) {
+            return Result.fail("姓名不能为空");
+        }
+        if (StringUtils.isBlank(user.getPassword())) {
+            return Result.fail("密码不能为空");
+        }
+
+        upsertUser(user);
+        return Result.ok(user);
+    }
+
+    /**
      * 创建或者更新用户，如果用户是新用户则会更新用户的 ID
      *
      * @param user 用户
      */
     @Transactional(rollbackFor = Exception.class)
-    public void createOrUpdateUser(User user) {
+    public void upsertUser(User user) {
         // 1. 如果用户 ID 无效，为其分配一个 ID，加密密码
         // 2. 保存用户到数据库
         // 3. 更新用户 ID: 如果 orgId + username 已经存在，则是更新已存在用户，userId 设置为数据库中对应用户的 ID，而不使用前面设置的
@@ -255,6 +286,17 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 删除用户
+     *
+     * @param userId 用户 ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteUser(long userId) {
+        userMapper.deleteUser(userId);
+        userMapper.deleteUserRoles(userId);
+    }
+
+    /**
      * 根据用户的角色重定向到用户对应的后台页面，管理员重定向到管理员页面，学员重定向到学习中心
      *
      * @param user     用户
@@ -265,10 +307,8 @@ public class UserService extends BaseService {
             response.sendRedirect("/admin");
         } else if (user.hasRole(Role.ROLE_ADMIN_ORG)) {
             response.sendRedirect("/admin-org");
-        } else if (user.hasRole(Role.ROLE_USER)) {
-            response.sendRedirect("/user");
         } else {
-            response.sendRedirect("/");
+            response.sendRedirect("/admin");
         }
     }
 }

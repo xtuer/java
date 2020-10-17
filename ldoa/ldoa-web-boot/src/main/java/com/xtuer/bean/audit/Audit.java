@@ -1,9 +1,14 @@
 package com.xtuer.bean.audit;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.beans.BeanUtils;
 
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -12,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
+@JsonIgnoreProperties({"contentJson"}) // 很重要，如果没有会导致递归
 public class Audit {
     /**
      * 审批类型
@@ -24,9 +30,19 @@ public class Audit {
     private long auditId;
 
     /**
-     * 申请审批人员 ID
+     * 审批申请人的 ID
      */
     private long applicantId;
+
+    /**
+     * 审批目标的 ID
+     */
+    private long targetId;
+
+    /**
+     * 审批目标对象的 JSON 内容，方便前端转为响应对象进行展示
+     */
+    private String targetJson;
 
     /**
      * 是否审批通过
@@ -34,7 +50,33 @@ public class Audit {
     private boolean passed;
 
     /**
+     * 提交审批的时间
+     */
+    private Date createdAt;
+
+    /**
      * 审批项 (审批可能需要多个人进行审核，每个人的就是一项)
      */
-    private List<AuditItem> items;
+    private List<AuditItem> items = new LinkedList<>();
+
+    /**
+     * 获取审的 JSON 内容
+     *
+     * @return 返回审批的 JSON 内容
+     */
+    public String getContentJson() {
+        return Utils.toJson(this);
+    }
+
+    /**
+     * 使用 JSON 字符串重构审批对象
+     *
+     * @param contentJson 审批的 JSON 字符串
+     */
+    public void setContentJson(String contentJson) {
+        try {
+            Audit temp = Utils.fromJson(contentJson, Audit.class);
+            BeanUtils.copyProperties(temp, this, "contentJson");
+        } catch (Exception ignored) {}
+    }
 }

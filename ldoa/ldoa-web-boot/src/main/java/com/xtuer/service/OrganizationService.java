@@ -122,7 +122,7 @@ public class OrganizationService extends BaseService {
             admin.addRole(Role.ROLE_ADMIN_ORG);
             admin.setNickname("机构管理员");
             admin.setOrgId(org.getOrgId());
-            userService.createOrUpdateUser(admin); // 创建管理员
+            userService.upsertUser(admin); // 创建管理员
         }
 
         // [5] 插入或者更新机构

@@ -1,4 +1,4 @@
 #!/bin/bash
-rm -rf ../web-boot/src/main/resources/page-p
+rm -rf ../ldoa-web-boot/src/main/resources/page-p
 
 yarn build

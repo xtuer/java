@@ -3,7 +3,7 @@
 @host = http://localhost:8080
 @json = Content-Type: application/json
 @form = application/x-www-form-urlencoded
-@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjAxOTcwNzYzMDM5Iiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNTk5Mzc4NzYzMDU3IiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.92689f353b70a68ac795b9ba9ac7126c
+@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjA1NDkxNjAzMzMwIiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNjAyODk5NjAzNTA4IiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.2552e8b6259f1e72dbe0112ce64f9d71
 
 ### 机构
 GET {{host}}/api/orgs
@@ -27,6 +27,17 @@ Content-Type: application/x-www-form-urlencoded
 
 gender=1&_method=PATCH
 
+### 创建用户
+POST {{host}}/api/users
+Content-Type: application/json
+
+{
+    "username": "jack",
+    "nickname": "Jack",
+    "password": "111111",
+    "roles": ["ROLE_STUDENT"]
+}
+
 ### 页面异常
 GET {{host}}/api/demo/exception
 X-Requested-With: XMLHttpRequest
@@ -45,7 +56,6 @@ name=中文字符串
 ### 创建或者更新产品
 PUT {{host}}/api/products/0
 Content-Type: application/json
-X-Requested-With: XMLHttpRequest
 auth-token: {{token}}
 
 {

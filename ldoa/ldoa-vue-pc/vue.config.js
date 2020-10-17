@@ -21,7 +21,7 @@ module.exports = {
     },
 
     // yarn build 的输出目录
-    outputDir: '../web-boot/src/main/resources/page-p',
+    outputDir: '../ldoa-web-boot/src/main/resources/page-p',
     assetsDir: 'static-p',
     productionSourceMap: false, // 不生成 map 文件
     configureWebpack: (config) => {

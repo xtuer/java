@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 /**
  * 审批项目
  */
@@ -17,9 +19,19 @@ public class AuditItem {
     private AuditType type;
 
     /**
-     * 审批人员的 ID
+     * 审批 ID
      */
-    private long auditorId;
+    private long auditId;
+
+    /**
+     * 审批项 ID
+     */
+    private int auditItemId;
+
+    /**
+     * 审批申请人的 ID
+     */
+    private long applicantId;
 
     /**
      * 审批目标的 ID
@@ -27,12 +39,22 @@ public class AuditItem {
     private long targetId;
 
     /**
-     * 审批所属阶段
+     * 审批人员的 ID
+     */
+    private long auditorId;
+
+    /**
+     * 审批的阶段，每个审批可能需要多阶段，多个人进行审批
      */
     private int step;
 
     /**
-     * 审批状态: 0 (已创建), 1 (等待审批), 2 (拒绝), 3 (通过)
+     * 审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
      */
     private int status;
+
+    /**
+     * 处理时间
+     */
+    private Date processedAt;
 }

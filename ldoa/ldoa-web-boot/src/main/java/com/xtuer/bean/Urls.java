@@ -39,6 +39,7 @@ public interface Urls {
     String PAGE_USER_BACKEND       = "/userBackend";             // 访问当前登录用户的后台页面地址
 
     // 用户
+    String API_USERS                = "/api/users";                          // 用户
     String API_USERS_BY_ID          = "/api/users/{userId}";                 // 指定 ID 的用户
     String API_USER_PASSWORDS_RESET = "/api/users/{userId}/passwords/reset"; // 重置密码
 

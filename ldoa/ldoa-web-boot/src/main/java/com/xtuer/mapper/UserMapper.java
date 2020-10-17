@@ -1,5 +1,6 @@
 package com.xtuer.mapper;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Role;
 import com.xtuer.bean.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,12 +32,20 @@ public interface UserMapper {
     /**
      * 查找机构的用户
      *
-     * @param orgId  机构 ID
-     * @param offset 起始位置
-     * @param count  数量
+     * @param orgId 机构 ID
+     * @param page  分页
      * @return 返回用户列表
      */
-    List<User> findUsersByOrgId(long orgId, int offset, int count);
+    List<User> findUsersByOrgId(long orgId, Page page);
+
+    /**
+     * 查询用户，nickname 不为空时使用 LIKE 匹配，为空时返回所有用户
+     *
+     * @param nickname 姓名
+     * @param page     分页
+     * @return 返回用户列表
+     */
+    List<User> findUsersLikeNickname(String nickname, Page page);
 
     /**
      * 插入或更新用户: 如果 ID 存在或者 school_id + username 的组合存在则进行更新
@@ -101,4 +110,17 @@ public interface UserMapper {
      */
     void insertUserRole(long userId, Role role);
 
+    /**
+     * 删除用户
+     *
+     * @param userId 用户 ID
+     */
+    void deleteUser(long userId);
+
+    /**
+     * 删除用户的所有角色
+     *
+     * @param userId 用户 ID
+     */
+    void deleteUserRoles(long userId);
 }

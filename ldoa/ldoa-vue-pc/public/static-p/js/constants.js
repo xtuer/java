@@ -2,6 +2,19 @@
  * 定义常量为全局变量: window.VAR_NAME = xxx;
  */
 
+// 角色
+window.ROLES = [
+    { value: 'ROLE_ADMIN_SYSTEM', name: '系统管理员' },
+    { value: 'ROLE_SALESPERSON', name: '销售' }, // ROLE_SALESPERSON("销售");
+];
+
+// 性别
+window.GENDERS = [
+    { value: 0, name: '未选' },
+    { value: 1, name: '男' },
+    { value: 2, name: '女' },
+];
+
 // 题目类型
 window.QUESTION_TYPE = {
     SINGLE_CHOICE  : 1, // 单选题
@@ -49,21 +62,6 @@ window.SUBJECTS = ['语文', '数学', '英语', '物理', '化学', '生物', '
 window.PROVINCES = ['北京', '上海', '天津', '重庆', '河北', '辽宁', '黑龙江', '吉林', '山东', '山西', '安徽', '浙江',
     '江苏', '江西', '广东', '福建', '海南', '河南', '湖北', '湖南', '四川', '云南', '贵州', '陕西', '甘肃',
     '青海', '内蒙古', '广西', '西藏', '新疆', '香港', '澳门', '台湾',
-];
-
-// 角色
-window.ROLES = [
-    { name: '学员', value: 'ROLE_STUDENT' },
-    { name: '班主任', value: 'ROLE_FORM_TEACHER' },
-    { name: '项目审批员', value: 'ROLE_PROJECT_APPROVER' },
-    { name: '机构管理员', value: 'ROLE_ADMIN_ORG' }
-];
-
-// 性别
-window.GENDERS = [
-    { value: 0, name: '未选' },
-    { value: 1, name: '男' },
-    { value: 2, name: '女' },
 ];
 
 // 身份证件类型

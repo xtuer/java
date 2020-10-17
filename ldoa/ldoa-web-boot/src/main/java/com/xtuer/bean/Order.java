@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class Order {
-    private static final String[] STATUS_LABELS = { "未知", "已完成", "进行中", "挂起中" };
+    private static final String[] STATUS_LABELS = { "初始化", "待审批", "审批拒绝", "审批完成", "完成" };
 
     /**
      * 订单 ID
@@ -83,7 +83,7 @@ public class Order {
     private Date createdAt;
 
     /**
-     * 状态
+     * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
     private int status;
 

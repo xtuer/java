@@ -53,6 +53,12 @@ export default {
                         { label: '维修/保养订单', name: 'question-statistics' },
                     ]
                 },
+                { label: '系统管理', icon: 'ios-color-fill', menuItems:
+                    [
+                        { label: '用户管理', name: 'users'        },
+                        { label: '审批配置', name: 'audit-config' },
+                    ]
+                },
                 { label: '其他菜单', icon: 'md-cog', menuItems:
                     [
                         { label: '订单管理', name: 'admin-courses'       },
