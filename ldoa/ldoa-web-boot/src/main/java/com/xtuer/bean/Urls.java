@@ -78,4 +78,5 @@ public interface Urls {
 
     // 审批
     String API_AUDITS = "/api/audits"; // 审批
+    String API_AUDITS_BY_TYPE = "/api/audits/{type}"; // 指定类型的审批
 }

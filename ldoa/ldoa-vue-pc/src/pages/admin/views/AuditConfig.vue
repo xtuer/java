@@ -62,11 +62,11 @@ export default {
     props: {},
     data() {
         return {
-            auditType   : { value       : '', name: '' }, // 当前的审批类型
+            auditType   : { value: '', name: '' }, // 当前的审批类型
             auditConfigs: [], // 所有审批的配置
+            auditConfig : {}, // 当前业务的配置: [{ type : 'ORDER', uid: 1, users: [{ nickname: 'Bob', userId: '1' }] }]
             allAuditors : [], // 系统的所有用户
             restAuditors: [], // 当前业务未分配审批的用户
-            auditConfig : {}, // 当前业务的配置: [{ type : 'ORDER', uid: 1, users: [{ nickname: 'Bob', userId: '1' }] }]
             sortables   : [], // 可拖拽对象
         };
     },

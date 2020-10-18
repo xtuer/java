@@ -7,6 +7,11 @@
         SELECT type, content_json FROM audit_config
     </select>
 
+    <!-- 查询指定类型的审批配置 -->
+    <select id="findAuditConfigByType" resultType="AuditConfig">
+        SELECT type, content_json FROM audit_config WHERE type = #{type}
+    </select>
+
     <!-- 插入或者更新审批配置 -->
     <insert id="upsertAuditConfig">
         INSERT INTO audit_config (type, content_json) VALUES (#{type}, #{contentJson})
