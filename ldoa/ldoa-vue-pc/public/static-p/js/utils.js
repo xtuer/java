@@ -624,7 +624,7 @@ Utils.clone = function(item) {
  * @return{String} 返回唯一 ID
  */
 Utils.uid = function() {
-    return Date.now() + '-' + Math.floor(Math.random() * 10000000000);
+    return 'uid-' + Date.now() + '-' + Math.floor(Math.random() * 10000000000);
 };
 
 /**
@@ -647,6 +647,16 @@ Utils.handleResponse = function(data, success, message, showSuccessMessage = fal
         Message.error(message);
         return Promise.reject(message);
     }
+};
+
+/**
+ * 控制台输出传入的对象
+ *
+ * @param {Object} obj 输出的对象
+ * @return 无
+ */
+Utils.dump = function(obj) {
+    console.log(JSON.stringify(obj, null, 4));
 };
 
 // 定义为全局变量

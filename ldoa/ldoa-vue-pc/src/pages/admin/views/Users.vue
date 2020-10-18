@@ -78,9 +78,9 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'nickname', title: '姓名', width: 150 },
-                { key : 'username', title: '账号', width: 150 },
+                { key : 'username', title: '账号', width: 150, sortable: true },
                 { key : 'mobile',   title: '手机', width: 150 },
-                { slot: 'roles',    title: '角色' },
+                { slot: 'roles',    title: '角色', sortable: true },
                 { slot: 'action',   title: '操作', width: 180, align: 'center' },
             ],
 

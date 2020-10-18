@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xtuer.mapper.AuditMapper">
+    <!-- 获取所有的审批配置 -->
+    <select id="findAuditConfigs" resultType="AuditConfig">
+        SELECT type, content_json FROM audit_config
+    </select>
+
+    <!-- 插入或者更新审批配置 -->
+    <insert id="upsertAuditConfig">
+        INSERT INTO audit_config (type, content_json) VALUES (#{type}, #{contentJson})
+
+        ON DUPLICATE KEY
+        UPDATE content_json = #{contentJson}
+    </insert>
+</mapper>

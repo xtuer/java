@@ -57,7 +57,7 @@ public class UserController extends BaseController {
      * @return payload 为用户数组
      */
     @GetMapping(Urls.API_USERS)
-    public Result<List<User>> findUsers(@RequestParam String nickname, Page page) {
+    public Result<List<User>> findUsers(@RequestParam(required = false) String nickname, Page page) {
         nickname = StringUtils.trim(nickname);
         return Result.ok(userMapper.findUsersLikeNickname(nickname, page));
     }

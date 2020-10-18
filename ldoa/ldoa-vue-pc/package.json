@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "dayjs": "^1.8.28",
+    "sortablejs": "^1.12.0",
     "view-design": "^4.0.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
@@ -84,6 +85,7 @@
       "quote-props": 0,
       "no-lonely-if": 0,
       "no-constant-condition": 0,
+      "no-new": 0,
       "yoda": 0
     },
     "parserOptions": {

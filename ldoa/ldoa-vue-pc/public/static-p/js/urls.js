@@ -33,6 +33,9 @@ const Urls = {
     // 订单
     API_ORDERS: '/api/orders', // 订单
     API_ORDERS_BY_ID: '/api/orders/{orderId}', // 指定 ID 的订单
+
+    // 审批
+    API_AUDITS: '/api/audits', // 审批
 };
 
 window.Urls = Urls;

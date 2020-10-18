@@ -8,6 +8,12 @@ window.ROLES = [
     { value: 'ROLE_SALESPERSON', name: '销售' }, // ROLE_SALESPERSON("销售");
 ];
 
+// 升级类型
+window.AUDIT_TYPES = [
+    { value: 'ORDER', name: '订单' },
+    { value: 'MAINTAIN', name: '维修 / 保养' },
+];
+
 // 性别
 window.GENDERS = [
     { value: 0, name: '未选' },

@@ -36,6 +36,12 @@ export default new Router({
                     name: 'users',
                     component: () => import(/* webpackChunkName: "product" */ './views/Users.vue'),
                 },
+                // 审批配置
+                {
+                    path: '/audit-config',
+                    name: 'audit-config',
+                    component: () => import(/* webpackChunkName: "product" */ './views/AuditConfig.vue'),
+                },
                 {
                     path: '/about',
                     name: 'about',
