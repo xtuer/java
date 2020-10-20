@@ -1,11 +1,9 @@
 package com.xtuer.bean.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -58,25 +56,4 @@ public class Audit {
      * 审批项 (审批可能需要多个人进行审核，每个人的就是一项)
      */
     private List<AuditItem> items = new LinkedList<>();
-
-    /**
-     * 获取审的 JSON 内容
-     *
-     * @return 返回审批的 JSON 内容
-     */
-    public String getContentJson() {
-        return Utils.toJson(this);
-    }
-
-    /**
-     * 使用 JSON 字符串重构审批对象
-     *
-     * @param contentJson 审批的 JSON 字符串
-     */
-    public void setContentJson(String contentJson) {
-        try {
-            Audit temp = Utils.fromJson(contentJson, Audit.class);
-            BeanUtils.copyProperties(temp, this, "contentJson");
-        } catch (Exception ignored) {}
-    }
 }

@@ -127,15 +127,15 @@ export default {
 
             // [4] 创建 sortable 对象
             this.$nextTick(() => {
-                new Sortable(document.querySelector('#rest-auditors'), { group: 'shared', animation: 150, onEnd: this.onDrop });
+                new Sortable(document.querySelector('#rest-auditors'), { group: 'shared', animation: 150, onAdd: this.onAdd });
 
                 for (let step of this.auditConfig.steps) {
-                    new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onEnd: this.onDrop });
+                    new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onAdd });
                 }
             });
         },
         // 拖拽放下用户的处理函数
-        onDrop(event) {
+        onAdd(event) {
             // 1. 判断来源和目标是 auditors 还是 step
             // 2. 找到 from 和 to 的对象 (统一放到 from 和 to 的 auditors 中，方便处理)
             // 3. 从 from.auditors 中删除，添加到 to.auditors 中
@@ -165,7 +165,7 @@ export default {
                 from = this.findStep(event.from.getAttribute('data-id'));
                 to   = { auditors: this.restAuditors };
             } else {
-                log.error('onDrop 的 from 或者 to 不对');
+                log.error('onAdd 的 from 或者 to 不对');
                 return;
             }
 
@@ -181,7 +181,7 @@ export default {
 
             // 创建 sortable 对象
             this.$nextTick(() => {
-                new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onEnd: this.onDrop });
+                new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onAdd });
             });
         },
         // 查询 stepUid 对应的 step 对象
