@@ -14,7 +14,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 -->
 
 <template>
-    <Modal :value="visible" title="订单编辑" :mask-closable="false" :width="900"
+    <Modal :value="visible" :title="title" :mask-closable="false" :width="900"
             class="order-edit-modal"
             :styles="{ top: '40px', marginBottom: '40px' }"
             @on-visible-change="showEvent">
@@ -43,15 +43,15 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <!-- 产品列表 -->
                 <Table :data="orderClone.items" :columns="orderItemColumns" size="small" border>
                     <!-- 产品名称 -->
-                    <template slot-scope="{ row: item, index }" slot="name">
+                    <template slot-scope="{ row: item }" slot="name">
                         {{ item.product.name }}
                     </template>
                     <!-- 产品编码 -->
-                    <template slot-scope="{ row: item, index }" slot="code">
+                    <template slot-scope="{ row: item }" slot="code">
                         {{ item.product.code }}
                     </template>
                     <!-- 规格/型号 -->
-                    <template slot-scope="{ row: item, index }" slot="model">
+                    <template slot-scope="{ row: item }" slot="model">
                         {{ item.product.model }}
                     </template>
                     <!-- 数量 -->
@@ -145,6 +145,15 @@ export default {
                 { slot: 'comment', title: '备注', minWidth: 150 },
                 { slot: 'action',  title: '操作', width: 70, align: 'center' },
             ],
+        };
+    },
+    computed: {
+        title() {
+            if (this.orderClone.orderId === '0') {
+                return '订单编辑';
+            } else {
+                return `订单编辑: ${this.orderClone.orderSn}`;
+            }
         }
     },
     methods: {

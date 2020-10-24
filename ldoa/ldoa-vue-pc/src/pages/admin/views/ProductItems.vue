@@ -22,10 +22,8 @@
         <Table :data="items" :columns="columns" :loading="reloading" border>
             <!-- 操作按钮 -->
             <template slot-scope="{ row: item }" slot="action">
-                <div class="column-buttons">
-                    <Button type="primary" size="small" @click="editItem(item)">编辑</Button>
-                    <Button type="error" size="small" @click="deleteItem(item)">删除</Button>
-                </div>
+                <Button type="primary" size="small" @click="editItem(item)">编辑</Button>
+                <Button type="error" size="small" @click="deleteItem(item)">删除</Button>
             </template>
         </Table>
 
@@ -100,7 +98,7 @@ export default {
                 { key : 'material', title: '材质', width: 110 },
                 { key : 'unit',     title: '单位', width: 110 },
                 { key : 'desc',     title: '物料描述', minWidth: 150 },
-                { slot: 'action',   title: '操作', width: 150, align: 'center' },
+                { slot: 'action',   title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             itemRules: {
                 code: [

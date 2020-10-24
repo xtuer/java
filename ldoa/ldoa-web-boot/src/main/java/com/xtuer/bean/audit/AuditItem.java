@@ -37,6 +37,11 @@ public class AuditItem {
     private long applicantId;
 
     /**
+     * 审批申请人的名字
+     */
+    private String applicantNickname;
+
+    /**
      * 审批目标的 ID
      */
     private long targetId;
@@ -65,6 +70,11 @@ public class AuditItem {
      * 处理时间
      */
     private Date processedAt;
+
+    /**
+     * 创建时间
+     */
+    private Date createdAt;
 
     /**
      * 审批意见

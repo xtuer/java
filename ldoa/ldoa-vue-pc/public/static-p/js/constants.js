@@ -8,10 +8,18 @@ window.ROLES = [
     { value: 'ROLE_SALESPERSON', name: '销售' }, // ROLE_SALESPERSON("销售");
 ];
 
-// 升级类型
+// 审批类型
 window.AUDIT_TYPES = [
-    { value: 'ORDER', name: '订单' },
+    { value: 'ORDER', name: '销售订单' },
     { value: 'MAINTAIN', name: '维修 / 保养' },
+];
+
+// 审批项状态
+window.AUDIT_ITEM_STATUS = [
+    { value: 1,  label: '待审批' },
+    { value: 2,  label: '拒绝' },
+    { value: 3,  label: '通过' },
+    { value: -1, label: '所有' },
 ];
 
 // 性别

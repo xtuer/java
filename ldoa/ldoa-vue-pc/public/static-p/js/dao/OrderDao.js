@@ -70,7 +70,6 @@ export default class {
         return Rest.update(Urls.API_ORDERS_BY_ID, { params: { orderId: order.orderId }, data: order, json: true })
             .then(({ data: newOrder, success, message }) => {
                 return Utils.handleResponse(newOrder, success, message);
-            }
-        );
+            });
     }
 }

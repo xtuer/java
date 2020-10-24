@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.audit.AuditConfig;
+import com.xtuer.bean.audit.AuditItem;
 import com.xtuer.bean.audit.AuditType;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.service.AuditService;
@@ -62,6 +63,38 @@ public class AuditController {
     @PutMapping(Urls.API_AUDITS)
     public Result<Boolean> upsertAuditConfigs(@RequestBody List<AuditConfig> configs) {
         auditService.upsertAuditConfigs(configs);
+        return Result.ok();
+    }
+
+    /**
+     * 查询审批项:
+     *     * 审批员 ID 大于 0，则查询此审批员收到的审批
+     *     * 申请人 ID 大于 0，则查询此人发起的审批
+     *     * status 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+     *
+     * 网址: http://localhost:8080/api/audit-items?auditorId=1
+     * 参数:
+     *      applicantId [可选]: 审批申请人 ID
+     *      auditorId   [可选]: 审批员 ID
+     *      status      [可选]: 审批项状态
+     *
+     * @return payload 为审批项数组
+     */
+    @GetMapping(Urls.API_AUDIT_ITEMS)
+    public Result<List<AuditItem>> findAuditItemsByAuditorIdAndStatus(
+            @RequestParam(required = false, defaultValue = "0") long applicantId,
+            @RequestParam(required = false, defaultValue = "0") long auditorId,
+            @RequestParam(required = false, defaultValue = "-1") int status) {
+        // 审批员 ID 大于 0，则查询此审批员收到的审批
+        if (auditorId > 0) {
+            return Result.ok(auditMapper.findAuditItemsByAuditorIdAndStatus(auditorId, status));
+        }
+
+        // 申请人 ID 大于 0，则查询此人发起的审批
+        if (applicantId > 0) {
+            return Result.fail();
+        }
+
         return Result.ok();
     }
 }

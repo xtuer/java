@@ -9,7 +9,7 @@ export default new Router({
             path: '/',
             name: 'home',
             component: () => import(/* webpackChunkName: "common" */ './views/Home.vue'),
-            redirect: { name: 'users' },
+            redirect: { name: 'orders' },
 
             children: [
                 // 产品项管理
@@ -41,6 +41,19 @@ export default new Router({
                     path: '/audit-config',
                     name: 'audit-config',
                     component: () => import(/* webpackChunkName: "product" */ './views/AuditConfig.vue'),
+                },
+                // 个人中心
+                // 我收到的审批
+                {
+                    path: '/audit-received',
+                    name: 'audit-received',
+                    component: () => import(/* webpackChunkName: "product" */ './views/AuditReceived.vue'),
+                },
+                // 我发起的审批
+                {
+                    path: '/audit-request',
+                    name: 'audit-request',
+                    component: () => import(/* webpackChunkName: "product" */ './views/AuditRequest.vue'),
                 },
                 {
                     path: '/about',

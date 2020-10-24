@@ -70,10 +70,14 @@
     </delete>
 
     <!-- 查询审批员需要审批的审批项 (status 为 -1 时查询全部) -->
-    <select id="findAuditItemsByAuditorIdAndStatus">
-        SELECT ai.*, a.content_json
+    <select id="findAuditItemsByAuditorIdAndStatus" resultType="AuditItem">
+        SELECT ai.type, ai.audit_id, ai.audit_item_id, ai.applicant_id, ai.target_id, ai.auditor_id,
+            ai.step, ai.status, ai.comment, ai.processed_at, ai.created_at,
+            u.nickname AS applicant_nickname,
+            a.target_json
         FROM audit_item ai
         LEFT JOIN audit a ON a.audit_id = ai.audit_id
+        LEFT JOIN user u ON u.user_id = ai.applicant_id
 
         <where>
             auditor_id = #{auditorId}

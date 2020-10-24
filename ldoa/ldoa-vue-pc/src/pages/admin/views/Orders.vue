@@ -19,15 +19,41 @@
 
         <!-- 订单列表 -->
         <Table :data="orders" :columns="orderColumns" :loading="reloading" border>
-            <!-- 介绍信息 -->
+            <!-- 订单编号 -->
+            <template slot-scope="{ row: order }" slot="orderSn">
+                <a>{{ order.orderSn }}</a>
+            </template>
+
+            <!-- 客户单位 -->
+            <template slot-scope="{ row: order }" slot="customer">
+                <Poptip trigger="hover" placement="top" transfer width="250">
+                    <div>{{ order.customerCompany }}</div>
+
+                    <div slot="content">
+                        <div>联系人名: {{ order.customerContact }}</div>
+                        <div>客户单位: {{ order.customerCompany }}</div>
+                        <div>收货地址: {{ order.customerAddress }}</div>
+                    </div>
+                </Poptip>
+            </template>
+
+            <!-- 销售员 -->
             <template slot-scope="{ row: order }" slot="salesperson">
                 {{ order.salesperson && order.salesperson.nickname }}
+            </template>
+
+            <!-- 订单日期 -->
+            <template slot-scope="{ row: order }" slot="orderDate">
+                {{ order.orderDate | formatDate}}
+            </template>
+            <template slot-scope="{ row: order }" slot="deliveryDate">
+                {{ order.deliveryDate | formatDate }}
             </template>
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
                 <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+                <Button type="info" size="small">详情</Button>
             </template>
         </Table>
 
@@ -64,11 +90,14 @@ export default {
             editedOrderId : '0',   // 编辑的订单 ID
             orderColumns: [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'orderSn',   title: '订单号', width: 180 },
-                { slot: 'salesperson',   title: '销售负责人', minWidth: 500 },
-                { key : 'productCodes',   title: '产品编码', width: 250 },
-                { key : 'statusLabel',   title: '状态', width: 150, align: 'center' },
-                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action-buttons' },
+                { slot: 'orderSn',   title: '订单号', width: 180 },
+                { slot: 'customer', title: '客户单位', minWidth: 180, className: 'table-poptip' },
+                { slot: 'orderDate',   title: '订单日期', width: 120, align: 'center' },
+                { slot: 'deliveryDate',   title: '交货日期', width: 120, align: 'center' },
+                { key : 'productCodes',   title: '产品编码', width: 150, tooltip: true },
+                { slot: 'salesperson',   title: '销售负责人', width: 120 },
+                { key : 'statusLabel',   title: '状态', width: 120, align: 'center' },
+                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
         };
     },
@@ -105,7 +134,7 @@ export default {
                 this.editedOrderId = order.orderId;
             } else {
                 // 创建订单
-                this.editedOrderId = '0'
+                this.editedOrderId = '0';
             }
 
             this.orderEditModal = true;
@@ -138,6 +167,12 @@ export default {
                 width: 300px;
             }
         }
+    }
+}
+
+.table-poptip {
+    .ivu-poptip, .ivu-poptip-rel {
+        display: block;
     }
 }
 </style>

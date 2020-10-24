@@ -35,4 +35,26 @@ export default class AuditDao {
             return Utils.handleResponse(null, success, message);
         });
     }
+
+    /**
+     * 查询审批项:
+     *     * 审批员 ID 大于 0，则查询此审批员收到的审批
+     *     * 申请人 ID 大于 0，则查询此人发起的审批
+     *     * status 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+     *
+     * 网址: http://localhost:8080/api/audit-items?auditorId=1
+     * 参数:
+     *      applicantId [可选]: 审批申请人 ID
+     *      auditorId   [可选]: 审批员 ID
+     *      status      [可选]: 审批项状态
+     *
+     * @param {Long} auditorId 审批员 ID
+     * @param {Int} status     审批项状态
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为审批项的数组，reject 的参数为错误信息
+     */
+    static findAuditItemsByAuditorIdAndStatus(auditorId, status) {
+        return Rest.get(Urls.API_AUDIT_ITEMS, { data: { auditorId, status } }).then(({ data: auditItems, success, message }) => {
+            return Utils.handleResponse(auditItems, success, message);
+        });
+    }
 }

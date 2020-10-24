@@ -37,7 +37,7 @@ export default {
     data() {
         return {
             activeMenuItemName: '', // 当前菜单项名字
-            openSubMenuIndexes: [], // 展开的子菜单下标
+            openSubMenuIndexes: [0, 1, 2], // 展开的子菜单下标
 
             // 所有菜单项，每个菜单项有不同的权限
             subMenus: [
@@ -50,7 +50,13 @@ export default {
                 { label: '订单系统', icon: 'logo-usd', menuItems:
                     [
                         { label: '销售订单', name: 'orders' },
-                        { label: '维修/保养订单', name: 'question-statistics' },
+                        { label: '维保订单', name: 'question-statistics' },
+                    ]
+                },
+                { label: '个人中心', icon: 'ios-people', menuItems:
+                    [
+                        { label: '发起的审批', name: 'audit-request'  },
+                        { label: '收到的审批', name: 'audit-received' },
                     ]
                 },
                 { label: '系统管理', icon: 'ios-color-fill', menuItems:
@@ -128,6 +134,10 @@ export default {
 
             .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):after {
                 background: #5cadff;
+            }
+
+            .ivu-menu-item {
+                padding-left: 50px !important;
             }
         }
 

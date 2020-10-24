@@ -677,7 +677,7 @@ Utils.stringToDate = function(date) {
     } else {
         return '';
     }
-}
+};
 
 // 定义为全局变量
 window.Utils = Utils;

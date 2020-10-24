@@ -18,10 +18,10 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: user }" slot="action">
-                <div v-if="!isSystemAdmin(user)" class="column-buttons">
+                <template v-if="!isSystemAdmin(user)">
                     <Button type="primary" size="small" @click="resetPassword(user)">重置密码</Button>
                     <Button type="error" size="small" @click="deleteUser(user)">删除</Button>
-                </div>
+                </template>
             </template>
         </Table>
 
@@ -81,7 +81,7 @@ export default {
                 { key : 'username', title: '账号', width: 150, sortable: true },
                 { key : 'mobile',   title: '手机', width: 150 },
                 { slot: 'roles',    title: '角色', sortable: true },
-                { slot: 'action',   title: '操作', width: 180, align: 'center' },
+                { slot: 'action',   title: '操作', width: 180, align: 'center', className: 'table-action' },
             ],
 
             userClone: {},    // 用于编辑的用户

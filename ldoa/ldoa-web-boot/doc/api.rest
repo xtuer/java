@@ -75,3 +75,8 @@ X-Requested-With: XMLHttpRequest
 auth-token: {{token}}
 
 name=摄像头&code=SXT-1&type=配件&model=SXT&standard=GB12&material=玻璃
+
+### 管理员收到的审批
+GET {{host}}/api/audit-items
+
+auditorId=1&status=-1

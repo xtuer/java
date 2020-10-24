@@ -83,6 +83,7 @@ public class OrderService extends BaseService {
             order.setOrderId(super.nextId());
             order.setOrderSn(nextOrderSn());
             order.setSalespersonId(salesperson.getUserId());
+            order.setSalesperson(salesperson);
             order.setStatus(1); // 状态为等待审批
         }
 

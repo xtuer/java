@@ -32,7 +32,7 @@
             <div class="title">审批流程</div>
             <div class="content audit-steps">
                 <template v-for="(step, index) in auditConfig.steps">
-                    <EditableLabel v-model="step.desc" style="margin-bottom: 10px">审批说明:</EditableLabel>
+                    <EditableLabel v-model="step.desc" :key="'desc-' + step.uid" style="margin-bottom: 10px">审批说明:</EditableLabel>
 
                     <!-- 审批员 -->
                     <div :key="'step-' + step.uid" class="audit-step" :id="step.uid" :data-id="step.uid">

@@ -36,6 +36,7 @@ const Urls = {
 
     // 审批
     API_AUDITS: '/api/audits', // 审批
+    API_AUDIT_ITEMS: '/api/audit-items' // 审批项
 };
 
 window.Urls = Urls;

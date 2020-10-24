@@ -69,7 +69,7 @@ public class AuditService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson) {
         // 1. 查询审批配置
-        // 2. 创建审批
+        // 2. 查询审批，不存在则创建
         // 3. 创建审批项
         // 4. 设置 step 为 1 的审批项的状态为 1 (待审批)
         // 5. 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
@@ -85,27 +85,33 @@ public class AuditService extends BaseService {
             return Result.fail("没有配置审批流程: " + type);
         }
 
-        // [2] 创建审批
-        Audit audit = new Audit();
-        audit.setType(type)
-                .setAuditId(super.nextId())
-                .setApplicantId(applicant.getUserId())
-                .setTargetId(targetId)
-                .setTargetJson(targetJson);
+        // [2] 查询审批，不存在则创建
+        Audit audit = auditMapper.findAuditByTargetIdAndType(targetId, type);
+
+        if (audit == null) {
+            audit = new Audit()
+                    .setType(type)
+                    .setAuditId(super.nextId())
+                    .setApplicantId(applicant.getUserId())
+                    .setTargetId(targetId);
+        }
+
+        audit.setTargetJson(targetJson);
 
         // [3] 创建审批项
+        final Audit back = audit;
         config.getSteps().forEach(step -> {
             step.getAuditors().forEach(auditor -> {
                AuditItem item = new AuditItem()
                        .setType(type)
-                       .setAuditId(audit.getAuditId())
+                       .setAuditId(back.getAuditId())
                        .setAuditItemId(super.nextId())
                        .setApplicantId(applicant.getUserId())
                        .setTargetId(targetId)
                        .setAuditorId(auditor.getUserId())
                        .setStep(step.getStep())
                        .setStatus(0);
-               audit.getItems().add(item);
+                back.getItems().add(item);
             });
         });
 

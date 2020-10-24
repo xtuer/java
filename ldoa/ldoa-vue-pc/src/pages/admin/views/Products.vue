@@ -22,10 +22,8 @@
         <Table :data="products" :columns="productColumns" :loading="reloading" border>
             <!-- 操作按钮 -->
             <template slot-scope="{ row: product }" slot="action">
-                <div class="column-buttons">
-                    <Button type="primary" size="small" @click="editProduct(product)">编辑</Button>
-                    <Button type="error" size="small" @click="deleteProduct(product)">删除</Button>
-                </div>
+                <Button type="primary" size="small" @click="editProduct(product)">编辑</Button>
+                <Button type="error" size="small" @click="deleteProduct(product)">删除</Button>
             </template>
         </Table>
 
@@ -118,7 +116,7 @@ export default {
                 { key : 'code',   title: '产品编码', width: 130 },
                 { key : 'model',  title: '规格/型号', width: 130 },
                 { key : 'desc',   title: '产品描述', minWidth: 150 },
-                { slot: 'action', title: '操作', width: 150, align: 'center' },
+                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             // 产品校验规则
             productRules: {
