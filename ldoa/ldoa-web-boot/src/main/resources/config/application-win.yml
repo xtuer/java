@@ -2,5 +2,6 @@
 # gradle bootRun --args='--spring.profiles.active=win'
 
 app.dir.base: C:/temp/xtuer
-logging.level.com.xtuer: DEBUG
 spring.thymeleaf.cache : false
+logging.level.com.xtuer: DEBUG
+# logging.level.org.springframework.transaction.interceptor: TRACE

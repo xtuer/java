@@ -1,9 +1,12 @@
 package com.xtuer.bean;
 
+import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,30 +33,35 @@ public class Order {
     /**
      * 客户单位
      */
+    @NotBlank(message = "客户单位不能为空")
     private String customerCompany;
 
     /**
      * 客户联系人
      */
+    @NotBlank(message = "客户联系人不能为空")
     private String customerContact;
 
     /**
      * 客户收件地址
      */
+    @NotBlank(message = "客户收件地址不能为空")
     private String customerAddress;
 
     /**
-     * 下订日期
+     * 订单日期
      */
+    @NotNull(message = "订单日期不能为空")
     private Date orderDate;
 
     /**
      * 交货日期
      */
+    @NotNull(message = "交货日期不能为空")
     private Date deliveryDate;
 
     /**
-     * 销售员 ID
+     * 销售员
      */
     private long salespersonId;
 
@@ -73,9 +81,9 @@ public class Order {
     private String requirement;
 
     /**
-     * 附件 URL
+     * 附件 ID
      */
-    private String attachment;
+    private long attachmentId;
 
     /**
      * 订单创建日期
@@ -103,15 +111,16 @@ public class Order {
     private User salesperson = new User();
 
     /**
+     * 附件
+     */
+    private UploadedFile attachment = new UploadedFile();
+
+    /**
      * 获取订单状态 Label
      *
      * @return 返回订单状态的 Label
      */
     public String getStatusLabel() {
-        if (status >= 0 && status < STATUS_LABELS.length) {
-            return STATUS_LABELS[status];
-        } else {
-            return "未知";
-        }
+        return Utils.getStatusLabel(STATUS_LABELS, status);
     }
 }

@@ -20,10 +20,27 @@
         UPDATE content_json = #{contentJson}
     </insert>
 
-    <!-- 插入审批 -->
-    <insert id="insertAudit">
+    <!-- 查询审批 -->
+    <select id="findAuditByTargetIdAndType" resultType="Audit">
+        SELECT type, audit_id, applicant_id, target_id, target_json, passed
+        FROM audit
+        WHERE target_id = #{targetId} AND type = #{type}
+    </select>
+
+    <!-- 查询审批项 -->
+    <select id="findAuditItemsByAuditId" resultType="AuditItem">
+        SELECT type, audit_id, audit_item_id, applicant_id, target_id, auditor_id, step, status, processed_at, comment
+        FROM audit_item
+        WHERE audit_id = #{auditId}
+    </select>
+
+    <!-- 更新或者插入审批 -->
+    <insert id="upsertAudit">
         INSERT INTO audit (type, audit_id, applicant_id, target_id, target_json)
         VALUES (#{type}, #{auditId}, #{applicantId}, #{targetId}, #{targetJson})
+
+        ON DUPLICATE KEY
+        UPDATE target_json = #{targetJson}
     </insert>
 
     <!-- 审批通过 -->

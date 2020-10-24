@@ -14,6 +14,23 @@ import java.util.List;
 @Mapper
 public interface AuditMapper {
     /**
+     * 查询审批
+     *
+     * @param targetId 审批目标的 ID
+     * @param type     审批类型
+     * @return 返回审批
+     */
+    Audit findAuditByTargetIdAndType(long targetId, AuditType type);
+
+    /**
+     * 查询审批项
+     *
+     * @param auditId 审批 ID
+     * @return 返回审批项数组
+     */
+    List<AuditItem> findAuditItemsByAuditId(long auditId);
+
+    /**
      * 获取所有的审批配置
      *
      * @return 返回审批配置的数组
@@ -40,7 +57,7 @@ public interface AuditMapper {
      *
      * @param audit 审批
      */
-    void insertAudit(Audit audit);
+    void upsertAudit(Audit audit);
 
     /**
      * 审批通过

@@ -1,5 +1,6 @@
 package com.xtuer.bean.audit;
 
+import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -66,15 +67,16 @@ public class AuditItem {
     private Date processedAt;
 
     /**
+     * 审批意见
+     */
+    private String comment;
+
+    /**
      * 获取审批状态 Label
      *
      * @return 返回订单状态的 Label
      */
     public String getStatusLabel() {
-        if (status >= 0 && status < STATUS_LABELS.length) {
-            return STATUS_LABELS[status];
-        } else {
-            return "未知";
-        }
+        return Utils.getStatusLabel(STATUS_LABELS, status);
     }
 }

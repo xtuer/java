@@ -102,6 +102,22 @@ public class RepoFileService {
     }
 
     /**
+     * 把上传的文件移动到文件仓库
+     *
+     * @param uploadedFileId 上传得到的文件的 ID
+     * @param dirs 文件夹名的数组
+     */
+    public void moveTempFileToRepo(long uploadedFileId, String... dirs) {
+        UploadedFile file = fileMapper.findUploadedFileById(uploadedFileId);
+
+        if (file != null) {
+            moveTempFileToRepo(file.getUrl(), dirs);
+        } else {
+            log.warn("[错误] 移动文件到文件仓库错误，上传的文件不存在，文件 ID 为 [{}]", uploadedFileId);
+        }
+    }
+
+    /**
      * 移动 html 中的图片、链接、音频、视频引用的临时文件到文件仓库中，移动后得到的 url 替换原来的 url (如果引用的不是临时文件，则不改变它们的 url)。
      * 文件在仓库里的目录由 dirs 指定，如果 dirs 为空则目录名为当前日期。
      *

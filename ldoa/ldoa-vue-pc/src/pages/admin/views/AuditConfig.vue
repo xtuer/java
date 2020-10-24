@@ -32,6 +32,8 @@
             <div class="title">审批流程</div>
             <div class="content audit-steps">
                 <template v-for="(step, index) in auditConfig.steps">
+                    <EditableLabel v-model="step.desc" style="margin-bottom: 10px">审批说明:</EditableLabel>
+
                     <!-- 审批员 -->
                     <div :key="'step-' + step.uid" class="audit-step" :id="step.uid" :data-id="step.uid">
                         <div v-for="auditor in step.auditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">{{ auditor.nickname }}</div>
@@ -57,9 +59,10 @@
 import UserDao from '@/../public/static-p/js/dao/UserDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import Sortable from 'sortablejs';
+import EditableLabel from '@/components/EditableLabel.vue';
 
 export default {
-    props: {},
+    components: { EditableLabel },
     data() {
         return {
             auditType   : { value: '', name: '' }, // 当前的审批类型
@@ -127,18 +130,29 @@ export default {
 
             // [4] 创建 sortable 对象
             this.$nextTick(() => {
-                new Sortable(document.querySelector('#rest-auditors'), { group: 'shared', animation: 150, onAdd: this.onAdd });
+                new Sortable(document.querySelector('#rest-auditors'), { group: 'shared', animation: 150, onAdd: this.onChange, onUpdate: this.onChange });
 
                 for (let step of this.auditConfig.steps) {
-                    new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onAdd });
+                    new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onChange, onUpdate: this.onChange });
                 }
             });
         },
+        // 添加审批阶段
+        addStep(index) {
+            const step = this.newStep();
+            this.auditConfig.steps.splice(index+1, 0, step);
+
+            // 创建 sortable 对象
+            this.$nextTick(() => {
+                new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onChange, onUpdate: this.onChange });
+            });
+        },
         // 拖拽放下用户的处理函数
-        onAdd(event) {
+        onChange(event) {
             // 1. 判断来源和目标是 auditors 还是 step
             // 2. 找到 from 和 to 的对象 (统一放到 from 和 to 的 auditors 中，方便处理)
-            // 3. 从 from.auditors 中删除，添加到 to.auditors 中
+            // 3. 删除 Sortable 创建的 DOM
+            // 4. 从 from.auditors 中删除，添加到 to.auditors 中
 
             // [1] 判断来源和目标是 auditors 还是 step
             const fromAuditors = event.from.classList.contains('rest-auditors');
@@ -169,20 +183,21 @@ export default {
                 return;
             }
 
-            // [3] 从 from.auditors 中删除，添加到 to.auditors 中
-            const auditor = from.auditors[fromIndex];
-            from.auditors.splice(fromIndex, 1);
-            to.auditors.splice(toIndex, 0, auditor);
-        },
-        // 添加审批阶段
-        addStep(index) {
-            const step = this.newStep();
-            this.auditConfig.steps.splice(index+1, 0, step);
+            // [3] 删除 Sortable 创建的 DOM (有的需要删除，有的不用，神奇)
+            // event.item.remove();
 
-            // 创建 sortable 对象
-            this.$nextTick(() => {
-                new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onAdd });
-            });
+            // [4] 从 from.auditors 中删除，添加到 to.auditors 中
+            if (from === to) {
+                // 同组内移动
+                const temp = from.auditors[fromIndex];
+                this.$set(from.auditors, fromIndex, from.auditors[toIndex]);
+                this.$set(from.auditors, toIndex, temp);
+            } else {
+                // 不同组内移动
+                const auditor = from.auditors[fromIndex];
+                from.auditors.splice(fromIndex, 1);
+                to.auditors.splice(toIndex, 0, auditor);
+            }
         },
         // 查询 stepUid 对应的 step 对象
         findStep(stepUid) {
@@ -221,8 +236,9 @@ export default {
         // 创建审批阶段对象
         newStep() {
             return {
-                uid: Utils.uid(),
+                desc: '',
                 auditors: [],
+                uid: Utils.uid(),
             };
         }
     }

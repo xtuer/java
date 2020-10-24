@@ -8,7 +8,7 @@ product: 产品项
     <div class="product-item-expand">
         <div><b>物料名称</b></div>
         <div><b>物料编码</b></div>
-        <div><b>规格型号</b></div>
+        <div><b>规格/型号</b></div>
         <div><b>物料材质</b></div>
         <div><b>标准/规范</b></div>
         <div><b>数量</b></div>

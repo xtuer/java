@@ -12,8 +12,10 @@ export default class {
      * @return {Promise} 返回 Promise 对象，resolve 的参数为订单，reject 的参数为错误信息
      */
     static findOrderById(orderId) {
-        return Rest.get(Urls.API_ORDERS_BY_ID, { params: orderId }).then(({ data: order, success, message }) => {
+        return Rest.get(Urls.API_ORDERS_BY_ID, { params: { orderId } }).then(({ data: order, success, message }) => {
             if (success) {
+                order.orderDate = Utils.stringToDate(order.orderDate);
+                order.deliveryDate = Utils.stringToDate(order.deliveryDate);
                 return Promise.resolve(order);
             } else {
                 Message.error(message);
@@ -39,12 +41,36 @@ export default class {
      */
     static findOrders(filter) {
         return Rest.get(Urls.API_ORDERS, { data: filter }).then(({ data: orders, success, message }) => {
-            if (success) {
-                return Promise.resolve(orders);
-            } else {
-                Message.error(message);
-                return Promise.reject(message);
-            }
+            return Utils.handleResponse(orders, success, message);
         });
+    }
+
+    /**
+     * 插入或者更新订单
+     *
+     * 网址: http://localhost:8080/api/orders/{orderId}
+     * 参数: 无
+     * 请求体: 为订单的 JSON 字符串
+     *      orderId         (必要): 订单 ID，为 0 时创建订单，非 0 时更新订单
+     *      customerCompany (必要): 客户单位
+     *      customerContact (必要): 客户联系人
+     *      customerAddress (必要): 客户收件地址
+     *      orderDate       (必要): 订单日期
+     *      deliveryDate    (必要): 交货日期
+     *      calibrated      [可选]: 是否校准
+     *      calibrationInfo [可选]: 校准信息
+     *      requirement     [可选]: 要求
+     *      attachmentId    [可选]: 附件 ID
+     *      items           (必要): 订单项
+     *
+     * @param {JSON} order 订单
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为更新后的订单，reject 的参数为错误信息
+     */
+    static upsertOrder(order) {
+        return Rest.update(Urls.API_ORDERS_BY_ID, { params: { orderId: order.orderId }, data: order, json: true })
+            .then(({ data: newOrder, success, message }) => {
+                return Utils.handleResponse(newOrder, success, message);
+            }
+        );
     }
 }

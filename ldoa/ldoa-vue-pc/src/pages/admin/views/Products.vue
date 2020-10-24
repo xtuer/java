@@ -7,13 +7,12 @@
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <div style="display: flex">
-                <Input v-model="filter.name" placeholder="请输入产品名称">
+                <Input v-model="filter.name" placeholder="请输入产品名称" @on-enter="searchProducts">
                     <span slot="prepend">产品名称</span>
                 </Input>
-                <Input v-model="filter.code" placeholder="请输入产品编码">
+                <Input v-model="filter.code" search enter-button placeholder="请输入产品编码" @on-enter="searchProducts">
                     <span slot="prepend">产品编码</span>
                 </Input>
-                <Button type="primary" icon="ios-search" @click="searchProducts">搜索</Button>
             </div>
 
             <Button type="primary" icon="md-add" @click="editProduct()">添加产品</Button>
@@ -272,6 +271,10 @@ export default {
         .ivu-input-wrapper {
             width: 250px;
             margin-right: 10px;
+
+            &:last-child {
+                width: 300px;
+            }
         }
     }
 }

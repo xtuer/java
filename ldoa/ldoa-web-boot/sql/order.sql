@@ -17,7 +17,7 @@ CREATE TABLE `order` (
     calibrated       tinyint(4)    DEFAULT 0  COMMENT '是否校准，0 为否，1 为是',
     calibration_info varchar(1024) DEFAULT '' COMMENT '校准信息',
     requirement      text                     COMMENT '要求',
-    attachment       varchar(128)  DEFAULT '' COMMENT '附件 URL',
+    attachment_id    bigint(20)    DEFAULT 0  COMMENT '附件 ID',
     order_date       datetime NOT NULL        COMMENT '下订日期',
     delivery_date    datetime NOT NULL        COMMENT '交货日期',
     status           int(11)       DEFAULT 0  COMMENT '状态: 0 (已完成), 1 (流转中)',

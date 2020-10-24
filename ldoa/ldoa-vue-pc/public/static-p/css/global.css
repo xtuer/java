@@ -156,7 +156,7 @@
 }
 
 /* 表格里按钮列的按钮之间的间隔 */
-.column-buttons button:not(:first-child) {
+.table-action-buttons button:not(:first-child) {
     margin-left: 8px;
 }
 

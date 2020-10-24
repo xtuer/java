@@ -34,7 +34,7 @@ public class OrderTest {
     public void testOrderAudit() {
         User user = new User(121L, "Bob", "Passw0rd");
         Order order = newOrder();
-        auditService.createOrderAudit(user, order);
+        auditService.upsertOrderAudit(user, order);
     }
 
     /**

@@ -18,8 +18,15 @@ import java.util.List;
  */
 public class JacksonHttpMessageConverter extends MappingJackson2HttpMessageConverter {
     public JacksonHttpMessageConverter() {
-        ObjectMapper objectMapper = getObjectMapper();
+        JacksonHttpMessageConverter.setupObjectMapper(getObjectMapper());
+    }
 
+    /**
+     * 设置 objectMapper 的输出格式
+     *
+     * @param objectMapper Jackson ObjectMapper
+     */
+    public static void setupObjectMapper(ObjectMapper objectMapper) {
         // Long to String
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);

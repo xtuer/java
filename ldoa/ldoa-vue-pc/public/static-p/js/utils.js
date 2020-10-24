@@ -644,7 +644,11 @@ Utils.handleResponse = function(data, success, message, showSuccessMessage = fal
 
         return Promise.resolve(data);
     } else {
-        Message.error(message);
+        Message.error({
+            content: message,
+            duration: 10,
+            closable: true
+        });
         return Promise.reject(message);
     }
 };
@@ -658,6 +662,22 @@ Utils.handleResponse = function(data, success, message, showSuccessMessage = fal
 Utils.dump = function(obj) {
     console.log(JSON.stringify(obj, null, 4));
 };
+
+/**
+ * 把字符串转为日期对象，如果无效则返回空字符串 ''
+ *
+ * @param {String} date 日期的字符串
+ * @return {Object} 返回日期对象，无效时返回 ''
+ */
+Utils.stringToDate = function(date) {
+    const result = dayjs(date);
+
+    if (result.isValid()) {
+        return result.toDate();
+    } else {
+        return '';
+    }
+}
 
 // 定义为全局变量
 window.Utils = Utils;

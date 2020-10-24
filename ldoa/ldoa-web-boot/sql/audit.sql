@@ -18,7 +18,7 @@ CREATE TABLE audit (
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (audit_id),
-    KEY index_audit (target_id) COMMENT '按审批对象进行索引'
+    UNIQUE KEY index_audit (target_id, type) COMMENT '一个对象只能有一个审批'
 ) ENGINE=InnoDB COMMENT '审批';
 
 #-------------------------------------------

@@ -7,19 +7,18 @@
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <div style="display: flex">
-                <Input v-model="filter.orderSn" placeholder="请输入订单号">
+                <Input v-model="filter.orderSn" placeholder="请输入订单号" @on-enter="searchOrders">
                     <span slot="prepend">订单号</span>
                 </Input>
-                <Input v-model="filter.productCodes" placeholder="请输入产品编码">
+                <Input v-model="filter.productCodes" search enter-button placeholder="请输入产品编码" @on-enter="searchOrders">
                     <span slot="prepend">产品编码</span>
                 </Input>
-                <Button type="primary" icon="ios-search" @click="searchOrders">搜索</Button>
             </div>
-            <Button type="primary" icon="md-add">添加订单</Button>
+            <Button type="primary" icon="md-add" @click="editOrder()">创建订单</Button>
         </div>
 
         <!-- 订单列表 -->
-        <Table :data="orders" :columns="columns" :loading="reloading" border>
+        <Table :data="orders" :columns="orderColumns" :loading="reloading" border>
             <!-- 介绍信息 -->
             <template slot-scope="{ row: order }" slot="salesperson">
                 {{ order.salesperson && order.salesperson.nickname }}
@@ -27,7 +26,7 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px">编辑</Button>
+                <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
                 <Button type="error" size="small">删除</Button>
             </template>
         </Table>
@@ -36,33 +35,41 @@
         <div class="list-page-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreOrders">更多...</Button>
         </div>
+
+        <!-- 订单编辑弹窗 -->
+        <OrderEdit v-model="orderEditModal" :order-id="editedOrderId" @on-ok="editOrderFinished"/>
     </div>
 </template>
 
 <script>
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
+import OrderEdit from '@/components/OrderEdit.vue';
 
 export default {
+    components: { OrderEdit },
     data() {
         return {
             orders : [],
             filter: { // 搜索条件
                 orderSn     : '',
                 productCodes: '',
-                pageSize    : 2,
+                status      : -1,
+                pageSize    : 20,
                 pageNumber  : 1,
             },
-            more     : false, // 是否还有更多订单
-            loading  : false, // 加载中
-            reloading: false,
-            columns  : [
+            more      : false, // 是否还有更多订单
+            loading   : false, // 加载中
+            reloading : false, // 重新加载
+            orderEditModal: false, // 订单编辑弹窗是否可见
+            editedOrderId : '0',   // 编辑的订单 ID
+            orderColumns: [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'orderSn',   title: '订单号', width: 180 },
                 { slot: 'salesperson',   title: '销售负责人', minWidth: 500 },
-                { key : 'statusLabel',   title: '状态', width: 150 },
-                { key : 'productCodes',   title: '产品编码 / 数量', width: 150 },
-                { slot: 'action', title: '操作', width: 150, align: 'center' },
-            ]
+                { key : 'productCodes',   title: '产品编码', width: 250 },
+                { key : 'statusLabel',   title: '状态', width: 150, align: 'center' },
+                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action-buttons' },
+            ],
         };
     },
     mounted() {
@@ -91,6 +98,31 @@ export default {
                 this.filter.pageNumber++;
             });
         },
+        // 编辑订单: order 为 undefined 表示创建，否则表示更新
+        editOrder(order) {
+            if (order) {
+                // 更新订单
+                this.editedOrderId = order.orderId;
+            } else {
+                // 创建订单
+                this.editedOrderId = '0'
+            }
+
+            this.orderEditModal = true;
+        },
+        // 订单编辑完成
+        editOrderFinished(order) {
+            // 1. 查找订单的下标
+            // 2. 存在的话替换原有订单，不存在的话添加到最前面
+            const index = this.orders.findIndex(o => o.orderId === order.orderId);
+
+            if (index >= 0) {
+                // this.orders.replace(index, order);
+                this.orders.splice(index, 1, order);
+            } else {
+                this.orders.splice(0, 0, order);
+            }
+        }
     }
 };
 </script>
@@ -101,6 +133,10 @@ export default {
         .ivu-input-wrapper {
             width: 250px;
             margin-right: 10px;
+
+            &:last-child {
+                width: 300px;
+            }
         }
     }
 }

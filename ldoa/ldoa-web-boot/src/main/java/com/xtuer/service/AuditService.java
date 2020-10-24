@@ -1,6 +1,7 @@
 package com.xtuer.service;
 
 import com.xtuer.bean.Order;
+import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
@@ -26,47 +27,65 @@ public class AuditService extends BaseService {
     private AuditMapper auditMapper;
 
     /**
-     * 创建订单的审批
+     * 查询审批
      *
-     * @param applicant 申请人
-     * @param order     订单
+     * @param targetId 审批对象 ID
+     * @param type     审批类型
+     * @return 返回查询到的审批，查询不到返回 null
      */
-    public void createOrderAudit(User applicant, Order order) {
-        Objects.requireNonNull(order, "订单不能为空");
-        createAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order));
+    public Audit findAudit(long targetId, AuditType type) {
+        Audit audit = auditMapper.findAuditByTargetIdAndType(targetId, type);
+
+        if (audit == null) {
+            return null;
+        }
+
+        List<AuditItem> items = auditMapper.findAuditItemsByAuditId(audit.getAuditId());
+        audit.setItems(items);
+
+        return audit;
     }
 
     /**
-     * 创建审批
+     * 更新或者创建订单的审批
+     *
+     * @param applicant 申请人
+     * @param order     订单
+     * @return 返回操作结果
+     */
+    public Result<String> upsertOrderAudit(User applicant, Order order) {
+        Objects.requireNonNull(order, "订单不能为空");
+        return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order));
+    }
+
+    /**
+     * 更新或者创建审批
      *
      * @param applicant 申请人
      * @param type      审批类型
      * @param targetId  审批对象的 ID
+     * @return 返回操作结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public void createAudit(User applicant, AuditType type, long targetId, String targetJson) {
+    public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson) {
         // 1. 查询审批配置
-        // 2. 删除同一个 targetId + type 的审批，例如审批被拒绝后重新提交审批
-        // 3. 创建审批
-        // 4. 创建审批项
-        // 5. 设置 step 为 1 的审批项的状态为 1 (待审批)
+        // 2. 创建审批
+        // 3. 创建审批项
+        // 4. 设置 step 为 1 的审批项的状态为 1 (待审批)
+        // 5. 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
         // 6. 保存到数据库
 
         // [1] 查询审批配置
         AuditConfig config = auditMapper.findAuditConfigByType(type);
 
         if (config == null) {
-            throw new RuntimeException("审批配置不存在: " + type);
+            return Result.fail("审批配置不存在: " + type);
         }
         if (config.getSteps().size() == 0) {
-            throw new RuntimeException("没有配置审批流程: " + type);
+            return Result.fail("没有配置审批流程: " + type);
         }
 
-        // [2] 删除同一个 targetId + type 的审批，例如审批被拒绝后重新提交审批
-        auditMapper.deleteAuditByTargetIdAndType(targetId, type);
-        auditMapper.deleteAuditItemsByTargetIdAndType(targetId, type);
-
-        // [3] 创建审批
+        // [2] 创建审批
         Audit audit = new Audit();
         audit.setType(type)
                 .setAuditId(super.nextId())
@@ -74,11 +93,11 @@ public class AuditService extends BaseService {
                 .setTargetId(targetId)
                 .setTargetJson(targetJson);
 
-        // [4] 创建审批项
+        // [3] 创建审批项
         config.getSteps().forEach(step -> {
             step.getAuditors().forEach(auditor -> {
-               AuditItem item = new AuditItem();
-               item.setType(type)
+               AuditItem item = new AuditItem()
+                       .setType(type)
                        .setAuditId(audit.getAuditId())
                        .setAuditItemId(super.nextId())
                        .setApplicantId(applicant.getUserId())
@@ -90,15 +109,27 @@ public class AuditService extends BaseService {
             });
         });
 
-        // [5] 设置 step 为 1 的审批项的状态为 1 (待审批)
-        audit.getItems().stream().filter(item -> item.getStep() == 1).forEach(item -> item.setStatus(1));
+        // [4] 设置 step 为 1 的审批项的状态为 1 (待审批)
+        audit.getItems()
+                .stream()
+                .filter(item -> item.getStep() == 1)
+                .forEach(item -> item.setStatus(1));
+
+        log.info("[开始] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
+
+        // [5] 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
+        auditMapper.deleteAuditItemsByTargetIdAndType(targetId, type);
 
         // [6] 保存到数据库
-        auditMapper.insertAudit(audit);
+        // 保存审批
+        auditMapper.upsertAudit(audit);
 
+        // 保存审批项
         for (AuditItem item : audit.getItems()) {
             auditMapper.insertAuditItem(item);
         }
+
+        return Result.ok();
     }
 
     /**

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xtuer.bean.Mime;
 import com.xtuer.bean.User;
+import com.xtuer.converter.JacksonHttpMessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -200,6 +201,7 @@ public final class Utils {
      */
     public static String toJson(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
+        JacksonHttpMessageConverter.setupObjectMapper(objectMapper);
 
         // Date format
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
@@ -227,6 +229,7 @@ public final class Utils {
      */
     public static <T> T fromJson(String json, Class<T> clazz) {
         ObjectMapper objectMapper = new ObjectMapper();
+        JacksonHttpMessageConverter.setupObjectMapper(objectMapper);
 
         try {
             return objectMapper.readValue(json, clazz);
@@ -476,6 +479,21 @@ public final class Utils {
             return "";
         }
     };
+
+    /**
+     * 获取状态 Label
+     *
+     * @param statusLabels 状态的 Label 数组
+     * @param status       状态值
+     * @return 返回状态对应的 Label
+     */
+    public static String getStatusLabel(String[] statusLabels, int status) {
+        if (status >= 0 && status < statusLabels.length) {
+            return statusLabels[status];
+        } else {
+            return "未知";
+        }
+    }
 
     public static void main(String[] args) {
         String text = "如果要编码的字节数不能被3整除，最后会多出1个或2个字节.";

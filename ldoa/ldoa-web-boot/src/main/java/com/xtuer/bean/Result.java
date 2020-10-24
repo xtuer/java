@@ -63,6 +63,13 @@ public final class Result<T> {
     }
 
     /**
+     * 简单的进行类型转换，只保留 success 和 message，发生错误的时候使用
+     */
+    public static <T> Result<T> fail(Result<?> other) {
+        return new Result<T>(false, other.message);
+    }
+
+    /**
      * 返回单个对象时根据对象是否为空返回成功或者失败的不同结果:
      *     A. data 不为 null 时执行 Result.ok(data)
      *     B. data 等于 null 时执行 Result.failMessage(error)

@@ -12,6 +12,10 @@ export default class AuditDao {
      */
     static findAuditConfigs() {
         return Rest.get(Urls.API_AUDITS).then(({ data: configs, success, message }) => {
+            configs && configs.map(config => config.steps).flat().forEach(step => {
+                step.desc = step.desc || '第一次为 true 时才从服务器加载学员，避免重复加载';
+            });
+
             return Utils.handleResponse(configs, success, message);
         });
     }

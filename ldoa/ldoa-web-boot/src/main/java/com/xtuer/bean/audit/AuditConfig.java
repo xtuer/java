@@ -63,6 +63,11 @@ public class AuditConfig {
         private int step;
 
         /**
+         * 审批阶段的说明
+         */
+        private String desc;
+
+        /**
          * 此步骤的审批员
          */
         private List<User> auditors = new LinkedList<>();
@@ -76,6 +81,7 @@ JSON 格式:
     steps: [
         {
             step: 1,
+            desc: '说明',
             auditors: [
                 userId: 123,
                 username: 'Alice'
