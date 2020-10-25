@@ -13,23 +13,9 @@ import java.util.List;
  */
 @Mapper
 public interface AuditMapper {
-    /**
-     * 查询审批
-     *
-     * @param targetId 审批目标的 ID
-     * @param type     审批类型
-     * @return 返回审批
-     */
-    Audit findAuditByTargetIdAndType(long targetId, AuditType type);
-
-    /**
-     * 查询审批项
-     *
-     * @param auditId 审批 ID
-     * @return 返回审批项数组
-     */
-    List<AuditItem> findAuditItemsByAuditId(long auditId);
-
+    /*===============================================================================
+     *                                     审批配置
+     *=============================================================================*/
     /**
      * 获取所有的审批配置
      *
@@ -52,6 +38,25 @@ public interface AuditMapper {
      */
     void upsertAuditConfig(AuditConfig config);
 
+    /*===============================================================================
+     *                                       审批
+     *=============================================================================*/
+    /**
+     * 查询审批
+     *
+     * @param auditId 审批的 ID
+     * @return 返回审批
+     */
+    Audit findAuditById(long auditId);
+
+    /**
+     * 查询审批目标的审批
+     *
+     * @param targetId 审批目标的 ID
+     * @return 返回审批
+     */
+    Audit findAuditByTargetId(long targetId);
+
     /**
      * 插入审批
      *
@@ -65,6 +70,33 @@ public interface AuditMapper {
      * @param auditId 审批 ID
      */
     void passAudit(long auditId);
+
+    /**
+     * 删除指定 targetId 的审批
+     *
+     * @param targetId 审批目标 ID
+     */
+    void deleteAuditByTargetId(long targetId);
+
+    /*===============================================================================
+     *                                     审批项
+     *=============================================================================*/
+    /**
+     * 查询审批的审批项
+     *
+     * @param auditId 审批 ID
+     * @return 返回审批项数组
+     */
+    List<AuditItem> findAuditItemsByAuditId(long auditId);
+
+    /**
+     * 查询审批员需要审批的审批项 (status 为 -1 时查询全部的)
+     *
+     * @param auditorId 审批员 ID
+     * @param status    审批项的状态
+     * @return 返回审批项的数组
+     */
+    List<AuditItem> findAuditItemsByAuditorIdAndStatus(long auditorId, int status);
 
     /**
      * 插入审批项
@@ -81,28 +113,11 @@ public interface AuditMapper {
      */
     void updateAuditItemStatus(long auditItemId, int status);
 
-    /**
-     * 删除指定 targetId 和类型的审批
-     *
-     * @param targetId 审批目标 ID
-     * @param type     审批类型
-     */
-    void deleteAuditByTargetIdAndType(long targetId, AuditType type);
 
     /**
-     * 删除指定 targetId 和类型的审批项
+     * 删除指定 targetId 审批项
      *
      * @param targetId 审批目标 ID
-     * @param type     审批类型
      */
-    void deleteAuditItemsByTargetIdAndType(long targetId, AuditType type);
-
-    /**
-     * 查询审批员需要审批的审批项 (status 为 -1 时查询全部)
-     *
-     * @param auditorId 审批员 ID
-     * @param status    审批项的状态
-     * @return 返回审批项的数组
-     */
-    List<AuditItem> findAuditItemsByAuditorIdAndStatus(long auditorId, int status);
+    void deleteAuditItemsByTargetId(long targetId);
 }

@@ -10,7 +10,7 @@
                 <Input v-model="filter.name" placeholder="请输入产品名称" @on-enter="searchProducts">
                     <span slot="prepend">产品名称</span>
                 </Input>
-                <Input v-model="filter.code" search enter-button placeholder="请输入产品编码" @on-enter="searchProducts">
+                <Input v-model="filter.code" placeholder="请输入产品编码" search enter-button @on-search="searchProducts">
                     <span slot="prepend">产品编码</span>
                 </Input>
             </div>

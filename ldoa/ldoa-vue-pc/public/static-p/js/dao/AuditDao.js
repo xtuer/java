@@ -5,13 +5,13 @@ export default class AuditDao {
     /**
      * 获取所有的审批配置
      *
-     * 网址: http://localhost:8080/api/audits
+     * 网址: http://localhost:8080/api/audit-configs
      * 参数: 无
      *
      * @return payload 为审批配置的数组
      */
     static findAuditConfigs() {
-        return Rest.get(Urls.API_AUDITS).then(({ data: configs, success, message }) => {
+        return Rest.get(Urls.API_AUDIT_CONFIGS).then(({ data: configs, success, message }) => {
             configs && configs.map(config => config.steps).flat().forEach(step => {
                 step.desc = step.desc || '第一次为 true 时才从服务器加载学员，避免重复加载';
             });
@@ -23,7 +23,7 @@ export default class AuditDao {
     /**
      * 插入或者更新审批配置
      *
-     * 网址: http://localhost:8080/api/audits
+     * 网址: http://localhost:8080/api/audit-configs
      * 参数: 无
      * 请求体: 审批配置的数组
      *
@@ -31,8 +31,38 @@ export default class AuditDao {
      * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
      */
     static upsertAuditConfigs(configs) {
-        return Rest.update(Urls.API_AUDITS, { data: configs, json: true }).then(({ success, message }) => {
+        return Rest.update(Urls.API_AUDIT_CONFIGS, { data: configs, json: true }).then(({ success, message }) => {
             return Utils.handleResponse(null, success, message);
+        });
+    }
+
+    /**
+     * 查询审批
+     *
+     * 网址: http://localhost:8080/api/audits/{auditId}
+     * 参数: 无
+     *
+     * @param {Long} auditId  审批 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为审批，reject 的参数为错误信息
+     */
+    static findAudit(auditId) {
+        return Rest.get(Urls.API_AUDITS_BY_ID, { params: { auditId } }).then(({ data: audit, success, message }) => {
+            return Utils.handleResponse(audit, success, message);
+        });
+    }
+
+    /**
+     * 查询审批目标的审批
+     *
+     * 网址: http://localhost:8080/api/audits/of-target/{targetId}
+     * 参数: 无
+     *
+     * @param targetId 审批目标的 ID
+     * @return payload 为审批
+     */
+    static findAuditOfTarget(targetId) {
+        return Rest.get(Urls.API_AUDITS_BY_TARGET, { params: { targetId } }).then(({ data: audit, success, message })=> {
+            return Utils.handleResponse(audit, success, message);
         });
     }
 

@@ -2,6 +2,7 @@ package com.xtuer.controller;
 
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
+import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
 import com.xtuer.bean.audit.AuditItem;
 import com.xtuer.bean.audit.AuditType;
@@ -26,12 +27,12 @@ public class AuditController {
     /**
      * 获取所有的审批配置
      *
-     * 网址: http://localhost:8080/api/audits
+     * 网址: http://localhost:8080/api/audit-configs
      * 参数: 无
      *
      * @return payload 为审批配置的数组
      */
-    @GetMapping(Urls.API_AUDITS)
+    @GetMapping(Urls.API_AUDIT_CONFIGS)
     public Result<List<AuditConfig>> findAuditConfigs() {
         return Result.ok(auditMapper.findAuditConfigs());
     }
@@ -39,13 +40,13 @@ public class AuditController {
     /**
      * 查询指定类型的审批配置
      *
-     * 网址: http://localhost:8080/api/audits/{type}
+     * 网址: http://localhost:8080/api/audit-configs/{type}
      * 参数: 无
      *
      * @param type 审批的类型
      * @return payload 为查询到的审批配置
      */
-    @GetMapping(Urls.API_AUDITS_BY_TYPE)
+    @GetMapping(Urls.API_AUDIT_CONFIGS_BY_TYPE)
     public Result<AuditConfig> findAuditConfigByType(@PathVariable AuditType type) {
         AuditConfig config = auditMapper.findAuditConfigByType(type);
         return Result.single(config);
@@ -54,16 +55,44 @@ public class AuditController {
     /**
      * 插入或者更新审批配置
      *
-     * 网址: http://localhost:8080/api/audits
+     * 网址: http://localhost:8080/api/audit-configs
      * 参数: 无
      * 请求体: 审批配置的数组
      *
      * @param configs 审批配置数组
      */
-    @PutMapping(Urls.API_AUDITS)
+    @PutMapping(Urls.API_AUDIT_CONFIGS)
     public Result<Boolean> upsertAuditConfigs(@RequestBody List<AuditConfig> configs) {
         auditService.upsertAuditConfigs(configs);
         return Result.ok();
+    }
+
+    /**
+     * 查询审批
+     *
+     * 网址: http://localhost:8080/api/audits/{auditId}
+     * 参数: 无
+     *
+     * @param auditId  审批 ID
+     * @return payload 为审批
+     */
+    @GetMapping(Urls.API_AUDITS_BY_ID)
+    public Result<Audit> findAudit(@PathVariable long auditId) {
+        return Result.single(auditService.findAudit(auditId));
+    }
+
+    /**
+     * 查询审批目标的审批
+     *
+     * 网址: http://localhost:8080/api/audits/of-target/{targetId}
+     * 参数: 无
+     *
+     * @param targetId 审批目标的 ID
+     * @return payload 为审批
+     */
+    @GetMapping(Urls.API_AUDITS_BY_TARGET)
+    public Result<Audit> findAuditOfTarget(@PathVariable long targetId) {
+        return Result.single(auditService.findAuditOfTarget(targetId));
     }
 
     /**

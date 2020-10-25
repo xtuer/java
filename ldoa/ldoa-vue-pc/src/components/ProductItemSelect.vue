@@ -19,13 +19,12 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <Scroll>
         <div class="list-page">
             <div class="list-page-toolbar-top">
-                <Input v-model="filter.name" placeholder="请输入物料名称">
+                <Input v-model="filter.name" placeholder="请输入物料名称" @on-enter="searchProductItems">
                     <span slot="prepend">物料名称</span>
                 </Input>
-                <Input v-model="filter.code" placeholder="请输入物料编码">
+                <Input v-model="filter.code" placeholder="请输入物料编码" search enter-button @on-search="searchProductItems">
                     <span slot="prepend">物料编码</span>
                 </Input>
-                <Button type="primary" icon="ios-search" @click="searchProductItems">搜索</Button>
             </div>
 
             <!-- 物料列表 -->
@@ -137,7 +136,7 @@ export default {
 <style lang="scss">
 .product-item-select-modal {
     .list-page-toolbar-top {
-        grid-template-columns: 1fr 1fr max-content;
+        grid-template-columns: 1fr 1fr;
         grid-gap: 10px;
     }
 

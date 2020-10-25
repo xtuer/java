@@ -10,7 +10,7 @@
                 <Input v-model="filter.orderSn" placeholder="请输入订单号" @on-enter="searchOrders">
                     <span slot="prepend">订单号</span>
                 </Input>
-                <Input v-model="filter.productCodes" search enter-button placeholder="请输入产品编码" @on-enter="searchOrders">
+                <Input v-model="filter.productCodes" placeholder="请输入产品编码" search enter-button @on-search="searchOrders">
                     <span slot="prepend">产品编码</span>
                 </Input>
             </div>
@@ -53,7 +53,7 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
                 <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
-                <Button type="info" size="small">详情</Button>
+                <Button type="info" size="small" @click="detailsOrder(order)">详情</Button>
             </template>
         </Table>
 
@@ -64,15 +64,19 @@
 
         <!-- 订单编辑弹窗 -->
         <OrderEdit v-model="orderEditModal" :order-id="editedOrderId" @on-ok="editOrderFinished"/>
+
+        <!-- 订单详情弹窗 -->
+        <OrderDetails v-model="orderDetailsModal" :order-id="detailsOrderId"/>
     </div>
 </template>
 
 <script>
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 import OrderEdit from '@/components/OrderEdit.vue';
+import OrderDetails from '@/components/OrderDetails.vue';
 
 export default {
-    components: { OrderEdit },
+    components: { OrderEdit, OrderDetails },
     data() {
         return {
             orders : [],
@@ -88,6 +92,8 @@ export default {
             reloading : false, // 重新加载
             orderEditModal: false, // 订单编辑弹窗是否可见
             editedOrderId : '0',   // 编辑的订单 ID
+            orderDetailsModal: false, // 订单详情弹窗是否可见
+            detailsOrderId: '0',      // 查看详情的订单
             orderColumns: [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'orderSn',   title: '订单号', width: 180 },
@@ -151,6 +157,11 @@ export default {
             } else {
                 this.orders.splice(0, 0, order);
             }
+        },
+        // 查看订单详情
+        detailsOrder(order) {
+            this.detailsOrderId = order.orderId;
+            this.orderDetailsModal = true;
         }
     }
 };

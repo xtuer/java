@@ -29,19 +29,57 @@ public class AuditService extends BaseService {
     /**
      * 查询审批
      *
-     * @param targetId 审批对象 ID
-     * @param type     审批类型
+     * @param auditId 审批 ID
      * @return 返回查询到的审批，查询不到返回 null
      */
-    public Audit findAudit(long targetId, AuditType type) {
-        Audit audit = auditMapper.findAuditByTargetIdAndType(targetId, type);
+    public Audit findAudit(long auditId) {
+        return findAuditByAuditIdOrTargetId(auditId, 0);
+    }
+
+    /**
+     * 查询目标对象的审批 (例如在订单详情页查看订单的审批，不需要直接指定审批 ID)
+     *
+     * @param targetId 审批对象 ID
+     * @return 返回查询到的审批，查询不到返回 null
+     */
+    public Audit findAuditOfTarget(long targetId) {
+        return findAuditByAuditIdOrTargetId(0, targetId);
+    }
+
+    /**
+     * 查询指定 ID 的审批或者审批目标的审批:
+     * * auditId 不为 0 时查询指定 ID 的审批
+     * * auditId 等于 0 时查询审批目标的审批
+     *
+     * @param auditId  审批 ID
+     * @param targetId 审批目标的 ID
+     * @return 返回查询到的审批，查询不到返回 null
+     */
+    private Audit findAuditByAuditIdOrTargetId(long auditId, long targetId) {
+        // 1. 查询审批
+        // 2. 查询审批项
+        // 3. 查询审批配置
+
+        // [1] 查询审批
+        Audit audit;
+
+        if (auditId > 0) {
+            audit = auditMapper.findAuditById(auditId);
+        } else {
+            audit = auditMapper.findAuditByTargetId(targetId);
+        }
 
         if (audit == null) {
             return null;
         }
 
+        // [2] 查询审批项
         List<AuditItem> items = auditMapper.findAuditItemsByAuditId(audit.getAuditId());
         audit.setItems(items);
+
+        // [3] 查询审批配置
+        AuditConfig config = auditMapper.findAuditConfigByType(audit.getType());
+        audit.setConfig(config);
 
         return audit;
     }
@@ -55,7 +93,9 @@ public class AuditService extends BaseService {
      */
     public Result<String> upsertOrderAudit(User applicant, Order order) {
         Objects.requireNonNull(order, "订单不能为空");
-        return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order));
+        String desc = "客户: " + order.getCustomerCompany();
+
+        return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order), desc);
     }
 
     /**
@@ -64,10 +104,11 @@ public class AuditService extends BaseService {
      * @param applicant 申请人
      * @param type      审批类型
      * @param targetId  审批对象的 ID
+     * @param desc      审批的简要描述
      * @return 返回操作结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson) {
+    public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson, String desc) {
         // 1. 查询审批配置
         // 2. 查询审批，不存在则创建
         // 3. 创建审批项
@@ -86,7 +127,7 @@ public class AuditService extends BaseService {
         }
 
         // [2] 查询审批，不存在则创建
-        Audit audit = auditMapper.findAuditByTargetIdAndType(targetId, type);
+        Audit audit = auditMapper.findAuditByTargetId(targetId);
 
         if (audit == null) {
             audit = new Audit()
@@ -97,6 +138,7 @@ public class AuditService extends BaseService {
         }
 
         audit.setTargetJson(targetJson);
+        audit.setDesc(desc);
 
         // [3] 创建审批项
         final Audit back = audit;
@@ -123,8 +165,8 @@ public class AuditService extends BaseService {
 
         log.info("[开始] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
-        // [5] 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
-        auditMapper.deleteAuditItemsByTargetIdAndType(targetId, type);
+        // [5] 删除同一个 targetId 的审批项，例如审批被拒绝后重新提交审批
+        auditMapper.deleteAuditItemsByTargetId(targetId);
 
         // [6] 保存到数据库
         // 保存审批

@@ -55,8 +55,8 @@ export default {
                 },
                 { label: '个人中心', icon: 'ios-people', menuItems:
                     [
-                        { label: '发起的审批', name: 'audit-request'  },
                         { label: '收到的审批', name: 'audit-received' },
+                        { label: '发起的审批', name: 'audit-request'  },
                     ]
                 },
                 { label: '系统管理', icon: 'ios-color-fill', menuItems:

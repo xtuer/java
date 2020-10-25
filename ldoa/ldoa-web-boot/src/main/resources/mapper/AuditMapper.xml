@@ -2,6 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtuer.mapper.AuditMapper">
+    <!--=======================================================================================
+    |                                            审批配置
+    ========================================================================================-->
     <!-- 获取所有的审批配置 -->
     <select id="findAuditConfigs" resultType="AuditConfig">
         SELECT type, content_json FROM audit_config
@@ -20,33 +23,76 @@
         UPDATE content_json = #{contentJson}
     </insert>
 
+    <!--=======================================================================================
+    |                                             审批
+    ========================================================================================-->
+    <!-- 审批的列 -->
+    <sql id="auditColumns">
+        type, audit_id, applicant_id, target_id, target_json, `desc`, passed
+    </sql>
+
     <!-- 查询审批 -->
-    <select id="findAuditByTargetIdAndType" resultType="Audit">
-        SELECT type, audit_id, applicant_id, target_id, target_json, passed
+    <select id="findAuditById" resultType="Audit">
+        SELECT <include refid="auditColumns"/>
         FROM audit
-        WHERE target_id = #{targetId} AND type = #{type}
+        WHERE audit_id = #{auditId}
     </select>
 
-    <!-- 查询审批项 -->
-    <select id="findAuditItemsByAuditId" resultType="AuditItem">
-        SELECT type, audit_id, audit_item_id, applicant_id, target_id, auditor_id, step, status, processed_at, comment
-        FROM audit_item
-        WHERE audit_id = #{auditId}
+    <!-- 查询审批目标的审批 -->
+    <select id="findAuditByTargetId" resultType="Audit">
+        SELECT <include refid="auditColumns"/>
+        FROM audit
+        WHERE target_id = #{targetId}
     </select>
 
     <!-- 更新或者插入审批 -->
     <insert id="upsertAudit">
-        INSERT INTO audit (type, audit_id, applicant_id, target_id, target_json)
-        VALUES (#{type}, #{auditId}, #{applicantId}, #{targetId}, #{targetJson})
+        INSERT INTO audit (type, audit_id, applicant_id, target_id, target_json, `desc`)
+        VALUES (#{type}, #{auditId}, #{applicantId}, #{targetId}, #{targetJson}, #{desc})
 
         ON DUPLICATE KEY
-        UPDATE target_json = #{targetJson}
+        UPDATE target_json = #{targetJson}, `desc` = #{desc}
     </insert>
 
     <!-- 审批通过 -->
     <update id="passAudit">
         UPDATE audit SET passed = 1 WHERE audit_id = #{auditId}
     </update>
+
+    <!-- 删除指定 targetId 和类型的审批 -->
+    <delete id="deleteAuditByTargetId">
+        DELETE FROM audit WHERE target_id = #{targetId}
+    </delete>
+
+    <!--=======================================================================================
+    |                                             审批项
+    ========================================================================================-->
+    <!-- 审批项的列 -->
+    <sql id="auditItemColumns">
+        ai.type, ai.audit_id, ai.audit_item_id, ai.applicant_id, ai.target_id, ai.auditor_id,
+        ai.step, ai.status, ai.processed_at, ai.comment, ai.created_at
+    </sql>
+
+    <!-- 查询审批项 -->
+    <select id="findAuditItemsByAuditId" resultType="AuditItem">
+        SELECT <include refid="auditItemColumns"/>
+        FROM audit_item ai
+        WHERE audit_id = #{auditId}
+    </select>
+
+    <!-- 查询审批员需要审批的审批项 (status 为 -1 时查询全部) -->
+    <select id="findAuditItemsByAuditorIdAndStatus" resultType="AuditItem">
+        SELECT <include refid="auditItemColumns"/>, u.nickname AS applicant_nickname, a.desc
+        FROM audit_item ai
+            LEFT JOIN audit a ON a.audit_id = ai.audit_id
+            LEFT JOIN user u ON u.user_id = ai.applicant_id
+        <where>
+            auditor_id = #{auditorId}
+            <if test="status >= 0">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
 
     <!-- 插入审批项 -->
     <insert id="insertAuditItem">
@@ -59,31 +105,8 @@
         UPDATE audit_item SET status = #{status} WHERE audit_item_id = #{auditItemId}
     </update>
 
-    <!-- 删除指定 targetId 和类型的审批 -->
-    <delete id="deleteAuditByTargetIdAndType">
-        DELETE FROM audit WHERE target_id = #{targetId} AND type = #{type}
-    </delete>
-
     <!-- 删除指定 targetId 和类型的审批项 -->
-    <delete id="deleteAuditItemsByTargetIdAndType">
-        DELETE FROM audit_item WHERE target_id = #{targetId} AND type = #{type}
+    <delete id="deleteAuditItemsByTargetId">
+        DELETE FROM audit_item WHERE target_id = #{targetId}
     </delete>
-
-    <!-- 查询审批员需要审批的审批项 (status 为 -1 时查询全部) -->
-    <select id="findAuditItemsByAuditorIdAndStatus" resultType="AuditItem">
-        SELECT ai.type, ai.audit_id, ai.audit_item_id, ai.applicant_id, ai.target_id, ai.auditor_id,
-            ai.step, ai.status, ai.comment, ai.processed_at, ai.created_at,
-            u.nickname AS applicant_nickname,
-            a.target_json
-        FROM audit_item ai
-        LEFT JOIN audit a ON a.audit_id = ai.audit_id
-        LEFT JOIN user u ON u.user_id = ai.applicant_id
-
-        <where>
-            auditor_id = #{auditorId}
-            <if test="status >= 0">
-                AND status = #{status}
-            </if>
-        </where>
-    </select>
 </mapper>

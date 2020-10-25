@@ -14,11 +14,12 @@ CREATE TABLE audit (
     target_id    bigint(20) unsigned NOT NULL COMMENT '审批目标的 ID',
     target_json  mediumtext                   COMMENT '审批目标对象的 JSON 内容，方便前端转为响应对象进行展示',
     passed       tinyint(4) DEFAULT 0         COMMENT '是否审批通过: 0 (不通过), 1 (通过)',
+    `desc`       text                         COMMENT '审批的简要描述',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (audit_id),
-    UNIQUE KEY index_audit (target_id, type) COMMENT '一个对象只能有一个审批'
+    UNIQUE KEY index_target (target_id) COMMENT '一个对象只能有一个审批'
 ) ENGINE=InnoDB COMMENT '审批';
 
 #-------------------------------------------
@@ -46,7 +47,8 @@ CREATE TABLE audit_item (
     updated_at   timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (audit_item_id),
     KEY index_audit (audit_id) COMMENT '按审批进行索引',
-    KEY index_auditor (auditor_id, status) COMMENT '按审批员进行索引'
+    KEY index_auditor (auditor_id, status) COMMENT '按审批员进行索引',
+    KEY index_target (target_id) COMMENT '按审批目标进行索引'
 ) ENGINE=InnoDB COMMENT '审批';
 
 #-------------------------------------------

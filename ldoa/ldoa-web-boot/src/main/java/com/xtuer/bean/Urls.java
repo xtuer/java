@@ -77,7 +77,9 @@ public interface Urls {
     String API_ORDERS_BY_ID = "/api/orders/{orderId}"; // 指定 ID 的订单
 
     // 审批
-    String API_AUDITS         = "/api/audits"; // 审批
-    String API_AUDITS_BY_TYPE = "/api/audits/{type}"; // 指定类型的审批
-    String API_AUDIT_ITEMS    = "/api/audit-items"; // 审批项
+    String API_AUDITS_BY_ID          = "/api/audits/{auditId}";            // 指定 ID 的审批
+    String API_AUDITS_BY_TARGET      = "/api/audits/of-target/{targetId}"; // 审批目标的审批
+    String API_AUDIT_CONFIGS         = "/api/audit-configs";               // 审批配置
+    String API_AUDIT_CONFIGS_BY_TYPE = "/api/audit-configs/{type}";        // 指定类型的审批
+    String API_AUDIT_ITEMS           = "/api/audit-items";                 // 审批项
 }

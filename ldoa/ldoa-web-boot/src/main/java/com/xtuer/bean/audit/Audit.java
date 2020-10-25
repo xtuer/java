@@ -53,7 +53,17 @@ public class Audit {
     private Date createdAt;
 
     /**
+     * 审批的简要描述
+     */
+    private String desc;
+
+    /**
      * 审批项 (审批可能需要多个人进行审核，每个人的就是一项)
      */
     private List<AuditItem> items = new LinkedList<>();
+
+    /**
+     * 审批的配置
+     */
+    private AuditConfig config;
 }

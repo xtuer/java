@@ -37,7 +37,7 @@ public class AuditItem {
     private long applicantId;
 
     /**
-     * 审批申请人的名字
+     * 审批申请人的名字 (查询时从 User 中关联得到)
      */
     private String applicantNickname;
 
@@ -50,6 +50,11 @@ public class AuditItem {
      * 审批目标对象的 JSON 内容，方便前端转为响应对象进行展示 (查询时从 Audit 中关联得到)
      */
     private String targetJson;
+
+    /**
+     * 审批的简要描述 (查询时从 Audit 中关联得到)
+     */
+    private String desc;
 
     /**
      * 审批人员的 ID
