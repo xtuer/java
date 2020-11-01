@@ -32,14 +32,15 @@
             <div class="title">审批流程</div>
             <div class="content audit-steps">
                 <template v-for="(step, index) in auditConfig.steps">
-                    <EditableLabel v-model="step.desc" :key="'desc-' + step.uid" style="margin-bottom: 10px">审批说明:</EditableLabel>
+                    <!-- <EditableLabel v-model="step.desc" :key="'desc-' + step.uid" style="margin-bottom: 10px">审批说明:</EditableLabel> -->
+                    <div :key="'desc-' + step.uid">{{ step.desc }}</div>
 
                     <!-- 审批员 -->
                     <div :key="'step-' + step.uid" class="audit-step" :id="step.uid" :data-id="step.uid">
                         <div v-for="auditor in step.auditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">{{ auditor.nickname }}</div>
                     </div>
-                    <div :key="'icon-' + step.uid" class="add-step">
-                        <Icon type="ios-arrow-round-down" size="35" class="clickable" @click="addStep(index)"/>
+                    <div v-if="index !== auditConfig.steps.length-1" :key="'icon-' + step.uid" class="add-step">
+                        <Icon type="ios-arrow-round-down" size="35"/>
                     </div>
                 </template>
             </div>
@@ -58,6 +59,7 @@
 <script>
 import UserDao from '@/../public/static-p/js/dao/UserDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
+import AuditUtils from '@/../public/static-p/js/utils/AuditUtils';
 import Sortable from 'sortablejs';
 import EditableLabel from '@/components/EditableLabel.vue';
 
@@ -83,6 +85,7 @@ export default {
             });
 
             this.auditConfigs = configs || [];
+            AuditUtils.correctAuditConfigs(this.auditConfigs);
 
             // [2] 给没给阶段一个 uid
             configs.forEach(config => {
@@ -205,33 +208,10 @@ export default {
         },
         // 保存审批配置
         save() {
-            const configs = this.cleanAuditConfigs(this.auditConfigs);
+            const configs = AuditUtils.cleanAuditConfigs(this.auditConfigs);
             AuditDao.upsertAuditConfigs(configs).then(() => {
                 this.$Message.success('保存成功');
             });
-        },
-        // 清理审批配置，去掉 auditors 为空的阶段，调整阶段值
-        cleanAuditConfigs(configs) {
-            // 1. 克隆对象，对备份进行操作
-            // 2. 遍历处理每一个配置
-            // 3. 去掉 auditors 为空的阶段 step
-            // 4. 调整 step 的阶段值
-
-            // [1] 克隆对象，对备份进行操作
-            configs = Utils.clone(configs);
-
-            // [2] 遍历处理每一个配置
-            configs.forEach(config => {
-                // [3] 去掉 auditors 为空的阶段 step
-                config.steps = config.steps.filter(step => step.auditors.length > 0);
-
-                // [4] 调整 step 的阶段值
-                config.steps.forEach((step, index) => {
-                    step.step = index + 1;
-                });
-            });
-
-            return configs;
         },
         // 创建审批阶段对象
         newStep() {
@@ -240,7 +220,7 @@ export default {
                 auditors: [],
                 uid: Utils.uid(),
             };
-        }
+        },
     }
 };
 </script>

@@ -61,7 +61,7 @@ export default class AuditDao {
      * @return payload 为审批
      */
     static findAuditOfTarget(targetId) {
-        return Rest.get(Urls.API_AUDITS_BY_TARGET, { params: { targetId } }).then(({ data: audit, success, message })=> {
+        return Rest.get(Urls.API_AUDITS_BY_TARGET, { params: { targetId } }).then(({ data: audit, success, message }) => {
             return Utils.handleResponse(audit, success, message);
         });
     }

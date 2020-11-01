@@ -21,7 +21,7 @@
         <Table :data="orders" :columns="orderColumns" :loading="reloading" border>
             <!-- 订单编号 -->
             <template slot-scope="{ row: order }" slot="orderSn">
-                <a>{{ order.orderSn }}</a>
+                <a @click="detailsOrder(order)">{{ order.orderSn }}</a>
             </template>
 
             <!-- 客户单位 -->
@@ -52,8 +52,8 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
-                <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
                 <Button type="info" size="small" @click="detailsOrder(order)">详情</Button>
+                <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
             </template>
         </Table>
 
@@ -66,7 +66,7 @@
         <OrderEdit v-model="orderEditModal" :order-id="editedOrderId" @on-ok="editOrderFinished"/>
 
         <!-- 订单详情弹窗 -->
-        <OrderDetails v-model="orderDetailsModal" :order-id="detailsOrderId"/>
+        <OrderDetails v-model="orderDetailsModal" :order-id="orderDetailsOrderId"/>
     </div>
 </template>
 
@@ -93,7 +93,7 @@ export default {
             orderEditModal: false, // 订单编辑弹窗是否可见
             editedOrderId : '0',   // 编辑的订单 ID
             orderDetailsModal: false, // 订单详情弹窗是否可见
-            detailsOrderId: '0',      // 查看详情的订单
+            orderDetailsOrderId: '0', // 查看详情的订单
             orderColumns: [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'orderSn',   title: '订单号', width: 180 },
@@ -160,7 +160,7 @@ export default {
         },
         // 查看订单详情
         detailsOrder(order) {
-            this.detailsOrderId = order.orderId;
+            this.orderDetailsOrderId = order.orderId;
             this.orderDetailsModal = true;
         }
     }

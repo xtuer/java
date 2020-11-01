@@ -14,6 +14,9 @@ window.AUDIT_TYPES = [
     { value: 'MAINTAIN', name: '维修 / 保养' },
 ];
 
+// 订单
+window.TYPE_ORDER = 'ORDER';
+
 // 审批项状态
 window.AUDIT_ITEM_STATUS = [
     { value: 1,  label: '待审批' },

@@ -2,6 +2,8 @@ package com.xtuer.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Map;
+
 /**
  * 通用 Mapper
  */
@@ -21,4 +23,10 @@ public interface CommonMapper {
      * @param sequenceName 序列号名字
      */
     void increaseSequenceByName(String sequenceName);
+
+    /**
+     * 测试 XA 命令
+     */
+    @SuppressWarnings("rawtypes")
+    Map xaTest();
 }

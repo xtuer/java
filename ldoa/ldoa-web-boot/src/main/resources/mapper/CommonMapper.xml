@@ -14,4 +14,9 @@
         ON DUPLICATE KEY
         UPDATE value = value + 1
     </update>
+
+    <!-- 测试 XA 命令 -->
+    <select id="xaTest" resultType="map">
+        xa start 'mysql58xa'
+    </select>
 </mapper>

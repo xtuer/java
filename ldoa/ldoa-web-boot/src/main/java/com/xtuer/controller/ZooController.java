@@ -2,6 +2,7 @@ package com.xtuer.controller;
 
 import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
+import com.xtuer.mapper.CommonMapper;
 import com.xtuer.service.CommonService;
 import com.xtuer.service.OrderService;
 import org.apache.commons.lang.StringUtils;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ZooController extends BaseController {
@@ -23,6 +25,9 @@ public class ZooController extends BaseController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CommonMapper commonMapper;
 
     /**
      * 把字符串自动转为日期
@@ -131,5 +136,17 @@ public class ZooController extends BaseController {
     @GetMapping("/api/demo/nextOrderSn")
     public Result<String> nextOrderSn() {
         return Result.ok(orderService.nextOrderSn());
+    }
+
+    /**
+     * 测试 XA 命令
+     *
+     * 网址: http://localhost:8080/api/xa-test
+     * 参数: 无
+     */
+    @SuppressWarnings("rawtypes")
+    @GetMapping("/api/xa-test")
+    public Result<Map> xaTest() {
+        return Result.ok(commonMapper.xaTest());
     }
 }

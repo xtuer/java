@@ -13,18 +13,18 @@
         <!-- 审批项列表 -->
         <Table :data="auditItems" :columns="columns" :loading="reloading" border>
             <!-- 类型 -->
-            <template slot-scope="{ row: item }" slot="type">
-                {{ item.type | auditTypeName }}
+            <template slot-scope="{ row: auditItem }" slot="type">
+                {{ auditItem.type | auditTypeName }}
             </template>
 
             <!-- 申请时间 -->
-            <template slot-scope="{ row: item }" slot="createdAt">
-                {{ item.createdAt | formatDate('YYYY-MM-DD HH:mm') }}
+            <template slot-scope="{ row: auditItem }" slot="createdAt">
+                {{ auditItem.createdAt | formatDate('YYYY-MM-DD HH:mm') }}
             </template>
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: auditItem }" slot="action">
-                <Button type="primary" size="small">审批</Button>
+                <Button type="primary" size="small" @click="audit(auditItem)">审批</Button>
             </template>
         </Table>
 
@@ -32,13 +32,18 @@
         <div class="list-page-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreAuditItems">更多...</Button>
         </div>
+
+        <!-- 订单详情弹窗 -->
+        <OrderDetails v-model="orderDetailsModal" :order-id="orderDetailsOrderId"/>
     </div>
 </template>
 
 <script>
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
+import OrderDetails from '@/components/OrderDetails.vue';
 
 export default {
+    components: { OrderDetails },
     data() {
         return {
             auditItems : [],
@@ -59,7 +64,9 @@ export default {
                 { slot: 'createdAt',   title: '申请时间', width: 150, align: 'center' },
                 { key : 'statusLabel', title: '状态', width: 150, align: 'center' },
                 { slot: 'action',      title: '操作', width: 150, align: 'center', className: 'table-action' },
-            ]
+            ],
+            orderDetailsOrderId: '0', // 查看详情的订单 ID
+            orderDetailsModal: false, // 是否显示订单详情弹窗
         };
     },
     mounted() {
@@ -94,6 +101,13 @@ export default {
                 this.filter.pageNumber++;
             });
         },
+        // 审批
+        audit(auditItem) {
+            if (auditItem.type === TYPE_ORDER) {
+                this.orderDetailsOrderId = auditItem.targetId;
+                this.orderDetailsModal = true;
+            }
+        }
     }
 };
 </script>
