@@ -82,6 +82,14 @@ public interface AuditMapper {
      *                                     审批项
      *=============================================================================*/
     /**
+     * 查询审批项
+     *
+     * @param auditItemId 审批项 ID
+     * @return 返回审批项数
+     */
+    AuditItem findAuditItemByAuditItemId(long auditItemId);
+
+    /**
      * 查询审批的审批项
      *
      * @param auditId 审批 ID

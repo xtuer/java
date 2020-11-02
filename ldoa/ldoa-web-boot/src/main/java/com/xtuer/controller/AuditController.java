@@ -126,4 +126,16 @@ public class AuditController {
 
         return Result.ok();
     }
+
+    /**
+     * 审批: 通过或者拒绝审批项
+     *
+     * @param auditItemId 审批项 ID
+     * @param accepted    true 为通过审批，false 为拒绝审批
+     */
+    @PutMapping(Urls.API_AUDIT_ITEMS_ACCEPT)
+    public Result<Boolean> acceptAuditItem(@PathVariable long auditItemId, @RequestParam boolean accepted) {
+        auditService.acceptAuditItem(auditItemId, accepted);
+        return Result.ok();
+    }
 }

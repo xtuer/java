@@ -24,7 +24,7 @@ public class OrderTest {
 
     @Test
     public void insertOrder() {
-        orderService.upsertOrder(newOrder());
+        orderService.upsertOrder(newOrder(), new User());
     }
 
     /**

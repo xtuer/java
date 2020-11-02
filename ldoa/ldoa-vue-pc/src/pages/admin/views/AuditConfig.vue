@@ -61,10 +61,10 @@ import UserDao from '@/../public/static-p/js/dao/UserDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import AuditUtils from '@/../public/static-p/js/utils/AuditUtils';
 import Sortable from 'sortablejs';
-import EditableLabel from '@/components/EditableLabel.vue';
+// import EditableLabel from '@/components/EditableLabel.vue';
 
 export default {
-    components: { EditableLabel },
+    // components: { EditableLabel },
     data() {
         return {
             auditType   : { value: '', name: '' }, // 当前的审批类型

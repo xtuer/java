@@ -39,6 +39,7 @@ const Urls = {
     API_AUDITS_BY_TARGET: '/api/audits/of-target/{targetId}', // 审批目标的审批
     API_AUDIT_CONFIGS   : '/api/audit-configs',               // 审批配置
     API_AUDIT_ITEMS     : '/api/audit-items',                 // 审批项
+    API_AUDIT_ITEMS_ACCEPT: '/api/audit-items/{auditItemId}/accept', // 通过或拒绝审批项
 };
 
 window.Urls = Urls;

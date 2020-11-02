@@ -74,6 +74,13 @@
     </sql>
 
     <!-- 查询审批项 -->
+    <select id="findAuditItemByAuditItemId" resultType="AuditItem">
+        SELECT <include refid="auditItemColumns"/>
+        FROM audit_item ai
+        WHERE audit_item_id = #{auditItemId}
+    </select>
+
+    <!-- 查询审批项 -->
     <select id="findAuditItemsByAuditId" resultType="AuditItem">
         SELECT <include refid="auditItemColumns"/>
         FROM audit_item ai

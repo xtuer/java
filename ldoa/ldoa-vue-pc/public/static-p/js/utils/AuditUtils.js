@@ -16,7 +16,7 @@ export default class AuditUtils {
                 AuditUtils.newStep(3, '[生产调度] 填写发货信息 (包括发货单号、发货日期)'),
                 AuditUtils.newStep(4, '[销售人员] 确认回款情况'),
             ]
-        }
+        };
     }
 
     /**
@@ -114,6 +114,6 @@ export default class AuditUtils {
             step.auditors.filter(auditor => auditor.userId === auditItem.auditorId).forEach(auditor => {
                 auditItem.auditorNickname = auditor.nickname;
             });
-        })
+        });
     }
 }

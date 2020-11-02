@@ -83,7 +83,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </tr>
 
             <!-- 审批信息 -->
-            <tr v-for="(item, index) in audit.items" :key="item.auditItemId">
+            <tr v-for="item in audit.items" :key="item.auditItemId">
                 <td colspan="5">
                     <AuditItem :audit-item="item"/>
                 </td>
@@ -126,7 +126,7 @@ export default {
             if (this.order.salesperson) {
                 return this.order.salesperson.nickname;
             } else {
-                '未知';
+                return '未知';
             }
         },
         // 订单项

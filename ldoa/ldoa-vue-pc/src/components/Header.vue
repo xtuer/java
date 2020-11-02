@@ -27,7 +27,7 @@ export default {
     methods: {},
     computed: {
         user() {
-            return {};
+            return this.$store.state.user;
         }
     }
 };
@@ -55,6 +55,11 @@ export default {
 
     .ivu-avatar {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .user-name {
+        color: #ccc;
+        margin-left: 10px;
     }
 
     .menu-user {

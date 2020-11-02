@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -181,21 +182,6 @@ public class AuditService extends BaseService {
     }
 
     /**
-     * 审批
-     *
-     * @param auditItemId 审批项 ID
-     * @param accepted    true 为通过，false 为拒绝
-     */
-    public void processAuditItem(long auditItemId, boolean accepted) {
-        // 审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
-        // 1. 如果是拒绝，当前审批项的状态为拒绝，且修改上一级审批项的状态为待审批，如果是第一层，则审批不通过
-        // 2. 如果是通过，当前审批项的状态为通过，当当前层都为通过时，需要修改下一层审批项的状态为待审批，如果是最后一层，则审批通过
-        // 3. 审批拒绝时，订单状态修改为审批不通过，审批通过时修改订单为审批通过
-
-        auditMapper.updateAuditItemStatus(auditItemId, accepted ? 3 : 2);
-    }
-
-    /**
      * 插入或者更新审批配置
      *
      * @param configs 审批配置数组
@@ -205,5 +191,95 @@ public class AuditService extends BaseService {
         configs.forEach(config -> {
             auditMapper.upsertAuditConfig(config);
         });
+    }
+
+    /**
+     * 审批: 通过或者拒绝审批项
+     *
+     * @param auditItemId 审批项 ID
+     * @param accepted    true 为通过，false 为拒绝
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void acceptAuditItem(long auditItemId, boolean accepted) {
+        // 审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
+        // 1. 查询审批项，得到审批目标的 ID，然后得到此审批目标的所有审批项
+        // 2. 如果审批通过
+        //    2.1 当前审批项的状态为通过
+        //    2.2 统计最大的阶段数和通过的审批项
+        //    2.3 当前层都为通过时，如果是最后一层，则审批通过，如果不是最后一层，则修改下一层为等待审批状态
+        // 3. 如果审批被拒绝
+        //    3.1 当前审批项的状态为拒绝
+        //    3.2 如果是第一层，则审批不通过，如果不是第一层则修改上一级审批项的状态为待审批
+        // 4. 审批拒绝时，订单状态修改为审批不通过，审批通过时修改订单为审批通过
+
+        // [1] 查询审批项，得到审批目标的 ID，然后得到此审批目标的所有审批项
+        AuditItem item = auditMapper.findAuditItemByAuditItemId(auditItemId);
+        List<AuditItem> items = auditMapper.findAuditItemsByAuditId(item.getAuditId());
+
+        if (accepted) {
+            // [2] 如果审批通过
+            // [2.1] 当前审批项的状态为通过
+            auditMapper.updateAuditItemStatus(auditItemId, AuditItem.STATUS_ACCEPTED);
+
+            // 设置数组中此审批项状态为通过，方便计算
+            for (AuditItem temp : items) {
+                if (temp.getAuditItemId() == item.getAuditItemId()) {
+                    temp.setStatus(AuditItem.STATUS_ACCEPTED);
+                }
+            }
+
+            // [2.2] 统计最大的阶段数和通过的审批项
+            int maxStep = items.stream().mapToInt(AuditItem::getStep).max().orElse(0);
+            int acceptedCount = (int) items.stream().filter(temp -> temp.getStatus() == AuditItem.STATUS_ACCEPTED).count();
+
+            // [2.3] 当前层都为通过时，如果是最后一层，则审批通过，如果不是最后一层，则修改下一层为等待审批状态
+            if (acceptedCount == items.size()) {
+                if (item.getStep() == maxStep) {
+                    // 如果是最后一层，则审批通过
+                    acceptTarget(item.getAuditId(), item.getTargetId(), item.getType());
+                } else {
+                    // 则修改下一层为等待审批状态
+                    items.stream().filter(temp -> temp.getStep() == item.getStep() + 1).forEach(temp -> {
+                        auditMapper.updateAuditItemStatus(temp.getAuditItemId(), AuditItem.STATUS_WAIT);
+                    });
+                }
+            }
+        } else {
+            // [3] 如果审批被拒绝
+            // [3.1] 当前审批项的状态为拒绝
+            auditMapper.updateAuditItemStatus(auditItemId, AuditItem.STATUS_REJECTED);
+
+            // [3.2] 如果是第一层，则审批不通过，如果不是第一层则修改上一级审批项的状态为待审批
+            if (item.getStep() == 1) {
+                rejectTarget(item.getAuditId(), item.getTargetId(), item.getType());
+            } else {
+                // 修改上一级审批项的状态为待审批
+                items.stream().filter(temp -> temp.getStep() == item.getStep() - 1).forEach(temp -> {
+                    auditMapper.updateAuditItemStatus(temp.getAuditItemId(), AuditItem.STATUS_WAIT);
+                });
+            }
+        }
+    }
+
+    /**
+     * target 的审批通过
+     *
+     * @param auditId  审批的 ID
+     * @param targetId 审批目标的 ID
+     * @param type     审批的类型
+     */
+    public void acceptTarget(long auditId, long targetId, AuditType type) {
+
+    }
+
+    /**
+     * target 的审批被拒绝
+     *
+     * @param auditId  审批的 ID
+     * @param targetId 审批目标的 ID
+     * @param type     审批的类型
+     */
+    public void rejectTarget(long auditId, long targetId, AuditType type) {
+
     }
 }
