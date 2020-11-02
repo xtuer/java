@@ -13,7 +13,7 @@ CREATE TABLE audit (
     applicant_id bigint(20) unsigned NOT NULL COMMENT '审批申请人的 ID',
     target_id    bigint(20) unsigned NOT NULL COMMENT '审批目标的 ID',
     target_json  mediumtext                   COMMENT '审批目标对象的 JSON 内容，方便前端转为响应对象进行展示',
-    passed       tinyint(4) DEFAULT 0         COMMENT '是否审批通过: 0 (不通过), 1 (通过)',
+    status       int(11)    DEFAULT 0         COMMENT '审批状态: 0 (初始化), 1 (拒绝), 2 (通过)',
     `desc`       text                         COMMENT '审批的简要描述',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

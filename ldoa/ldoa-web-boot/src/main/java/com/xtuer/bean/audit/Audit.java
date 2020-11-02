@@ -1,6 +1,7 @@
 package com.xtuer.bean.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,6 +18,12 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonIgnoreProperties({"contentJson"}) // 很重要，如果没有会导致递归
 public class Audit {
+    private static final String[] STATUS_LABELS = { "初始化", "拒绝", "通过" };
+
+    public static final int STATUS_INIT     = 0;
+    public static final int STATUS_REJECTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+
     /**
      * 审批类型
      */
@@ -43,9 +50,9 @@ public class Audit {
     private String targetJson;
 
     /**
-     * 是否审批通过
+     * 审批状态: 0 (初始化), 1 (拒绝), 2 (通过)
      */
-    private boolean passed;
+    private int status;
 
     /**
      * 提交审批的时间
@@ -66,4 +73,13 @@ public class Audit {
      * 审批的配置
      */
     private AuditConfig config;
+
+    /**
+     * 获取审批状态 Label
+     *
+     * @return 返回订单状态的 Label
+     */
+    public String getStatusLabel() {
+        return Utils.getStatusLabel(STATUS_LABELS, status);
+    }
 }

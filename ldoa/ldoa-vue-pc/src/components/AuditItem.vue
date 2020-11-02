@@ -9,7 +9,7 @@ audit-item: 审批项
 -->
 <template>
     <div class="audit-item">
-        <div>{{ auditItem.desc }}:</div>
+        <div class="color-gray">{{ auditItem.desc }}:</div>
         <div>{{ auditItem.comment }}</div>
         <div class="sign">
             {{ auditItem.auditorNickname }} / {{ auditItem.processedAt | formatDate }}
@@ -62,12 +62,13 @@ export default {
         },
         // 拒绝审批
         reject() {
-            this.aufit(false);
+            this.audit(false);
         },
         // 审批
         audit(accepted) {
-            AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted).then(() => {
-                this.auditItem.comment = this.auditComment.trim();
+            this.auditItem.comment = this.auditComment.trim();
+
+            AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
                 this.auditItem.status = accepted ? 3 : 2;
                 this.$Message.success('审批完成');
             });

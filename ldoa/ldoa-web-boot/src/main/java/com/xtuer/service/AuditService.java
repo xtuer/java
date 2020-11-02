@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 审核服务
@@ -26,6 +26,9 @@ import java.util.Objects;
 public class AuditService extends BaseService {
     @Autowired
     private AuditMapper auditMapper;
+
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 查询审批
@@ -111,23 +114,23 @@ public class AuditService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson, String desc) {
         // 1. 查询审批配置
-        // 2. 查询审批，不存在则创建
-        // 3. 创建审批项
-        // 4. 设置 step 为 1 的审批项的状态为 1 (待审批)
-        // 5. 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
-        // 6. 保存到数据库
+        // 2. 校验审批配置，如果审批配置无效则返回
+        // 3. 查询审批，不存在则创建
+        // 4. 创建审批项
+        // 5. 设置 step 为 1 的审批项的状态为 1 (待审批)
+        // 6. 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
+        // 7. 保存到数据库
 
         // [1] 查询审批配置
         AuditConfig config = auditMapper.findAuditConfigByType(type);
 
-        if (config == null) {
-            return Result.fail("审批配置不存在: " + type);
-        }
-        if (config.getSteps().size() == 0) {
-            return Result.fail("没有配置审批流程: " + type);
+        // [2] 校验审批配置，如果审批配置无效则返回
+        Result<String> checkResult = checkAuditConfig(config, type);
+        if (!checkResult.isSuccess()) {
+            return checkResult;
         }
 
-        // [2] 查询审批，不存在则创建
+        // [3] 查询审批，不存在则创建
         Audit audit = auditMapper.findAuditByTargetId(targetId);
 
         if (audit == null) {
@@ -138,10 +141,11 @@ public class AuditService extends BaseService {
                     .setTargetId(targetId);
         }
 
+        // 设置审批的目标和描述
         audit.setTargetJson(targetJson);
         audit.setDesc(desc);
 
-        // [3] 创建审批项
+        // [4] 创建审批项
         final Audit back = audit;
         config.getSteps().forEach(step -> {
             step.getAuditors().forEach(auditor -> {
@@ -158,7 +162,7 @@ public class AuditService extends BaseService {
             });
         });
 
-        // [4] 设置 step 为 1 的审批项的状态为 1 (待审批)
+        // [5] 设置 step 为 1 的审批项的状态为 1 (待审批)
         audit.getItems()
                 .stream()
                 .filter(item -> item.getStep() == 1)
@@ -166,16 +170,45 @@ public class AuditService extends BaseService {
 
         log.info("[开始] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
-        // [5] 删除同一个 targetId 的审批项，例如审批被拒绝后重新提交审批
+        // [6] 删除同一个 targetId 的审批项，例如审批被拒绝后重新提交审批
         auditMapper.deleteAuditItemsByTargetId(targetId);
 
-        // [6] 保存到数据库
+        // [7] 保存到数据库
         // 保存审批
         auditMapper.upsertAudit(audit);
 
         // 保存审批项
-        for (AuditItem item : audit.getItems()) {
-            auditMapper.insertAuditItem(item);
+        auditMapper.insertAuditItems(audit.getItems());
+
+        log.info("[成功] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
+
+        return Result.ok();
+    }
+
+    /**
+     * 校验审批配置，审批配置有效返回 Result.ok()，无效返回 Result.fail()
+     *
+     * @param config 审批配置
+     * @param type   审批类型
+     * @return 审批配置有效返回 Result.ok()，无效返回 Result.fail()
+     */
+    public Result<String> checkAuditConfig(AuditConfig config, AuditType type) {
+        // 1. 检查审批配置是否不存在
+        // 2. 检查是否配置了审批流程
+        // 3. 每个流程中都必须配置审批员
+
+        if (config == null) {
+            return Result.fail("审批配置不存在: " + type);
+        }
+
+        if (config.getSteps().size() == 0) {
+            return Result.fail("没有配置审批流程: " + type);
+        }
+
+        for (AuditConfig.AuditConfigStep step : config.getSteps()) {
+            if (step.getAuditors().size() == 0) {
+                return Result.fail("审批的流程中有的没有配置审批员，请核查对应的审批配置");
+            }
         }
 
         return Result.ok();
@@ -198,14 +231,15 @@ public class AuditService extends BaseService {
      *
      * @param auditItemId 审批项 ID
      * @param accepted    true 为通过，false 为拒绝
+     * @param comment     审批意见
      */
     @Transactional(rollbackFor = Exception.class)
-    public void acceptAuditItem(long auditItemId, boolean accepted) {
+    public void acceptAuditItem(long auditItemId, boolean accepted, String comment) {
         // 审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
         // 1. 查询审批项，得到审批目标的 ID，然后得到此审批目标的所有审批项
         // 2. 如果审批通过
         //    2.1 当前审批项的状态为通过
-        //    2.2 统计最大的阶段数和通过的审批项
+        //    2.2 统计最大的阶段数和当前阶段的审批项数量，通过的审批项数量
         //    2.3 当前层都为通过时，如果是最后一层，则审批通过，如果不是最后一层，则修改下一层为等待审批状态
         // 3. 如果审批被拒绝
         //    3.1 当前审批项的状态为拒绝
@@ -219,38 +253,40 @@ public class AuditService extends BaseService {
         if (accepted) {
             // [2] 如果审批通过
             // [2.1] 当前审批项的状态为通过
-            auditMapper.updateAuditItemStatus(auditItemId, AuditItem.STATUS_ACCEPTED);
+            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATUS_ACCEPTED, comment);
 
             // 设置数组中此审批项状态为通过，方便计算
-            for (AuditItem temp : items) {
-                if (temp.getAuditItemId() == item.getAuditItemId()) {
-                    temp.setStatus(AuditItem.STATUS_ACCEPTED);
-                }
-            }
+            items.stream()
+                    .filter(t -> t.getAuditItemId() == item.getAuditItemId())
+                    .forEach(t -> t.setStatus(AuditItem.STATUS_ACCEPTED));
 
-            // [2.2] 统计最大的阶段数和通过的审批项
+            // [2.2] 统计最大的阶段数和当前阶段的审批项数量，通过的审批项数量
+            List<AuditItem> currentStepItems = items.stream().filter(t -> t.getStep() == item.getStep()).collect(Collectors.toList()); // 当前阶段的审批项
+            int currentStepAuditorCount  = currentStepItems.size(); // 当前层的审批员数量
+            int currentStepAcceptedCount = (int) currentStepItems.stream().filter(t -> t.getStatus() == AuditItem.STATUS_ACCEPTED).count(); // 当前阶段审批通过的数量
             int maxStep = items.stream().mapToInt(AuditItem::getStep).max().orElse(0);
-            int acceptedCount = (int) items.stream().filter(temp -> temp.getStatus() == AuditItem.STATUS_ACCEPTED).count();
 
             // [2.3] 当前层都为通过时，如果是最后一层，则审批通过，如果不是最后一层，则修改下一层为等待审批状态
-            if (acceptedCount == items.size()) {
+            if (currentStepAuditorCount == currentStepAcceptedCount) {
                 if (item.getStep() == maxStep) {
                     // 如果是最后一层，则审批通过
+                    auditMapper.updateAuditStatus(item.getAuditId(), Audit.STATUS_ACCEPTED);
                     acceptTarget(item.getAuditId(), item.getTargetId(), item.getType());
                 } else {
                     // 则修改下一层为等待审批状态
-                    items.stream().filter(temp -> temp.getStep() == item.getStep() + 1).forEach(temp -> {
-                        auditMapper.updateAuditItemStatus(temp.getAuditItemId(), AuditItem.STATUS_WAIT);
+                    items.stream().filter(t -> t.getStep() == item.getStep() + 1).forEach(t -> {
+                        auditMapper.updateAuditItemStatus(t.getAuditItemId(), AuditItem.STATUS_WAIT);
                     });
                 }
             }
         } else {
             // [3] 如果审批被拒绝
             // [3.1] 当前审批项的状态为拒绝
-            auditMapper.updateAuditItemStatus(auditItemId, AuditItem.STATUS_REJECTED);
+            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATUS_REJECTED, comment);
 
             // [3.2] 如果是第一层，则审批不通过，如果不是第一层则修改上一级审批项的状态为待审批
             if (item.getStep() == 1) {
+                auditMapper.updateAuditStatus(item.getAuditId(), Audit.STATUS_REJECTED);
                 rejectTarget(item.getAuditId(), item.getTargetId(), item.getType());
             } else {
                 // 修改上一级审批项的状态为待审批
@@ -269,7 +305,9 @@ public class AuditService extends BaseService {
      * @param type     审批的类型
      */
     public void acceptTarget(long auditId, long targetId, AuditType type) {
-
+        if (type == AuditType.ORDER) {
+            orderService.acceptOrder(targetId);
+        }
     }
 
     /**
@@ -280,6 +318,8 @@ public class AuditService extends BaseService {
      * @param type     审批的类型
      */
     public void rejectTarget(long auditId, long targetId, AuditType type) {
-
+        if (type == AuditType.ORDER) {
+            orderService.rejectOrder(targetId);
+        }
     }
 }

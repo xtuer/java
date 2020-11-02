@@ -206,3 +206,8 @@ Box 布局
 .box > .content {
     padding: 20px;
 }
+
+/* 字体颜色 */
+.color-gray {
+    color: #808695;
+}

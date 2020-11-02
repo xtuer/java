@@ -87,7 +87,7 @@ export default {
     data() {
         return {
             products: [],
-            productClone: { items: [] },
+            productClone: this.newProduct(),
             filter: { // 搜索条件
                 name      : '',
                 pageSize  : 20,
@@ -257,6 +257,7 @@ export default {
                 code : '',
                 model: '',
                 desc : '',
+                items: [],
             };
         }
     }

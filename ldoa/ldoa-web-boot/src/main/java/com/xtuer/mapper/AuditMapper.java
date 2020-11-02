@@ -65,11 +65,12 @@ public interface AuditMapper {
     void upsertAudit(Audit audit);
 
     /**
-     * 审批通过
+     * 更新审批状态
      *
      * @param auditId 审批 ID
+     * @param status  审批状态
      */
-    void passAudit(long auditId);
+    void updateAuditStatus(long auditId, int status);
 
     /**
      * 删除指定 targetId 的审批
@@ -109,9 +110,19 @@ public interface AuditMapper {
     /**
      * 插入审批项
      *
-     * @param item 审批项
+     * @param items 审批项的数组
      */
-    void insertAuditItem(AuditItem item);
+    void insertAuditItems(List<AuditItem> items);
+
+
+    /**
+     * 通过或者拒绝审批项
+     *
+     * @param auditItemId 审批项 ID
+     * @param status      状态
+     * @param comment     审批意见
+     */
+    void acceptOrRejectAuditItem(long auditItemId, int status, String comment);
 
     /**
      * 更新审批项的状态
@@ -120,7 +131,6 @@ public interface AuditMapper {
      * @param status      审批项的状态
      */
     void updateAuditItemStatus(long auditItemId, int status);
-
 
     /**
      * 删除指定 targetId 审批项

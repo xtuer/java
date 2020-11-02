@@ -130,12 +130,19 @@ public class AuditController {
     /**
      * 审批: 通过或者拒绝审批项
      *
+     * 网址: http://localhost:8080/api/audit-items/{auditItemId}/accept
+     * 参数:
+     *      accepted (必要): 为 true 表示通过，false 表示拒绝
+     *      comment  [可选]: 审批意见
+     *
      * @param auditItemId 审批项 ID
      * @param accepted    true 为通过审批，false 为拒绝审批
      */
     @PutMapping(Urls.API_AUDIT_ITEMS_ACCEPT)
-    public Result<Boolean> acceptAuditItem(@PathVariable long auditItemId, @RequestParam boolean accepted) {
-        auditService.acceptAuditItem(auditItemId, accepted);
+    public Result<Boolean> acceptAuditItem(@PathVariable long auditItemId,
+                                           @RequestParam boolean accepted,
+                                           @RequestParam(required = false) String comment) {
+        auditService.acceptAuditItem(auditItemId, accepted, comment);
         return Result.ok();
     }
 }

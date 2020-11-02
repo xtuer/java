@@ -28,7 +28,7 @@
     ========================================================================================-->
     <!-- 审批的列 -->
     <sql id="auditColumns">
-        type, audit_id, applicant_id, target_id, target_json, `desc`, passed
+        type, audit_id, applicant_id, target_id, target_json, `desc`, status
     </sql>
 
     <!-- 查询审批 -->
@@ -54,9 +54,9 @@
         UPDATE target_json = #{targetJson}, `desc` = #{desc}
     </insert>
 
-    <!-- 审批通过 -->
-    <update id="passAudit">
-        UPDATE audit SET passed = 1 WHERE audit_id = #{auditId}
+    <!-- 更新审批状态 -->
+    <update id="updateAuditStatus">
+        UPDATE audit SET status = #{status} WHERE audit_id = #{auditId}
     </update>
 
     <!-- 删除指定 targetId 和类型的审批 -->
@@ -94,18 +94,28 @@
             LEFT JOIN audit a ON a.audit_id = ai.audit_id
             LEFT JOIN user u ON u.user_id = ai.applicant_id
         <where>
-            auditor_id = #{auditorId}
+            ai.auditor_id = #{auditorId}
             <if test="status >= 0">
-                AND status = #{status}
+                AND ai.status = #{status}
             </if>
         </where>
     </select>
 
     <!-- 插入审批项 -->
-    <insert id="insertAuditItem">
+    <insert id="insertAuditItems">
         INSERT INTO audit_item (type, audit_id, audit_item_id, applicant_id, target_id, auditor_id, step, status)
-        VALUES (#{type}, #{auditId}, #{auditItemId}, #{applicantId}, #{targetId}, #{auditorId}, #{step}, #{status})
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.type}, #{item.auditId}, #{item.auditItemId}, #{item.applicantId},
+            #{item.targetId}, #{item.auditorId}, #{item.step}, #{item.status})
+        </foreach>
     </insert>
+
+    <!-- 通过或者拒绝审批项 -->
+    <update id="acceptOrRejectAuditItem">
+        UPDATE audit_item SET status = #{status}, comment = #{comment}, processed_at = now()
+        WHERE audit_item_id = #{auditItemId}
+    </update>
 
     <!-- 更新审批项的状态 -->
     <update id="updateAuditItemStatus">

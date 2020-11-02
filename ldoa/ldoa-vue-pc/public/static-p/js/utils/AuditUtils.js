@@ -37,9 +37,20 @@ export default class AuditUtils {
      * @return 无
      */
     static correctAuditConfigs(configs) {
-        // 1. 订单的审批必须有 4 个阶段，如果不对，则恢复初始值
-        const orderAuditConfig = configs.filter(config => config.type === window.TYPE_ORDER)[0] || AuditUtils.newOrderAuditConfig();
-        if (orderAuditConfig.steps.length !== 4) {
+        // 1. 获取订单的审批
+        // 2. 校验订单的审批
+        //    2.1 如果不存在，则创建默认的审批
+        //    2.2 如果已存在，但是必须有 4 个阶段，如果不对，则恢复初始值
+
+        // [1] 获取订单的审批
+        const orderAuditConfig = configs.filter(config => config.type === window.TYPE_ORDER)[0];
+
+        // [2] 校验订单的审批
+        if (!orderAuditConfig) {
+            // [2.1] 如果不存在，则创建默认的审批
+            configs.push(AuditUtils.newOrderAuditConfig());
+        } else if (orderAuditConfig.steps.length !== 4) {
+            // [2.2] 如果已存在，但是必须有 4 个阶段，如果不对，则恢复初始值
             orderAuditConfig.steps = AuditUtils.newOrderAuditConfig().steps;
             console.error('订单的审批配置数据有问题，重置');
         }
@@ -83,36 +94,31 @@ export default class AuditUtils {
     }
 
     /**
-     * 查询指定阶段的审批项
-     *
-     * @param {JSON}} audit 审批
-     * @param {Int} step 审批阶段
-     * @return {JSON} 返回查询到的审批项，查询不到返回空对象 {}
-     */
-    static findAuditItem(audit, step) {
-        if (audit.items) {
-            return audit.items.filter(item => item.step === step)[0] || {};
-        } else {
-            return {};
-        }
-    }
-
-    /**
      * 合并审批的数据，方便使用
      *
      * @param {JSON} audit 审批 (其中包含了审批配置、审批项等)
      * @return 无
      */
     static mergeAuditConfigToAuditItem(audit) {
-        audit.config.steps.forEach(step => {
-            const auditItem = AuditUtils.findAuditItem(audit, step.step);
+        // 1. 查询审批项对应阶段的配置
+        // 2. 设置审批项的描述
+        // 3. 查询审批项的审批员的名字
 
-            // 审批项的说明
-            auditItem.desc = step.desc;
+        audit.items.forEach(item => {
+            // [1] 查询审批项对应阶段的配置
+            const configStep = audit.config.steps.find(t => t.step === item.step);
 
-            // 合并审批员的名字到审批项里
-            step.auditors.filter(auditor => auditor.userId === auditItem.auditorId).forEach(auditor => {
-                auditItem.auditorNickname = auditor.nickname;
+            if (!configStep) {
+                console.error(`审批流程 [${item.step}] 的配置不存在`);
+                return;
+            }
+
+            // [2] 设置审批项的描述
+            item.desc = configStep.desc;
+
+            // [3] 查询审批项的审批员的名字
+            configStep.auditors.filter(auditor => auditor.userId === item.auditorId).forEach(auditor => {
+                item.auditorNickname = auditor.nickname;
             });
         });
     }

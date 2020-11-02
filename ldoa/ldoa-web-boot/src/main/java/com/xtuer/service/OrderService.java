@@ -156,4 +156,22 @@ public class OrderService extends BaseService {
 
         return orderSn;
     }
+
+    /**
+     * 订单审批通过
+     *
+     * @param orderId 订单 ID
+     */
+    public void acceptOrder(long orderId) {
+
+    }
+
+    /**
+     * 订单审批被拒绝
+     *
+     * @param orderId 订单 ID
+     */
+    public void rejectOrder(long orderId) {
+
+    }
 }

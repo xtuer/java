@@ -16,8 +16,8 @@ import java.util.Date;
 public class AuditItem {
     private static final String[] STATUS_LABELS = { "初始化", "待审批", "拒绝", "通过" };
 
-    public static final int STATUS_INIT = 0;
-    public static final int STATUS_WAIT = 1;
+    public static final int STATUS_INIT     = 0;
+    public static final int STATUS_WAIT     = 1;
     public static final int STATUS_REJECTED = 2;
     public static final int STATUS_ACCEPTED = 3;
 

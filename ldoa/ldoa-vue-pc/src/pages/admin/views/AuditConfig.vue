@@ -84,8 +84,7 @@ export default {
                 this.allAuditors.push({ userId: user.userId, username: user.username, nickname: user.nickname });
             });
 
-            this.auditConfigs = configs || [];
-            AuditUtils.correctAuditConfigs(this.auditConfigs);
+            AuditUtils.correctAuditConfigs(configs);
 
             // [2] 给没给阶段一个 uid
             configs.forEach(config => {
@@ -93,6 +92,8 @@ export default {
                     step.uid = Utils.uid();
                 });
             });
+
+            this.auditConfigs = configs
 
             // [3] 显示第一个类型的审批配置
             this.switchType(window.AUDIT_TYPES[0]);

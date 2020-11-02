@@ -93,9 +93,10 @@ export default class AuditDao {
      *
      * @param {Long} auditItemId 审批项 ID
      * @param {Bool} accepted    true 为通过审批，false 为拒绝审批
+     * @param {String} comment   审批意见
      */
-    static acceptAuditItem(auditItemId, accepted) {
-        return Rest.update(Urls.API_AUDIT_ITEMS_ACCEPT, { params: { auditItemId }, data: { accepted } }).then(({ success, message }) => {
+    static acceptAuditItem(auditItemId, accepted, comment) {
+        return Rest.update(Urls.API_AUDIT_ITEMS_ACCEPT, { params: { auditItemId }, data: { accepted, comment } }).then(({ success, message }) => {
             return Utils.handleResponse(null, success, message);
         });
     }
