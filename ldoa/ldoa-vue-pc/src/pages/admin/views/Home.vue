@@ -53,6 +53,13 @@ export default {
                         { label: '维保订单', name: 'question-statistics' },
                     ]
                 },
+                { label: '生产系统', icon: 'md-compass', menuItems:
+                    [
+                        { label: '库存查询', name: 'orders' },
+                        { label: '物料入库', name: 'question-statistics' },
+                        { label: '物料出库', name: 'question-statistics' },
+                    ]
+                },
                 { label: '个人中心', icon: 'ios-people', menuItems:
                     [
                         { label: '收到的审批', name: 'audit-received' },

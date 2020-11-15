@@ -72,23 +72,24 @@ export default class AuditUtils {
         configs = Utils.clone(configs);
 
         // [2] 遍历处理每一个配置
-        // configs.forEach(config => {
-        //     // [3] 去掉 auditors 为空的阶段 step
-        //     config.steps = config.steps.filter(step => step.auditors.length > 0);
-
-        //     // [4] 调整 step 的阶段值
-        //     config.steps.forEach((step, index) => {
-        //         step.step = index + 1;
-        //     });
-        // });
-        // 只提示 auditors 为空
         configs.forEach(config => {
-            config.steps.forEach(step => {
-                if (step.auditors.length === 0) {
-                    Message.warning(`阶段 <b>${step.desc}</b> 的审批员为空`);
-                }
+            // [3] 去掉 auditors 为空的阶段 step
+            config.steps = config.steps.filter(step => step.auditors.length > 0);
+
+            // [4] 调整 step 的阶段值
+            config.steps.forEach((step, index) => {
+                step.step = index + 1;
             });
         });
+
+        // 只提示 auditors 为空
+        // configs.forEach(config => {
+        //     config.steps.forEach(step => {
+        //         if (step.auditors.length === 0) {
+        //             Message.warning(`阶段 <b>${step.desc}</b> 的审批员为空`);
+        //         }
+        //     });
+        // });
 
         return configs;
     }

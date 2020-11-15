@@ -21,7 +21,7 @@ on-change: 输入时触发，参数为输入的内容
         <div class="title" :class="{ 'title-margin-right': !title }"><slot>{{ title }}</slot></div>
         <Poptip :width="inputWidth" trigger="click" class="content" transfer transfer-class-name="editable-label-pop-tip">
             <span>{{ content }}</span>
-            <Input v-model="contentX" slot="content" @on-change="change"/>
+            <Input v-model="contentX" slot="content" placeholder="请输入内容，按下回车确定" @on-enter="change"/>
         </Poptip>
     </div>
 </template>

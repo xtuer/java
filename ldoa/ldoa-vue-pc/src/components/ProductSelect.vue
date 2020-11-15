@@ -58,7 +58,6 @@ export default {
         prop : 'visible',
         event: 'on-visible-change',
     },
-    components: { ProductItemExpand },
     data() {
         return {
             products: [],

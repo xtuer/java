@@ -8,12 +8,12 @@ export default class AuditDao {
      * 网址: http://localhost:8080/api/audit-configs
      * 参数: 无
      *
-     * @return payload 为审批配置的数组
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为审批配置的数组，reject 的参数为错误信息
      */
     static findAuditConfigs() {
         return Rest.get(Urls.API_AUDIT_CONFIGS).then(({ data: configs, success, message }) => {
             configs && configs.map(config => config.steps).flat().forEach(step => {
-                step.desc = step.desc || '第一次为 true 时才从服务器加载学员，避免重复加载';
+                step.desc = step.desc || '';
             });
 
             return Utils.handleResponse(configs, success, message);

@@ -32,15 +32,15 @@
             <div class="title">审批流程</div>
             <div class="content audit-steps">
                 <template v-for="(step, index) in auditConfig.steps">
-                    <!-- <EditableLabel v-model="step.desc" :key="'desc-' + step.uid" style="margin-bottom: 10px">审批说明:</EditableLabel> -->
-                    <div :key="'desc-' + step.uid">{{ step.desc }}</div>
+                    <EditableLabel v-model="step.desc" :key="'desc-' + step.uid" style="margin-bottom: 10px">审批说明:</EditableLabel>
+                    <!-- <div :key="'desc-' + step.uid">{{ step.desc }}</div> -->
 
                     <!-- 审批员 -->
                     <div :key="'step-' + step.uid" class="audit-step" :id="step.uid" :data-id="step.uid">
                         <div v-for="auditor in step.auditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">{{ auditor.nickname }}</div>
                     </div>
-                    <div v-if="index !== auditConfig.steps.length-1" :key="'icon-' + step.uid" class="add-step">
-                        <Icon type="ios-arrow-round-down" size="35"/>
+                    <div :key="'icon-' + step.uid" class="add-step">
+                        <Icon type="ios-arrow-round-down" size="35" @click="addStep(index)"/>
                     </div>
                 </template>
             </div>
@@ -61,10 +61,10 @@ import UserDao from '@/../public/static-p/js/dao/UserDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import AuditUtils from '@/../public/static-p/js/utils/AuditUtils';
 import Sortable from 'sortablejs';
-// import EditableLabel from '@/components/EditableLabel.vue';
+import EditableLabel from '@/components/EditableLabel.vue';
 
 export default {
-    // components: { EditableLabel },
+    components: { EditableLabel },
     data() {
         return {
             auditType   : { value: '', name: '' }, // 当前的审批类型
@@ -84,7 +84,7 @@ export default {
                 this.allAuditors.push({ userId: user.userId, username: user.username, nickname: user.nickname });
             });
 
-            AuditUtils.correctAuditConfigs(configs);
+            // AuditUtils.correctAuditConfigs(configs);
 
             // [2] 给没给阶段一个 uid
             configs.forEach(config => {
@@ -93,7 +93,7 @@ export default {
                 });
             });
 
-            this.auditConfigs = configs
+            this.auditConfigs = configs;
 
             // [3] 显示第一个类型的审批配置
             this.switchType(window.AUDIT_TYPES[0]);

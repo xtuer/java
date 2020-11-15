@@ -73,8 +73,8 @@ public class JobService {
      */
     public void executeJob(long jobId, long executionId) {
         // 1. 查询 tasks
-        // 2. 找到入度为 0，状态为 READY 的自动任务任务
-        // 3. 异步执行 tasks
+        // 2. 找到入度为 0，状态为 READY 的自动任务
+        // 3. 异步执行任务
         // 4. 所有 task 执行完成，则 Job 执行完成
 
         // [1] 查询 tasks
@@ -82,7 +82,7 @@ public class JobService {
 
         // System.out.println(Utils.toJson(tasks));
 
-        // [2] 找到入度为 0，状态为 READY 的自动任务任务
+        // [2] 找到入度为 0，状态为 READY 的自动任务
         List<Task> executableTasks = tasks.stream()
                 .filter(task -> task.getInDegree() == 0)
                 .filter(task -> task.getStatus() == Task.Status.READY)
@@ -91,7 +91,7 @@ public class JobService {
 
         // System.out.println(Utils.toJson(executableTasks));
 
-        // [3] 异步执行 tasks
+        // [3] 异步执行任务
         executableTasks.forEach(task -> {
             executeTask(task.getTaskId(), task.getExecutionId());
         });
