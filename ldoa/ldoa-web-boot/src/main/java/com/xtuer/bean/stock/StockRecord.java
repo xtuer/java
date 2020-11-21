@@ -18,6 +18,11 @@ public class StockRecord {
     private long stockRecordId;
 
     /**
+     * 物料 ID
+     */
+    private long productItemId;
+
+    /**
      * 库存操作类型: false (入库), true (出库)
      */
     private boolean type;
@@ -43,11 +48,6 @@ public class StockRecord {
     private String comment;
 
     /**
-     * 物料 ID
-     */
-    private long productItemId;
-
-    /**
      * 操作是否完成
      * A. 入库直接标记为完成
      * B. 出库申请提交后创建出库记录，当领取物料后才标记为完成
@@ -60,7 +60,12 @@ public class StockRecord {
     private long stockOutRequestId;
 
     /**
+     * 操作用户 ID
+     */
+    private userId;
+
+    /**
      * 物料
      */
-    private ProductItem productItem = new ProductItem();
+    private ProductItem productItem;
 }

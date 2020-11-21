@@ -56,8 +56,8 @@ export default {
                 { label: '生产系统', icon: 'md-compass', menuItems:
                     [
                         { label: '库存查询', name: 'orders' },
-                        { label: '物料入库', name: 'question-statistics' },
-                        { label: '物料出库', name: 'question-statistics' },
+                        { label: '物料入库', name: 'stock-in' },
+                        { label: '物料出库', name: 'stock-out' },
                     ]
                 },
                 { label: '个人中心', icon: 'ios-people', menuItems:

@@ -24,13 +24,34 @@ export default new Router({
                     name: 'products',
                     component: () => import(/* webpackChunkName: "product" */ './views/Products.vue'),
                 },
+                // =====================================================================================
+                //                                         订单系统
+                // =====================================================================================
                 // 销售订单
                 {
                     path: '/orders',
                     name: 'orders',
                     component: () => import(/* webpackChunkName: "product" */ './views/Orders.vue'),
                 },
-                // 系统管理-用户管理
+                // =====================================================================================
+                //                                         生产系统
+                // =====================================================================================
+                // 物料入库
+                {
+                    path: '/stock-in',
+                    name: 'stock-in',
+                    component: () => import(/* webpackChunkName: "product" */ './views/StockIn.vue'),
+                },
+                // 物料出库
+                {
+                    path: '/stock-out',
+                    name: 'stock-out',
+                    component: () => import(/* webpackChunkName: "product" */ './views/StockOut.vue'),
+                },
+                // =====================================================================================
+                //                                         系统管理
+                // =====================================================================================
+                // 用户管理
                 {
                     path: '/users',
                     name: 'users',
@@ -42,7 +63,9 @@ export default new Router({
                     name: 'audit-config',
                     component: () => import(/* webpackChunkName: "product" */ './views/AuditConfig.vue'),
                 },
-                // 个人中心
+                // =====================================================================================
+                //                                         个人中心
+                // =====================================================================================
                 // 我收到的审批
                 {
                     path: '/audit-received',

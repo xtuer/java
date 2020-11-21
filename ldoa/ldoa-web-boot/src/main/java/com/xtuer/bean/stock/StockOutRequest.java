@@ -22,14 +22,19 @@ public class StockOutRequest {
     private String orderSn;
 
     /**
-     * 入库项目
-     */
-    private List<StockRecord> items = new LinkedList<>();
-
-    /**
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
     private int status;
+
+    /**
+     * 申请者 ID
+     */
+    private long applicantId;
+
+    /**
+     * 入库项目
+     */
+    private List<StockRecord> items = new LinkedList<>();
 
     /**
      * 获取订单状态 Label
