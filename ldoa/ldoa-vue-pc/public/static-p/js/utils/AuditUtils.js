@@ -95,7 +95,7 @@ export default class AuditUtils {
     }
 
     /**
-     * 合并审批的数据，方便使用
+     * 把审批配置中的信息合并到审批项里，方便审批项的使用
      *
      * @param {JSON} audit 审批 (其中包含了审批配置、审批项等)
      * @return 无
@@ -103,7 +103,7 @@ export default class AuditUtils {
     static mergeAuditConfigToAuditItem(audit) {
         // 1. 查询审批项对应阶段的配置
         // 2. 设置审批项的描述
-        // 3. 查询审批项的审批员的名字
+        // 3. 合并数据到审批项
 
         audit.items.forEach(item => {
             // [1] 查询审批项对应阶段的配置
@@ -117,7 +117,7 @@ export default class AuditUtils {
             // [2] 设置审批项的描述
             item.desc = configStep.desc;
 
-            // [3] 查询审批项的审批员的名字
+            // [3] 合并数据到审批项
             configStep.auditors.filter(auditor => auditor.userId === item.auditorId).forEach(auditor => {
                 item.auditorNickname = auditor.nickname;
             });

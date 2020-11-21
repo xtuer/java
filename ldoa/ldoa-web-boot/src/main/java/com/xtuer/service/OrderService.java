@@ -66,6 +66,7 @@ public class OrderService extends BaseService {
      *
      * @param order 订单
      * @param salesperson 销售员
+     * @return 返回操作的结果，payload 为更新后的订单
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<Order> upsertOrder(Order order, User salesperson) {

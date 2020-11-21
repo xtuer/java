@@ -18,6 +18,9 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class Order {
+    /**
+     * 状态值与对应的 Label: 数组的下标为状态值，对应的数组元素值为状态的 Label
+     */
     private static final String[] STATUS_LABELS = { "初始化", "审批中", "审批拒绝", "审批完成", "完成" };
 
     /**

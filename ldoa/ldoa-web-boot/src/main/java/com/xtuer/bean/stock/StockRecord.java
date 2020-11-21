@@ -6,17 +6,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * 库存操作
+ * 库存操作记录 (出库、入库)
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class StockOp {
-    /**
-     * 出库申请 ID (出库时才需要)
-     */
-    private long outOfStockId;
-
+public class StockRecord {
     /**
      * 库存操作记录 ID
      */
@@ -51,6 +46,18 @@ public class StockOp {
      * 物料 ID
      */
     private long productItemId;
+
+    /**
+     * 操作是否完成
+     * A. 入库直接标记为完成
+     * B. 出库申请提交后创建出库记录，当领取物料后才标记为完成
+     */
+    private boolean completed;
+
+    /**
+     * 出库申请 ID (出库时才需要)
+     */
+    private long stockOutRequestId;
 
     /**
      * 物料

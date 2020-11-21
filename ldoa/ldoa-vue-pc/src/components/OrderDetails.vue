@@ -32,13 +32,16 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <td>客户收件地址</td>
                 <td colspan="4">{{ order.customerAddress }}</td>
             </tr>
+            <tr>
+                <td>销售负责人</td>
+                <td colspan="4">{{ salesperson }}</td>
+            </tr>
 
             <tr>
                 <td colspan="5">
                     <div style="display: grid; grid-template-columns: max-content max-content 1fr; grid-gap: 40px">
                         <div>订单日期: {{ order.orderDate | formatDate }}</div>
                         <div>交货日期: {{ order.deliveryDate | formatDate }}</div>
-                        <div style="justify-self: end">销售负责人: {{ salesperson }}</div>
                     </div>
                 </td>
             </tr>

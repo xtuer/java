@@ -30,6 +30,49 @@ public class RegExpTest {
         System.out.println(RegExpTest.replace(text, pattern, matcher -> Integer.parseInt(matcher.group(1)) * 2 + ""));
     }
 
+    @Test
+    public void testPlaceholder() {
+        String text = "用户{}的{}成绩不存在";
+
+        System.out.println(RegExpTest.replaceBracePlaceholder(text, "小明"));
+        System.out.println(RegExpTest.replaceBracePlaceholder(text, "小明", "语文"));
+    }
+
+    /**
+     * 花括号的 pattern
+     */
+    private static final Pattern PATTERN_BRACE = Pattern.compile("\\{}");
+
+    /**
+     * 使用数组 args 中的元素按顺序替换 text 中的 {} 占位符，如果 args 的元素个数少于 {} 的个数，则对应位置仍然返回 {}。
+     *
+     * 示例:
+     * text = "用户{}的{}成绩不存在"
+     * RegExpTest.replaceBracePlaceholder(text, "小明") => 用户小明的{}成绩不存在
+     * RegExpTest.replaceBracePlaceholder(text, "小明", "语文") => 用户小明的语文成绩不存在
+     *
+     * @param text 要替换的字符串
+     * @param args 替换 {} 的数组
+     * @return 返回替换后的字符串
+     */
+    public static String replaceBracePlaceholder(String text, String ...args) {
+        if (args.length == 0) {
+            return text;
+        }
+
+        int[] index = new int[1]; // 为了个 Lambda 里传递可变的 int 数据
+
+        return RegExpTest.replace(text, PATTERN_BRACE, matcher -> {
+            int i = index[0]++;
+
+            if (i >= args.length) {
+                return "{}";
+            } else {
+                return args[i];
+            }
+        });
+    }
+
     /**
      * 替换字符串 text 中匹配 pattern 的子串，每个匹配的内容使用 converter 方法进行转换.
      *
