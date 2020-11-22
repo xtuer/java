@@ -73,4 +73,9 @@ public class ProductItem {
      * 数量
      */
     private int count;
+
+    /**
+     * 库存告警数量
+     */
+    private int warnCount;
 }

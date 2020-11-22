@@ -86,4 +86,4 @@ POST {{host}}/api/stocks/in
 Content-Type: application/x-www-form-urlencoded
 auth-token: {{token}}
 
-productItemId=1&count=10&batch=2020-11-22&warehouse=北京
+productItemId=450766548500480&count=10&batch=2020-11-22&warehouse=北京

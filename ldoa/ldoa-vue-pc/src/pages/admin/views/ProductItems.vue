@@ -33,7 +33,7 @@
         </div>
 
         <!-- 编辑物料对话框 -->
-        <Modal v-model="modal" :mask-closable="false" title="物料编辑" class="edit-item-modal" :styles="{ top: '60px'}">
+        <Modal v-model="modal" title="物料编辑" width="650" :mask-closable="false" class="edit-item-modal" :styles="{ top: '60px'}">
             <Form ref="form" :model="itemClone" :rules="itemRules" :key="itemClone.productItemId" :label-width="90">
                 <FormItem label="物料编码:" prop="code">
                     <Input v-model="itemClone.code" placeholder="请输入物料编码"/>
@@ -56,7 +56,10 @@
                 <FormItem label="物料单位:">
                     <Input v-model="itemClone.unit" placeholder="请输入物料单位"/>
                 </FormItem>
-                <FormItem label="物料描述:">
+                <FormItem label="库存告警:">
+                    <InputNumber v-model="itemClone.warnCount" :min="1" placeholder="请输入库存告警数量" style="width: 100%"/>
+                </FormItem>
+                <FormItem label="物料描述:" style="grid-column: 2 span">
                     <Input v-model="itemClone.desc" type="textarea" :rows="4" placeholder="请输入物料描述"/>
                 </FormItem>
             </Form>
@@ -232,6 +235,7 @@ export default {
                 standard: '',
                 material: '',
                 desc: '',
+                warnCount: 10,
             };
         },
     },
@@ -249,6 +253,14 @@ export default {
                 width: 300px;
             }
         }
+    }
+}
+
+.edit-item-modal {
+    form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 0 20px;
     }
 }
 </style>

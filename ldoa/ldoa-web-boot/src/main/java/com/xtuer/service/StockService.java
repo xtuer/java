@@ -2,13 +2,14 @@ package com.xtuer.service;
 
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
-import com.xtuer.bean.stock.Stock;
 import com.xtuer.bean.stock.StockRecord;
+import com.xtuer.mapper.ProductMapper;
 import com.xtuer.mapper.StockMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 库存的服务
@@ -19,6 +20,9 @@ public class StockService extends BaseService {
     @Autowired
     private StockMapper stockMapper;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     /**
      * 入库
      *
@@ -26,11 +30,12 @@ public class StockService extends BaseService {
      * @param user   操作员
      * @return payload 为更新后的操作入库记录
      */
+    @Transactional(rollbackFor = Exception.class)
     public Result<StockRecord> stockIn(StockRecord record, User user) {
         // 1. 数据校验
         // 2. 设置入库的相关数据
         // 3. 创建入库记录
-        // 4. 更新或者创建库存
+        // 4. 入库: 增加产品项的数量
 
         // [1] 数据校验
         if (record.getCount() <= 0) {
@@ -42,17 +47,17 @@ public class StockService extends BaseService {
 
         // [2] 设置入库的相关数据
         record.setStockRecordId(super.nextId());
-        record.setType(Stock.OpType.IN);
+        record.setType(StockRecord.Type.IN);
         record.setUserId(user.getUserId());
         record.setUsername(user.getNickname());
         record.setStockRequestId(0);
         record.setCompleted(true);
 
         // [3] 创建入库记录
-        // [4] 更新或者创建库存
+        // [4] 入库: 增加产品项的数量
 
         stockMapper.insertStockRecord(record);
-        stockMapper.upsertStock(record.getProductItemId(), record.getCount());
+        productMapper.increaseProductItemCount(record.getProductItemId(), record.getCount());
 
         return Result.ok();
     }

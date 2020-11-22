@@ -90,6 +90,8 @@ public class ProductController extends BaseController {
      * 参数:
      *      name       [可选]: 物料名称
      *      code       [可选]: 物料编码
+     *      model      [可选]: 规格型号
+     *      count      [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
      *      pageNumber [可选]: 页码
      *      pageSize   [可选]: 页码
      *
@@ -107,13 +109,14 @@ public class ProductController extends BaseController {
      *
      * 网址: http://localhost:8080/api/productItems/{productItemId}
      * 参数:
-     *      name     (必要): 物料名称
-     *      code     (必要): 物料编码
-     *      type     (必要): 物料类型
-     *      desc     [可选]: 物料描述
-     *      model    (必要): 物料规格/型号
-     *      standard (必要): 标准/规范
-     *      material (必要): 材质
+     *      name      (必要): 物料名称
+     *      code      (必要): 物料编码
+     *      type      (必要): 物料类型
+     *      desc      [可选]: 物料描述
+     *      model     (必要): 物料规格/型号
+     *      standard  (必要): 标准/规范
+     *      material  (必要): 材质
+     *      warnCount (必要): 库存告警数量
      *
      * @param productItemId 产品项 ID
      * @param item          产品项

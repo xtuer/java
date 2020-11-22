@@ -25,7 +25,7 @@ public class StockRecord {
     /**
      * 库存操作类型: IN (入库), OUT (出库)
      */
-    private Stock.OpType type;
+    private Type type;
 
     /**
      * 数量
@@ -73,4 +73,11 @@ public class StockRecord {
      * 物料
      */
     private ProductItem productItem = new ProductItem();
+
+    /**
+     * 库存操作类型
+     */
+    public enum Type {
+        IN, OUT
+    }
 }

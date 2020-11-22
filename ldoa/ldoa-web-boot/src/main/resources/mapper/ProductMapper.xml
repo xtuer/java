@@ -18,7 +18,7 @@
     <sql id="productItemColumns">
         pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
         pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
-        pi.material AS item_material, pi.unit AS item_unit, pi.count AS item_count
+        pi.material AS item_material, pi.unit AS item_unit, pi.count AS item_count, pi.warn_count AS item_warn_count
     </sql>
 
     <!-- 查询指定 ID 的产品 -->
@@ -100,11 +100,17 @@
         SELECT <include refid="productItemColumns"/>
         FROM product_item pi
         <where>
+            <if test="filter.count > 0"><![CDATA[
+                AND count <= #{filter.count}
+            ]]></if>
             <if test="filter.name!=null and filter.name!='' ">
                 AND name LIKE CONCAT('%', #{filter.name},'%')
             </if>
             <if test="filter.code!=null and filter.code!='' ">
                 AND code LIKE CONCAT('%', #{filter.code},'%')
+            </if>
+            <if test="filter.model!=null and filter.model!='' ">
+                AND model LIKE CONCAT('%', #{filter.model},'%')
             </if>
         </where>
         ORDER BY created_at DESC
@@ -127,8 +133,15 @@
         ON DUPLICATE KEY
         UPDATE product_item_id = #{productItemId}, name = #{name}, code = #{code},
             type = #{type}, `desc` = #{desc}, model = #{model}, standard = #{standard}, material = #{material},
-            unit = #{unit}
+            unit = #{unit}, warn_count = #{warnCount}
     </insert>
+
+    <!-- 增加产品项的数量，即库存 (count 大于 0 为入库，小于 0 则为出库) -->
+    <update id="increaseProductItemCount">
+        UPDATE product_item
+        SET count = count + #{count}
+        WHERE product_item_id = #{productItemId}
+    </update>
 
     <!-- 删除产品项 -->
     <delete id="deleteProductItem">
@@ -158,5 +171,6 @@
         <result property="material"  column="item_material"/>
         <result property="unit"      column="item_unit"/>
         <result property="count"     column="item_count"/>
+        <result property="warnCount" column="item_warn_count"/>
     </resultMap>
 </mapper>

@@ -1,23 +1,4 @@
 #-------------------------------------------
-# 表名: stock
-# 作者: 公孙二狗
-# 日期: 2020-11-21
-# 版本: 1.0
-# 描述: 库存
-#------------------------------------------
-DROP TABLE IF EXISTS stock;
-
-CREATE TABLE stock (
-    product_item_id bigint(20) unsigned NOT NULL COMMENT '物料 ID',
-    count           int(11)    DEFAULT 0         COMMENT '数量',
-
-    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-
-    PRIMARY KEY (product_item_id)
-) ENGINE=InnoDB COMMENT '库存';
-
-#-------------------------------------------
 # 表名: stock_record
 # 作者: 公孙二狗
 # 日期: 2020-11-21

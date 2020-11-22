@@ -101,6 +101,14 @@ public interface ProductMapper {
     void upsertProductItem(ProductItem item);
 
     /**
+     * 增加产品项的数量，即库存 (count 大于 0 为入库，小于 0 则为出库)
+     *
+     * @param productItemId 产品项 ID
+     * @param count         数量
+     */
+    void increaseProductItemCount(long productItemId, int count);
+
+    /**
      * 删除产品项
      *
      * @param productItemId 产品项 ID

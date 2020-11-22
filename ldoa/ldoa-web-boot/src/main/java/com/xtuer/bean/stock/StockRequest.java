@@ -19,7 +19,7 @@ public class StockRequest {
     /**
      * 库存操作类型: IN (入库), OUT (出库)
      */
-    private Stock.OpType type;
+    private StockRecord.Type type;
 
     /**
      * 订单号 (可选)

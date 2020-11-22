@@ -4,6 +4,7 @@ import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
 import com.xtuer.bean.stock.StockRecord;
+import com.xtuer.mapper.StockMapper;
 import com.xtuer.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class StockController extends BaseController {
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private StockMapper stockMapper;
 
     /**
      * 入库
