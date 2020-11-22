@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xtuer.mapper.StockMapper">
+    <!-- 创建库存操作记录 -->
+    <insert id="insertStockRecord">
+        INSERT INTO stock_record (stock_record_id, product_item_id, type, count,
+                batch, warehouse, comment, completed, stock_request_id, user_id)
+        VALUES (#{stockRecordId}, #{productItemId}, #{type}, #{count},
+                #{batch}, #{warehouse}, #{comment}, #{completed}, #{stockRequestId}, #{userId})
+    </insert>
+
+    <!-- 更新或者创建库存 -->
+    <update id="upsertStock">
+        INSERT INTO stock (product_item_id, count)
+        VALUES (#{productItemId}, #{count})
+
+        ON DUPLICATE KEY
+        UPDATE count = count + #{count}
+    </update>
+</mapper>

@@ -20,4 +20,11 @@ public class Stock {
      * 数量
      */
     private int count;
+
+    /**
+     * 库存操作类型
+     */
+    public enum OpType {
+        IN, OUT
+    }
 }

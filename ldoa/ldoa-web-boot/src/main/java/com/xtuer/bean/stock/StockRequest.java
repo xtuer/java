@@ -6,15 +6,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 出库申请
+ * 出库操作申请
  */
-public class StockOutRequest {
+public class StockRequest {
     private static final String[] STATUS_LABELS = { "初始化", "审批中", "审批拒绝", "审批通过", "完成" };
 
     /**
      * 出库申请 ID
      */
-    private long stockOutRequestId;
+    private long stockRequestId;
+
+    /**
+     * 库存操作类型: IN (入库), OUT (出库)
+     */
+    private Stock.OpType type;
 
     /**
      * 订单号 (可选)

@@ -23,9 +23,9 @@ public class StockRecord {
     private long productItemId;
 
     /**
-     * 库存操作类型: false (入库), true (出库)
+     * 库存操作类型: IN (入库), OUT (出库)
      */
-    private boolean type;
+    private Stock.OpType type;
 
     /**
      * 数量
@@ -55,17 +55,22 @@ public class StockRecord {
     private boolean completed;
 
     /**
-     * 出库申请 ID (出库时才需要)
+     * 库存操作申请 ID (出库时才需要)
      */
-    private long stockOutRequestId;
+    private long stockRequestId;
 
     /**
      * 操作用户 ID
      */
-    private userId;
+    private long userId;
+
+    /**
+     * 操作员的名字
+     */
+    private String username;
 
     /**
      * 物料
      */
-    private ProductItem productItem;
+    private ProductItem productItem = new ProductItem();
 }

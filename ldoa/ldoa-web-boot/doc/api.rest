@@ -3,7 +3,7 @@
 @host = http://localhost:8080
 @json = Content-Type: application/json
 @form = application/x-www-form-urlencoded
-@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjA1NDkxNjAzMzMwIiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNjAyODk5NjAzNTA4IiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.2552e8b6259f1e72dbe0112ce64f9d71
+@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjA4NTk5NTI4NDUzIiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNjA2MDA3NTI4NDYzIiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.838ca3612500f8db1d48309b4e275602
 
 ### 机构
 GET {{host}}/api/orgs
@@ -80,3 +80,10 @@ name=摄像头&code=SXT-1&type=配件&model=SXT&standard=GB12&material=玻璃
 GET {{host}}/api/audit-items
 
 auditorId=1&status=-1
+
+### 入库
+POST {{host}}/api/stocks/in
+Content-Type: application/x-www-form-urlencoded
+auth-token: {{token}}
+
+productItemId=1&count=10&batch=2020-11-22&warehouse=北京
