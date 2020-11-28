@@ -8,7 +8,7 @@
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <div class="filter">
-                <DatePicker v-model="range"
+                <DatePicker v-model="dateRange"
                             format="MM-dd"
                             separator=" 至 "
                             type="daterange"
@@ -17,8 +17,11 @@
                             split-panels
                             placeholder="请选择入库时间范围">
                 </DatePicker>
-                <Input v-model="filterValue" class="select-filter" placeholder="请输入查询条件" search enter-button @on-search="searchStockRecords">
-                    <Select v-model="filterKey" slot="prepend">
+                <Input placeholder="请输入查询条件">
+                    <span slot="prepend">生产厂家</span>
+                </Input>
+                <Input v-model="filterValue" placeholder="请输入查询条件" search enter-button @on-search="searchStockRecords">
+                    <Select v-model="filterKey" transfer slot="prepend">
                         <Option value="name">物料名称</Option>
                         <Option value="code">物料编码</Option>
                         <Option value="model">规格型号</Option>
@@ -111,19 +114,19 @@ export default {
         return {
             stockRecords: [],
             filter      : {}, // 搜索条件
-            filterKey   : 'name', // 过滤条件的键
-            filterValue : '',     // 过滤条件的值
-            range       : ['', ''],
+            filterKey   : 'name',   // 过滤条件的键
+            filterValue : '',       // 过滤条件的值
+            dateRange   : ['', ''], // 时间范围
             more     : false, // 是否还有更多入库
             loading  : false, // 加载中
             reloading: false,
             saving   : false, // 保存中
             columns  : [
-                { slot: 'name',            title: '物料名称', width: 200, fixed: 'left' },
+                { slot: 'name',            title: '物料名称', width: 180, fixed: 'left' },
                 { slot: 'code',            title: '物料编码', width: 150 },
                 { slot: 'model',           title: '规格/型号', width: 150 },
                 { key : 'batch',           title: '批次', width: 150 },
-                { key : 'productItemType', title: '类型', width: 110 },
+                { key : 'productItemType', title: '类型', width: 110, align: 'center' },
                 { slot: 'count',           title: '数量', width: 110, align: 'right' },
                 { slot: 'date',            title: '日期', width: 110, align: 'center' },
                 { key : 'username',        title: '操作员', width: 110 },
@@ -158,9 +161,9 @@ export default {
             this.filter                  = this.newFilter();
             this.filter[this.filterKey] = this.filterValue;
 
-            if (this.range[0] && this.range[1]) {
-                this.filter.startAt = this.range[0].format('yyyy-MM-dd');
-                this.filter.endAt   = this.range[1].format('yyyy-MM-dd');
+            if (this.dateRange[0] && this.dateRange[1]) {
+                this.filter.startAt = this.dateRange[0].format('yyyy-MM-dd');
+                this.filter.endAt   = this.dateRange[1].format('yyyy-MM-dd');
             } else {
                 this.filter.startAt = '';
                 this.filter.endAt   = '';

@@ -1,6 +1,6 @@
 <template>
-    <div class="stock-out">
-        Stock out
+    <div class="">
+
     </div>
 </template>
 

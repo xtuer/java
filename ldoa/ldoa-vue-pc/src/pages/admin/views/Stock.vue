@@ -99,7 +99,7 @@ export default {
         },
         itemClass(item) {
             return {
-                warning: item.count <= item.warnCount
+                'color-error': item.count <= item.warnCount
             };
         }
     },
@@ -107,7 +107,4 @@ export default {
 </script>
 
 <style lang="scss">
-.stock .warning {
-    color: #ed4014;
-}
 </style>

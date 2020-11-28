@@ -15,7 +15,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
 <template>
     <Modal :value="visible" title="物料选择" :mask-closable="false" transfer width="700" class="product-item-select-modal" @on-visible-change="showEvent">
-        <!-- 内容显示 -->
+        <!-- 弹窗 Body -->
         <Scroll>
         <div class="list-page">
             <div class="list-page-toolbar-top">
@@ -85,10 +85,12 @@ export default {
         showEvent(visible) {
             this.$emit('on-visible-change', visible);
 
-            // 例如 visible 时重新加载
-            this.searchProductItems();
-            this.itemSelected = {};
+            // 显示弹窗时 visible 为 true，初始化
+            if (visible) {
+                this.init();
+            }
         },
+        // 点击确定按钮的回调函数
         ok() {
             if (!this.itemSelected.productItemId) {
                 this.$Message.warning('请选择物料');
@@ -98,6 +100,11 @@ export default {
             this.itemSelected.count = 1;
             this.$emit('on-ok', this.itemSelected);
             this.showEvent(false); // 关闭弹窗
+        },
+        // 初始化
+        init() {
+            this.itemSelected = {};
+            this.searchProductItems();
         },
         // 搜索物料
         searchProductItems() {

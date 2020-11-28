@@ -141,36 +141,59 @@
     display: grid;
     grid-gap: 24px;
 }
-
 .list-page-toolbar-top {
     display: grid;
     grid-template-columns: max-content max-content;
     justify-content: space-between;
     align-items: center;
 }
-
 .list-page-toolbar-bottom {
     display: grid;
     justify-content: center;
     align-items: center;
 }
-
 .list-page-toolbar-top .filter {
     display: flex;
 }
 .list-page-toolbar-top .filter input {
     width: 180px;
 }
-.list-page-toolbar-top .filter > .ivu-input-wrapper,
-.list-page-toolbar-top .filter > .date-picker {
+.list-page-toolbar-top .filter > div {
     margin-right: 10px;
 }
-.list-page-toolbar-top .filter > .ivu-input-wrapper:last-child {
-    width: 270px;
-}
 /* 下拉选择过滤条件的输入框 */
-.select-filter .ivu-select {
-    width: 90px;
+.list-page-toolbar-top .filter .ivu-input-group-prepend .ivu-select {
+    width: auto;
+}
+
+/* 时间选择器: 需要设置 data-prepend 和增加 class="date-picker"
+<DatePicker v-model="dateRange"
+            format="MM-dd"
+            separator=" 至 "
+            type="daterange"
+            data-prepend="入库时间"
+            class="date-picker"
+            split-panels
+            placeholder="请选择入库时间范围">
+</DatePicker>
+*/
+.ivu-date-picker.date-picker {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: center;
+}
+.ivu-date-picker.date-picker::before {
+    content: attr(data-prepend);
+    padding: 4px 7px;
+    height: 100%;
+    border: 1px solid rgb(220, 222, 226);
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    background-color: #f8f8f9;
+}
+.ivu-date-picker.date-picker input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 /* 表格里按钮列的按钮之间的间隔 */
@@ -197,20 +220,17 @@ Box 布局
     border: 1px solid #e8eaec;
     border-radius: 4px;
 }
-
 .box.shadow {
     padding-top: 15px;
     box-shadow: 0px 0px 30px 0px rgba(146, 150, 198, 0.38);
     border-radius: 8px;
 }
-
 .box > .title {
     padding: 5px 20px;
     font-weight: bold;
     font-size: 16px;
     position: relative;
 }
-
 .box > .title::before {
     content: '';
     position: absolute;
@@ -220,7 +240,6 @@ Box 布局
     width: 4px;
     background: #5cadff;
 }
-
 .box > .content {
     padding: 20px;
 }
@@ -229,27 +248,9 @@ Box 布局
 .color-gray {
     color: #808695;
 }
-
-/* 时间选择器
-<DatePicker v-model="range" format="MM-dd" separator=" 至 " type="daterange" data-prepend="时间范围" split-panels placeholder="请选择入库时间范围"></DatePicker>
-*/
-
-.ivu-date-picker.date-picker {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    align-items: center;
+.color-warning {
+    color: #ff9900;
 }
-
-.ivu-date-picker.date-picker::before {
-    content: attr(data-prepend);
-    padding: 4px 7px;
-    height: 100%;
-    border: 1px solid rgb(220, 222, 226);
-    border-right: none;
-    border-radius: 4px 0 0 4px;
-    background-color: #f8f8f9;
-}
-.ivu-date-picker.date-picker input {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+.color-error {
+    color: #ed4014;
 }
