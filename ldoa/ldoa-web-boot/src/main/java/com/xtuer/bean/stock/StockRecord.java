@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 /**
  * 库存操作记录 (出库、入库)
  */
@@ -23,6 +25,11 @@ public class StockRecord {
     private long productItemId;
 
     /**
+     * 物料的类型: 成品、零件、部件
+     */
+    private String productItemType;
+
+    /**
      * 库存操作类型: IN (入库), OUT (出库)
      */
     private Type type;
@@ -38,9 +45,9 @@ public class StockRecord {
     private String batch;
 
     /**
-     * 仓库
+     * 厂家
      */
-    private String warehouse;
+    private String manufacturer;
 
     /**
      * 备注
@@ -52,7 +59,7 @@ public class StockRecord {
      * A. 入库直接标记为完成
      * B. 出库申请提交后创建出库记录，当领取物料后才标记为完成
      */
-    private boolean completed;
+    private boolean complete;
 
     /**
      * 库存操作申请 ID (出库时才需要)
@@ -70,9 +77,14 @@ public class StockRecord {
     private String username;
 
     /**
+     * 入库日期
+     */
+    private Date createdAt;
+
+    /**
      * 物料
      */
-    private ProductItem productItem = new ProductItem();
+    private ProductItem productItem;
 
     /**
      * 库存操作类型

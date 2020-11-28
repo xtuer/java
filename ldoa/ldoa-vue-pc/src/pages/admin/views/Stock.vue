@@ -6,7 +6,7 @@
     <div class="stock list-page">
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
-            <div style="display: flex">
+            <div class="filter">
                 <Input v-model="filter.name" placeholder="请输入物料名称" @on-enter="searchProductItems">
                     <span slot="prepend">物料名称</span>
                 </Input>
@@ -107,20 +107,7 @@ export default {
 </script>
 
 <style lang="scss">
-.stock {
-    .list-page-toolbar-top {
-        .ivu-input-wrapper {
-            width: 250px;
-            margin-right: 10px;
-
-            &:last-child {
-                width: 300px;
-            }
-        }
-    }
-
-    .warning {
-        color: red;
-    }
+.stock .warning {
+    color: #ed4014;
 }
 </style>

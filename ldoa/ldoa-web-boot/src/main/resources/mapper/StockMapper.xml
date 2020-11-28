@@ -2,20 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtuer.mapper.StockMapper">
+    <sql id="stockRecordColumns">
+        record.product_item_id AS product_item_id,
+        record.type  AS type,
+        record.count AS count,
+        record.batch AS batch,
+        record.product_item_type AS product_item_type,
+        record.manufacturer      AS manufacturer,
+        record.comment    AS comment,
+        record.user_id    AS user_id,
+        record.created_at AS created_at,
+        user.nickname     AS username,
+        pi.name  AS 'productItem.name',
+        pi.code  AS 'productItem.code',
+        pi.model AS 'productItem.model',
+        pi.unit  AS 'productItem.unit'
+    </sql>
+    <!-- 查询库存操作记录 -->
+    <select id="findStockRecords" resultType="StockRecord">
+        SELECT <include refid="stockRecordColumns"/>
+        FROM stock_record record
+        LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
+        LEFT JOIN user ON user.user_id = record.user_id
+        <where>
+            record.type = #{filter.type}
+
+            <if test="filter.name!=null and filter.name!='' ">
+                AND pi.name LIKE CONCAT('%', #{filter.name},'%')
+            </if>
+            <if test="filter.code!=null and filter.code!='' ">
+                AND pi.code LIKE CONCAT('%', #{filter.code},'%')
+            </if>
+            <if test="filter.model!=null and filter.model!='' ">
+                AND pi.model LIKE CONCAT('%', #{filter.model},'%')
+            </if>
+            <if test="filter.manufacturer!=null and filter.manufacturer!='' ">
+                AND record.manufacturer LIKE CONCAT('%', #{filter.manufacturer},'%')
+            </if>
+            <if test="filter.batch!=null and filter.batch!='' ">
+                AND record.batch LIKE CONCAT('%', #{filter.batch},'%')
+            </if>
+            <if test="filter.startAt!=null and filter.endAt!=null ">
+                AND (record.created_at BETWEEN #{filter.startAt} AND #{filter.endAt})
+            </if>
+        </where>
+        ORDER BY record.created_at DESC
+        LIMIT ${page.offset}, ${page.count}
+    </select>
+
+    <!-- 查询指定 ID 的库存记录 -->
+    <select id="findStockRecordById" resultType="StockRecord">
+        SELECT <include refid="stockRecordColumns"/>
+        FROM stock_record record
+        LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
+        LEFT JOIN user ON user.user_id = record.user_id
+        WHERE stock_record_id = #{recordId}
+    </select>
+
     <!-- 创建库存操作记录 -->
     <insert id="insertStockRecord">
         INSERT INTO stock_record (stock_record_id, product_item_id, type, count,
-                batch, warehouse, comment, completed, stock_request_id, user_id)
+                batch, product_item_type, manufacturer, comment, complete, stock_request_id, user_id)
         VALUES (#{stockRecordId}, #{productItemId}, #{type}, #{count},
-                #{batch}, #{warehouse}, #{comment}, #{completed}, #{stockRequestId}, #{userId})
+                #{batch}, #{productItemType}, #{manufacturer}, #{comment}, #{complete}, #{stockRequestId}, #{userId})
     </insert>
-
-    <!-- 更新或者创建库存 -->
-    <update id="upsertStock">
-        INSERT INTO stock (product_item_id, count)
-        VALUES (#{productItemId}, #{count})
-
-        ON DUPLICATE KEY
-        UPDATE count = count + #{count}
-    </update>
 </mapper>

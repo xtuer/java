@@ -40,6 +40,12 @@ const Urls = {
     API_AUDIT_CONFIGS   : '/api/audit-configs',               // 审批配置
     API_AUDIT_ITEMS     : '/api/audit-items',                 // 审批项
     API_AUDIT_ITEMS_ACCEPT: '/api/audit-items/{auditItemId}/accept', // 通过或拒绝审批项
+
+    // 库存
+    API_STOCKS        : '/api/stocks',         // 库存
+    API_STOCKS_RECORDS: '/api/stocks/records', // 库存操作记录
+    API_STOCKS_IN     : '/api/stocks/in',      // 入库
+    API_STOCKS_OUT    : '/api/stocks/out',     // 出库
 };
 
 window.Urls = Urls;

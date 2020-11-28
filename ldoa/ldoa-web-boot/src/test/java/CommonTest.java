@@ -1,8 +1,10 @@
 import com.xtuer.bean.audit.AuditItem;
+import com.xtuer.util.Utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,5 +32,14 @@ public class CommonTest {
         items.add(new AuditItem().setStep(5));
 
         return items;
+    }
+
+    /**
+     * 一天的开始和结束时间测试
+     */
+    @Test
+    public void testDate() {
+        System.out.println(Utils.startOfDay(new Date()));
+        System.out.println(Utils.endOfDay(new Date()));
     }
 }

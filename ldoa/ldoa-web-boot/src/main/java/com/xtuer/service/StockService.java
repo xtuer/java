@@ -28,7 +28,7 @@ public class StockService extends BaseService {
      *
      * @param record 库存记录
      * @param user   操作员
-     * @return payload 为更新后的操作入库记录
+     * @return payload 为更新后的库记录
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<StockRecord> stockIn(StockRecord record, User user) {
@@ -36,6 +36,7 @@ public class StockService extends BaseService {
         // 2. 设置入库的相关数据
         // 3. 创建入库记录
         // 4. 入库: 增加产品项的数量
+        // 5. 查询新创建的记录
 
         // [1] 数据校验
         if (record.getCount() <= 0) {
@@ -51,7 +52,7 @@ public class StockService extends BaseService {
         record.setUserId(user.getUserId());
         record.setUsername(user.getNickname());
         record.setStockRequestId(0);
-        record.setCompleted(true);
+        record.setComplete(true);
 
         // [3] 创建入库记录
         // [4] 入库: 增加产品项的数量
@@ -59,6 +60,9 @@ public class StockService extends BaseService {
         stockMapper.insertStockRecord(record);
         productMapper.increaseProductItemCount(record.getProductItemId(), record.getCount());
 
-        return Result.ok();
+        // [5] 查询新创建的记录
+        record = stockMapper.findStockRecordById(record.getStockRecordId());
+
+        return Result.ok(record);
     }
 }

@@ -93,7 +93,7 @@ public class ProductController extends BaseController {
      *      model      [可选]: 规格型号
      *      count      [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
      *      pageNumber [可选]: 页码
-     *      pageSize   [可选]: 页码
+     *      pageSize   [可选]: 数量
      *
      * @param filter 过滤条件
      * @param page   分页

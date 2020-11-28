@@ -47,9 +47,9 @@ public final class Result<T> {
         return Result.ok(data, "success");
     }
 
-    public static <T> Result<T> ok(T data, String message, String ...args) {
-        if (args.length > 0) {
-            message = Utils.replaceBracePlaceholder(message, args);
+    public static <T> Result<T> ok(T data, String message, String ...messageArgs) {
+        if (messageArgs.length > 0) {
+            message = Utils.replaceBracePlaceholder(message, messageArgs);
         }
 
         return new Result<>(true, message, data, 0);
@@ -59,9 +59,9 @@ public final class Result<T> {
         return Result.fail("fail", 0);
     }
 
-    public static <T> Result<T> fail(String message, String ...args) {
-        if (args.length > 0) {
-            message = Utils.replaceBracePlaceholder(message, args);
+    public static <T> Result<T> fail(String message, String ...messageArgs) {
+        if (messageArgs.length > 0) {
+            message = Utils.replaceBracePlaceholder(message, messageArgs);
         }
 
         return Result.fail(message, 0);

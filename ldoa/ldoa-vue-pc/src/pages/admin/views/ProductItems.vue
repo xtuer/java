@@ -99,7 +99,7 @@ export default {
                 { key : 'model',    title: '规格/型号', width: 110 },
                 { key : 'standard', title: '标准/规范', width: 110 },
                 { key : 'material', title: '材质', width: 110 },
-                { key : 'unit',     title: '单位', width: 110 },
+                { key : 'unit',     title: '单位', width: 110, align: 'center' },
                 { key : 'desc',     title: '物料描述', minWidth: 150 },
                 { slot: 'action',   title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
