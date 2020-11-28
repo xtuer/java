@@ -17,9 +17,6 @@
                             split-panels
                             placeholder="请选择入库时间范围">
                 </DatePicker>
-                <Input placeholder="请输入查询条件">
-                    <span slot="prepend">生产厂家</span>
-                </Input>
                 <Input v-model="filterValue" placeholder="请输入查询条件" search enter-button @on-search="searchStockRecords">
                     <Select v-model="filterKey" transfer slot="prepend">
                         <Option value="name">物料名称</Option>
@@ -225,7 +222,7 @@ export default {
                 // manufacturer: '',
                 startAt   : '',
                 endAt     : '',
-                pageSize  : 10,
+                pageSize  : 20,
                 pageNumber: 1,
             };
         }
