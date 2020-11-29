@@ -68,9 +68,9 @@ public interface AuditMapper {
      * 更新审批状态
      *
      * @param auditId 审批 ID
-     * @param status  审批状态
+     * @param state   审批状态
      */
-    void updateAuditStatus(long auditId, int status);
+    void updateAuditState(long auditId, int state);
 
     /**
      * 删除指定 targetId 的审批
@@ -99,13 +99,13 @@ public interface AuditMapper {
     List<AuditItem> findAuditItemsByAuditId(long auditId);
 
     /**
-     * 查询审批员需要审批的审批项 (status 为 -1 时查询全部的)
+     * 查询审批员需要审批的审批项 (state 为 -1 时查询全部的)
      *
      * @param auditorId 审批员 ID
-     * @param status    审批项的状态
+     * @param state    审批项的状态
      * @return 返回审批项的数组
      */
-    List<AuditItem> findAuditItemsByAuditorIdAndStatus(long auditorId, int status);
+    List<AuditItem> findAuditItemsByAuditorIdAndState(long auditorId, int state);
 
     /**
      * 插入审批项
@@ -119,18 +119,18 @@ public interface AuditMapper {
      * 通过或者拒绝审批项
      *
      * @param auditItemId 审批项 ID
-     * @param status      状态
+     * @param state      状态
      * @param comment     审批意见
      */
-    void acceptOrRejectAuditItem(long auditItemId, int status, String comment);
+    void acceptOrRejectAuditItem(long auditItemId, int state, String comment);
 
     /**
      * 更新审批项的状态
      *
      * @param auditItemId 审批项的 ID
-     * @param status      审批项的状态
+     * @param state       审批项的状态
      */
-    void updateAuditItemStatus(long auditItemId, int status);
+    void updateAuditItemState(long auditItemId, int state);
 
     /**
      * 删除指定 targetId 审批项

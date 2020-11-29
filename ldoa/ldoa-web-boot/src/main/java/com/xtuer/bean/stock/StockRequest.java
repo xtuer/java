@@ -9,7 +9,7 @@ import java.util.List;
  * 出库操作申请
  */
 public class StockRequest {
-    private static final String[] STATUS_LABELS = { "初始化", "审批中", "审批拒绝", "审批通过", "完成" };
+    private static final String[] STATE_LABELS = { "初始化", "审批中", "审批拒绝", "审批通过", "完成" };
 
     /**
      * 出库申请 ID
@@ -29,7 +29,7 @@ public class StockRequest {
     /**
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
-    private int status;
+    private int state;
 
     /**
      * 申请者 ID
@@ -47,6 +47,6 @@ public class StockRequest {
      * @return 返回订单状态的 Label
      */
     public String getStatusLabel() {
-        return Utils.getStatusLabel(STATUS_LABELS, status);
+        return Utils.getStateLabel(STATE_LABELS, state);
     }
 }

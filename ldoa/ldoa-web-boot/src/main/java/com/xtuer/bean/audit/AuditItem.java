@@ -14,12 +14,12 @@ import java.util.Date;
 @Setter
 @Accessors(chain = true)
 public class AuditItem {
-    private static final String[] STATUS_LABELS = { "初始化", "待审批", "拒绝", "通过" };
+    private static final String[] STATE_LABELS = { "初始化", "待审批", "拒绝", "通过" };
 
-    public static final int STATUS_INIT     = 0;
-    public static final int STATUS_WAIT     = 1;
-    public static final int STATUS_REJECTED = 2;
-    public static final int STATUS_ACCEPTED = 3;
+    public static final int STATE_INIT = 0;
+    public static final int STATE_WAIT = 1;
+    public static final int STATE_REJECTED = 2;
+    public static final int STATE_ACCEPTED = 3;
 
     /**
      * 审批的类型，例如订单
@@ -74,7 +74,7 @@ public class AuditItem {
     /**
      * 审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
      */
-    private int status;
+    private int state;
 
     /**
      * 处理时间
@@ -97,6 +97,6 @@ public class AuditItem {
      * @return 返回订单状态的 Label
      */
     public String getStatusLabel() {
-        return Utils.getStatusLabel(STATUS_LABELS, status);
+        return Utils.getStateLabel(STATE_LABELS, state);
     }
 }

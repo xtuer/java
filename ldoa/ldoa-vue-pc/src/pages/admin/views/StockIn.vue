@@ -27,7 +27,7 @@
                     </Select>
                 </Input>
             </div>
-            <Button type="primary" @click="productItemModal = true">物料入库</Button>
+            <Button type="primary" icon="md-arrow-down" @click="productItemModal = true">物料入库</Button>
         </div>
 
         <!-- 入库列表 -->

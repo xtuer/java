@@ -28,7 +28,7 @@
     ========================================================================================-->
     <!-- 审批的列 -->
     <sql id="auditColumns">
-        type, audit_id, applicant_id, target_id, target_json, `desc`, status
+        type, audit_id, applicant_id, target_id, target_json, `desc`, state
     </sql>
 
     <!-- 查询审批 -->
@@ -55,8 +55,8 @@
     </insert>
 
     <!-- 更新审批状态 -->
-    <update id="updateAuditStatus">
-        UPDATE audit SET status = #{status} WHERE audit_id = #{auditId}
+    <update id="updateAuditState">
+        UPDATE audit SET state = #{state} WHERE audit_id = #{auditId}
     </update>
 
     <!-- 删除指定 targetId 和类型的审批 -->
@@ -70,7 +70,7 @@
     <!-- 审批项的列 -->
     <sql id="auditItemColumns">
         ai.type, ai.audit_id, ai.audit_item_id, ai.applicant_id, ai.target_id, ai.auditor_id,
-        ai.step, ai.status, ai.processed_at, ai.comment, ai.created_at
+        ai.step, ai.state, ai.processed_at, ai.comment, ai.created_at
     </sql>
 
     <!-- 查询审批项 -->
@@ -87,39 +87,39 @@
         WHERE audit_id = #{auditId}
     </select>
 
-    <!-- 查询审批员需要审批的审批项 (status 为 -1 时查询全部) -->
-    <select id="findAuditItemsByAuditorIdAndStatus" resultType="AuditItem">
+    <!-- 查询审批员需要审批的审批项 (state 为 -1 时查询全部) -->
+    <select id="findAuditItemsByAuditorIdAndState" resultType="AuditItem">
         SELECT <include refid="auditItemColumns"/>, u.nickname AS applicant_nickname, a.desc
         FROM audit_item ai
             LEFT JOIN audit a ON a.audit_id = ai.audit_id
             LEFT JOIN user u ON u.user_id = ai.applicant_id
         <where>
             ai.auditor_id = #{auditorId}
-            <if test="status >= 0">
-                AND ai.status = #{status}
+            <if test="state >= 0">
+                AND ai.state = #{state}
             </if>
         </where>
     </select>
 
     <!-- 插入审批项 -->
     <insert id="insertAuditItems">
-        INSERT INTO audit_item (type, audit_id, audit_item_id, applicant_id, target_id, auditor_id, step, status)
+        INSERT INTO audit_item (type, audit_id, audit_item_id, applicant_id, target_id, auditor_id, step, state)
         VALUES
         <foreach collection="list" item="item" separator=",">
             (#{item.type}, #{item.auditId}, #{item.auditItemId}, #{item.applicantId},
-            #{item.targetId}, #{item.auditorId}, #{item.step}, #{item.status})
+            #{item.targetId}, #{item.auditorId}, #{item.step}, #{item.state})
         </foreach>
     </insert>
 
     <!-- 通过或者拒绝审批项 -->
     <update id="acceptOrRejectAuditItem">
-        UPDATE audit_item SET status = #{status}, comment = #{comment}, processed_at = now()
+        UPDATE audit_item SET state = #{state}, comment = #{comment}, processed_at = now()
         WHERE audit_item_id = #{auditItemId}
     </update>
 
     <!-- 更新审批项的状态 -->
-    <update id="updateAuditItemStatus">
-        UPDATE audit_item SET status = #{status} WHERE audit_item_id = #{auditItemId}
+    <update id="updateAuditItemState">
+        UPDATE audit_item SET state = #{state} WHERE audit_item_id = #{auditItemId}
     </update>
 
     <!-- 删除指定 targetId 和类型的审批项 -->

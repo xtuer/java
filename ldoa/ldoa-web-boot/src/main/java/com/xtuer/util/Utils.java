@@ -527,13 +527,13 @@ public final class Utils {
     /**
      * 获取状态 Label
      *
-     * @param statusLabels 状态的 Label 数组
-     * @param status       状态值
+     * @param stateLabels 状态的 Label 数组
+     * @param state       状态值
      * @return 返回状态对应的 Label
      */
-    public static String getStatusLabel(String[] statusLabels, int status) {
-        if (status >= 0 && status < statusLabels.length) {
-            return statusLabels[status];
+    public static String getStateLabel(String[] stateLabels, int state) {
+        if (state >= 0 && state < stateLabels.length) {
+            return stateLabels[state];
         } else {
             return "未知";
         }

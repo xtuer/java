@@ -99,24 +99,24 @@ public class AuditController {
      * 查询审批项:
      *     * 审批员 ID 大于 0，则查询此审批员收到的审批
      *     * 申请人 ID 大于 0，则查询此人发起的审批
-     *     * status 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+     *     * state 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
      *
      * 网址: http://localhost:8080/api/audit-items?auditorId=1
      * 参数:
      *      applicantId [可选]: 审批申请人 ID
      *      auditorId   [可选]: 审批员 ID
-     *      status      [可选]: 审批项状态
+     *      state       [可选]: 审批项状态
      *
      * @return payload 为审批项数组
      */
     @GetMapping(Urls.API_AUDIT_ITEMS)
-    public Result<List<AuditItem>> findAuditItemsByAuditorIdAndStatus(
+    public Result<List<AuditItem>> findAuditItemsByAuditorIdAndState(
             @RequestParam(required = false, defaultValue = "0") long applicantId,
             @RequestParam(required = false, defaultValue = "0") long auditorId,
-            @RequestParam(required = false, defaultValue = "-1") int status) {
+            @RequestParam(required = false, defaultValue = "-1") int state) {
         // 审批员 ID 大于 0，则查询此审批员收到的审批
         if (auditorId > 0) {
-            return Result.ok(auditMapper.findAuditItemsByAuditorIdAndStatus(auditorId, status));
+            return Result.ok(auditMapper.findAuditItemsByAuditorIdAndState(auditorId, state));
         }
 
         // 申请人 ID 大于 0，则查询此人发起的审批

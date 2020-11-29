@@ -139,7 +139,7 @@
 /* 有搜索、分页、列表的页面的布局 */
 .list-page {
     display: grid;
-    grid-gap: 24px;
+    grid-gap: 16px;
 }
 .list-page-toolbar-top {
     display: grid;

@@ -233,7 +233,7 @@ export default {
                 requirement    : '',    // 要求
                 attachmentId   : '0',   // 附件 ID
                 createdAt      : '',    // 订单创建日期
-                status         : 0,     // 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
+                state          : 0,     // 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
                 productCodes   : '',    // 订单的产品编码，使用逗号分隔，方便搜索
                 items          : [],    // 订单项
                 attachment     : {},    // 附件

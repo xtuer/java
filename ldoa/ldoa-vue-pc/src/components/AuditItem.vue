@@ -23,7 +23,7 @@ audit-item: 审批项
         </div>
 
         <!-- 状态的图标 -->
-        <Icon :type="statusIcon()" :style="statusStyle()" class="status-icon"/>
+        <Icon :type="stateIcon()" :style="stateStyle()" class="state-icon"/>
     </div>
 </template>
 
@@ -43,7 +43,7 @@ export default {
         // 需要审批返回 true，否则返回 false
         needAudit() {
             // 待审批且审批人是当前登陆用于
-            if (this.auditItem.status === 1 && this.auditItem.auditorId === this.me.userId) {
+            if (this.auditItem.state === 1 && this.auditItem.auditorId === this.me.userId) {
                 return true;
             } else {
                 return false;
@@ -69,22 +69,22 @@ export default {
             this.auditItem.comment = this.auditComment.trim();
 
             AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
-                this.auditItem.status = accepted ? 3 : 2;
+                this.auditItem.state = accepted ? 3 : 2;
                 this.$Message.success('审批完成');
             });
         },
         // 审批状态的图标
-        statusIcon() {
+        stateIcon() {
             const icons = ['md-bicycle', 'md-bicycle', 'md-close', 'md-checkmark'];
 
-            return icons[this.auditItem.status];
+            return icons[this.auditItem.state];
         },
         // 审批状态的样式
-        statusStyle() {
+        stateStyle() {
             const colors = ['#e8eaec', '#808695', '#ed4014', '#19be6b'];
 
             return {
-                color: colors[this.auditItem.status]
+                color: colors[this.auditItem.state]
             };
         }
     }
@@ -109,7 +109,7 @@ export default {
         }
     }
 
-    .status-icon {
+    .state-icon {
         position: absolute;
         top: 1px;
         right: 1px;

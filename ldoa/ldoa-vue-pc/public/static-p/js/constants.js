@@ -18,7 +18,7 @@ window.AUDIT_TYPES = [
 window.TYPE_ORDER = 'ORDER';
 
 // 审批项状态
-window.AUDIT_ITEM_STATUS = [
+window.AUDIT_ITEM_STATE = [
     { value: 1,  label: '待审批' },
     { value: 2,  label: '拒绝' },
     { value: 3,  label: '通过' },
@@ -52,22 +52,6 @@ window.QUESTION_TYPES = [
     { value: 5, name: '问答题' },
     { value: 6, name: '复合题' },
 ];
-
-// 项目的状态
-window.PROJECT_STATUS = [
-    { value: 0, color: '#aaa',    label: '未提交', img: '' },
-    { value: 1, color: 'warning', label: '待审批', img: '' },
-    { value: 2, color: 'error',   label: '未通过', img: '/static-p/img/project-unpass.png' },
-    { value: 3, color: 'success', label: '已通过', img: '/static-p/img/project-pass.png' },
-];
-
-// 项目的状态值
-window.PROJECT_STATUS_VALUE = {
-    STATUS_NON_SUBMITTED_TO_APPROVE: 0, // 未提交: 编辑后，但是未提交审批
-    STATUS_WAITING_FOR_APPROVING   : 1, // 待审批: 提交等待审批
-    STATUS_UNAPPROVED              : 2, // 未通过: 审批未通过
-    STATUS_APPROVED                : 3, // 已通过: 审批已通过
-};
 
 // 教学阶段
 window.PHASES = ['高中', '初中', '小学'];

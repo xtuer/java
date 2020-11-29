@@ -157,7 +157,7 @@ public class AuditService extends BaseService {
                        .setTargetId(targetId)
                        .setAuditorId(auditor.getUserId())
                        .setStep(step.getStep())
-                       .setStatus(0);
+                       .setState(AuditItem.STATE_INIT);
                 back.getItems().add(item);
             });
         });
@@ -166,7 +166,7 @@ public class AuditService extends BaseService {
         audit.getItems()
                 .stream()
                 .filter(item -> item.getStep() == 1)
-                .forEach(item -> item.setStatus(1));
+                .forEach(item -> item.setState(AuditItem.STATE_WAIT));
 
         log.info("[开始] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
@@ -263,7 +263,7 @@ public class AuditService extends BaseService {
         // 同步从数据库中查询得到的当前审批项的状态
         for (AuditItem t : currentStepItems) {
             if (t.getAuditItemId() == item.getAuditItemId()) {
-                t.setStatus(accepted ? AuditItem.STATUS_ACCEPTED : AuditItem.STATUS_REJECTED);
+                t.setState(accepted ? AuditItem.STATE_ACCEPTED : AuditItem.STATE_REJECTED);
                 break;
             }
         }
@@ -271,46 +271,46 @@ public class AuditService extends BaseService {
         if (accepted) {
             // [2] 如果审批通过
             // [2.1] 更新当前审批项的状态为通过
-            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATUS_ACCEPTED, comment);
+            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATE_ACCEPTED, comment);
             log.info("[通过] 审批审批项，通过审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
 
             // [2.2] 统计最大的阶段数和当前阶段的审批项数量、通过的审批项数量、审批员数量
             final int maxStep = allItems.stream().mapToInt(AuditItem::getStep).max().orElse(Integer.MAX_VALUE); // 最大的阶段数
             final int currentStepItemCount = currentStepItems.size();                // 当前阶段的审批项数量
             final int currentStepAcceptedItemCount = (int) currentStepItems.stream() // 当前阶段通过的审批项数量
-                    .filter(t -> t.getStatus() == AuditItem.STATUS_ACCEPTED)
+                    .filter(t -> t.getState() == AuditItem.STATE_ACCEPTED)
                     .count();
 
             // [2.3] 当前阶段的审批项都为通过时
             if (currentStepItemCount == currentStepAcceptedItemCount) {
                 if (step == maxStep) {
                     // [2.3.1] 如果是最后一阶段，则审批通过
-                    auditMapper.updateAuditStatus(item.getAuditId(), Audit.STATUS_ACCEPTED);
+                    auditMapper.updateAuditState(item.getAuditId(), Audit.STATUS_ACCEPTED);
                     acceptTarget(item.getAuditId(), item.getTargetId(), item.getType());
                     log.info("[通过] 审批审批项，通过审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
                 } else {
                     // [2.3.2] 如果不是最后一阶段，则修改下一阶段的所有审批项的状态为待审批
-                    nextStepItems.forEach(t -> auditMapper.updateAuditItemStatus(t.getAuditItemId(), AuditItem.STATUS_WAIT));
+                    nextStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditItemId(), AuditItem.STATE_WAIT));
                     log.info("[通过] 审批审批项，下一阶段审批项状态修改为待审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
                 }
             }
         } else {
             // [3] 如果审批被拒绝
             // [3.1] 更新当前审批项的状态为拒绝
-            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATUS_REJECTED, comment);
+            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATE_REJECTED, comment);
             log.info("[拒绝] 审批审批项，拒绝审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
 
             if (step == 1) {
                 // [3.2] 如果是第一阶段，则审批不通过
-                auditMapper.updateAuditStatus(item.getAuditId(), Audit.STATUS_REJECTED);
+                auditMapper.updateAuditState(item.getAuditId(), Audit.STATUS_REJECTED);
                 rejectTarget(item.getAuditId(), item.getTargetId(), item.getType());
                 log.info("[拒绝] 审批审批项，拒绝审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
             } else {
                 // [3.3] 如果不是第一阶段，更新当前阶段待审批状态的审批项状态为初始化, 上一阶段审批项的状态为待审批
                 currentStepItems.stream()
-                        .filter(t -> t.getStatus() == AuditItem.STATUS_WAIT)
-                        .forEach(t -> auditMapper.updateAuditItemStatus(t.getAuditItemId(), AuditItem.STATUS_INIT));
-                previousStepItems.forEach(t -> auditMapper.updateAuditItemStatus(t.getAuditItemId(), AuditItem.STATUS_WAIT));
+                        .filter(t -> t.getState() == AuditItem.STATE_WAIT)
+                        .forEach(t -> auditMapper.updateAuditItemState(t.getAuditItemId(), AuditItem.STATE_INIT));
+                previousStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditItemId(), AuditItem.STATE_WAIT));
                 log.info("[拒绝] 审批审批项，前一阶段审批项状态修改为待审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
             }
         }

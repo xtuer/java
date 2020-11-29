@@ -5,8 +5,8 @@
     <div class="audit-received list-page">
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
-            <RadioGroup v-model="status" type="button" @on-change="searchAuditItems">
-                <Radio v-for="s in window.AUDIT_ITEM_STATUS" :key="s.value" :label="s.value">{{ s.label }}</Radio>
+            <RadioGroup v-model="state" type="button" @on-change="searchAuditItems">
+                <Radio v-for="s in window.AUDIT_ITEM_STATE" :key="s.value" :label="s.value">{{ s.label }}</Radio>
             </RadioGroup>
         </div>
 
@@ -47,7 +47,7 @@ export default {
     data() {
         return {
             auditItems : [],
-            status: 1,
+            state: 1,
             filter: { // 搜索条件
                 name      : '',
                 pageSize  : 2,
@@ -59,11 +59,11 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'applicantNickname', title: '申请人', width: 150 },
-                { slot: 'type',        title: '类型', width: 150 },
-                { key : 'desc',        title: '说明', minWidth: 150 },
-                { slot: 'createdAt',   title: '申请时间', width: 150, align: 'center' },
-                { key : 'statusLabel', title: '状态', width: 150, align: 'center' },
-                { slot: 'action',      title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'type',       title: '类型', width: 150 },
+                { key : 'desc',       title: '说明', minWidth: 150 },
+                { slot: 'createdAt',  title: '申请时间', width: 150, align: 'center' },
+                { key : 'stateLabel', title: '状态', width: 150, align: 'center' },
+                { slot: 'action',     title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             orderDetailsOrderId: '0', // 查看详情的订单 ID
             orderDetailsModal: false, // 是否显示订单详情弹窗
@@ -92,7 +92,7 @@ export default {
         fetchMoreAuditItems() {
             this.loading = true;
 
-            AuditDao.findAuditItemsByAuditorIdAndStatus(this.currentAuditorId, this.status).then(auditItems => {
+            AuditDao.findAuditItemsByAuditorIdAndState(this.currentAuditorId, this.state).then(auditItems => {
                 this.auditItems.push(...auditItems);
 
                 this.more      = false; // auditItems.length >= this.filter.pageSize;

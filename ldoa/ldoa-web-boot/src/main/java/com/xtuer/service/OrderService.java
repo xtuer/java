@@ -1,8 +1,6 @@
 package com.xtuer.service;
 
 import com.xtuer.bean.*;
-import com.xtuer.bean.audit.Audit;
-import com.xtuer.bean.audit.AuditType;
 import com.xtuer.mapper.FileMapper;
 import com.xtuer.mapper.OrderMapper;
 import com.xtuer.util.Utils;
@@ -85,7 +83,7 @@ public class OrderService extends BaseService {
             order.setOrderSn(nextOrderSn());
             order.setSalespersonId(salesperson.getUserId());
             order.setSalesperson(salesperson);
-            order.setStatus(1); // 状态为等待审批
+            order.setState(1); // 状态为等待审批
         }
 
         // [2] 设置订单的产品编码

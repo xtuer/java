@@ -43,7 +43,7 @@ public class OrderController extends BaseController {
      * 参数:
      *      orderSn      [可选]: 订单编号
      *      productCodes [可选]: 产品编号
-     *      status       [可选]: 状态
+     *      state        [可选]: 状态
      *      pageNumber   [可选]: 页码
      *      pageSize     [可选]: 数量
      *

@@ -18,7 +18,7 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonIgnoreProperties({"contentJson"}) // 很重要，如果没有会导致递归
 public class Audit {
-    private static final String[] STATUS_LABELS = { "初始化", "拒绝", "通过" };
+    private static final String[] STATE_LABELS = { "初始化", "拒绝", "通过" };
 
     public static final int STATUS_INIT     = 0;
     public static final int STATUS_REJECTED = 1;
@@ -52,7 +52,7 @@ public class Audit {
     /**
      * 审批状态: 0 (初始化), 1 (拒绝), 2 (通过)
      */
-    private int status;
+    private int state;
 
     /**
      * 提交审批的时间
@@ -80,6 +80,6 @@ public class Audit {
      * @return 返回订单状态的 Label
      */
     public String getStatusLabel() {
-        return Utils.getStatusLabel(STATUS_LABELS, status);
+        return Utils.getStateLabel(STATE_LABELS, state);
     }
 }

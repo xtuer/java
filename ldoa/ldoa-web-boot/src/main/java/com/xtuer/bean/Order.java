@@ -21,7 +21,7 @@ public class Order {
     /**
      * 状态值与对应的 Label: 数组的下标为状态值，对应的数组元素值为状态的 Label
      */
-    private static final String[] STATUS_LABELS = { "初始化", "审批中", "审批拒绝", "审批完成", "完成" };
+    private static final String[] STATE_LABELS = { "初始化", "审批中", "审批拒绝", "审批完成", "完成" };
 
     /**
      * 订单 ID
@@ -96,7 +96,7 @@ public class Order {
     /**
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
-    private int status;
+    private int state;
 
     /**
      * 订单的产品编码，使用逗号分隔，方便搜索
@@ -124,6 +124,6 @@ public class Order {
      * @return 返回订单状态的 Label
      */
     public String getStatusLabel() {
-        return Utils.getStatusLabel(STATUS_LABELS, status);
+        return Utils.getStateLabel(STATE_LABELS, state);
     }
 }

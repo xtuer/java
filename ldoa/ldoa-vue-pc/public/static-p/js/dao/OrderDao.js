@@ -31,7 +31,7 @@ export default class {
      * 参数: filter 的属性包括:
      *      orderSn      [可选]: 订单编号
      *      productCodes [可选]: 产品编号
-     *      status       [可选]: 状态
+     *      state        [可选]: 状态
      *      pageNumber   [可选]: 页码
      *      pageSize     [可选]: 数量
      *
