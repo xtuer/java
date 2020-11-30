@@ -23,7 +23,7 @@ export default class StockDao {
      */
     static findStockRecords(filter) {
         return Rest.get(Urls.API_STOCKS_RECORDS, { data: filter }).then(({ data: records, success, message }) => {
-            return Utils.handleResponse(records, success, message);
+            return Utils.response(records, success, message);
         });
     }
 
@@ -42,7 +42,7 @@ export default class StockDao {
      */
     static stockIn(record) {
         return Rest.create(Urls.API_STOCKS_IN, { data: record }).then(({ data: newRecord, success, message }) => {
-            return Utils.handleResponse(newRecord, success, message);
+            return Utils.response(newRecord, success, message);
         });
     }
 }

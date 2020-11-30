@@ -636,7 +636,7 @@ Utils.uid = function() {
  * @param {Bool} showSuccessMessage 是否显示执行成功的消息
  * @return {Promise} 返回处理结果的 Promise 对象
  */
-Utils.handleResponse = function(data, success, message, showSuccessMessage = false) {
+Utils.response = function(data, success, message, showSuccessMessage = false) {
     if (success) {
         if (showSuccessMessage) {
             Message.success(message);
@@ -649,6 +649,7 @@ Utils.handleResponse = function(data, success, message, showSuccessMessage = fal
             duration: 10,
             closable: true
         });
+
         return Promise.reject(message);
     }
 };

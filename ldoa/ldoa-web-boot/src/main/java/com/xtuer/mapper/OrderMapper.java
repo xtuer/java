@@ -1,8 +1,9 @@
 package com.xtuer.mapper;
 
-import com.xtuer.bean.Order;
-import com.xtuer.bean.OrderItem;
 import com.xtuer.bean.Page;
+import com.xtuer.bean.order.Order;
+import com.xtuer.bean.order.OrderFilter;
+import com.xtuer.bean.order.OrderItem;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface OrderMapper {
      * @param page   分页对象
      * @return 返回查询到的订单，查询不到返回空 List
      */
-    List<Order> findOrders(Order filter, Page page);
+    List<Order> findOrders(OrderFilter filter, Page page);
 
     /**
      * 插入或者更新订单

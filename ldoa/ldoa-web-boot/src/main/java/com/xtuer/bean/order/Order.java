@@ -1,5 +1,8 @@
-package com.xtuer.bean;
+package com.xtuer.bean.order;
 
+import com.xtuer.bean.UploadedFile;
+import com.xtuer.bean.User;
+import com.xtuer.bean.order.OrderItem;
 import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;

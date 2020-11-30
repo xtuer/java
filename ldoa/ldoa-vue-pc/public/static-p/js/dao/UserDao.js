@@ -14,7 +14,7 @@ export default class UserDao {
      */
     static findCurrentUser() {
         return Rest.get(Urls.API_USERS_CURRENT).then(({ data: user, success, message }) => {
-            return Utils.handleResponse(user, success, message);
+            return Utils.response(user, success, message);
         });
     }
 
@@ -29,7 +29,7 @@ export default class UserDao {
      */
     static findUserById(userId) {
         return Rest.get(Urls.API_USERS_BY_ID, { params: { userId } }).then(({ data: user, success, message }) => {
-            return Utils.handleResponse(user, success, message);
+            return Utils.response(user, success, message);
         });
     }
 
@@ -47,7 +47,7 @@ export default class UserDao {
      */
     static findUsers(filter) {
         return Rest.get(Urls.API_USERS, { data: filter }).then(({ data: users, success, message }) => {
-            return Utils.handleResponse(users, success, message);
+            return Utils.response(users, success, message);
         });
     }
 
@@ -67,7 +67,7 @@ export default class UserDao {
      */
     static createUser(user) {
         return Rest.create(Urls.API_USERS, { data: user, json: true }).then(({ data: newUser, success, message }) => {
-            return Utils.handleResponse(newUser, success, message);
+            return Utils.response(newUser, success, message);
         });
     }
 
@@ -94,7 +94,7 @@ export default class UserDao {
      */
     static patchUser(user) {
         return Rest.patch(Urls.API_USERS_BY_ID, { params: { userId: user.id }, data: user }).then(({ data, success, message }) => {
-            return Utils.handleResponse(data, success, message, true);
+            return Utils.response(data, success, message, true);
         });
     }
 
@@ -108,7 +108,7 @@ export default class UserDao {
      */
     static resetPassword(userId) {
         return Rest.update(Urls.API_USER_PASSWORDS_RESET, { params: { userId } }).then((success, message) => {
-            return Utils.handleResponse(null, success, message);
+            return Utils.response(null, success, message);
         });
     }
 
@@ -123,7 +123,7 @@ export default class UserDao {
      */
     static deleteUser(userId) {
         return Rest.del(Urls.API_USERS_BY_ID, { params: { userId } }).then(({ success, message }) => {
-            return Utils.handleResponse(null, success, message);
+            return Utils.response(null, success, message);
         });
     }
 }

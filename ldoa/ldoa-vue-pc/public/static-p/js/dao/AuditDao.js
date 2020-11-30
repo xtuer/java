@@ -16,7 +16,7 @@ export default class AuditDao {
                 step.desc = step.desc || '';
             });
 
-            return Utils.handleResponse(configs, success, message);
+            return Utils.response(configs, success, message);
         });
     }
 
@@ -32,7 +32,7 @@ export default class AuditDao {
      */
     static upsertAuditConfigs(configs) {
         return Rest.update(Urls.API_AUDIT_CONFIGS, { data: configs, json: true }).then(({ success, message }) => {
-            return Utils.handleResponse(null, success, message);
+            return Utils.response(null, success, message);
         });
     }
 
@@ -47,7 +47,7 @@ export default class AuditDao {
      */
     static findAudit(auditId) {
         return Rest.get(Urls.API_AUDITS_BY_ID, { params: { auditId } }).then(({ data: audit, success, message }) => {
-            return Utils.handleResponse(audit, success, message);
+            return Utils.response(audit, success, message);
         });
     }
 
@@ -62,7 +62,7 @@ export default class AuditDao {
      */
     static findAuditOfTarget(targetId) {
         return Rest.get(Urls.API_AUDITS_BY_TARGET, { params: { targetId } }).then(({ data: audit, success, message }) => {
-            return Utils.handleResponse(audit, success, message);
+            return Utils.response(audit, success, message);
         });
     }
 
@@ -84,7 +84,7 @@ export default class AuditDao {
      */
     static findAuditItemsByAuditorIdAndState(auditorId, state) {
         return Rest.get(Urls.API_AUDIT_ITEMS, { data: { auditorId, state } }).then(({ data: auditItems, success, message }) => {
-            return Utils.handleResponse(auditItems, success, message);
+            return Utils.response(auditItems, success, message);
         });
     }
 
@@ -97,7 +97,7 @@ export default class AuditDao {
      */
     static acceptAuditItem(auditItemId, accepted, comment) {
         return Rest.update(Urls.API_AUDIT_ITEMS_ACCEPT, { params: { auditItemId }, data: { accepted, comment } }).then(({ success, message }) => {
-            return Utils.handleResponse(null, success, message);
+            return Utils.response(null, success, message);
         });
     }
 }

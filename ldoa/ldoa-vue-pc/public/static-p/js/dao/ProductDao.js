@@ -16,7 +16,7 @@ export default class ProductDao {
      */
     static findProducts(filter) {
         return Rest.get(Urls.API_PRODUCTS, { data: filter }).then(({ data: products, success, message }) => {
-            return Utils.handleResponse(products, success, message);
+            return Utils.response(products, success, message);
         });
     }
 
@@ -41,7 +41,7 @@ export default class ProductDao {
             data: product,
             json: true,
         }).then(({ data: newProduct, success, message }) => {
-            return Utils.handleResponse(newProduct, success, message);
+            return Utils.response(newProduct, success, message);
         });
     }
 
@@ -56,7 +56,7 @@ export default class ProductDao {
      */
     static deleteProduct(productId) {
         return Rest.del(Urls.API_PRODUCTS_BY_ID, { params: { productId } }).then(({ success, message }) => {
-            return Utils.handleResponse(null, success, message);
+            return Utils.response(null, success, message);
         });
     }
 
@@ -77,7 +77,7 @@ export default class ProductDao {
      */
     static findProductItems(filter) {
         return Rest.get(Urls.API_PRODUCT_ITEMS, { data: filter }).then(({ data: items, success, message }) => {
-            return Utils.handleResponse(items, success, message);
+            return Utils.response(items, success, message);
         });
     }
 
@@ -103,7 +103,7 @@ export default class ProductDao {
             params: { productItemId: item.productItemId },
             data: item,
         }).then(({ data: newItem, success, message }) => {
-            return Utils.handleResponse(newItem, success, message);
+            return Utils.response(newItem, success, message);
         });
     }
 
@@ -117,7 +117,7 @@ export default class ProductDao {
      */
     static deleteProductItem(productItemId) {
         return Rest.del(Urls.API_PRODUCT_ITEMS_BY_ID, { params: { productItemId } }).then(({ success, message }) => {
-            return Utils.handleResponse(null, success, message);
+            return Utils.response(null, success, message);
         });
     }
 }

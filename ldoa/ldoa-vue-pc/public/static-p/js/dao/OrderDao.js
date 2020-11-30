@@ -41,7 +41,7 @@ export default class {
      */
     static findOrders(filter) {
         return Rest.get(Urls.API_ORDERS, { data: filter }).then(({ data: orders, success, message }) => {
-            return Utils.handleResponse(orders, success, message);
+            return Utils.response(orders, success, message);
         });
     }
 
@@ -69,7 +69,7 @@ export default class {
     static upsertOrder(order) {
         return Rest.update(Urls.API_ORDERS_BY_ID, { params: { orderId: order.orderId }, data: order, json: true })
             .then(({ data: newOrder, success, message }) => {
-                return Utils.handleResponse(newOrder, success, message);
+                return Utils.response(newOrder, success, message);
             });
     }
 }

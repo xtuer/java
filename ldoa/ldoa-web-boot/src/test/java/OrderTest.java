@@ -1,6 +1,6 @@
 import com.xtuer.Application;
-import com.xtuer.bean.Order;
-import com.xtuer.bean.OrderItem;
+import com.xtuer.bean.order.Order;
+import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.User;
 import com.xtuer.mapper.OrderMapper;
 import com.xtuer.service.AuditService;

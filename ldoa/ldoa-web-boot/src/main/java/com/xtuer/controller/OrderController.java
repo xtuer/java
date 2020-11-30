@@ -1,6 +1,11 @@
 package com.xtuer.controller;
 
-import com.xtuer.bean.*;
+import com.xtuer.bean.Page;
+import com.xtuer.bean.Result;
+import com.xtuer.bean.Urls;
+import com.xtuer.bean.User;
+import com.xtuer.bean.order.Order;
+import com.xtuer.bean.order.OrderFilter;
 import com.xtuer.mapper.OrderMapper;
 import com.xtuer.service.OrderService;
 import com.xtuer.util.Utils;
@@ -52,7 +57,7 @@ public class OrderController extends BaseController {
      * @return payload 为订单数组
      */
     @GetMapping(Urls.API_ORDERS)
-    public Result<List<Order>> findOrders(Order filter, Page page) {
+    public Result<List<Order>> findOrders(OrderFilter filter, Page page) {
         return Result.ok(orderMapper.findOrders(filter, page));
     }
 

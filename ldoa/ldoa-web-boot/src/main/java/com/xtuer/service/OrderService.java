@@ -1,6 +1,11 @@
 package com.xtuer.service;
 
-import com.xtuer.bean.*;
+import com.xtuer.bean.Product;
+import com.xtuer.bean.Result;
+import com.xtuer.bean.UploadedFile;
+import com.xtuer.bean.User;
+import com.xtuer.bean.order.Order;
+import com.xtuer.bean.order.OrderItem;
 import com.xtuer.mapper.FileMapper;
 import com.xtuer.mapper.OrderMapper;
 import com.xtuer.util.Utils;
