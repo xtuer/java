@@ -1,0 +1,2 @@
+animal: !!yaml.Bird
+  name: Cuckoo

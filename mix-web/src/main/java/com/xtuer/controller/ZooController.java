@@ -1,13 +1,14 @@
 package com.xtuer.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.xtuer.bean.EB;
 import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
-import com.xtuer.bean.User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class ZooController extends BaseController {
@@ -25,6 +26,11 @@ public class ZooController extends BaseController {
         return date;
     }
 
+    /**
+     * 查看异常响应
+     *
+     * 网址: http://localhost:8080/api/demo/exception
+     */
     @GetMapping("/api/demo/exception")
     public String exception() {
         throw new RuntimeException();
@@ -70,21 +76,17 @@ public class ZooController extends BaseController {
     }
 
     /**
-     * 网址: http://localhost:8080/api/enum/x?id=123&username=alice&role=STUDENT
+     * 前端传数组到服务器端
+     *
+     * 前端发送请求:
+     * const ids = [1, 2, 3];
+     * Rest.get({ url: '/api/demo/array', data: { ids } })
+     *
+     * 网址: http://localhost:8080/api/demo/array?ids=1&ids=2&ids=3
+     * 参数: ids: 数组
      */
-    @GetMapping("/api/enum/x")
-    public Result<EB> enum1(EB user) {
-        System.out.println(JSON.toJSONString(user, true));
-        return Result.ok(user);
-    }
-
-    /**
-     * 网址: http://localhost:8080/api/enum/y?role=ADMIN
-     */
-    @GetMapping("/api/enum/y")
-    @ResponseBody
-    public Result<EB.Role> enum1(@RequestParam(name = "role") EB.Role role) {
-        System.out.println("enum2: " + role);
-        return Result.ok(role);
+    @GetMapping("/api/demo/array")
+    public Result<List<Integer>> array(@RequestParam List<Integer> ids) {
+        return Result.ok(ids);
     }
 }

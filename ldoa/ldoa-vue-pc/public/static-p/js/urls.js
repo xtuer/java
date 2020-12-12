@@ -12,6 +12,10 @@ const Urls = {
     FORM_UPLOAD_TEMPORARY_FILES: '/form/upload/temp/files', // 上传多个临时文件
     API_CAN_PREVIEW_FILE_PREFIX: '/api/canPreview',         // 请求是否可预览文件的前缀
 
+    // 网盘
+    API_DISK_FILES      : '/api/disk/files',          // 网盘中的文件
+    API_DISK_FILES_BY_ID: '/api/disk/files/{fileId}', // 指定 ID 的网盘中的文件
+
     // 消息系统
     MESSAGE_WEBSOCKET_URL: `ws://${window.location.hostname}:3721`,
 

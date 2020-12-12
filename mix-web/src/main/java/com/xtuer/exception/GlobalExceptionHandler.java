@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.wujun234.uid.impl.CachedUidGenerator;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
-import com.xtuer.util.Utils;
 import com.xtuer.util.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,16 +24,16 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 @Slf4j
 public final class GlobalExceptionHandler {
-    // 服务器的 ID
-    private int workerId = Utils.getServerId();
-
     // ID 生成器
     @Autowired
     private CachedUidGenerator uidGenerator;
 
+    // 局域网 IP
+    private static final String IP = WebUtils.getLocalIp();
+
     @ExceptionHandler(value = Exception.class)
     public ModelAndView exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
-        String error = "服务器: " + workerId + ", 异常 ID: " + uidGenerator.getUID();
+        String error = "异常: 服务器 " + IP + ", ID " + uidGenerator.getUID();
         String stack = String.format("网址: %s%n参数: %s%n堆栈: %s",
                 request.getRequestURL(),
                 JSON.toJSONString(request.getParameterMap()),
@@ -44,7 +43,8 @@ public final class GlobalExceptionHandler {
         log.warn(error);
         log.warn(stack);
 
-        return WebUtils.useAjax(request) ? handleAjaxException(response, error, stack)
+        return WebUtils.useAjax(request)
+                ? handleAjaxException(response, error, stack)
                 : handleNonAjaxException(ex, error, stack);
     }
 
@@ -57,8 +57,7 @@ public final class GlobalExceptionHandler {
      * @return 返回 null，这时 SpringMvc 不会去查找 view，会根据 response 中的信息进行响应
      */
     private ModelAndView handleAjaxException(HttpServletResponse response, String error, String stack) {
-        Result<?> result = Result.fail(error, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        result.setStack(stack);
+        Result<?> result = new Result<>(false, error, stack, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         WebUtils.ajaxResponse(response, result, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return null;
     }

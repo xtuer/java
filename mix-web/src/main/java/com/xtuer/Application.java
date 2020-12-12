@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@EnableMethodCache(basePackages = "com.xtuer.service")
+@EnableMethodCache(basePackages = "com.xtuer.service2")
 @EnableCreateCacheAnnotation
 @MapperScan({ "com.xtuer.mapper" })
 public class Application {

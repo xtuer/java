@@ -1,0 +1,47 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.3.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+}
+
+group = 'com.xtuer'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation (
+			'org.springframework.boot:spring-boot-starter-web',
+			'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1',
+
+			'org.apache.shardingsphere:sharding-jdbc-core:4.1.1',
+			'org.apache.shardingsphere:sharding-jdbc-orchestration:4.1.1',
+	)
+
+	implementation('org.apache.shardingsphere:sharding-orchestration-center-zookeeper-curator:4.1.1')
+
+//	implementation('org.apache.shardingsphere:sharding-orchestration-center-zookeeper-curator:4.1.1') {
+//		exclude group: 'org.apache.curator', module: 'curator-framework'
+//		exclude group: 'org.apache.curator', module: 'curator-recipes'
+//		exclude group: 'org.apache.curator', module: 'curator-client'
+//	}
+//	implementation(
+//			'org.apache.curator:curator-framework:3.3.0',
+//			'org.apache.curator:curator-recipes:3.3.0',
+//	)
+
+	runtimeOnly('mysql:mysql-connector-java:5.1.46')
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// Lombok
+	compileOnly "org.projectlombok:lombok:1.18.10"
+	annotationProcessor "org.projectlombok:lombok:1.18.10"
+}
+
+test {
+	useJUnitPlatform()
+}

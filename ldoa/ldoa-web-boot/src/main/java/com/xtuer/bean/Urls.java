@@ -61,6 +61,10 @@ public interface Urls {
     String URL_REPO_FILE          = "/file/repo/**";           // 仓库文件的 URL
     String URL_REPO_FILE_DOWNLOAD = "/file/download/**";       // 下载仓库文件的 URL
 
+    // 网盘
+    String API_DISK_FILES       = "/api/disk/files";          // 网盘中的文件
+    String API_DISK_FILES_BY_ID = "/api/disk/files/{fileId}"; // 指定 ID 的网盘中的文件
+
     // 机构
     String API_ORGS        = "/api/orgs";                 // 所有机构
     String API_ORGS_BY_ID  = "/api/orgs/{orgId}";         // 指定 ID 的机构

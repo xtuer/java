@@ -23,12 +23,13 @@ public class InboundHandler1 extends ChannelInboundHandlerAdapter {
         //      所以需要自己缓存起来，参考 ByteToMessageDecoder
 
         System.out.println("====>");
+        // System.out.println("InboundHandler1.channelRead(): " + ByteBufUtil.hexDump((ByteBuf) msg));
 
         if (count++ > 4) {
             System.out.println("InboundHandler1.channelRead(): " + ByteBufUtil.hexDump((ByteBuf) msg));
         }
-
-        ctx.alloc().buffer();
+        //
+        // ctx.alloc().buffer();
 
         // System.out.println(ctx);
 

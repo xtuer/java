@@ -26,4 +26,41 @@
     <delete id="deleteUploadedFileById" parameterType="long">
         DELETE FROM uploaded_file WHERE id = #{id}
     </delete>
+
+    <!-- 查询指定 ID 的网盘文件 -->
+    <select id="findDiskFileById" resultType="DiskFile">
+        SELECT disk.file_id, file.filename, file.url, file.type, file.user_id, user.nickname, file.created_at
+        FROM uploaded_file file
+            JOIN disk ON disk.file_id = file.id
+            LEFT JOIN user ON user.user_id = file.user_id
+        WHERE disk.file_id = #{fileId}
+    </select>
+
+    <!-- 查询用户 的文件，如果 userId 为 0，则查询所有用户的文件 -->
+    <select id="findDiskFiles" resultType="DiskFile">
+        SELECT disk.file_id, file.filename, file.url, file.type, file.user_id, user.nickname, file.created_at
+        FROM uploaded_file file
+            JOIN disk ON disk.file_id = file.id
+            LEFT JOIN user ON user.user_id = file.user_id
+        <where>
+            <if test="userId > 0">
+                AND file.user_id = #{userId}
+            </if>
+            <if test="filename != null and filename !='' ">
+                AND file.filename LIKE CONCAT('%', #{filename},'%')
+            </if>
+        </where>
+        ORDER BY file.created_at DESC
+        LIMIT ${page.offset}, ${page.size}
+    </select>
+
+    <!-- 把文件插入到网盘 -->
+    <insert id="insertFileToDisk">
+        INSERT IGNORE INTO disk(file_id) VALUES(#{fileId})
+    </insert>
+
+    <!-- 删除网盘中的文件 -->
+    <delete id="deleteDiskFile">
+        DELETE FROM disk WHERE file_id = #{fileId}
+    </delete>
 </mapper>

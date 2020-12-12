@@ -55,6 +55,21 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "product" */ './views/StockOut.vue'),
                 },
                 // =====================================================================================
+                //                                         共享文件
+                // =====================================================================================
+                // 所有文件
+                {
+                    path: '/disk-all',
+                    name: 'disk-all',
+                    component: () => import(/* webpackChunkName: "product" */ './views/DiskAll.vue'),
+                },
+                // 我的文件
+                {
+                    path: '/disk-my',
+                    name: 'disk-my',
+                    component: () => import(/* webpackChunkName: "product" */ './views/DiskMy.vue'),
+                },
+                // =====================================================================================
                 //                                         系统管理
                 // =====================================================================================
                 // 用户管理

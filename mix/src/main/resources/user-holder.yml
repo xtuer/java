@@ -1,0 +1,13 @@
+# For private Map<String, User> users
+users:          # field name
+  Alice:        # map key
+    id: 10      # bean field
+    name: Alice # bean field
+  Bob:
+    id: 11
+    name: Bob
+
+# For private User john
+john:        # field name
+  id: 13     # bean field
+  name: John # bean field

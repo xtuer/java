@@ -60,6 +60,12 @@ export default {
                         { label: '物料出库', name: 'stock-out' },
                     ]
                 },
+                { label: '共享文件', icon: 'md-photos', menuItems:
+                    [
+                        { label: '所有文件', name: 'disk-all' },
+                        { label: '我的文件', name: 'disk-my' },
+                    ]
+                },
                 { label: '个人中心', icon: 'ios-people', menuItems:
                     [
                         { label: '收到的审批', name: 'audit-received' },

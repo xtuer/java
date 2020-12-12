@@ -11,6 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // 简单路径的模板映射
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        // view 的默认目录为 resources/templates 目录
         registry.addViewController("/").setViewName("index.html"); // index 和 index.html 都可以
         registry.addViewController("/door").setViewName("door.html");
         registry.addViewController("/admin").setViewName("../page-p/admin.html");

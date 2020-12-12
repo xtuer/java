@@ -1,10 +1,13 @@
 package com.xtuer.util;
 
+import com.xtuer.bean.Role;
 import com.xtuer.bean.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.stream.Collectors;
 
 public final class SecurityUtils {
     /**
@@ -47,9 +50,15 @@ public final class SecurityUtils {
      * @return 返回用户对应的 UserDetails
      */
     public static UserDetails buildUserDetails(User user) {
+        // 枚举角色转为字符串角色
+        String[] roles = user.getRoles().stream().map(Role::name).toArray(String[]::new);
+
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true,
-                AuthorityUtils.createAuthorityList(user.getRoles().toArray(new String[]{}))
+                user.getUsername(),
+                user.getPassword(),
+                user.isEnabled(),
+                true, true, true,
+                AuthorityUtils.createAuthorityList(roles)
         );
     }
 }

@@ -35,3 +35,18 @@ CREATE TABLE uploaded_file (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (id) COMMENT '文件的 ID 作为主键'
 ) ENGINE=InnoDB;
+
+#-------------------------------------------
+# 表名：disk
+# 作者：黄彪
+# 日期：2020-12-12
+# 版本：1.0
+# 描述：网盘
+#------------------------------------------
+DROP TABLE IF EXISTS disk;
+
+CREATE TABLE disk (
+    file_id bigint(20) NOT NULL  COMMENT '网盘中文件的 ID',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY (file_id) COMMENT '文件的 ID 作为主键'
+) ENGINE=InnoDB;

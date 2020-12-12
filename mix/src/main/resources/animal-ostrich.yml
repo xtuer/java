@@ -1,0 +1,2 @@
+animal: !!yaml.Ostrich
+  nickname: Foobar
