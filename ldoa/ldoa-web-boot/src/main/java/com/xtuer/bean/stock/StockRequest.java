@@ -6,10 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 出库操作申请
+ * 出库操作申请，分 2 种出库情况:
+ * A. 物料直接出库，每个物料一个出库记录
+ * B. 订单出库 (记录有订单号)，需要查询到订单的产品，每个产品的物料，每个物料一个出库记录
+ *
+ * 出库申请会对应创建一个审批，其状态 state 通过关联审批的状态查询得到
  */
 public class StockRequest {
-    private static final String[] STATE_LABELS = { "初始化", "审批中", "审批拒绝", "审批通过", "完成" };
+    private static final String[] STATE_LABELS = { "初始化", "拒绝", "通过" };
 
     /**
      * 出库申请 ID
@@ -22,12 +26,12 @@ public class StockRequest {
     private StockRecord.Type type;
 
     /**
-     * 订单号 (可选)
+     * 订单号 [可选]
      */
     private String orderSn;
 
     /**
-     * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
+     * 审批状态: 0 (初始化), 1 (拒绝), 2 (通过)
      */
     private int state;
 
@@ -37,7 +41,17 @@ public class StockRequest {
     private long applicantId;
 
     /**
-     * 入库项目
+     * 申请者名字 (查询时从 User 中关联得到)
+     */
+    private String applicantNickname;
+
+    /**
+     * 描述，展示时需要使用
+     */
+    private String desc;
+
+    /**
+     * 库存操作记录，每个物料一个记录
      */
     private List<StockRecord> items = new LinkedList<>();
 

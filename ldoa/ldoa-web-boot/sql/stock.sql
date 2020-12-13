@@ -36,11 +36,11 @@ CREATE TABLE stock_record (
 DROP TABLE IF EXISTS stock_request;
 
 CREATE TABLE stock_request (
-    stock_request_id     bigint(20) unsigned NOT NULL COMMENT '物料 ID',
+    stock_request_id     bigint(20) unsigned NOT NULL COMMENT '出库申请 ID',
     type                 varchar(16)         NOT NULL COMMENT '库存操作类型: IN (入库), OUT (出库)',
-    order_sn             varchar(64) DEFAULT ''       COMMENT '订单号 (可选)',
-    status               int(11)     DEFAULT 0        COMMENT '状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)',
-    applicant_id         bigint(20) unsigned NOT NULL COMMENT '用户 ID',
+    order_sn             varchar(64) DEFAULT ''       COMMENT '订单号 [可选]',
+    applicant_id         bigint(20) unsigned NOT NULL COMMENT '申请者 ID',
+    `desc`               varchar(2048) DEFAULT ''     COMMENT '描述，展示时需要使用',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

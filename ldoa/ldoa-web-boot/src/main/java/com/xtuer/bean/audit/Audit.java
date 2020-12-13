@@ -79,7 +79,7 @@ public class Audit {
      *
      * @return 返回订单状态的 Label
      */
-    public String getStatusLabel() {
+    public String getStateLabel() {
         return Utils.getStateLabel(STATE_LABELS, state);
     }
 }
