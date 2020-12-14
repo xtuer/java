@@ -1,7 +1,7 @@
 package com.xtuer.service;
 
-import com.xtuer.bean.Product;
-import com.xtuer.bean.ProductItem;
+import com.xtuer.bean.product.Product;
+import com.xtuer.bean.product.ProductItem;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.mapper.ProductMapper;

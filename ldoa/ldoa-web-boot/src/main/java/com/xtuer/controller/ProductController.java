@@ -1,6 +1,12 @@
 package com.xtuer.controller;
 
-import com.xtuer.bean.*;
+import com.xtuer.bean.Page;
+import com.xtuer.bean.Result;
+import com.xtuer.bean.Urls;
+import com.xtuer.bean.User;
+import com.xtuer.bean.product.Product;
+import com.xtuer.bean.product.ProductFilter;
+import com.xtuer.bean.product.ProductItem;
 import com.xtuer.mapper.ProductMapper;
 import com.xtuer.service.ProductService;
 import com.xtuer.util.Utils;
@@ -28,6 +34,7 @@ public class ProductController extends BaseController {
      * 参数:
      *      name       [可选]: 名字
      *      code       [可选]: 编码
+     *      productIds [可选]: 产品 ID
      *      pageNumber [可选]: 页码
      *      pageSize   [可选]: 数量
      *
@@ -36,7 +43,7 @@ public class ProductController extends BaseController {
      * @return payload 为查询到的产品数组
      */
     @GetMapping(Urls.API_PRODUCTS)
-    public Result<List<Product>> findProducts(Product filter, Page page) {
+    public Result<List<Product>> findProducts(ProductFilter filter, Page page) {
         return Result.ok(productMapper.findProducts(filter, page));
     }
 

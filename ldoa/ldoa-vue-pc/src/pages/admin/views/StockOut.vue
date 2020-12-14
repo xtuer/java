@@ -2,6 +2,10 @@
 
 <!--
 搜索出库、分页加载 (加载下一页的出库)
+
+提示: 出库分为
+* 物料直接出库: 虚拟出一个产品
+* 订单物料出库: 获取订单中的产品
 -->
 <template>
     <div class="stock-out list-page">
@@ -30,7 +34,13 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-arrow-up">物料出库</Button>
+            <Dropdown @on-click="openSelect">
+                <Button type="primary" icon="md-arrow-up">物料出库</Button>
+                <DropdownMenu slot="list">
+                    <DropdownItem name="item">选择物料</DropdownItem>
+                    <DropdownItem name="order">选择订单</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
         </div>
 
         <!-- 出库列表 -->
@@ -51,13 +61,28 @@
         <div class="list-page-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreRecords">更多...</Button>
         </div>
+
+        <!-- 物料选择弹窗 -->
+        <ProductItemSelect v-model="itemSelectVisible" @on-ok="stockOutDirectProductItems"/>
+
+        <!-- 订单选择弹窗 -->
+        <OrderSelect v-model="orderSelectVisible" @on-ok="stockOutOrderProductItems"/>
+
+        <!-- 物料出库弹窗 -->
+        <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products"/>
     </div>
 </template>
 
 <script>
-import UserDao from '@/../public/static-p/js/dao/UserDao';
+import StockDao from '@/../public/static-p/js/dao/StockDao';
+import OrderDao from '@/../public/static-p/js/dao/OrderDao';
+import ProductDao from '@/../public/static-p/js/dao/ProductDao';
+import OrderSelect from '@/components/OrderSelect.vue';
+import ProductItemSelect from '@/components/ProductItemSelect.vue';
+import StockOutModal from '@/components/StockOutModal.vue';
 
 export default {
+    components: { OrderSelect, ProductItemSelect, StockOutModal },
     data() {
         return {
             records : [],
@@ -77,7 +102,12 @@ export default {
                 { key : 'nickname', title: '名字', width: 150 },
                 { slot: 'info',   title: '介绍', minWidth: 500 },
                 { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
-            ]
+            ],
+            itemSelectVisible : false, // 物料选择弹窗是否可见
+            orderSelectVisible: false, // 订单选择弹窗石佛可见
+            stockOutVisible   : false, // 出库弹窗是否可见
+            order   : { orderId: '0', orderSn: 'XXXX' },   // 订单
+            products: [{ productId: '0', items: [] }], // 订单的产品: 每个产品有多个 items => { items }
         };
     },
     mounted() {
@@ -100,7 +130,7 @@ export default {
                 this.filter.endAt   = '';
             }
 
-            this.fetchMoreRecords();
+            // this.fetchMoreRecords();
         },
         // 点击更多按钮加载下一页的出库
         fetchMoreRecords() {
@@ -115,6 +145,57 @@ export default {
                 this.filter.pageNumber++;
             });
         },
+        // 打开选择弹窗
+        openSelect(type) {
+            if (type === 'item') {
+                this.itemSelectVisible = true;
+            } else if (type === 'order') {
+                this.orderSelectVisible = true;
+            }
+        },
+        // 物料直接出库
+        stockOutDirectProductItems(productItem) {
+            // 1. 构建虚拟订单和产品
+            // 2. 显示出库弹窗
+
+            // [1] 构建虚拟订单和产品
+            this.order = { orderId: '0', orderSn: 'XXXXX' };
+            this.products = [];
+            this.products.push({
+                productId: '0',
+                items    : [productItem],
+            });
+
+            // [2] 显示出库弹窗
+            this.stockOutVisible = true;
+        },
+        // 订单的物料出库
+        stockOutOrderProductItems(order) {
+            // 1. 查询订单
+            // 2. 查询订单的产品
+            // 3. 得到产品项
+            // 4. 显示出库弹窗
+
+            // [1] 查询订单
+            OrderDao.findOrderById(order.orderId).then(retOrder => {
+                // 产品的 ID
+                const productIds = retOrder.items
+                    .map(item => item.product)
+                    .filter(product => product) // 去掉无效产品
+                    .map(product => product.productId);
+
+                // [2] 查询订单的产品
+                ProductDao.findProducts({ productIds }).then(products => {
+                    // [3] 得到产品项
+                    this.order = retOrder;
+                    this.products = products;
+
+                    // [4] 显示出库弹窗
+                    this.stockOutVisible = true;
+                });
+            });
+        },
+
     }
 };
 </script>

@@ -1,8 +1,9 @@
 package com.xtuer.mapper;
 
 import com.xtuer.bean.Page;
-import com.xtuer.bean.Product;
-import com.xtuer.bean.ProductItem;
+import com.xtuer.bean.product.Product;
+import com.xtuer.bean.product.ProductFilter;
+import com.xtuer.bean.product.ProductItem;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface ProductMapper {
      * @param page   分页对象
      * @return 返回查询到的产品数组
      */
-    List<Product> findProducts(Product filter, Page page);
+    List<Product> findProducts(ProductFilter filter, Page page);
 
     /**
      * 检测产品编码是否可用 (没有被其他产品使用即为可用)

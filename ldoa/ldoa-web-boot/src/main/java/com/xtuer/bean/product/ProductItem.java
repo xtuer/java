@@ -1,4 +1,4 @@
-package com.xtuer.bean;
+package com.xtuer.bean.product;
 
 import lombok.Getter;
 import lombok.Setter;

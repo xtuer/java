@@ -1,6 +1,6 @@
 package com.xtuer.bean.stock;
 
-import com.xtuer.bean.ProductItem;
+import com.xtuer.bean.product.ProductItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

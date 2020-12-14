@@ -4,14 +4,17 @@ import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
+import com.xtuer.bean.stock.StockOutRequestVo;
 import com.xtuer.bean.stock.StockRecord;
 import com.xtuer.bean.stock.StockRecordFilter;
+import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.mapper.StockMapper;
 import com.xtuer.service.StockService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -73,5 +76,22 @@ public class StockController extends BaseController {
     public Result<StockRecord> stockIn(StockRecord record) {
         User user = super.getCurrentUser();
         return stockService.stockIn(record, user);
+    }
+
+    /**
+     * 出库
+     *
+     * 网址: http://localhost:8080/api/stocks/out
+     * 参数: 无
+     * 请求体:
+     *      orderId     : 订单 ID
+     *      productItems: 出库的产品项数组
+     *
+     * @param out 出库信息
+     */
+    @PostMapping(Urls.API_STOCKS_OUT)
+    public Result<StockRequest> stockOut(@RequestBody StockOutRequestVo out) {
+        User user = super.getCurrentUser();
+        return stockService.stockOut(out, user);
     }
 }

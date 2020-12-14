@@ -2,7 +2,10 @@ package com.xtuer.service;
 
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
+import com.xtuer.bean.product.ProductItem;
+import com.xtuer.bean.stock.StockOutRequestVo;
 import com.xtuer.bean.stock.StockRecord;
+import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.mapper.ProductMapper;
 import com.xtuer.mapper.StockMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -64,5 +67,42 @@ public class StockService extends BaseService {
         record = stockMapper.findStockRecordById(record.getStockRecordId());
 
         return Result.ok(record);
+    }
+
+    /**
+     * 出库
+     *
+     * @param out  出库信息
+     * @param user 操作员
+     * @return payload 为新创建的出库请求
+     */
+    public Result<StockRequest> stockOut(StockOutRequestVo out, User user) {
+        // 1. 如果没有出库物料，则返回
+        // 2. 创建出库请求
+        // 3. 创建出库记录，每个物料一个出库记录
+        // 4. 创建审批
+
+        // [1] 如果没有出库物料，则返回
+        if (out.getProductItems() == null || out.getProductItems().size() == 0) {
+            return Result.fail("没有出库物料");
+        }
+
+        // [2] 创建出库请求
+        StringBuilder desc = new StringBuilder();
+        for (ProductItem item : out.getProductItems()) {
+            desc.append(item.getName()).append(", ");
+        }
+
+        StockRequest request = new StockRequest();
+        request.setStockRequestId(super.nextId());
+        request.setType(StockRecord.Type.OUT);
+        request.setOrderId(out.getOrderId());
+        request.setState(1);
+        request.setApplicantId(user.getUserId());
+        request.setDesc(desc.toString());
+
+        // [3] 创建出库记录，每个物料一个出库记录
+
+        return Result.ok();
     }
 }

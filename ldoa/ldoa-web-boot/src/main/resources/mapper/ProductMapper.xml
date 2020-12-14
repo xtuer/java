@@ -44,6 +44,12 @@
                     <if test="filter.code!=null and filter.code!='' ">
                         AND code LIKE CONCAT('%', #{filter.code},'%')
                     </if>
+                    <if test="filter.productIds != null and filter.productIds.size() > 0">
+                        AND product_id IN
+                        <foreach collection="filter.productIds" item="id" open="(" close=")" separator=",">
+                            #{id}
+                        </foreach>
+                    </if>
                 </where>
                 ORDER BY created_at DESC
                 LIMIT ${page.offset}, ${page.size}

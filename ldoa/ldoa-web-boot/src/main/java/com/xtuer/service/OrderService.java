@@ -1,21 +1,18 @@
 package com.xtuer.service;
 
-import com.xtuer.bean.Product;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.UploadedFile;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.order.OrderItem;
+import com.xtuer.bean.product.Product;
 import com.xtuer.mapper.FileMapper;
 import com.xtuer.mapper.OrderMapper;
 import com.xtuer.util.Utils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -24,9 +21,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class OrderService extends BaseService {
-    @Autowired
-    private CommonService commonService;
-
     @Autowired
     private OrderMapper orderMapper;
 
@@ -152,13 +146,7 @@ public class OrderService extends BaseService {
      */
     public String nextOrderSn() {
         // XSDD 不动, 20200806 为年月日，根据日期自动生成, 0001 为流水号 (0001,0002,003……)，每年再从 0001 开始
-        String year = DateTimeFormatter.ofPattern("yyyy").format(LocalDate.now());
-        String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
-        String name = "ORDER-" + year;
-        String sn   = commonService.nextSequence(name) + "";
-        String orderSn = "XSDD-" + date + "-" + StringUtils.leftPad(sn, 4, "0");
-
-        return orderSn;
+        return super.nextSnByYear("XSDD");
     }
 
     /**
