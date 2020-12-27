@@ -28,6 +28,42 @@ export default class StockDao {
     }
 
     /**
+     * 查询库存操作申请
+     *
+     * 网址: http://localhost:8080/api/stocks/requests?type=OUT
+     * 参数:
+     *      type         (必要): IN (入库)、OUT (出库)
+     *      applicantId  [可选]: 小于 1 时查询所有的，否则查询指定申请人的
+     *      startAt      [可选]: 开始时间
+     *      endAt        [可选]: 结束时间
+     *      pageNumber   [可选]: 页码
+     *      pageSize     [可选]: 数量
+     *
+     * @param {JSON} filter 过滤条件，参考上面的 '参数'
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为库存操作申请的数组，reject 的参数为错误信息
+     */
+    static findStockRequests(filter) {
+        return Rest.get(Urls.API_STOCKS_REQUESTS, { data: filter }).then(({ data: requests, success, message }) => {
+            return Utils.response(requests, success, message);
+        });
+    }
+
+    /**
+     * 查询指定 ID 的库存操作申请
+     *
+     * 网址: http://localhost:8080/api/stocks/requests/{requestId}
+     * 参数: 无
+     *
+     * @param {Long} requestId 库存操作申请 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为库存操作申请，reject 的参数为错误信息
+     */
+    static findStockRequestById(requestId) {
+        return Rest.get(Urls.API_STOCKS_REQUESTS_BY_ID, { params: { requestId } }).then(({ data: request, success, message }) => {
+            return Utils.response(request, success, message);
+        });
+    }
+
+    /**
      * 入库
      *
      * 网址: http://localhost:8080/api/stocks/in
@@ -43,6 +79,24 @@ export default class StockDao {
     static stockIn(record) {
         return Rest.create(Urls.API_STOCKS_IN, { data: record }).then(({ data: newRecord, success, message }) => {
             return Utils.response(newRecord, success, message);
+        });
+    }
+
+    /**
+     * 出库申请
+     *
+     * 网址: http://localhost:8080/api/stocks/out/requests
+     * 参数: 无
+     * 请求体:
+     *      orderId     : 订单 ID
+     *      productItems: 出库的产品项数组
+     *
+     * @param {JSON} stockOutInfo 出库信息
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为新创建的出库申请，reject 的参数为错误信息
+     */
+    static stockOutRequest(stockOutInfo) {
+        return Rest.create(Urls.API_STOCKS_OUT_REQUESTS, { data: stockOutInfo, json: true }).then(({ data: request, success, message }) => {
+            return Utils.response(request, success, message);
         });
     }
 }

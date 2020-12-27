@@ -110,6 +110,14 @@ public interface ProductMapper {
     void increaseProductItemCount(long productItemId, int count);
 
     /**
+     * 查询产品项得数量
+     *
+     * @param productItemId 产品项 ID
+     * @return 返回产品项的数量
+     */
+    int findProductItemCount(long productItemId);
+
+    /**
      * 删除产品项
      *
      * @param productItemId 产品项 ID

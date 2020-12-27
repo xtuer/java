@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-parsing-error -->
 
 <!--
-搜索出库、分页加载 (加载下一页的出库)
+搜索出库申请、分页加载 (加载下一页的出库)
 
 提示: 出库分为
 * 物料直接出库: 虚拟出一个产品
@@ -25,17 +25,14 @@
                 </DatePicker>
 
                 <!-- 选择条件的搜索 -->
-                <Input v-model="filterValue" transfer placeholder="请输入查询条件" search enter-button @on-search="searchRecords">
-                    <Select v-model="filterKey" slot="prepend">
-                        <Option value="email">邮件地址</Option>
-                        <Option value="phone">电话号码</Option>
-                    </Select>
+                <Input v-model="filter.stockRequestSn" placeholder="请输入出库单号" search enter-button @on-search="searchRequests">
+                   <span slot="prepend">出库单号</span>
                 </Input>
             </div>
 
             <!-- 其他按钮 -->
             <Dropdown @on-click="openSelect">
-                <Button type="primary" icon="md-arrow-up">物料出库</Button>
+                <Button type="primary" icon="md-arrow-up">出库申请</Button>
                 <DropdownMenu slot="list">
                     <DropdownItem name="item">选择物料</DropdownItem>
                     <DropdownItem name="order">选择订单</DropdownItem>
@@ -43,23 +40,25 @@
             </Dropdown>
         </div>
 
-        <!-- 出库列表 -->
-        <Table :data="records" :columns="columns" :loading="reloading" border>
-            <!-- 介绍信息 -->
-            <template slot-scope="{ row: record }" slot="info">
-                {{ record.userId }}
+        <!-- 出库申请列表 -->
+        <Table :data="requests" :columns="columns" :loading="reloading" border>
+            <!-- 出库单号 -->
+            <template slot-scope="{ row: request }" slot="requestSn">
+                <a @click="showStockRequest(request)">{{ request.stockRequestSn }}</a>
             </template>
-
-            <!-- 操作按钮 -->
-            <template slot-scope="{ row: record }" slot="action">
-                <Button type="primary" size="small">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+            <!-- 出库类型 -->
+            <template slot-scope="{ row: request }" slot="type">
+                {{ request.orderId === '0' ? '物料' : '订单' }}
+            </template>
+            <!-- 申请时间 -->
+            <template slot-scope="{ row: request }" slot="createdAt">
+                {{ request.createdAt | formatDate }}
             </template>
         </Table>
 
         <!-- 底部工具栏 -->
         <div class="list-page-toolbar-bottom">
-            <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreRecords">更多...</Button>
+            <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreRequests">更多...</Button>
         </div>
 
         <!-- 物料选择弹窗 -->
@@ -69,7 +68,10 @@
         <OrderSelect v-model="orderSelectVisible" @on-ok="stockOutOrderProductItems"/>
 
         <!-- 物料出库弹窗 -->
-        <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products"/>
+        <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products" @on-ok="stockOut"/>
+
+        <!-- 物料出库申请详情弹窗 -->
+        <StockRequestDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId"/>
     </div>
 </template>
 
@@ -80,43 +82,48 @@ import ProductDao from '@/../public/static-p/js/dao/ProductDao';
 import OrderSelect from '@/components/OrderSelect.vue';
 import ProductItemSelect from '@/components/ProductItemSelect.vue';
 import StockOutModal from '@/components/StockOutModal.vue';
+import StockRequestDetails from '@/components/StockRequestDetails.vue';
 
 export default {
-    components: { OrderSelect, ProductItemSelect, StockOutModal },
+    components: { OrderSelect, ProductItemSelect, StockOutModal, StockRequestDetails },
     data() {
         return {
-            records : [],
+            requests: [],
             filter: { // 搜索条件
-                nickname  : '',
-                pageSize  : 2,
+                stockRequestSn: '',
+                pageSize  : 20,
                 pageNumber: 1,
+                type      : 'OUT',
             },
-            filterKey  : 'email',  // 搜索的 Key
-            filterValue: '',       // 搜索的 Value
-            dateRange  : ['', ''], // 搜索的时间范围
+            dateRange: ['', ''], // 搜索的时间范围
             more     : false, // 是否还有更多出库
             loading  : false, // 加载中
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'nickname', title: '名字', width: 150 },
-                { slot: 'info',   title: '介绍', minWidth: 500 },
-                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'requestSn',         title: '出库单号', width: 200 },
+                { key : 'desc',              title: '物料', minWidth: 500 },
+                { slot: 'type',              title: '类型', width: 110, align: 'center' },
+                { key : 'stateLabel',        title: '状态', width: 110 },
+                { key : 'applicantUsername', title: '申请人', width: 110 },
+                { slot: 'createdAt',         title: '创建时间', width: 110, align: 'center' },
             ],
             itemSelectVisible : false, // 物料选择弹窗是否可见
             orderSelectVisible: false, // 订单选择弹窗石佛可见
             stockOutVisible   : false, // 出库弹窗是否可见
             order   : { orderId: '0', orderSn: 'XXXX' },   // 订单
             products: [{ productId: '0', items: [] }], // 订单的产品: 每个产品有多个 items => { items }
+            stockRequestId: '0',
+            stockRequestDetailsVisible: false,
         };
     },
     mounted() {
-        this.searchRecords();
+        this.searchRequests();
     },
     methods: {
         // 搜索出库
-        searchRecords() {
-            this.records           = [];
+        searchRequests() {
+            this.requests          = [];
             this.more              = false;
             this.reloading         = true;
             this.filter.pageNumber = 1;
@@ -130,16 +137,16 @@ export default {
                 this.filter.endAt   = '';
             }
 
-            // this.fetchMoreRecords();
+            this.fetchMoreRequests();
         },
         // 点击更多按钮加载下一页的出库
-        fetchMoreRecords() {
+        fetchMoreRequests() {
             this.loading = true;
 
-            UserDao.findRecords(this.filter).then(records => {
-                this.records.push(...records);
+            StockDao.findStockRequests(this.filter).then(requests => {
+                this.requests.push(...requests);
 
-                this.more      = records.length >= this.filter.pageSize;
+                this.more      = requests.length >= this.filter.pageSize;
                 this.loading   = false;
                 this.reloading = false;
                 this.filter.pageNumber++;
@@ -195,7 +202,15 @@ export default {
                 });
             });
         },
-
+        // 出库申请成功
+        stockOut(request) {
+            console.log(request);
+        },
+        // 显示出库申请详情
+        showStockRequest(request) {
+            this.stockRequestId = request.stockRequestId;
+            this.stockRequestDetailsVisible = true;
+        }
     }
 };
 </script>

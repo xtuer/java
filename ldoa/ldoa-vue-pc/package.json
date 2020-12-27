@@ -86,6 +86,7 @@
       "no-lonely-if": 0,
       "no-constant-condition": 0,
       "no-new": 0,
+      "newline-per-chained-call": 0,
       "yoda": 0
     },
     "parserOptions": {

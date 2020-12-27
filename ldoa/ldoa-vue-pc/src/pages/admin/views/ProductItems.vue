@@ -20,6 +20,10 @@
 
         <!-- 物料列表 -->
         <Table :data="items" :columns="columns" :loading="reloading" border>
+            <!-- 库存告警 -->
+            <template slot-scope="{ row: item }" slot="warnCount">
+                {{ item.warnCount }} {{ item.unit }}
+            </template>
             <!-- 操作按钮 -->
             <template slot-scope="{ row: item }" slot="action">
                 <Button type="primary" size="small" @click="editItem(item)">编辑</Button>
@@ -93,15 +97,15 @@ export default {
             saving   : false, // 保存中
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'name',     title: '物料名称', width: 200 },
-                { key : 'code',     title: '物料编码', width: 110 },
-                { key : 'type',     title: '物料类型', width: 110 },
-                { key : 'model',    title: '规格/型号', width: 110 },
-                { key : 'standard', title: '标准/规范', width: 110 },
-                { key : 'material', title: '材质', width: 110 },
-                { key : 'unit',     title: '单位', width: 110, align: 'center' },
-                { key : 'desc',     title: '物料描述', minWidth: 150 },
-                { slot: 'action',   title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { key : 'name',      title: '物料名称', width: 200 },
+                { key : 'code',      title: '物料编码', width: 110 },
+                { key : 'type',      title: '物料类型', width: 110 },
+                { key : 'model',     title: '规格/型号', width: 110 },
+                { key : 'standard',  title: '标准/规范', width: 110 },
+                { key : 'material',  title: '材质', width: 110 },
+                { slot: 'warnCount', title: '库存告警', width: 110, align: 'right' },
+                { key : 'desc',      title: '物料描述', minWidth: 150 },
+                { slot: 'action',    title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             itemRules: {
                 code: [

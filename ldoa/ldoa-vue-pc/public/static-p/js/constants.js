@@ -11,11 +11,13 @@ window.ROLES = [
 // 审批类型
 window.AUDIT_TYPES = [
     { value: 'ORDER', name: '销售订单' },
+    { value: 'OUT_OF_STOCK', name: '物料出库' },
     { value: 'MAINTAIN', name: '维修 / 保养' },
 ];
 
-// 订单
-window.TYPE_ORDER = 'ORDER';
+// 操作类型
+window.TYPE_ORDER = 'ORDER';               // 订单
+window.TYPE_OUT_OF_STOCK = 'OUT_OF_STOCK'; // 出库申请
 
 // 审批项状态
 window.AUDIT_ITEM_STATE = [

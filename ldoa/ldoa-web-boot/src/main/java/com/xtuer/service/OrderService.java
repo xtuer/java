@@ -1,5 +1,6 @@
 package com.xtuer.service;
 
+import com.xtuer.bean.Const;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.UploadedFile;
 import com.xtuer.bean.User;
@@ -8,11 +9,13 @@ import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.product.Product;
 import com.xtuer.mapper.FileMapper;
 import com.xtuer.mapper.OrderMapper;
+import com.xtuer.mapper.ProductMapper;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,9 @@ public class OrderService extends BaseService {
     @Autowired
     private FileMapper fileMapper;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     /**
      * 查询指定 ID 的订单
      *
@@ -37,9 +43,10 @@ public class OrderService extends BaseService {
      * @return 返回查询到的订单
      */
     public Order findOrder(long orderId) {
-        // 1. 查询订单的基础数据 (包含了订单项，销售员等)
+        // 1. 查询订单的基础数据 (包含了订单项，销售员，产品的基本信息 (不包含产品项) 等)
         // 2. 去掉 orderItemId 为 0 的 item (没有订单项时 MyBatis 的绑定造成多出一个无效的订单项)
-        // 3. 查询订单的附件
+        // 3. 查询订单项的产品
+        // 4. 查询订单的附件
         Order order = orderMapper.findOrderById(orderId);
 
         if (order == null) {
@@ -47,9 +54,16 @@ public class OrderService extends BaseService {
         }
 
         // [2] 去掉 orderItemId 为 0 的 item (没有订单项时 MyBatis 的绑定造成多出一个无效的订单项)
-        order.setItems(order.getItems().stream().filter(item -> item.getOrderItemId() > 0).collect(Collectors.toList()));
+        List<OrderItem> validOrderItems = order.getItems().stream().filter(item -> item.getOrderItemId() > 0).collect(Collectors.toList());
+        order.setItems(validOrderItems);
 
-        // [3] 查询订单的附件
+        // [3] 查询订单项的产品
+        order.getItems().forEach(orderItem -> {
+            Product product = productMapper.findProductById(orderItem.getProductId());
+            orderItem.setProduct(product);
+        });
+
+        // [4] 查询订单的附件
         UploadedFile attachment = fileMapper.findUploadedFileById(order.getAttachmentId());
         if (attachment != null) {
             order.setAttachment(attachment);
@@ -146,7 +160,7 @@ public class OrderService extends BaseService {
      */
     public String nextOrderSn() {
         // XSDD 不动, 20200806 为年月日，根据日期自动生成, 0001 为流水号 (0001,0002,003……)，每年再从 0001 开始
-        return super.nextSnByYear("XSDD");
+        return super.nextSnByYear(Const.SN_PREFIX_ORDER);
     }
 
     /**

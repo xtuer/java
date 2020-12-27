@@ -17,9 +17,10 @@ audit-item: 审批项
 
         <!-- 审批工具栏 -->
         <div v-if="needAudit" class="toolbar">
-            <Input v-model="auditComment" size="small" placeholder="请输入审批意见"/>
-            <Button type="error" size="small" @click="reject">拒绝</Button>
-            <Button type="primary" size="small" @click="accept">同意</Button>
+            <Input v-model="auditComment" placeholder="请输入审批意见">
+                <span slot="prepend" @click="reject">拒绝</span>
+                <span slot="append" @click="accept">同意</span>
+            </Input>
         </div>
 
         <!-- 状态的图标 -->
@@ -67,11 +68,12 @@ export default {
         // 审批
         audit(accepted) {
             this.auditItem.comment = this.auditComment.trim();
+            alert(accepted);
 
-            AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
-                this.auditItem.state = accepted ? 3 : 2;
-                this.$Message.success('审批完成');
-            });
+            // AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
+            //     this.auditItem.state = accepted ? 3 : 2;
+            //     this.$Message.success('审批完成');
+            // });
         },
         // 审批状态的图标
         stateIcon() {
@@ -114,6 +116,43 @@ export default {
         top: 1px;
         right: 1px;
         font-size: 40px;
+    }
+
+    .toolbar {
+        .ivu-input-group-prepend, .ivu-input-group-append {
+            color: white;
+            width: 60px;
+            padding: 0;
+            border: none;
+
+            span {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            &:hover {
+                cursor: pointer;
+                transition: .8s all;
+            }
+        }
+        .ivu-input-group-prepend {
+            background: $warningColor;
+
+            &:hover {
+                background: $errorColor;
+            }
+        }
+
+        .ivu-input-group-append {
+            background: $primaryColor;
+
+            &:hover {
+                background: $lightPrimaryColor;
+            }
+        }
     }
 }
 </style>

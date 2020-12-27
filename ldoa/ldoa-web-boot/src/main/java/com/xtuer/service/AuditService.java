@@ -7,6 +7,7 @@ import com.xtuer.bean.audit.AuditConfig;
 import com.xtuer.bean.audit.AuditItem;
 import com.xtuer.bean.audit.AuditType;
 import com.xtuer.bean.order.Order;
+import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -97,9 +98,23 @@ public class AuditService extends BaseService {
      */
     public Result<String> upsertOrderAudit(User applicant, Order order) {
         Objects.requireNonNull(order, "订单不能为空");
-        String desc = "客户: " + order.getCustomerCompany();
+        String desc = String.format("销售订单: %s, 客户: %s", order.getOrderSn(), order.getCustomerCompany());
 
         return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order), desc);
+    }
+
+    /**
+     * 创建物料出库申请
+     *
+     * @param applicant 申请人
+     * @param request   出库申请
+     * @return 返回操作结果
+     */
+    public Result<String> insertStockRequestAudit(User applicant, StockRequest request) {
+        Objects.requireNonNull(request, "出库申请不能为空");
+        String desc = String.format("出库单号: %s, 物料: %s", request.getStockRequestSn(), request.getDesc());
+
+        return upsertAudit(applicant, AuditType.OUT_OF_STOCK, request.getStockRequestId(), Utils.toJson(request), desc);
     }
 
     /**

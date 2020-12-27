@@ -34,16 +34,20 @@
         </div>
 
         <!-- 订单详情弹窗 -->
-        <OrderDetails v-model="orderDetailsModal" :order-id="orderDetailsOrderId"/>
+        <OrderDetails v-model="orderModal" :order-id="orderId"/>
+
+        <!-- 物料出库申请详情弹窗 -->
+        <StockRequestDetails v-model="stockRequestModal" :stock-request-id="stockRequestId"/>
     </div>
 </template>
 
 <script>
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import OrderDetails from '@/components/OrderDetails.vue';
+import StockRequestDetails from '@/components/StockRequestDetails.vue';
 
 export default {
-    components: { OrderDetails },
+    components: { OrderDetails, StockRequestDetails },
     data() {
         return {
             auditItems : [],
@@ -65,8 +69,11 @@ export default {
                 { key : 'stateLabel', title: '状态', width: 150, align: 'center' },
                 { slot: 'action',     title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
-            orderDetailsOrderId: '0', // 查看详情的订单 ID
-            orderDetailsModal: false, // 是否显示订单详情弹窗
+            orderId: '0', // 查看详情的订单 ID
+            orderModal: false, // 是否显示订单详情弹窗
+
+            stockRequestId: '0',
+            stockRequestModal: false,
         };
     },
     mounted() {
@@ -103,9 +110,16 @@ export default {
         },
         // 审批
         audit(auditItem) {
-            if (auditItem.type === TYPE_ORDER) {
-                this.orderDetailsOrderId = auditItem.targetId;
-                this.orderDetailsModal = true;
+            switch (auditItem.type) {
+            case TYPE_ORDER:
+                this.orderId = auditItem.targetId;
+                this.orderModal = true;
+                break;
+            case TYPE_OUT_OF_STOCK:
+                this.stockRequestId = auditItem.targetId;
+                this.stockRequestModal = true;
+                break;
+            default:
             }
         }
     }

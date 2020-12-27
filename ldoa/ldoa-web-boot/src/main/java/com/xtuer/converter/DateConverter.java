@@ -27,7 +27,7 @@ public final class DateConverter implements Converter<String, Date> {
      */
     @Override
     public Date convert(String source) {
-        if (source == null) {
+        if (StringUtils.isBlank(source)) {
             return null;
         }
 

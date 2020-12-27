@@ -1,3 +1,5 @@
+import AuditUtils from '@/../public/static-p/js/utils/AuditUtils';
+
 /**
  * 审批的 Dao
  */
@@ -62,6 +64,11 @@ export default class AuditDao {
      */
     static findAuditOfTarget(targetId) {
         return Rest.get(Urls.API_AUDITS_BY_TARGET, { params: { targetId } }).then(({ data: audit, success, message }) => {
+            if (audit) {
+                // 合并审批的数据，方便使用
+                AuditUtils.mergeAuditConfigToAuditItem(audit);
+            }
+
             return Utils.response(audit, success, message);
         });
     }

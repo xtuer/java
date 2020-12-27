@@ -46,10 +46,13 @@ const Urls = {
     API_AUDIT_ITEMS_ACCEPT: '/api/audit-items/{auditItemId}/accept', // 通过或拒绝审批项
 
     // 库存
-    API_STOCKS        : '/api/stocks',         // 库存
-    API_STOCKS_RECORDS: '/api/stocks/records', // 库存操作记录
-    API_STOCKS_IN     : '/api/stocks/in',      // 入库
-    API_STOCKS_OUT    : '/api/stocks/out',     // 出库
+    API_STOCKS               : '/api/stocks',              // 库存
+    API_STOCKS_RECORDS       : '/api/stocks/records',      // 库存操作记录
+    API_STOCKS_IN            : '/api/stocks/in',           // 入库
+    API_STOCKS_OUT           : '/api/stocks/out',          // 出库
+    API_STOCKS_OUT_REQUESTS  : '/api/stocks/out/requests', // 出库申请
+    API_STOCKS_REQUESTS      : '/api/stocks/requests',     // 库存操作申请
+    API_STOCKS_REQUESTS_BY_ID: '/api/stocks/requests/{requestId}', // 指定 ID 的库存操作申请
 };
 
 window.Urls = Urls;

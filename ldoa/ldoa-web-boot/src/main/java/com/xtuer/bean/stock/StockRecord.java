@@ -20,6 +20,11 @@ public class StockRecord {
     private long stockRecordId;
 
     /**
+     * 产品 ID (当订单物料出库时需要)
+     */
+    private long productId;
+
+    /**
      * 物料 ID
      */
     private long productItemId;
@@ -65,6 +70,11 @@ public class StockRecord {
      * 库存操作申请 ID (出库时才需要)
      */
     private long stockRequestId;
+
+    /**
+     * 出库申请 SN，显示时方便归类查看
+     */
+    private String stockRequestSn;
 
     /**
      * 操作用户 ID

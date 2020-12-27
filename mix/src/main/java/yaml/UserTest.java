@@ -8,8 +8,8 @@ import java.io.InputStream;
 
 public class UserTest {
     public static void main(String[] args) {
-        unmarshalUserTest();
-        // unmarshalUserHolderTest();
+        // unmarshalUserTest();
+        unmarshalUserHolderTest();
     }
 
     public static void unmarshalUserTest() {

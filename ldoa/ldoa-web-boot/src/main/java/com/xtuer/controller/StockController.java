@@ -4,18 +4,12 @@ import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
-import com.xtuer.bean.stock.StockOutRequestVo;
-import com.xtuer.bean.stock.StockRecord;
-import com.xtuer.bean.stock.StockRecordFilter;
-import com.xtuer.bean.stock.StockRequest;
+import com.xtuer.bean.stock.*;
 import com.xtuer.mapper.StockMapper;
 import com.xtuer.service.StockService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -60,6 +54,46 @@ public class StockController extends BaseController {
     }
 
     /**
+     * 查询库存操作申请
+     *
+     * 网址: http://localhost:8080/api/stocks/requests?type=OUT
+     * 参数:
+     *      type           (必要): IN (入库)、OUT (出库)
+     *      applicantId    [可选]: 小于 1 时查询所有的，否则查询指定申请人的
+     *      stockRequestSn [可选]: 出库申请单号
+     *      startAt        [可选]: 开始时间
+     *      endAt          [可选]: 结束时间
+     *      pageNumber     [可选]: 页码
+     *      pageSize       [可选]: 数量
+     *
+     * @param filter 过滤条件
+     * @param page   分页对象
+     * @return payload 为库存操作申请的数组
+     */
+    @GetMapping(Urls.API_STOCKS_REQUESTS)
+    public Result<List<StockRequest>> findStockRequests(StockRequestFilter filter, Page page) {
+        // 设置查询时间范围
+        filter.setStartAt(Utils.startOfDay(filter.getStartAt()));
+        filter.setEndAt(Utils.endOfDay(filter.getEndAt()));
+
+        return Result.ok(stockMapper.findStockRequests(filter, page));
+    }
+
+    /**
+     * 查询指定 ID 的库存操作申请
+     *
+     * 网址: http://localhost:8080/api/stocks/requests/{requestId}
+     * 参数: 无
+     *
+     * @param requestId 库存操作申请 ID
+     * @return payload 为库存操作申请，查询不到则为 null
+     */
+    @GetMapping(Urls.API_STOCKS_REQUESTS_BY_ID)
+    public Result<StockRequest> findStockRequest(@PathVariable long requestId) {
+        return Result.single(stockService.findStockRequest(requestId));
+    }
+
+    /**
      * 入库
      *
      * 网址: http://localhost:8080/api/stocks/in
@@ -79,9 +113,9 @@ public class StockController extends BaseController {
     }
 
     /**
-     * 出库
+     * 出库申请
      *
-     * 网址: http://localhost:8080/api/stocks/out
+     * 网址: http://localhost:8080/api/stocks/out/requests
      * 参数: 无
      * 请求体:
      *      orderId     : 订单 ID
@@ -89,9 +123,9 @@ public class StockController extends BaseController {
      *
      * @param out 出库信息
      */
-    @PostMapping(Urls.API_STOCKS_OUT)
-    public Result<StockRequest> stockOut(@RequestBody StockOutRequestVo out) {
+    @PostMapping(Urls.API_STOCKS_OUT_REQUESTS)
+    public Result<StockRequest> stockOutRequest(@RequestBody StockOutRequestFormBean out) {
         User user = super.getCurrentUser();
-        return stockService.stockOut(out, user);
+        return stockService.stockOutRequest(out, user);
     }
 }

@@ -11,3 +11,12 @@ users:          # field name
 john:        # field name
   id: 13     # bean field
   name: John # bean field
+  nickName: Bobi # 不能写为 nick-name，这是因为 Spring Boot 作了特殊处理
+
+# 对象数组使用下面 2 种格式都可以
+members:
+  - id: 14
+    name: Jack
+  -
+    id: 15
+    name: Sophie

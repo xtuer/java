@@ -254,3 +254,7 @@ Box 布局
 .color-error {
     color: #ed4014;
 }
+
+.relative {
+    position: relative;
+}

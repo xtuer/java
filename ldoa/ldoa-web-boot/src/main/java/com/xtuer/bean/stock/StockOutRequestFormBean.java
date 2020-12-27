@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class StockOutRequestVo {
+public class StockOutRequestFormBean {
     /**
      * 订单 ID
      */

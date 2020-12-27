@@ -50,7 +50,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div slot="footer">
             <Button v-show="direct" icon="md-add" style="float: left" @click="itemSelectVisible = true">添加物料</Button>
             <Button type="text" @click="showEvent(false)">取消</Button>
-            <Button type="primary" @click="ok">确定</Button>
+            <Button type="primary" :loading="saving" @click="stockOutRequest">确定</Button>
         </div>
 
         <!-- 产品项选择弹窗 -->
@@ -59,6 +59,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 </template>
 
 <script>
+import StockDao from '@/../public/static-p/js/dao/StockDao';
 import ProductItemSelect from '@/components/ProductItemSelect.vue';
 
 export default {
@@ -85,6 +86,7 @@ export default {
                 { slot: 'count',    title: '数量', width: 110, align: 'center' },
             ],
             itemSelectVisible: false,
+            saving: false,
         };
     },
     computed: {
@@ -107,12 +109,6 @@ export default {
                 this.init();
             }
         },
-        // 点击确定按钮的回调函数
-        ok() {
-            this.$emit('on-ok');
-            this.showEvent(false); // 关闭弹窗
-            this.stockOut();
-        },
         // 初始化
         init() {
             // 例如从服务器加载数据
@@ -131,14 +127,21 @@ export default {
                 this.$Message.info('物料已经存在');
             }
         },
-        // 出库
-        stockOut() {
-            const stockOutRequest = {
+        // 出库申请
+        stockOutRequest() {
+            const stockOutInfo = {
                 orderId: this.orderId,
                 productItems: this.products.flatMap(product => product.items),
             };
 
-
+            this.saving = true;
+            StockDao.stockOutRequest(stockOutInfo).then(newRequest => {
+                this.$emit('on-ok', newRequest);
+                this.showEvent(false); // 关闭弹窗
+                this.saving = false;
+            }).catch(err => {
+                this.saving = false;
+            });
         }
     }
 };

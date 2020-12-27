@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtuer.mapper.StockMapper">
+    <!-- 库存操作记录的列 -->
     <sql id="stockRecordColumns">
+        record.product_id      AS product_id,
         record.product_item_id AS product_item_id,
         record.type  AS type,
         record.count AS count,
@@ -18,12 +20,26 @@
         pi.model AS 'productItem.model',
         pi.unit  AS 'productItem.unit'
     </sql>
+
+    <!-- 库存操作申请的列 -->
+    <sql id="stockRequestColumns">
+        request.stock_request_id AS stock_request_id,
+        request.stock_request_sn AS stock_request_sn,
+        request.type         AS type,
+        request.order_id     AS order_id,
+        request.state        AS state,
+        request.desc         AS 'desc',
+        request.created_at   AS created_at,
+        request.applicant_id AS applicant_id,
+        user.nickname        AS applicant_username
+    </sql>
+
     <!-- 查询库存操作记录 -->
     <select id="findStockRecords" resultType="StockRecord">
         SELECT <include refid="stockRecordColumns"/>
         FROM stock_record record
-        LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
-        LEFT JOIN user ON user.user_id = record.user_id
+            LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
+            LEFT JOIN user ON user.user_id = record.user_id
         <where>
             record.type = #{filter.type}
 
@@ -42,7 +58,7 @@
             <if test="filter.batch!=null and filter.batch!='' ">
                 AND record.batch LIKE CONCAT('%', #{filter.batch},'%')
             </if>
-            <if test="filter.startAt!=null and filter.endAt!=null ">
+            <if test="filter.startAt!=null and filter.endAt!=null">
                 AND (record.created_at BETWEEN #{filter.startAt} AND #{filter.endAt})
             </if>
         </where>
@@ -50,20 +66,75 @@
         LIMIT ${page.offset}, ${page.count}
     </select>
 
+    <!-- 查询出库申请的库存操作记录 -->
+    <select id="findStockRecordsByStockRequestId" resultType="StockRecord">
+        SELECT <include refid="stockRecordColumns"/>
+        FROM stock_record record
+            LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
+            LEFT JOIN user ON user.user_id = record.user_id
+        WHERE record.stock_request_id = #{requestId}
+    </select>
+
     <!-- 查询指定 ID 的库存记录 -->
     <select id="findStockRecordById" resultType="StockRecord">
         SELECT <include refid="stockRecordColumns"/>
         FROM stock_record record
-        LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
-        LEFT JOIN user ON user.user_id = record.user_id
+            LEFT JOIN product_item pi ON pi.product_item_id = record.product_item_id
+            LEFT JOIN user ON user.user_id = record.user_id
         WHERE stock_record_id = #{recordId}
+    </select>
+
+    <!-- 查询库存操作申请 -->
+    <select id="findStockRequests" resultType="StockRequest">
+        SELECT <include refid="stockRequestColumns"/>
+        FROM stock_request request
+            LEFT JOIN user ON user.user_id = request.applicant_id
+        <where>
+            request.type = #{filter.type}
+
+            <if test="filter.applicantId > 0">
+                AND request.applicant_id = #{filter.applicantId}
+            </if>
+            <if test="filter.stockRequestSn!=null and filter.stockRequestSn!='' ">
+                AND request.stock_request_sn LIKE CONCAT('%', #{filter.stockRequestSn},'%')
+            </if>
+            <if test="filter.startAt!=null and filter.endAt!=null">
+                AND (request.created_at BETWEEN #{filter.startAt} AND #{filter.endAt})
+            </if>
+        </where>
+        ORDER BY request.created_at DESC
+        LIMIT ${page.offset}, ${page.count}
+    </select>
+
+    <!-- 查询指定 ID 的库存操作申请 -->
+    <select id="findStockRequestById" resultType="StockRequest">
+        SELECT <include refid="stockRequestColumns"/>
+        FROM stock_request request
+            LEFT JOIN user ON user.user_id = request.applicant_id
+        WHERE request.stock_request_id = #{requestId}
+    </select>
+
+    <!-- 查询指定 ID 的库存操作的产品项 -->
+    <select id="findProductItemsByStockRequestId" resultType="ProductItem">
+        SELECT pi.product_item_id, pi.name, pi.code, pi.model, pi.standard, pi.unit, record.product_id, record.count
+        FROM stock_request request
+            JOIN stock_record record on record.stock_request_id = request.stock_request_id
+            LEFT JOIN product_item pi on pi.product_item_id = record.product_item_id
+        WHERE request.stock_request_id = #{stockRequestId}
+        ORDER BY record.product_id
     </select>
 
     <!-- 创建库存操作记录 -->
     <insert id="insertStockRecord">
-        INSERT INTO stock_record (stock_record_id, product_item_id, type, count,
-                batch, product_item_type, manufacturer, comment, complete, stock_request_id, user_id)
-        VALUES (#{stockRecordId}, #{productItemId}, #{type}, #{count},
-                #{batch}, #{productItemType}, #{manufacturer}, #{comment}, #{complete}, #{stockRequestId}, #{userId})
+        INSERT INTO stock_record (stock_record_id, product_id, product_item_id, type, count,
+                batch, product_item_type, manufacturer, comment, complete, stock_request_id, stock_request_sn, user_id)
+        VALUES (#{stockRecordId}, #{productId}, #{productItemId}, #{type}, #{count},
+                #{batch}, #{productItemType}, #{manufacturer}, #{comment}, #{complete}, #{stockRequestId}, #{stockRequestSn}, #{userId})
+    </insert>
+
+    <!-- 创建库存操作申请 -->
+    <insert id="insertStockRequest">
+        INSERT INTO stock_request(stock_request_id, stock_request_sn, type, order_id, applicant_id, state, `desc`)
+        VALUES (#{stockRequestId}, #{stockRequestSn}, #{type}, #{orderId}, #{applicantId}, #{state}, #{desc})
     </insert>
 </mapper>

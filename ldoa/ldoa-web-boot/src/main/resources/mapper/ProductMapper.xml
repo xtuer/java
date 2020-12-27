@@ -149,6 +149,11 @@
         WHERE product_item_id = #{productItemId}
     </update>
 
+    <!-- 查询产品项得数量 -->
+    <select id="findProductItemCount" resultType="int">
+        SELECT count FROM product_item WHERE product_item_id = #{productItemId}
+    </select>
+
     <!-- 删除产品项 -->
     <delete id="deleteProductItem">
         DELETE FROM product_item WHERE product_item_id = #{productItem}
@@ -168,6 +173,7 @@
     <!-- 产品项的结果映射 -->
     <resultMap id="productItemMap" type="ProductItem">
         <id property="productItemId" column="item_id"/>
+        <result property="productId" column="product_id"/>
         <result property="name"      column="item_name"/>
         <result property="code"      column="item_code"/>
         <result property="type"      column="item_type"/>

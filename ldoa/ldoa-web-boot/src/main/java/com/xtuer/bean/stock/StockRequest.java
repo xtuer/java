@@ -4,11 +4,12 @@ import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 出库操作申请，分 2 种出库情况:
+ * 库存操作申请，目前只使用了出库操作，出库分 2 种出库情况:
  * A. 物料直接出库，每个物料一个出库记录
  * B. 订单出库 (记录有订单号)，需要查询到订单的产品，每个产品的物料，每个物料一个出库记录
  *
@@ -23,6 +24,11 @@ public class StockRequest {
      * 出库申请 ID
      */
     private long stockRequestId;
+
+    /**
+     * 出库申请 SN，显示时方便归类查看
+     */
+    private String stockRequestSn;
 
     /**
      * 库存操作类型: IN (入库), OUT (出库)
@@ -47,7 +53,7 @@ public class StockRequest {
     /**
      * 申请者名字 (查询时从 User 中关联得到)
      */
-    private String applicantNickname;
+    private String applicantUsername;
 
     /**
      * 描述，展示时需要使用
@@ -55,9 +61,14 @@ public class StockRequest {
     private String desc;
 
     /**
-     * 库存操作记录，每个物料一个记录
+     * 申请时间
      */
-    private List<StockRecord> items = new LinkedList<>();
+    private Date createdAt;
+
+    /**
+     * 库存操作记录，每个操作记录管理一个物料的信息
+     */
+    private List<StockRecord> records = new LinkedList<>();
 
     /**
      * 获取订单状态 Label

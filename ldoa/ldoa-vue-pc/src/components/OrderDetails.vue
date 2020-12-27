@@ -15,10 +15,12 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
 <template>
     <Modal :value="visible" :title="'订单详情: ' + order.orderSn" width="800"
-           :styles="{ top: '40px', marginBottom: '40px' }"
+           :styles="{ top: '40px', marginBottom: '80px' }"
            class="order-details-modal" @on-visible-change="showEvent">
         <!-- 内容显示 -->
-        <table class="order-table">
+        <table class="order-table relative">
+            <Spin v-if="loading" fix size="large"></Spin>
+
             <!-- 客户信息 -->
             <tr>
                 <td>客户单位</td>
@@ -96,7 +98,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <!-- 底部工具栏 -->
         <div slot="footer">
             <!-- <Button type="text" @click="showEvent(false)">取消</Button> -->
-            <Button type="primary" @click="showEvent(false)">确定</Button>
+            <!-- <Button type="primary" @click="showEvent(false)">确定</Button> -->
         </div>
     </Modal>
 </template>
@@ -104,7 +106,6 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 <script>
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
-import AuditUtils from '@/../public/static-p/js/utils/AuditUtils';
 import AuditItem from '@/components/AuditItem.vue';
 
 export default {
@@ -121,6 +122,7 @@ export default {
         return {
             order: {}, // 订单
             audit: {}, // 审批
+            loading: false,
         };
     },
     computed: {
@@ -162,16 +164,17 @@ export default {
         // 初始化
         init() {
             // 查询订单和订单的审批
+            this.loading = true;
+
             Promise.all([
                 OrderDao.findOrderById(this.orderId),
                 AuditDao.findAuditOfTarget(this.orderId)
             ]).then(([order, audit]) => {
                 this.order = order;
                 this.audit = audit;
-
-                // 合并审批的数据，方便使用
-                AuditUtils.mergeAuditConfigToAuditItem(this.audit);
+                this.loading = false;
             }).catch(error => {
+                this.loading = false;
                 console.error(error);
             });
         },
@@ -204,6 +207,10 @@ export default {
             &.center {
                 text-align: center;
             }
+        }
+
+        .audit-item .ivu-input-group {
+            border-collapse: collapse;
         }
     }
 }

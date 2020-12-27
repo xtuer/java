@@ -150,9 +150,9 @@ public class HexoSitemapGenerator {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
-            return meta;
         }
+
+        return meta;
     }
 
     // 博客的 md 文件的元数据
