@@ -17,7 +17,7 @@
  * @param  {String} pattern 时间格式
  * @return {String} 返回日期格式化得到的字符串
  */
-const formatDate = function(date, pattern = 'YYYY-MM-DD') {
+const formatDate = function(date, pattern = 'YYYY-MM-DD HH:mm') {
     const temp = dayjs(date);
 
     if (temp.isValid()) {

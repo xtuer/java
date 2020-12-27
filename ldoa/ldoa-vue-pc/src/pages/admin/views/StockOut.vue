@@ -106,7 +106,7 @@ export default {
                 { slot: 'type',              title: '类型', width: 110, align: 'center' },
                 { key : 'stateLabel',        title: '状态', width: 110 },
                 { key : 'applicantUsername', title: '申请人', width: 110 },
-                { slot: 'createdAt',         title: '创建时间', width: 110, align: 'center' },
+                { slot: 'createdAt',         title: '创建时间', width: 150, align: 'center' },
             ],
             itemSelectVisible : false, // 物料选择弹窗是否可见
             orderSelectVisible: false, // 订单选择弹窗石佛可见

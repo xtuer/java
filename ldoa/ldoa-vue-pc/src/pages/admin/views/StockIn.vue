@@ -125,7 +125,7 @@ export default {
                 { key : 'batch',           title: '批次', width: 150 },
                 { key : 'productItemType', title: '类型', width: 110, align: 'center' },
                 { slot: 'count',           title: '数量', width: 110, align: 'right' },
-                { slot: 'date',            title: '日期', width: 110, align: 'center' },
+                { slot: 'date',            title: '日期', width: 150, align: 'center' },
                 { key : 'username',        title: '操作员', width: 110 },
                 { key : 'manufacturer',    title: '生产厂家', width: 150 },
                 { key : 'comment',         title: '备主', minWidth: 150 },

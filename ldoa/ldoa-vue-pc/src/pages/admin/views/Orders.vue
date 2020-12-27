@@ -98,8 +98,8 @@ export default {
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'orderSn',      title: '订单号', width: 180 },
                 { slot: 'customer',     title: '客户单位', minWidth: 180, className: 'table-poptip' },
-                { slot: 'orderDate',    title: '订单日期', width: 120, align: 'center' },
-                { slot: 'deliveryDate', title: '交货日期', width: 120, align: 'center' },
+                { slot: 'orderDate',    title: '订单日期', width: 150, align: 'center' },
+                { slot: 'deliveryDate', title: '交货日期', width: 150, align: 'center' },
                 { key : 'productCodes', title: '产品编码', width: 150, tooltip: true },
                 { slot: 'salesperson',  title: '销售负责人', width: 120 },
                 { key : 'stateLabel',   title: '状态', width: 120, align: 'center' },
