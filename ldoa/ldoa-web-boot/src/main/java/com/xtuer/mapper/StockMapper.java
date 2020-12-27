@@ -78,4 +78,12 @@ public interface StockMapper {
      * @param request 操作申请
      */
     void insertStockRequest(StockRequest request);
+
+    /**
+     * 更新库存操作申请的状态
+     *
+     * @param requestId 操作申请 ID
+     * @param state     状态
+     */
+    void updateStockRequestState(long requestId, int state);
 }

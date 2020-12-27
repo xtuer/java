@@ -18,7 +18,16 @@ import java.util.List;
 @Getter
 @Setter
 public class StockRequest {
-    private static final String[] STATE_LABELS = { "初始化", "审批中", "审批拒绝", "审批完成", "完成" };
+    public static final int STATE_INIT = 0;
+    public static final int STATE_AUDITING = 1;
+    public static final int STATE_REJECTED = 2;
+    public static final int STATE_ACCEPTED = 3;
+    public static final int STATE_COMPLETE = 4;
+
+    /**
+     * 状态值与对应的 Label: 数组的下标为状态值，对应的数组元素值为状态的 Label
+     */
+    private static final String[] STATE_LABELS = { "初始化", "审批中", "审批拒绝", "审批通过", "完成" };
 
     /**
      * 出库申请 ID

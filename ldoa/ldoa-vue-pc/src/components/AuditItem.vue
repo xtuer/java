@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <!--
 功能: 审批项
 
@@ -68,12 +69,11 @@ export default {
         // 审批
         audit(accepted) {
             this.auditItem.comment = this.auditComment.trim();
-            alert(accepted);
 
-            // AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
-            //     this.auditItem.state = accepted ? 3 : 2;
-            //     this.$Message.success('审批完成');
-            // });
+            AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
+                this.auditItem.state = accepted ? 3 : 2;
+                this.$Message.success('审批完成');
+            });
         },
         // 审批状态的图标
         stateIcon() {

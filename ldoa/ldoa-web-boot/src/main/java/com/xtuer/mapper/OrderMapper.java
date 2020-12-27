@@ -50,4 +50,12 @@ public interface OrderMapper {
      * @param orderId 订单 ID
      */
     void deleteOrderItems(long orderId);
+
+    /**
+     * 修改订单的状态
+     *
+     * @param orderId 订单 ID
+     * @param state   状态
+     */
+    void updateOrderState(long orderId, int state);
 }

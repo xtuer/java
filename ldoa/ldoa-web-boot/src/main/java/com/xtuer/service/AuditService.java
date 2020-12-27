@@ -31,6 +31,9 @@ public class AuditService extends BaseService {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private StockService stockService;
+
     /**
      * 查询审批
      *
@@ -343,6 +346,8 @@ public class AuditService extends BaseService {
     public void acceptTarget(long auditId, long targetId, AuditType type) {
         if (type == AuditType.ORDER) {
             orderService.acceptOrder(targetId);
+        } else if (type == AuditType.OUT_OF_STOCK) {
+            stockService.acceptStockRequest(targetId);
         }
     }
 
@@ -356,6 +361,8 @@ public class AuditService extends BaseService {
     public void rejectTarget(long auditId, long targetId, AuditType type) {
         if (type == AuditType.ORDER) {
             orderService.rejectOrder(targetId);
+        } else if (type == AuditType.OUT_OF_STOCK) {
+            stockService.rejectStockRequest(targetId);
         }
     }
 }

@@ -96,7 +96,7 @@ public class OrderService extends BaseService {
             order.setOrderSn(nextOrderSn());
             order.setSalespersonId(salesperson.getUserId());
             order.setSalesperson(salesperson);
-            order.setState(1); // 状态为等待审批
+            order.setState(Order.STATE_AUDITING); // 状态为等待审批
         }
 
         // [2] 设置订单的产品编码
@@ -169,7 +169,7 @@ public class OrderService extends BaseService {
      * @param orderId 订单 ID
      */
     public void acceptOrder(long orderId) {
-
+        orderMapper.updateOrderState(orderId, Order.STATE_ACCEPTED);
     }
 
     /**
@@ -178,6 +178,15 @@ public class OrderService extends BaseService {
      * @param orderId 订单 ID
      */
     public void rejectOrder(long orderId) {
+        orderMapper.updateOrderState(orderId, Order.STATE_REJECTED);
+    }
 
+    /**
+     * 完成订单
+     *
+     * @param orderId 订单 ID
+     */
+    public void completeOrder(long orderId) {
+        orderMapper.updateOrderState(orderId, Order.STATE_COMPLETE);
     }
 }

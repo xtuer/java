@@ -156,7 +156,7 @@ public class StockService extends BaseService {
         request.setStockRequestSn(this.nextStockOutSn());
         request.setType(StockRecord.Type.OUT);
         request.setOrderId(out.getOrderId());
-        request.setState(1); // 状态为审批中
+        request.setState(StockRequest.STATE_AUDITING); // 状态为审批中
         request.setApplicantId(user.getUserId());
         request.setApplicantUsername(user.getNickname());
         request.setDesc(desc);
@@ -231,5 +231,32 @@ public class StockService extends BaseService {
      */
     private String nextStockOutSn() {
         return super.nextSnByYear(Const.SN_PREFIX_STOCK_OUT);
+    }
+
+    /**
+     * 库存操作审批通过
+     *
+     * @param requestId 库存操作 ID
+     */
+    public void acceptStockRequest(long requestId) {
+        stockMapper.updateStockRequestState(requestId, StockRequest.STATE_ACCEPTED);
+    }
+
+    /**
+     * 库存操作审批被拒绝
+     *
+     * @param requestId 库存操作 ID
+     */
+    public void rejectStockRequest(long requestId) {
+        stockMapper.updateStockRequestState(requestId, StockRequest.STATE_REJECTED);
+    }
+
+    /**
+     * 物料出库
+     *
+     * @param requestId 库存操作 ID
+     */
+    public void stockOut(long requestId) {
+
     }
 }

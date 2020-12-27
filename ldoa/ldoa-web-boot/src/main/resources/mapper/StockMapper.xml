@@ -116,7 +116,7 @@
 
     <!-- 查询指定 ID 的库存操作的产品项 -->
     <select id="findProductItemsByStockRequestId" resultType="ProductItem">
-        SELECT pi.product_item_id, pi.name, pi.code, pi.model, pi.standard, pi.unit, record.product_id, record.count
+        SELECT pi.product_item_id, pi.name, pi.code, pi.type, pi.model, pi.standard, pi.unit, record.product_id, record.count
         FROM stock_request request
             JOIN stock_record record on record.stock_request_id = request.stock_request_id
             LEFT JOIN product_item pi on pi.product_item_id = record.product_item_id
@@ -137,4 +137,9 @@
         INSERT INTO stock_request(stock_request_id, stock_request_sn, type, order_id, applicant_id, state, `desc`)
         VALUES (#{stockRequestId}, #{stockRequestSn}, #{type}, #{orderId}, #{applicantId}, #{state}, #{desc})
     </insert>
+
+    <!-- 更新库存操作申请的状态 -->
+    <update id="updateStockRequestState">
+        UPDATE stock_request SET state = #{state} WHERE stock_request_id = #{requestId}
+    </update>
 </mapper>

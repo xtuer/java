@@ -52,6 +52,8 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div slot="footer">
             <!-- <Button type="text" @click="showEvent(false)">取消</Button>
             <Button type="primary" @click="ok">确定</Button> -->
+
+            <Button v-if="auditPass" type="primary" @click="ok">领取物料</Button>
         </div>
     </Modal>
 </template>
@@ -87,6 +89,7 @@ export default {
                 { slot: 'count',    title: '数量', width: 110, align: 'center' },
             ],
             loading: false,
+            auditPass: false, // 审批是否通过
         };
     },
     computed: {
@@ -133,6 +136,7 @@ export default {
             StockDao.findStockRequestById(this.stockRequestId).then(request => {
                 const productItems = request.records.map(record => record.productItem);
                 recordProductItems.push(...productItems);
+                this.auditPass = request.state === 3; // "初始化", "审批中", "审批拒绝", "审批通过", "完成"
 
                 // [2] 如果订单号有效，则为订单的物料出库，加载订单信息
                 if (Utils.isValidId(request.orderId)) {

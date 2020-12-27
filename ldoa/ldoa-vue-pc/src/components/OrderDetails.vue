@@ -99,6 +99,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div slot="footer">
             <!-- <Button type="text" @click="showEvent(false)">取消</Button> -->
             <!-- <Button type="primary" @click="showEvent(false)">确定</Button> -->
+            <Button v-if="auditPass" type="primary" @click="showEvent(false)">完成订单</Button>
         </div>
     </Modal>
 </template>
@@ -123,6 +124,7 @@ export default {
             order: {}, // 订单
             audit: {}, // 审批
             loading: false,
+            auditPass: false, // 审批是否通过
         };
     },
     computed: {
@@ -172,6 +174,7 @@ export default {
             ]).then(([order, audit]) => {
                 this.order = order;
                 this.audit = audit;
+                this.auditPass = order.state === 3; // "初始化", "审批中", "审批拒绝", "审批通过", "完成"
                 this.loading = false;
             }).catch(error => {
                 this.loading = false;
