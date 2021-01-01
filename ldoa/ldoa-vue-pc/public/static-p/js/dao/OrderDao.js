@@ -34,6 +34,7 @@ export default class {
      *      state        [可选]: 状态
      *      pageNumber   [可选]: 页码
      *      pageSize     [可选]: 数量
+     *      notInStockRequest [可选]: 是否在出库请求中有记录
      *
      * @param filter 过滤器
      * @param page   分页对象

@@ -65,10 +65,10 @@
         <ProductItemSelect v-model="itemSelectVisible" @on-ok="stockOutDirectProductItems"/>
 
         <!-- 订单选择弹窗 -->
-        <OrderSelect v-model="orderSelectVisible" @on-ok="stockOutOrderProductItems"/>
+        <OrderSelect v-model="orderSelectVisible" not-in-stock-request @on-ok="stockOutOrderProductItems"/>
 
         <!-- 物料出库弹窗 -->
-        <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products" @on-ok="stockOut"/>
+        <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products" @on-ok="stockOutRequestOk"/>
 
         <!-- 物料出库申请详情弹窗 -->
         <StockRequestDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId"/>
@@ -102,7 +102,7 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'requestSn',         title: '出库单号', width: 200 },
-                { key : 'desc',              title: '物料', minWidth: 500 },
+                { key : 'desc',              title: '物料', minWidth: 300 },
                 { slot: 'type',              title: '类型', width: 110, align: 'center' },
                 { key : 'stateLabel',        title: '状态', width: 110 },
                 { key : 'applicantUsername', title: '申请人', width: 110 },
@@ -203,8 +203,9 @@ export default {
             });
         },
         // 出库申请成功
-        stockOut(request) {
+        stockOutRequestOk(request) {
             console.log(request);
+            this.requests.unshift(request);
         },
         // 显示出库申请详情
         showStockRequest(request) {

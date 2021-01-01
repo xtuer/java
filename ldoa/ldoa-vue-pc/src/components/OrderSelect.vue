@@ -83,6 +83,7 @@ import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 export default {
     props: {
         visible: { type: Boolean, required: true }, // 是否可见
+        notInStockRequest: { type: Boolean, required: false }, // 是否在出库请求中有记录
     },
     model: {
         prop : 'visible',
@@ -98,6 +99,7 @@ export default {
                 state        : -1, // 审批通过的订单: 状态为 3
                 pageSize     : 10,
                 pageNumber   : 1,
+                notInStockRequest: this.notInStockRequest,
             },
             more     : false, // 是否还有更多物料
             loading  : false, // 加载中

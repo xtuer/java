@@ -142,4 +142,11 @@
     <update id="updateStockRequestState">
         UPDATE stock_request SET state = #{state} WHERE stock_request_id = #{requestId}
     </update>
+
+    <!-- 判断订单是否已经存在出库操作申请 -->
+    <select id="hasOrderStockOutRequest" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM stock_request WHERE order_id = #{orderId} AND type = 'OUT'
+        )
+    </select>
 </mapper>

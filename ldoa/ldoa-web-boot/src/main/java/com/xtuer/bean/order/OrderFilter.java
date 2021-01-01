@@ -25,4 +25,9 @@ public class OrderFilter {
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
     private int state;
+
+    /**
+     * 是否在出库请求中有记录
+     */
+    private boolean notInStockRequest;
 }

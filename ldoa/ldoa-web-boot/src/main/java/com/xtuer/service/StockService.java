@@ -128,7 +128,7 @@ public class StockService extends BaseService {
     public Result<StockRequest> stockOutRequest(StockOutRequestFormBean out, User user) {
         // 1. 如果没有出库物料，则返回
         // 2. 把相同物料合并到一起一同出库
-        // 3. 校验物料库存，库存不足则返回
+        // 3. 如果订单已经有出库申请，则不允许继续申请
         // 4. 创建出库请求
         // 5. 创建出库记录，每个物料一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
         // 6. 创建出库申请的审批，失败则不继续处理
@@ -141,11 +141,18 @@ public class StockService extends BaseService {
         // [2] 把相同物料合并到一起一同出库
         // this.mergeProductItems(out);
 
-        // [3] 校验物料库存，库存不足则返回
-        Result<Boolean> validateResult = this.checkProductItemsStock(out.getProductItems());
-        if (!validateResult.isSuccess()) {
-            // return Result.fail(validateResult.getMessage());
+        long orderId = out.getOrderId();
+
+        // [3] 如果订单已经有出库申请，则不允许继续申请
+        if (orderId > 0 && stockMapper.hasOrderStockOutRequest(orderId)) {
+            log.warn("订单 [{}] 已经存在出库申请，请不要重复申请", orderId);
+            return Result.fail("订单已经存在出库申请，请不要重复申请");
         }
+
+        // Result<Boolean> validateResult = this.checkProductItemsStock(out.getProductItems());
+        // if (!validateResult.isSuccess()) {
+            // return Result.fail(validateResult.getMessage());
+        // }
 
         // 出库描述: 物料名称拼接在一起
         String desc = out.getProductItems().stream().map(ProductItem::getName).collect(Collectors.joining(", "));
@@ -155,7 +162,7 @@ public class StockService extends BaseService {
         request.setStockRequestId(super.nextId());
         request.setStockRequestSn(this.nextStockOutSn());
         request.setType(StockRecord.Type.OUT);
-        request.setOrderId(out.getOrderId());
+        request.setOrderId(orderId);
         request.setState(StockRequest.STATE_AUDITING); // 状态为审批中
         request.setApplicantId(user.getUserId());
         request.setApplicantUsername(user.getNickname());

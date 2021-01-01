@@ -9,8 +9,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class UserHolder {
-    private Map<String, User> users;
     private User john;
-
-    private List<User> members;
+    private List<User> users;
+    private Map<String, User> userMap;
 }

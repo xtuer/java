@@ -86,4 +86,12 @@ public interface StockMapper {
      * @param state     状态
      */
     void updateStockRequestState(long requestId, int state);
+
+    /**
+     * 判断订单是否已经存在出库操作申请
+     *
+     * @param orderId 订单 ID
+     * @return 订单已经存在出库操作申请返回 true，否则返回 false
+     */
+    boolean hasOrderStockOutRequest(long orderId);
 }
