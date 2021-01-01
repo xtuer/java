@@ -88,17 +88,23 @@
     </select>
 
     <!-- 查询审批员需要审批的审批项 (state 为 -1 时查询全部) -->
-    <select id="findAuditItemsByAuditorIdAndState" resultType="AuditItem">
+    <select id="findAuditItemsByApplicantIdOrAuditorIdAndState" resultType="AuditItem">
         SELECT <include refid="auditItemColumns"/>, u.nickname AS applicant_nickname, a.desc
         FROM audit_item ai
             LEFT JOIN audit a ON a.audit_id = ai.audit_id
             LEFT JOIN user u ON u.user_id = ai.applicant_id
         <where>
-            ai.auditor_id = #{auditorId}
+            <if test="auditorId > 0">
+                ai.auditor_id = #{auditorId}
+            </if>
+            <if test="applicantId > 0">
+                ai.applicant_id = #{applicantId}
+            </if>
             <if test="state >= 0">
                 AND ai.state = #{state}
             </if>
         </where>
+        ORDER BY ai.created_at
     </select>
 
     <!-- 插入审批项 -->

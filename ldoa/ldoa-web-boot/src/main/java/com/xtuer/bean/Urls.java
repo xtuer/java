@@ -79,6 +79,7 @@ public interface Urls {
     // 订单
     String API_ORDERS = "/api/orders"; // 订单
     String API_ORDERS_BY_ID = "/api/orders/{orderId}"; // 指定 ID 的订单
+    String API_ORDERS_COMPLETE = "/api/orders/{orderId}/complete"; // 完成订单
 
     // 审批
     String API_AUDITS_BY_ID          = "/api/audits/{auditId}";            // 指定 ID 的审批

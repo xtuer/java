@@ -13,6 +13,15 @@
         <div class="list-page-toolbar-top">
             <!-- 搜索条件 -->
             <div class="filter">
+                <!-- 状态 -->
+                <Select v-model="filter.state" style="width: 100%; min-width: 100px">
+                    <Option value="-1">全部</Option>
+                    <Option value="1">审批中</Option>
+                    <Option value="2">审批拒绝</Option>
+                    <Option value="3">审批通过</Option>
+                    <Option value="4">完成</Option>
+                </Select>
+
                 <!-- 时间范围 -->
                 <DatePicker v-model="dateRange"
                             format="MM-dd"
@@ -94,6 +103,7 @@ export default {
                 pageSize  : 20,
                 pageNumber: 1,
                 type      : 'OUT',
+                state     : '-1',
             },
             dateRange: ['', ''], // 搜索的时间范围
             more     : false, // 是否还有更多出库

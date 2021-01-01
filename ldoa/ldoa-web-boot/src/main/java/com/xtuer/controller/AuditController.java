@@ -110,21 +110,13 @@ public class AuditController {
      * @return payload 为审批项数组
      */
     @GetMapping(Urls.API_AUDIT_ITEMS)
-    public Result<List<AuditItem>> findAuditItemsByAuditorIdAndState(
+    public Result<List<AuditItem>> findAuditItemsByApplicantIdOrAuditorIdAndState(
             @RequestParam(required = false, defaultValue = "0") long applicantId,
             @RequestParam(required = false, defaultValue = "0") long auditorId,
             @RequestParam(required = false, defaultValue = "-1") int state) {
-        // 审批员 ID 大于 0，则查询此审批员收到的审批
-        if (auditorId > 0) {
-            return Result.ok(auditMapper.findAuditItemsByAuditorIdAndState(auditorId, state));
-        }
-
-        // 申请人 ID 大于 0，则查询此人发起的审批
-        if (applicantId > 0) {
-            return Result.fail();
-        }
-
-        return Result.ok();
+        // 查询审批
+        List<AuditItem> items = auditMapper.findAuditItemsByApplicantIdOrAuditorIdAndState(applicantId, auditorId, state);
+        return Result.ok(items);
     }
 
     /**

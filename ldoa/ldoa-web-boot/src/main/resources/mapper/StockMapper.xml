@@ -103,6 +103,9 @@
             <if test="filter.startAt!=null and filter.endAt!=null">
                 AND (request.created_at BETWEEN #{filter.startAt} AND #{filter.endAt})
             </if>
+            <if test="filter.state >= 0">
+                AND request.state = #{filter.state}
+            </if>
         </where>
         ORDER BY request.created_at DESC
         LIMIT ${page.offset}, ${page.count}

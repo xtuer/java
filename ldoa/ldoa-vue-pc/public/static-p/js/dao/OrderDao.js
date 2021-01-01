@@ -73,4 +73,19 @@ export default class {
                 return Utils.response(newOrder, success, message);
             });
     }
+
+    /**
+     * 完成订单
+     *
+     * 网址: http://localhost:8080/api/orders/{orderId}/complete
+     * 参数: 无
+     *
+     * @param {Long} orderId 订单 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static completeOrder(orderId) {
+        return Rest.update(Urls.API_ORDERS_COMPLETE, { params: { orderId } }).then(({ success, message }) => {
+            return Utils.response(null, success, message);
+        });
+    }
 }

@@ -66,7 +66,7 @@
         <OrderEdit v-model="orderEditModal" :order-id="editedOrderId" @on-ok="editOrderFinished"/>
 
         <!-- 订单详情弹窗 -->
-        <OrderDetails v-model="orderDetailsModal" :order-id="orderDetailsOrderId"/>
+        <OrderDetails v-model="orderDetailsModal" :order-id="orderDetailsOrderId" @on-ok="completeOrder(orderDetailsOrderId)"/>
     </div>
 </template>
 
@@ -162,6 +162,15 @@ export default {
         detailsOrder(order) {
             this.orderDetailsOrderId = order.orderId;
             this.orderDetailsModal = true;
+        },
+        // 完成订单
+        completeOrder(orderId) {
+            const found = this.orders.find(o => o.orderId === orderId);
+
+            if (found) {
+                found.state = 4;
+                found.stateLabel = '完成';
+            }
         }
     }
 };

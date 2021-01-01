@@ -1,16 +1,19 @@
 <template>
     <div class="audit-request">
-        request
+        <AuditItems :applicant-id="userId"/>
     </div>
 </template>
 
 <script>
+import AuditItems from '@/components/AuditItems.vue';
+
 export default {
-    data() {
-        return {};
-    },
-    mounted() {},
-    methods: {}
+    components: { AuditItems },
+    computed: {
+        userId() {
+            return this.$store.state.user.userId;
+        }
+    }
 };
 </script>
 

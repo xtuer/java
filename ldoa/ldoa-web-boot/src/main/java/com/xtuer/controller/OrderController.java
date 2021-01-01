@@ -93,4 +93,18 @@ public class OrderController extends BaseController {
         User salesperson = super.getCurrentUser();
         return orderService.upsertOrder(order, salesperson);
     }
+
+    /**
+     * 完成订单
+     *
+     * 网址: http://localhost:8080/api/orders/{orderId}/complete
+     * 参数: 无
+     *
+     * @param orderId 订单 ID
+     */
+    @PutMapping(Urls.API_ORDERS_COMPLETE)
+    public Result<Boolean> completeOrder(@PathVariable long orderId) {
+        orderMapper.updateOrderState(orderId, Order.STATE_COMPLETE);
+        return Result.ok();
+    }
 }

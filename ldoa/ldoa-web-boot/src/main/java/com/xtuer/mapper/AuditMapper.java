@@ -101,11 +101,12 @@ public interface AuditMapper {
     /**
      * 查询审批员需要审批的审批项 (state 为 -1 时查询全部的)
      *
-     * @param auditorId 审批员 ID
-     * @param state    审批项的状态
+     * @param applicantId 审批申请人 ID
+     * @param auditorId   审批员 ID
+     * @param state       审批项的状态
      * @return 返回审批项的数组
      */
-    List<AuditItem> findAuditItemsByAuditorIdAndState(long auditorId, int state);
+    List<AuditItem> findAuditItemsByApplicantIdOrAuditorIdAndState(long applicantId, long auditorId, int state);
 
     /**
      * 插入审批项

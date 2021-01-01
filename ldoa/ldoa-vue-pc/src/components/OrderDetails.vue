@@ -6,7 +6,7 @@ visible: 是否可见，可使用 v-model 双向绑定
 order-id: 订单 ID
 
 事件:
-on-ok: 点击确定时触发，参数为无
+on-ok: 点击确定时触发，参数为订单 ID
 on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏时为 false
 
 案例:
@@ -99,7 +99,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div slot="footer">
             <!-- <Button type="text" @click="showEvent(false)">取消</Button> -->
             <!-- <Button type="primary" @click="showEvent(false)">确定</Button> -->
-            <Button v-if="auditPass" type="primary" @click="showEvent(false)">完成订单</Button>
+            <Button v-if="auditPass" :loading="saving" type="primary" @click="completeOrder">完成订单</Button>
         </div>
     </Modal>
 </template>
@@ -123,7 +123,8 @@ export default {
         return {
             order: {}, // 订单
             audit: {}, // 审批
-            loading: false,
+            loading  : false,
+            saving   : false,
             auditPass: false, // 审批是否通过
         };
     },
@@ -181,6 +182,18 @@ export default {
                 console.error(error);
             });
         },
+        // 完成订单
+        completeOrder() {
+            this.saving = true;
+            OrderDao.completeOrder(this.orderId).then(() => {
+                this.$Message.success('订单完成');
+                this.saving = false;
+                this.$emit('on-ok', this.orderId);
+                this.showEvent(false); // 关闭弹窗
+            }).catch(() => {
+                this.saving = false;
+            });
+        }
     }
 };
 </script>

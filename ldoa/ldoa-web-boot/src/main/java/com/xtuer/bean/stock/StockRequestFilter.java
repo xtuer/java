@@ -27,6 +27,11 @@ public class StockRequestFilter {
     private long applicantId;
 
     /**
+     * 状态, 为 -1 时表示查询所有的
+     */
+    private int state;
+
+    /**
      * 过滤条件: 开始时间
      */
     private Date startAt;

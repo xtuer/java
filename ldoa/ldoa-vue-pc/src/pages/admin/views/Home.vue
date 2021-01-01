@@ -78,12 +78,12 @@ export default {
                         { label: '审批配置', name: 'audit-config' },
                     ]
                 },
-                { label: '其他菜单', icon: 'md-cog', menuItems:
-                    [
-                        { label: '订单管理', name: 'admin-courses'       },
-                        { label: '用户管理', name: 'question-statistics' },
-                    ]
-                },
+                // { label: '其他菜单', icon: 'md-cog', menuItems:
+                //     [
+                //         { label: '订单管理', name: 'admin-courses'       },
+                //         { label: '用户管理', name: 'question-statistics' },
+                //     ]
+                // },
             ],
         };
     },
