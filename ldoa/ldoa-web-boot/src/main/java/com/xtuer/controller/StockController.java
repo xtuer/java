@@ -128,4 +128,17 @@ public class StockController extends BaseController {
         User user = super.getCurrentUser();
         return stockService.stockOutRequest(out, user);
     }
+
+    /**
+     * 完成出库申请，物料领取
+     *
+     * 网址: http://localhost:8080/api/stocks/out/requests/{requestID}
+     * 参数: 无
+     *
+     * @param requestId 出库申请 ID
+     */
+    @PutMapping(Urls.API_STOCKS_OUT_REQUESTS_BY_ID)
+    public Result<Boolean> stockOut(@PathVariable long requestId) {
+        return stockService.stockOut(requestId);
+    }
 }

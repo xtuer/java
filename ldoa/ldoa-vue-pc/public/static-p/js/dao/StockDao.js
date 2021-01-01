@@ -99,4 +99,19 @@ export default class StockDao {
             return Utils.response(request, success, message);
         });
     }
+
+    /**
+     * 完成出库申请，物料领取
+     *
+     * 网址: http://localhost:8080/api/stocks/out/requests/{requestID}
+     * 参数: 无
+     *
+     * @param {Long} requestId 出库申请 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static stockOut(requestId) {
+        return Rest.update(Urls.API_STOCKS_OUT_REQUESTS_BY_ID, { params: { requestId } }).then(({ data, success, message }) => {
+            return Utils.response(data, success, message);
+        });
+    }
 }

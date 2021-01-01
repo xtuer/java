@@ -53,7 +53,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             <!-- <Button type="text" @click="showEvent(false)">取消</Button>
             <Button type="primary" @click="ok">确定</Button> -->
 
-            <Button v-if="auditPass" type="primary" @click="ok">领取物料</Button>
+            <Button v-if="auditPass" :loading="saving" type="primary" @click="stockOut">领取物料</Button>
         </div>
     </Modal>
 </template>
@@ -88,7 +88,8 @@ export default {
                 { key : 'standard', title: '标准/规范', width: 110 },
                 { slot: 'count',    title: '数量', width: 110, align: 'center' },
             ],
-            loading: false,
+            loading  : false,
+            saving   : false,
             auditPass: false, // 审批是否通过
         };
     },
@@ -107,10 +108,17 @@ export default {
                 this.init();
             }
         },
-        // 点击确定按钮的回调函数
-        ok() {
-            this.$emit('on-ok', []);
-            this.showEvent(false); // 关闭弹窗
+        // 出库，物料领取
+        stockOut() {
+            this.saving = true;
+            StockDao.stockOut(this.stockRequestId).then(() => {
+                this.$Message.success('物料领取成功');
+                this.saving = false;
+                this.$emit('on-ok', this.stockRequestId);
+                this.showEvent(false); // 关闭弹窗
+            }).catch(() => {
+                this.saving = false;
+            });
         },
         // 初始化
         init() {

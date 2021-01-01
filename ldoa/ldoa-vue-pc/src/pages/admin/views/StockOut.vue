@@ -71,7 +71,7 @@
         <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products" @on-ok="stockOutRequestOk"/>
 
         <!-- 物料出库申请详情弹窗 -->
-        <StockRequestDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId"/>
+        <StockRequestDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId" @on-ok="stockOutComplete"/>
     </div>
 </template>
 
@@ -204,8 +204,16 @@ export default {
         },
         // 出库申请成功
         stockOutRequestOk(request) {
-            console.log(request);
             this.requests.unshift(request);
+        },
+        // 出库领取物料完成
+        stockOutComplete(stockRequestId) {
+            const found = this.requests.find(r => r.stockRequestId === stockRequestId);
+
+            if (found) {
+                found.state = 4;
+                found.stateLabel = '完成';
+            }
         },
         // 显示出库申请详情
         showStockRequest(request) {

@@ -88,6 +88,13 @@ public interface StockMapper {
     void updateStockRequestState(long requestId, int state);
 
     /**
+     * 标记库存操作完成
+     *
+     * @param recordId 库存操作申请 ID
+     */
+    void completeStockRecordByRequestId(long requestId);
+
+    /**
      * 判断订单是否已经存在出库操作申请
      *
      * @param orderId 订单 ID

@@ -18,7 +18,9 @@
         pi.name  AS 'productItem.name',
         pi.code  AS 'productItem.code',
         pi.model AS 'productItem.model',
-        pi.unit  AS 'productItem.unit'
+        pi.unit  AS 'productItem.unit',
+        record.product_item_id AS 'productItem.product_item_id',
+        record.count           AS 'productItem.count'
     </sql>
 
     <!-- 库存操作申请的列 -->
@@ -141,6 +143,11 @@
     <!-- 更新库存操作申请的状态 -->
     <update id="updateStockRequestState">
         UPDATE stock_request SET state = #{state} WHERE stock_request_id = #{requestId}
+    </update>
+
+    <!-- 标记库存操作完成 -->
+    <update id="completeStockRecordByRequestId">
+        UPDATE stock_record SET complete = 1 WHERE stock_request_id = #{requestId}
     </update>
 
     <!-- 判断订单是否已经存在出库操作申请 -->

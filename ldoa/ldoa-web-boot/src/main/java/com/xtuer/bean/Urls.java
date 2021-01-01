@@ -93,7 +93,8 @@ public interface Urls {
     String API_STOCKS_RECORDS  = "/api/stocks/records";  // 库存操作记录
     String API_STOCKS_IN       = "/api/stocks/in";       // 入库
     String API_STOCKS_OUT      = "/api/stocks/out";      // 出库
-    String API_STOCKS_OUT_REQUESTS   = "/api/stocks/out/requests"; // 出库申请
-    String API_STOCKS_REQUESTS       = "/api/stocks/requests";     // 库存操作申请
-    String API_STOCKS_REQUESTS_BY_ID = "/api/stocks/requests/{requestId}"; // 指定 ID 的库存操作申请
+    String API_STOCKS_OUT_REQUESTS       = "/api/stocks/out/requests"; // 出库申请
+    String API_STOCKS_OUT_REQUESTS_BY_ID = "/api/stocks/out/requests/{requestId}"; // 指定 ID 的出库申请
+    String API_STOCKS_REQUESTS           = "/api/stocks/requests";     // 库存操作申请
+    String API_STOCKS_REQUESTS_BY_ID     = "/api/stocks/requests/{requestId}"; // 指定 ID 的库存操作申请
 }
