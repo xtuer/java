@@ -50,11 +50,16 @@
                 {{ order.deliveryDate | formatDate }}
             </template>
 
+            <!-- 状态 -->
+            <template slot-scope="{ row: order }" slot="state">
+                <Tag :color="stateColor(order.state)">{{ order.stateLabel }}</Tag>
+            </template>
+
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
                 <!-- <Button type="info" size="small" @click="detailsOrder(order)">详情</Button> -->
                 <!-- 审批拒绝的订单才能编辑 -->
-                <Button :disabled="order.state !== 2" type="primary" size="small" @click="editOrder(order)">编辑</Button>
+                <Button :disabled="order.state !== 2" icon="ios-create" type="primary" size="small" @click="editOrder(order)">编辑</Button>
             </template>
         </Table>
 
@@ -103,7 +108,7 @@ export default {
                 { slot: 'deliveryDate', title: '交货日期', width: 150, align: 'center' },
                 { key : 'productCodes', title: '产品编码', width: 150, tooltip: true },
                 { slot: 'salesperson',  title: '销售负责人', width: 120 },
-                { key : 'stateLabel',   title: '状态', width: 120, align: 'center' },
+                { slot: 'state',         title: '状态', width: 120, align: 'center' },
                 { slot: 'action', title: '操作', width: 120, align: 'center', className: 'table-action' },
             ],
         };

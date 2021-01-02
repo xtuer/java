@@ -1,5 +1,6 @@
 package com.xtuer.controller;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.audit.Audit;
@@ -106,6 +107,8 @@ public class AuditController {
      *      applicantId [可选]: 审批申请人 ID
      *      auditorId   [可选]: 审批员 ID
      *      state       [可选]: 审批项状态
+     *      pageNumber  [可选]: 页码
+     *      pageSize    [可选]: 数量
      *
      * @return payload 为审批项数组
      */
@@ -113,9 +116,10 @@ public class AuditController {
     public Result<List<AuditItem>> findAuditItemsByApplicantIdOrAuditorIdAndState(
             @RequestParam(required = false, defaultValue = "0") long applicantId,
             @RequestParam(required = false, defaultValue = "0") long auditorId,
-            @RequestParam(required = false, defaultValue = "-1") int state) {
+            @RequestParam(required = false, defaultValue = "-1") int state,
+            Page page) {
         // 查询审批
-        List<AuditItem> items = auditMapper.findAuditItemsByApplicantIdOrAuditorIdAndState(applicantId, auditorId, state);
+        List<AuditItem> items = auditMapper.findAuditItemsByApplicantIdOrAuditorIdAndState(applicantId, auditorId, state, page);
         return Result.ok(items);
     }
 

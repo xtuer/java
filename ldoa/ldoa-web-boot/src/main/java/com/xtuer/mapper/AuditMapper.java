@@ -1,5 +1,6 @@
 package com.xtuer.mapper;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
 import com.xtuer.bean.audit.AuditItem;
@@ -104,9 +105,10 @@ public interface AuditMapper {
      * @param applicantId 审批申请人 ID
      * @param auditorId   审批员 ID
      * @param state       审批项的状态
+     * @param page        分页
      * @return 返回审批项的数组
      */
-    List<AuditItem> findAuditItemsByApplicantIdOrAuditorIdAndState(long applicantId, long auditorId, int state);
+    List<AuditItem> findAuditItemsByApplicantIdOrAuditorIdAndState(long applicantId, long auditorId, int state, Page page);
 
     /**
      * 插入审批项

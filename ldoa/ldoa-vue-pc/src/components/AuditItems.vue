@@ -15,7 +15,7 @@ Slot: 无
     <div class="audit-items-x list-page">
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
-            <RadioGroup v-model="state" type="button" @on-change="searchAuditItems">
+            <RadioGroup v-model="filter.state" type="button" @on-change="searchAuditItems">
                 <Radio v-for="s in window.AUDIT_ITEM_STATE" :key="s.value" :label="s.value">{{ s.label }}</Radio>
             </RadioGroup>
         </div>
@@ -27,6 +27,11 @@ Slot: 无
                 {{ auditItem.type | auditTypeName }}
             </template>
 
+            <!-- 状态 -->
+            <template slot-scope="{ row: auditItem }" slot="state">
+                <Tag :color="stateColor(auditItem.state)">{{ auditItem.stateLabel }}</Tag>
+            </template>
+
             <!-- 申请时间 -->
             <template slot-scope="{ row: auditItem }" slot="createdAt">
                 {{ auditItem.createdAt | formatDate('YYYY-MM-DD HH:mm') }}
@@ -34,7 +39,7 @@ Slot: 无
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: auditItem }" slot="action">
-                <Button type="primary" size="small" @click="audit(auditItem)">审批</Button>
+                <Button icon="md-cloud-done" type="primary" size="small" @click="audit(auditItem)">审批</Button>
             </template>
         </Table>
 
@@ -67,9 +72,12 @@ export default {
             auditItems : [],
             state: 1,
             filter: { // 搜索条件
-                name      : '',
-                pageSize  : 2,
-                pageNumber: 1,
+                name       : '',
+                state      : 1,
+                applicantId: this.applicantId,
+                auditorId  : this.auditorId,
+                pageSize   : 20,
+                pageNumber : 1,
             },
             more     : false, // 是否还有更多审批项
             loading  : false, // 加载中
@@ -77,11 +85,11 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'applicantNickname', title: '申请人', width: 150 },
-                { slot: 'type',       title: '类型', width: 150 },
-                { key : 'desc',       title: '说明', minWidth: 150 },
-                { slot: 'createdAt',  title: '申请时间', width: 150, align: 'center' },
-                { key : 'stateLabel', title: '状态', width: 150, align: 'center' },
-                { slot: 'action',     title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'type',      title: '类型', width: 150 },
+                { key : 'desc',      title: '说明', minWidth: 150 },
+                { slot: 'createdAt', title: '申请时间', width: 150, align: 'center' },
+                { slot: 'state',     title: '状态', width: 120, align: 'center' },
+                { slot: 'action',    title: '操作', width: 120, align: 'center', className: 'table-action' },
             ],
             orderId: '0', // 查看详情的订单 ID
             orderModal: false, // 是否显示订单详情弹窗
@@ -107,10 +115,10 @@ export default {
         fetchMoreAuditItems() {
             this.loading = true;
 
-            AuditDao.findAuditItemsByApplicantIdOrAuditorIdAndState(this.applicantId, this.auditorId, this.state).then(auditItems => {
+            AuditDao.findAuditItemsByApplicantIdOrAuditorIdAndState(this.filter).then(auditItems => {
                 this.auditItems.push(...auditItems);
 
-                this.more      = false; // auditItems.length >= this.filter.pageSize;
+                this.more      = auditItems.length >= this.filter.pageSize;
                 this.loading   = false;
                 this.reloading = false;
                 this.filter.pageNumber++;

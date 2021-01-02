@@ -47,8 +47,28 @@ const isSystemAdmin = function(user) {
     return user.roles.includes('ROLE_ADMIN_SYSTEM');
 };
 
+// 状态: { "初始化", "审批中", "审批拒绝", "审批通过", "完成" }
+/**
+ * 返回状态对应的颜色，给 Tag 使用，参考 https://iviewui.com/components/tag
+ * <Tag color="red">red</Tag>
+ *
+ * @param {Int} state 状态值
+ * @return {String} Tag 的颜色
+ */
+const stateColor = function(state) {
+    switch (state) {
+    case 0: return 'default'; // 初始化
+    case 1: return 'cyan';    // 审批中
+    case 2: return 'error';   // 审批拒绝
+    case 3: return 'primary'; // 审批通过
+    case 4: return 'success'; // 完成
+    default: return 'default';
+    }
+};
+
 export default {
     download,
     goBack,
     isSystemAdmin,
+    stateColor,
 };

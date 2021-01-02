@@ -63,6 +63,10 @@
             <template slot-scope="{ row: request }" slot="createdAt">
                 {{ request.createdAt | formatDate }}
             </template>
+            <!-- 状态 -->
+            <template slot-scope="{ row: request }" slot="state">
+                <Tag :color="stateColor(request.state)">{{ request.stateLabel }}</Tag>
+            </template>
         </Table>
 
         <!-- 底部工具栏 -->
@@ -113,9 +117,9 @@ export default {
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'requestSn',         title: '出库单号', width: 200 },
                 { key : 'desc',              title: '物料', minWidth: 300 },
-                { slot: 'type',              title: '类型', width: 110, align: 'center' },
-                { key : 'stateLabel',        title: '状态', width: 110 },
-                { key : 'applicantUsername', title: '申请人', width: 110 },
+                { slot: 'type',              title: '类型', width: 120, align: 'center' },
+                { slot: 'state',             title: '状态', width: 120, align: 'center' },
+                { key : 'applicantUsername', title: '申请人', width: 120 },
                 { slot: 'createdAt',         title: '创建时间', width: 150, align: 'center' },
             ],
             itemSelectVisible : false, // 物料选择弹窗是否可见

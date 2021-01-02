@@ -83,15 +83,15 @@ export default class AuditDao {
      * 参数:
      *      applicantId [可选]: 审批申请人 ID
      *      auditorId   [可选]: 审批员 ID
-     *      stat        [可选]: 审批项状态
+     *      state       [可选]: 审批项状态
+     *      pageNumber  [可选]: 页码
+     *      pageSize    [可选]: 数量
      *
-     * @param {LOng} applicantId 审批申请人 ID
-     * @param {Long} auditorId   审批员 ID
-     * @param {Int} state        审批项状态
+     * @param {JSON} filter 过滤条件
      * @return {Promise} 返回 Promise 对象，resolve 的参数为审批项的数组，reject 的参数为错误信息
      */
-    static findAuditItemsByApplicantIdOrAuditorIdAndState(applicantId, auditorId, state) {
-        return Rest.get(Urls.API_AUDIT_ITEMS, { data: { applicantId, auditorId, state } }).then(({ data: auditItems, success, message }) => {
+    static findAuditItemsByApplicantIdOrAuditorIdAndState(filter) {
+        return Rest.get(Urls.API_AUDIT_ITEMS, { data: filter }).then(({ data: auditItems, success, message }) => {
             return Utils.response(auditItems, success, message);
         });
     }
