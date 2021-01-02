@@ -68,11 +68,19 @@ export default {
         },
         // 审批
         audit(accepted) {
-            this.auditItem.comment = this.auditComment.trim();
+            const action = accepted ? '通过' : '拒绝';
+            this.$Modal.confirm({
+                title: `确定 <font color="red">${action}</font> 吗?`,
+                loading: true,
+                onOk: () => {
+                    this.auditItem.comment = this.auditComment.trim();
 
-            AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
-                this.auditItem.state = accepted ? 3 : 2;
-                this.$Message.success('审批完成');
+                    AuditDao.acceptAuditItem(this.auditItem.auditItemId, accepted, this.auditComment).then(() => {
+                        this.auditItem.state = accepted ? 3 : 2;
+                        this.$Message.success('审批完成');
+                        this.$Modal.remove();
+                    });
+                }
             });
         },
         // 审批状态的图标
