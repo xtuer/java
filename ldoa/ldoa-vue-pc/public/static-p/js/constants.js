@@ -2,10 +2,29 @@
  * 定义常量为全局变量: window.VAR_NAME = xxx;
  */
 
+/*
+ROLE_SALESPERSON("销售"),
+ROLE_SERVICE("售后"),
+ROLE_CHECK("检验"),
+ROLE_BUYER("采购物流"),
+ROLE_PRODUCE("生产操作"),
+ROLE_SCHEDULE("生产调度"),
+ROLE_QUALITY("质量保证"),
+ROLE_SUPPORT("技术支持"),
+ROLE_DESIGN("设计工艺"),
+*/
 // 角色
 window.ROLES = [
     { value: 'ROLE_ADMIN_SYSTEM', name: '系统管理员' },
-    { value: 'ROLE_SALESPERSON', name: '销售' }, // ROLE_SALESPERSON("销售");
+    { value: 'ROLE_SALESPERSON',  name: '销售' },
+    { value: 'ROLE_SERVICE',      name: '售后' },
+    { value: 'ROLE_CHECK',        name: '检验' },
+    { value: 'ROLE_BUYER',        name: '采购物流' },
+    { value: 'ROLE_PRODUCE',      name: '生产操作' },
+    { value: 'ROLE_SCHEDULE',     name: '生产调度' },
+    { value: 'ROLE_QUALITY',      name: '质量保证' },
+    { value: 'ROLE_SUPPORT',      name: '技术支持' },
+    { value: 'ROLE_DESIGN',       name: '设计工艺' },
 ];
 
 // 审批类型

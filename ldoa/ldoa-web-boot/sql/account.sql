@@ -126,9 +126,15 @@ VALUES (1, 'ROLE_ADMIN_SYSTEM');
 INSERT INTO role (name, value)
 VALUES ('ROLE_ADMIN_SYSTEM', '系统管理员'),
        ('ROLE_ADMIN_ORG',    '机构管理员'),
-       ('ROLE_USER',         '普通用户'),
-       ('ROLE_STUDENT',      '学生'),
-       ('ROLE_TEACHER',      '老师');
+       ('ROLE_SALESPERSON',  '销售'),
+       ('ROLE_SERVICE',      '售后'),
+       ('ROLE_CHECK',        '检验'),
+       ('ROLE_BUYER',        '采购物流'),
+       ('ROLE_PRODUCE',      '生产操作'),
+       ('ROLE_SCHEDULE',     '生产调度'),
+       ('ROLE_QUALITY',      '质量保证'),
+       ('ROLE_SUPPORT',      '技术支持'),
+       ('ROLE_DESIGN',       '设计工艺');
 
 #--------------------------------------------------------------------------------------
 # SQL 示例
