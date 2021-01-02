@@ -96,11 +96,12 @@ public class OrderService extends BaseService {
             order.setOrderSn(nextOrderSn());
             order.setSalespersonId(salesperson.getUserId());
             order.setSalesperson(salesperson);
-            order.setState(Order.STATE_AUDITING); // 状态为等待审批
         }
+        order.setState(Order.STATE_AUDITING); // 状态为等待审批
 
         // [2] 设置订单的产品编码
         order.setProductCodes(this.getOrderProductCodes(order));
+
 
         // [3] 设置订单项
         for (OrderItem item : order.getItems()) {
@@ -134,6 +135,7 @@ public class OrderService extends BaseService {
 
         // [8] 保存订单到数据库
         orderMapper.upsertOrder(order);
+        orderMapper.updateOrderState(order.getOrderId(), order.getState());
 
         return Result.ok(order);
     }

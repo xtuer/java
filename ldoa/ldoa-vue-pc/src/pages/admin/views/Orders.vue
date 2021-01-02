@@ -53,7 +53,8 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
                 <!-- <Button type="info" size="small" @click="detailsOrder(order)">详情</Button> -->
-                <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
+                <!-- 审批拒绝的订单才能编辑 -->
+                <Button :disabled="order.state !== 2" type="primary" size="small" @click="editOrder(order)">编辑</Button>
             </template>
         </Table>
 
