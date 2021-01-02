@@ -37,7 +37,10 @@
 
                     <!-- 审批员 -->
                     <div :key="'step-' + step.uid" class="audit-step" :id="step.uid" :data-id="step.uid">
-                        <div v-for="auditor in step.auditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">{{ auditor.nickname }}</div>
+                        <div v-for="auditor in step.auditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">
+                            <span class="name">{{ auditor.nickname }}</span>
+                            <Tag class="role" color="cyan">{{ getUserRole(auditor.userId) }}</Tag>
+                        </div>
                     </div>
                     <div :key="'icon-' + step.uid" class="add-step">
                         <Icon type="ios-arrow-round-down" size="35" @click="addStep(index)"/>
@@ -50,7 +53,10 @@
         <div class='box'>
             <div class="title">未分配用户</div>
             <div class="content rest-auditors" id="rest-auditors">
-                <div v-for="auditor in restAuditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">{{ auditor.nickname }}</div>
+                <div v-for="auditor in restAuditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">
+                    <span class="name">{{ auditor.nickname }}</span>
+                    <Tag class="role" color="cyan">{{ getUserRole(auditor.userId) }}</Tag>
+                </div>
             </div>
         </div>
     </div>
@@ -73,6 +79,7 @@ export default {
             allAuditors : [], // 系统的所有用户
             restAuditors: [], // 当前业务未分配审批的用户
             sortables   : [], // 可拖拽对象
+            userRoles   : new Map(), // 用户的角色，key 为 userId, value 为 role
         };
     },
     mounted() {
@@ -81,6 +88,8 @@ export default {
         // 3. 显示第一个类型的审批配置
         Promise.all([UserDao.findUsers({ pageSize: 10000 }), AuditDao.findAuditConfigs()]).then(([users, configs]) => {
             users.forEach(user => {
+                const role = window.ROLES.filter(r => r.value === user.roles[0]).map(r => r.name).join('');
+                this.userRoles.set(user.userId, role);
                 this.allAuditors.push({ userId: user.userId, username: user.username, nickname: user.nickname });
             });
 
@@ -119,8 +128,8 @@ export default {
             // [1] 找到当前类型的审批配置
             this.auditConfig = this.auditConfigs.find(config => config.type === auditType);
 
-            // [2] 如果审批配置不存在，则创建
-            if (!this.auditConfig) {
+            // [2] 如果审批配置不存在或者 steps 为空数组，则创建
+            if (!this.auditConfig || this.auditConfig.steps.length === 0) {
                 this.auditConfig = { type: this.auditType.value, steps: [this.newStep()] };
                 this.auditConfigs.push(this.auditConfig);
             }
@@ -222,6 +231,10 @@ export default {
                 uid: Utils.uid(),
             };
         },
+        // 获取用户的角色
+        getUserRole(userId) {
+            return this.userRoles.get(userId);
+        }
     }
 };
 </script>
@@ -252,29 +265,35 @@ export default {
             margin-bottom: 10px;
             padding: 10px;
             user-select: none;
+            position: relative;
 
             &:hover {
                 color: $primaryColor;
                 transition: color .8s;
+            }
+
+            .role {
+                position: absolute;
+                right: 1px;
+                top: 2px;
+                font-size: 8px;
+                margin: 0;
+                padding: 0 4px;
             }
         }
 
         .audit-step {
             padding: 20px;
             min-height: 90px;
-            border: 1px solid #5cadff55;
+            border: 1px solid rgba(0, 0, 0, .2);
             border-radius: 3px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .1) inset;
 
             .auditor {
                 display: inline-block;
-                width: 150px;
+                width: 200px;
                 margin-right: 15px;
                 margin-bottom: 0;
-            }
-
-            &.audit-step {
-                border-style: dashed;
-                border-width: 2px;
             }
         }
 
