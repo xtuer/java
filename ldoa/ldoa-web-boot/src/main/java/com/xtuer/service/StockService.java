@@ -7,6 +7,7 @@ import com.xtuer.bean.product.ProductItem;
 import com.xtuer.bean.stock.StockOutRequestFormBean;
 import com.xtuer.bean.stock.StockRecord;
 import com.xtuer.bean.stock.StockRequest;
+import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.ProductMapper;
 import com.xtuer.mapper.StockMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -122,6 +123,7 @@ public class StockService extends BaseService {
      * @param out  出库信息
      * @param user 操作员
      * @return payload 为新创建的出库请求
+     * @exception ApplicationException 审批配置无效时抛异常
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<StockRequest> stockOutRequest(StockOutRequestFormBean out, User user) {
@@ -183,11 +185,8 @@ public class StockService extends BaseService {
             stockMapper.insertStockRecord(record);
         }
 
-        // [5] 创建出库申请的审批，失败则不继续处理
-        Result<String> result = auditService.insertStockRequestAudit(user, request);
-        if (!result.isSuccess()) {
-            throw new RuntimeException(result.getMessage()); // 直接抛出异常，方便使得事务回滚
-        }
+        // [5] 创建出库申请的审批，失败则不继续处理，抛异常是为了事务回滚
+        auditService.insertStockRequestAudit(user, request);
 
         return Result.ok(request);
     }

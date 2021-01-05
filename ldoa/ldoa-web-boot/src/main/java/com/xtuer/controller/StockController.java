@@ -5,6 +5,7 @@ import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
 import com.xtuer.bean.stock.*;
+import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.StockMapper;
 import com.xtuer.service.StockService;
 import com.xtuer.util.Utils;
@@ -127,7 +128,17 @@ public class StockController extends BaseController {
     @PostMapping(Urls.API_STOCKS_OUT_REQUESTS)
     public Result<StockRequest> stockOutRequest(@RequestBody StockOutRequestFormBean out) {
         User user = super.getCurrentUser();
-        return stockService.stockOutRequest(out, user);
+
+        try {
+            return stockService.stockOutRequest(out, user);
+        } catch (ApplicationException ex) {
+            // 没有配置出库审批流程的异常
+            if (ex.getCode() == 10) {
+                return Result.fail(ex.getMessage());
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**

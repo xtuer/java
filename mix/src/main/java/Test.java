@@ -5,15 +5,13 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        JSONObject obj = JSON.parseObject(FileUtils.readFileToString(new File("/Users/Biao/Desktop/1.json"), StandardCharsets.UTF_8));
-        JSONArray questions = obj.getJSONArray("data");
-
-        for (Object q : questions) {
-            JSONObject question = (JSONObject) q;
-            System.out.println(question.get("qtypeCategory") + " - " + question.get("qtypeName"));
-        }
+        int[] nums = new int[] {2, 3, 4, 5, 6, 1, 7, 8};
+        int min = Arrays.stream(nums).min().getAsInt();
+        System.out.println(min);
     }
 }

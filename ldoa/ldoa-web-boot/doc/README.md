@@ -4,7 +4,7 @@
    * 账号: root
    * 密码: root
 2. 初始化数据库
-    1. 创建数据库 exam
+    1. 创建数据库 ldoa: `CREATE DATABASE ldoa CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;`
     2. 创建数据库表: 终端进入 sql 目录，执行 `db-init.sh root root exam`
 3. 安装 Redis (
     * 如果想禁用 Redis，修改 Application.java 中的 `@EnableMethodCache` 的包名为不存在的包名，例如 `@EnableMethodCache(basePackages = "com.xtuer.service2")`

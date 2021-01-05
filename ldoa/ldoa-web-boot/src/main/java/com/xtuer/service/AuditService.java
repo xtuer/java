@@ -8,6 +8,7 @@ import com.xtuer.bean.audit.AuditItem;
 import com.xtuer.bean.audit.AuditType;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.stock.StockRequest;
+import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +99,7 @@ public class AuditService extends BaseService {
      * @param applicant 申请人
      * @param order     订单
      * @return 返回操作结果
+     * @exception ApplicationException 审批配置无效时抛异常
      */
     public Result<String> upsertOrderAudit(User applicant, Order order) {
         Objects.requireNonNull(order, "订单不能为空");
@@ -112,6 +114,7 @@ public class AuditService extends BaseService {
      * @param applicant 申请人
      * @param request   出库申请
      * @return 返回操作结果
+     * @exception ApplicationException 审批配置无效时抛异常
      */
     public Result<String> insertStockRequestAudit(User applicant, StockRequest request) {
         Objects.requireNonNull(request, "出库申请不能为空");
@@ -128,6 +131,7 @@ public class AuditService extends BaseService {
      * @param targetId  审批对象的 ID
      * @param desc      审批的简要描述
      * @return 返回操作结果
+     * @exception ApplicationException 审批配置无效时抛异常
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson, String desc) {
@@ -145,7 +149,7 @@ public class AuditService extends BaseService {
         // [2] 校验审批配置，如果审批配置无效则返回
         Result<String> checkResult = checkAuditConfig(config, type);
         if (!checkResult.isSuccess()) {
-            return checkResult;
+            throw new ApplicationException(checkResult.getMessage(), 10);
         }
 
         // [3] 查询审批，不存在则创建
