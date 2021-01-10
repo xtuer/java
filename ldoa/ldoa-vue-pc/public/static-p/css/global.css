@@ -258,3 +258,30 @@ Box 布局
 .relative {
     position: relative;
 }
+
+/**
+ * Select 和 DatePicker 增加 Label，如
+ * <Select data-prepend-label="状态" class="prepend-label">
+ * <DatePicker data-prepend-label="时间" class="prepend-label" type="date"></DatePicker>
+ **/
+.prepend-label {
+    display: flex !important;
+    position: relative;
+}
+.prepend-label::before {
+    content: attr(data-prepend-label);
+    padding: 0px 8px;
+    border: 1px solid rgb(220, 222, 226);
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    background-color: #f8f8f9;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding-bottom: 2px;
+}
+.prepend-label .ivu-select-selection, .prepend-label .ivu-date-picker-rel input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    flex: 1;
+}

@@ -14,7 +14,7 @@
             <!-- 搜索条件 -->
             <div class="filter">
                 <!-- 状态 -->
-                <Select v-model="filter.state" style="width: 100%; min-width: 100px" @on-change="searchRequests">
+                <Select v-model="filter.state" data-prepend-label="状态" class="prepend-label" style="width: 100%; min-width: 150px" @on-change="searchRequests">
                     <Option :value="-1">全部</Option>
                     <Option :value="1">审批中</Option>
                     <Option :value="2">审批拒绝</Option>
@@ -28,7 +28,8 @@
                             separator=" 至 "
                             type="daterange"
                             data-prepend="创建时间"
-                            class="date-picker"
+                            data-prepend-label="创建时间"
+                            class="prepend-label"
                             split-panels
                             placeholder="请选择创建时间范围">
                 </DatePicker>

@@ -12,8 +12,8 @@
                             format="MM-dd"
                             separator=" 至 "
                             type="daterange"
-                            data-prepend="入库时间"
-                            class="date-picker"
+                            data-prepend-label="入库时间"
+                            class="prepend-label"
                             split-panels
                             placeholder="请选择入库时间范围">
                 </DatePicker>
