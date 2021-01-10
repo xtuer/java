@@ -10,8 +10,8 @@ import java.io.InputStream;
 public class UserTest {
     public static void main(String[] args) throws IOException {
         unmarshalUserTest1();
-        unmarshalUserTest2();
-        unmarshalUserHolderTest();
+        // unmarshalUserTest2();
+        // unmarshalUserHolderTest();
     }
 
     public static void unmarshalUserTest1() {
@@ -20,6 +20,7 @@ public class UserTest {
         User user = yaml.load(in);
 
         System.out.println(JSON.toJSONString(user));
+        System.out.println(user.getToken());
     }
 
     public static void unmarshalUserTest2() throws IOException {

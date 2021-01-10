@@ -50,7 +50,7 @@ export default {
                 { label: '订单系统', icon: 'logo-usd', menuItems:
                     [
                         { label: '销售订单', name: 'orders' },
-                        { label: '维保订单', name: 'question-statistics' },
+                        { label: '维保订单', name: 'maintenance-orders' },
                     ]
                 },
                 { label: '生产系统', icon: 'md-compass', menuItems:

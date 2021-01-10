@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 必须是接口 Mapper 的全路径 -->
+<mapper namespace="com.xtuer.mapper.MaintenanceOrderMapper">
+    <sql id="maintenanceOrderColumns">
+        mo.maintenance_order_id,
+        mo.maintenance_order_sn,
+        mo.service_person_id,
+        user.nickname AS service_person_name,
+        mo.customer_name,
+        mo.maintainable,
+        mo.repairable,
+        mo.salesperson_name,
+        mo.received_date,
+        mo.product_name,
+        mo.product_sn,
+        mo.model,
+        mo.product_item_code,
+        mo.batch,
+        mo.order_sn,
+        mo.count,
+        mo.accessories,
+        mo.need_certificate,
+        mo.problem,
+        mo.state
+    </sql>
+
+    <!-- 查询符合条件的维保订单 -->
+    <select id="findMaintenanceOrders" resultType="MaintenanceOrder">
+        SELECT <include refid="maintenanceOrderColumns"/>
+        FROM maintenance_order mo
+            LEFT JOIN user ON user.user_id = mo.service_person_id
+        LIMIT ${offset}, ${count}
+    </select>
+
+    <!-- 插入或者更新维保订单 -->
+    <insert id="upsertMaintenanceOrder" parameterType="MaintenanceOrder">
+        INSERT INTO maintenance_order(maintenance_order_id, maintenance_order_sn, service_person_id, customer_name,
+            maintainable, repairable, salesperson_name, received_date, product_name, product_sn,  model,
+            product_item_code, batch, order_sn, count, accessories, need_certificate, problem, state)
+        VALUES (#{maintenanceOrderId}, #{maintenanceOrderSn}, #{servicePersonId}, #{customerName},
+            #{maintainable}, #{repairable}, #{salespersonName}, #{receivedDate}, #{productName}, #{productSn},  #{model},
+            #{productItemCode}, #{batch}, #{orderSn}, #{count}, #{accessories}, #{needCertificate}, #{problem}, #{state})
+
+        ON DUPLICATE KEY
+        UPDATE maintenance_order_sn = #{maintenanceOrderSn}, customer_name = #{customerName},
+            maintainable = #{maintainable}, repairable = #{repairable}, salesperson_name = #{salespersonName},
+            received_date = #{receivedDate}, product_name = #{productName}, product_sn = #{productSn},  model = #{model},
+            product_item_code = #{productItemCode}, batch = #{batch}, order_sn = #{orderSn}, count = #{count},
+            accessories = #{accessories}, need_certificate = #{needCertificate}, problem = #{problem}
+    </insert>
+
+    <!-- 修改维保订单的状态 -->
+    <update id="updateMaintenanceOrderState">
+        UPDATE maintenance_order SET state = #{state} WHERE maintenance_order_id = #{orderId}
+    </update>
+</mapper>

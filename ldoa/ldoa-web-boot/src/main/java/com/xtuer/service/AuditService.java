@@ -6,10 +6,12 @@ import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
 import com.xtuer.bean.audit.AuditItem;
 import com.xtuer.bean.audit.AuditType;
+import com.xtuer.bean.order.MaintenanceOrder;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.AuditMapper;
+import com.xtuer.mapper.CommonMapper;
 import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class AuditService extends BaseService {
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private MaintenanceOrderService maintenanceOrderService;
 
     /**
      * 查询审批
@@ -106,6 +111,21 @@ public class AuditService extends BaseService {
         String desc = String.format("销售订单: %s, 客户: %s", order.getOrderSn(), order.getCustomerCompany());
 
         return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order), desc);
+    }
+
+    /**
+     * 更新或者创建维保订单的审批
+     *
+     * @param applicant 申请人
+     * @param order     维保订单
+     * @return 返回操作结果
+     * @exception ApplicationException 审批配置无效时抛异常
+     */
+    public Result<String> upsertMaintenanceOrderAudit(User applicant, MaintenanceOrder order) {
+        Objects.requireNonNull(order, "维保订单不能为空");
+        String desc = String.format("维保订单: %s, 客户: %s", order.getMaintenanceOrderSn(), order.getCustomerName());
+
+        return upsertAudit(applicant, AuditType.MAINTENANCE_ORDER, order.getMaintenanceOrderId(), Utils.toJson(order), desc);
     }
 
     /**
@@ -350,6 +370,8 @@ public class AuditService extends BaseService {
     public void acceptTarget(long auditId, long targetId, AuditType type) {
         if (type == AuditType.ORDER) {
             orderService.acceptOrder(targetId);
+        } else if (type == AuditType.MAINTENANCE_ORDER) {
+            maintenanceOrderService.acceptOrder(targetId);
         } else if (type == AuditType.OUT_OF_STOCK) {
             stockService.acceptStockRequest(targetId);
         }
@@ -365,6 +387,8 @@ public class AuditService extends BaseService {
     public void rejectTarget(long auditId, long targetId, AuditType type) {
         if (type == AuditType.ORDER) {
             orderService.rejectOrder(targetId);
+        } else if (type == AuditType.MAINTENANCE_ORDER) {
+            maintenanceOrderService.rejectOrder(targetId);
         } else if (type == AuditType.OUT_OF_STOCK) {
             stockService.rejectStockRequest(targetId);
         }

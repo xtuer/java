@@ -33,6 +33,12 @@ export default new Router({
                     name: 'orders',
                     component: () => import(/* webpackChunkName: "product" */ './views/Orders.vue'),
                 },
+                // 维保订单
+                {
+                    path: '/maintenance-orders',
+                    name: 'maintenance-orders',
+                    component: () => import(/* webpackChunkName: "product" */ './views/MaintenanceOrders.vue'),
+                },
                 // =====================================================================================
                 //                                         生产系统
                 // =====================================================================================

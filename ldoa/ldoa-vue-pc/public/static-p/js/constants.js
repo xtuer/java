@@ -3,6 +3,7 @@
  */
 
 /*
+ROLE_ADMIN("管理员"),
 ROLE_SALESPERSON("销售"),
 ROLE_SERVICE("售后"),
 ROLE_CHECK("检验"),
@@ -16,6 +17,7 @@ ROLE_DESIGN("设计工艺"),
 // 角色
 window.ROLES = [
     { value: 'ROLE_ADMIN_SYSTEM', name: '系统管理员' },
+    { value: 'ROLE_ADMIN',        name: '管理员' },
     { value: 'ROLE_SALESPERSON',  name: '销售' },
     { value: 'ROLE_SERVICE',      name: '售后' },
     { value: 'ROLE_CHECK',        name: '检验' },
@@ -31,7 +33,7 @@ window.ROLES = [
 window.AUDIT_TYPES = [
     { value: 'ORDER', name: '销售订单' },
     { value: 'OUT_OF_STOCK', name: '物料出库' },
-    { value: 'MAINTAIN', name: '维修 / 保养' },
+    { value: 'MAINTENANCE_ORDER', name: '维修 / 保养' },
 ];
 
 // 操作类型

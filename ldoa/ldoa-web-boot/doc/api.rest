@@ -3,7 +3,7 @@
 @host = http://localhost:8080
 @json = Content-Type: application/json
 @form = application/x-www-form-urlencoded
-@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjA4NTk5NTI4NDUzIiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNjA2MDA3NTI4NDYzIiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.838ca3612500f8db1d48309b4e275602
+@token = eyJhcHBJZCI6Inh4eHgiLCJleHBpcmVkQXQiOiIxNjEyODU1Mjg3NTIzIiwibmlja25hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlcyI6IltcIlJPTEVfQURNSU5fU1lTVEVNXCJdIiwic2lnbmVkQXQiOiIxNjEwMjYzMjg3NTM3IiwidXNlcklkIjoiMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ**.6e8895c115a8ef77a38d44a5277a8d3d
 
 ### 机构
 GET {{host}}/api/orgs
@@ -87,3 +87,8 @@ Content-Type: application/x-www-form-urlencoded
 auth-token: {{token}}
 
 productItemId=450766548500480&count=10&batch=2020-11-22&warehouse=北京
+
+### 创建维保订单
+PUT http://localhost:8080/api/maintenance-orders/0
+Content-Type: application/x-www-form-urlencoded
+auth-token: {{token}}

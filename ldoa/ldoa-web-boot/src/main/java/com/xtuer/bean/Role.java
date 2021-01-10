@@ -6,6 +6,7 @@ package com.xtuer.bean;
 public enum Role {
     ROLE_ADMIN_SYSTEM("系统管理员"),
     ROLE_ADMIN_ORG("机构管理员"),
+    ROLE_ADMIN("管理员"),
     ROLE_SALESPERSON("销售"),
     ROLE_SERVICE("售后"),
     ROLE_CHECK("检验"),
