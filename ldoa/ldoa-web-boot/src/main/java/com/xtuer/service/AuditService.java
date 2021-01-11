@@ -2,16 +2,12 @@ package com.xtuer.service;
 
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
-import com.xtuer.bean.audit.Audit;
-import com.xtuer.bean.audit.AuditConfig;
-import com.xtuer.bean.audit.AuditItem;
-import com.xtuer.bean.audit.AuditType;
+import com.xtuer.bean.audit.*;
 import com.xtuer.bean.order.MaintenanceOrder;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.AuditMapper;
-import com.xtuer.mapper.CommonMapper;
 import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,7 +243,7 @@ public class AuditService extends BaseService {
             return Result.fail("没有配置审批流程: " + type);
         }
 
-        for (AuditConfig.AuditConfigStep step : config.getSteps()) {
+        for (AuditConfigStep step : config.getSteps()) {
             if (step.getAuditors().size() == 0) {
                 return Result.fail("审批的流程中有的没有配置审批员，请核查对应的审批配置");
             }

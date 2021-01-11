@@ -1,7 +1,6 @@
 package com.xtuer.bean.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.xtuer.bean.User;
 import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,29 +47,6 @@ public class AuditConfig {
             AuditConfig temp = Utils.fromJson(contentJson, AuditConfig.class);
             BeanUtils.copyProperties(temp, this, "contentJson");
         } catch (Exception ignored) {}
-    }
-
-    /**
-     * 审批配置的步骤
-     */
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    public static class AuditConfigStep {
-        /**
-         * 审批的阶段
-         */
-        private int step;
-
-        /**
-         * 审批阶段的说明
-         */
-        private String desc;
-
-        /**
-         * 此步骤的审批员
-         */
-        private List<User> auditors = new LinkedList<>();
     }
 }
 
