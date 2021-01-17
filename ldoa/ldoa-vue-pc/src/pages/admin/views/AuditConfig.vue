@@ -31,21 +31,29 @@
         <div class="box">
             <div class="title">审批流程</div>
             <div class="content audit-steps">
-                <template v-for="(step, index) in auditConfig.steps">
-                    <EditableLabel v-model="step.desc" :key="'desc-' + step.uid" style="margin-bottom: 10px">审批说明:</EditableLabel>
-                    <!-- <div :key="'desc-' + step.uid">{{ step.desc }}</div> -->
+                <div v-for="(step, index) in auditConfig.steps" :key="'step-' + step.uid" class="audit-step">
+                    <div class="toolbar">
+                        <Poptip trigger="hover" placement="right" width="400">
+                            <Button size="small" type="dashed">审批模板</Button>
+                            <Input v-model="step.commentTemplate" type="textarea" slot="content" :rows="8" placeholder="请填写审批意见的模板"/>
+                        </Poptip>
+                        <Checkbox v-model="step.attachment">上传附件</Checkbox>
+                    </div>
 
                     <!-- 审批员 -->
-                    <div :key="'step-' + step.uid" class="audit-step" :id="step.uid" :data-id="step.uid">
+                    <div class="audit-step-auditors" :id="step.uid" :data-id="step.uid">
                         <div v-for="auditor in step.auditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">
                             <span class="name">{{ auditor.nickname }}</span>
                             <Tag class="role" color="cyan">{{ getUserRole(auditor.userId) }}</Tag>
+                            <Icon type="md-close-circle" class="close-icon clickable" @click="removeAuditorFromStep(step, auditor)"/>
                         </div>
                     </div>
-                    <div :key="'icon-' + step.uid" class="add-step">
-                        <Icon type="ios-arrow-round-down" size="35" @click="addStep(index)"/>
+
+                    <!-- 增加下一阶段按钮 -->
+                    <div class="add-step">
+                        <Icon type="ios-arrow-round-down" size="35" class="clickable" @click="addStep(index)"/>
                     </div>
-                </template>
+                </div>
             </div>
         </div>
 
@@ -53,7 +61,7 @@
         <div class='box'>
             <div class="title">未分配用户</div>
             <div class="content rest-auditors" id="rest-auditors">
-                <div v-for="auditor in restAuditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">
+                <div v-for="auditor in allAuditors" :data-id="auditor.userId" :key="auditor.userId" class="auditor">
                     <span class="name">{{ auditor.nickname }}</span>
                     <Tag class="role" color="cyan">{{ getUserRole(auditor.userId) }}</Tag>
                 </div>
@@ -84,7 +92,7 @@ export default {
     },
     mounted() {
         // 1. 加载所有用户和审批配置
-        // 2. 给没给阶段一个 uid
+        // 2. 给每个阶段一个 uid
         // 3. 显示第一个类型的审批配置
         Promise.all([UserDao.findUsers({ pageSize: 10000 }), AuditDao.findAuditConfigs()]).then(([users, configs]) => {
             users.forEach(user => {
@@ -122,8 +130,7 @@ export default {
         init(auditType) {
             // 1. 找到当前类型的审批配置
             // 2. 如果审批配置不存在，则创建
-            // 3. 找到未分配的用户
-            // 4. 创建 sortable 对象
+            // 3. 创建 sortable 对象
 
             // [1] 找到当前类型的审批配置
             this.auditConfig = this.auditConfigs.find(config => config.type === auditType);
@@ -134,19 +141,16 @@ export default {
                 this.auditConfigs.push(this.auditConfig);
             }
 
-            // [3] 找到未分配的用户
-            const tempIds = this.auditConfig.steps.map(step => step.auditors).flat().map(auditor => auditor.userId); // 已分配审批权限的用户 ID 数组
-            this.restAuditors = this.allAuditors.filter(auditor => {
-                return !tempIds.includes(auditor.userId);
-            });
-            this.restAuditors = Utils.clone(this.restAuditors);
-
-            // [4] 创建 sortable 对象
+            // [3] 创建 sortable 对象
             this.$nextTick(() => {
-                new Sortable(document.querySelector('#rest-auditors'), { group: 'shared', animation: 150, onAdd: this.onChange, onUpdate: this.onChange });
+                new Sortable(document.querySelector('#rest-auditors'), {
+                    group: { name: 'fox', pull: 'clone', put: false }, animation: 150, sort: false
+                });
 
                 for (let step of this.auditConfig.steps) {
-                    new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onChange, onUpdate: this.onChange });
+                    new Sortable(document.querySelector(`#${step.uid}`), {
+                        group: { name: 'fox', pull: false, put: true }, animation: 150, sort: false, onAdd: this.onAdd
+                    });
                 }
             });
         },
@@ -157,64 +161,43 @@ export default {
 
             // 创建 sortable 对象
             this.$nextTick(() => {
-                new Sortable(document.querySelector(`#${step.uid}`), { group: 'shared', animation: 150, onAdd: this.onChange, onUpdate: this.onChange });
+                new Sortable(document.querySelector(`#${step.uid}`), {
+                    group: { name: 'fox', pull: false, put: true }, animation: 150, sort: false, onAdd: this.onAdd
+                });
             });
         },
         // 拖拽放下用户的处理函数
-        onChange(event) {
-            // 1. 判断来源和目标是 auditors 还是 step
-            // 2. 找到 from 和 to 的对象 (统一放到 from 和 to 的 auditors 中，方便处理)
-            // 3. 删除 Sortable 创建的 DOM
-            // 4. 从 from.auditors 中删除，添加到 to.auditors 中
+        onAdd(event) {
+            // 1. 找到源头的 index 和目标的 index，审批员和阶段
+            // 2. 删除 Sortable 创建的 DOM (有的需要删除，有的不用，神奇)
+            // 3. 如果在拖放的阶段中没有包含此审批员，则添加
 
-            // [1] 判断来源和目标是 auditors 还是 step
-            const fromAuditors = event.from.classList.contains('rest-auditors');
-            const toAuditors   = event.to.classList.contains('rest-auditors');
-            const fromStep     = event.from.classList.contains('audit-step');
-            const toStep       = event.to.classList.contains('audit-step');
-            const fromIndex    = parseInt(event.oldIndex);
-            const toIndex      = parseInt(event.newIndex);
+            // [1] 找到源头的 index 和目标的 index，审批员和阶段
+            const fromIndex = parseInt(event.oldIndex);
+            const toIndex   = parseInt(event.newIndex);
+            const auditor   = this.allAuditors[fromIndex];
+            const step      = this.findStep(event.to.getAttribute('data-id'));
 
-            let from;
-            let to;
+            // [2] 删除 Sortable 创建的 DOM (有的需要删除，有的不用，神奇)
+            event.item.remove();
 
-            // [2] 找到 from 和 to 的对象 (统一放到 from 和 to 的 users 中，方便处理)
-            if (fromAuditors && toAuditors) {
-                from = { auditors: this.restAuditors };
-                to   = { auditors: this.restAuditors };
-            } else if (fromAuditors && toStep) {
-                from = { auditors: this.restAuditors };
-                to   = this.findStep(event.to.getAttribute('data-id'));
-            } else if (fromStep && toStep) {
-                from = this.findStep(event.from.getAttribute('data-id'));
-                to   = this.findStep(event.to.getAttribute('data-id'));
-            } else if (fromStep && toAuditors) {
-                from = this.findStep(event.from.getAttribute('data-id'));
-                to   = { auditors: this.restAuditors };
-            } else {
-                log.error('onAdd 的 from 或者 to 不对');
-                return;
-            }
-
-            // [3] 删除 Sortable 创建的 DOM (有的需要删除，有的不用，神奇)
-            // event.item.remove();
-
-            // [4] 从 from.auditors 中删除，添加到 to.auditors 中
-            if (from === to) {
-                // 同组内移动
-                const temp = from.auditors[fromIndex];
-                this.$set(from.auditors, fromIndex, from.auditors[toIndex]);
-                this.$set(from.auditors, toIndex, temp);
-            } else {
-                // 不同组内移动
-                const auditor = from.auditors[fromIndex];
-                from.auditors.splice(fromIndex, 1);
-                to.auditors.splice(toIndex, 0, auditor);
+            // [3] 如果在拖放的阶段中没有包含此审批员，则添加
+            const found = step.auditors.find(a => a.userId === auditor.userId);
+            if (!found) {
+                step.auditors.splice(toIndex, 0, auditor);
             }
         },
         // 查询 stepUid 对应的 step 对象
         findStep(stepUid) {
             return this.auditConfig.steps.find(s => s.uid === stepUid);
+        },
+        // 从阶段中删除审批员
+        removeAuditorFromStep(step, auditor) {
+            const index = step.auditors.findIndex(a => a.userId === auditor.userId);
+
+            if (index >= 0) {
+                step.auditors.splice(index, 1);
+            }
         },
         // 保存审批配置
         save() {
@@ -226,9 +209,11 @@ export default {
         // 创建审批阶段对象
         newStep() {
             return {
-                desc: '',
-                auditors: [],
-                uid: Utils.uid(),
+                uid            : Utils.uid(),
+                desc           : '',
+                auditors       : [],
+                attachment     : false,
+                commentTemplate: '',
             };
         },
         // 获取用户的角色
@@ -246,7 +231,7 @@ export default {
     grid-template-columns: 1fr 250px;
     grid-gap: 20px 20px;
 
-    .toolbar {
+    > .toolbar {
         display: flex;
         justify-content: space-between;
         grid-column: span 2;
@@ -282,7 +267,7 @@ export default {
             }
         }
 
-        .audit-step {
+        .audit-step-auditors {
             padding: 20px;
             min-height: 90px;
             border: 1px solid rgba(0, 0, 0, .2);
@@ -294,6 +279,32 @@ export default {
                 width: 200px;
                 margin-right: 15px;
                 margin-bottom: 0;
+                position: relative;
+
+                &:hover .close-icon {
+                    display: inline-block;
+                }
+
+                .close-icon {
+                    display: none;
+                    position: absolute;
+                    right: 0px;
+                    top: 0px;
+                    font-size: 18px;
+                    transform: translate(50%, -50%);
+                }
+            }
+        }
+    }
+
+    .audit-steps {
+        .toolbar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+
+            button {
+                margin-right: 15px;
             }
         }
 

@@ -18,7 +18,11 @@
  * @return {String} 返回日期格式化得到的字符串
  */
 const formatDate = function(date, pattern = 'YYYY-MM-DD HH:mm') {
-    const temp = dayjs(date);
+    if (!date) {
+        return '----';
+    }
+
+    const temp = dayjs(date); // 注意: date 为 undefined 时返回的是当前时间
 
     if (temp.isValid()) {
         return temp.format(pattern);

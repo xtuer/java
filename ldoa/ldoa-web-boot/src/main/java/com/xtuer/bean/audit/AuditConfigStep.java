@@ -26,11 +26,6 @@ public class AuditConfigStep {
     private String desc;
 
     /**
-     * 此步骤的审批员
-     */
-    private List<User> auditors = new LinkedList<>();
-
-    /**
      * 是否上传附件
      */
     private boolean attachment;
@@ -39,4 +34,9 @@ public class AuditConfigStep {
      * 审批内容的模板
      */
     private String commentTemplate;
+
+    /**
+     * 此步骤的审批员
+     */
+    private List<User> auditors = new LinkedList<>();
 }

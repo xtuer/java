@@ -5,7 +5,7 @@ import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
-import com.xtuer.bean.audit.AuditItem;
+import com.xtuer.bean.audit.AuditStep;
 import com.xtuer.bean.audit.AuditType;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.service.AuditService;
@@ -113,13 +113,13 @@ public class AuditController {
      * @return payload 为审批项数组
      */
     @GetMapping(Urls.API_AUDIT_ITEMS)
-    public Result<List<AuditItem>> findAuditItemsByApplicantIdOrAuditorIdAndState(
+    public Result<List<AuditStep>> findAuditItemsByApplicantIdOrAuditorIdAndState(
             @RequestParam(required = false, defaultValue = "0") long applicantId,
             @RequestParam(required = false, defaultValue = "0") long auditorId,
             @RequestParam(required = false, defaultValue = "-1") int state,
             Page page) {
         // 查询审批
-        List<AuditItem> items = auditMapper.findAuditItemsByApplicantIdOrAuditorIdAndState(applicantId, auditorId, state, page);
+        List<AuditStep> items = auditMapper.findAuditStepsByApplicantIdOrAuditorIdAndState(applicantId, auditorId, state, page);
         return Result.ok(items);
     }
 

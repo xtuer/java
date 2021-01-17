@@ -3,7 +3,7 @@ package com.xtuer.mapper;
 import com.xtuer.bean.Page;
 import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
-import com.xtuer.bean.audit.AuditItem;
+import com.xtuer.bean.audit.AuditStep;
 import com.xtuer.bean.audit.AuditType;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -89,33 +89,33 @@ public interface AuditMapper {
      * @param auditItemId 审批项 ID
      * @return 返回审批项数
      */
-    AuditItem findAuditItemByAuditItemId(long auditItemId);
+    AuditStep findAuditItemByAuditItemId(long auditItemId);
 
     /**
-     * 查询审批的审批项
+     * 查询审批的阶段
      *
      * @param auditId 审批 ID
-     * @return 返回审批项数组
+     * @return 返回审批阶段数组
      */
-    List<AuditItem> findAuditItemsByAuditId(long auditId);
+    List<AuditStep> findAuditStepsByAuditId(long auditId);
 
     /**
-     * 查询审批员需要审批的审批项 (state 为 -1 时查询全部的)
+     * 查询审批员需要审批的审批阶段 (state 为 -1 时查询全部的)
      *
      * @param applicantId 审批申请人 ID
      * @param auditorId   审批员 ID
      * @param state       审批项的状态
      * @param page        分页
-     * @return 返回审批项的数组
+     * @return 返回审批阶段的数组
      */
-    List<AuditItem> findAuditItemsByApplicantIdOrAuditorIdAndState(long applicantId, long auditorId, int state, Page page);
+    List<AuditStep> findAuditStepsByApplicantIdOrAuditorIdAndState(long applicantId, long auditorId, int state, Page page);
 
     /**
      * 插入审批项
      *
      * @param items 审批项的数组
      */
-    void insertAuditItems(List<AuditItem> items);
+    void insertAuditItems(List<AuditStep> items);
 
 
     /**

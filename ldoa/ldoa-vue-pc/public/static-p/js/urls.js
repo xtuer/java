@@ -39,6 +39,10 @@ const Urls = {
     API_ORDERS_BY_ID   : '/api/orders/{orderId}', // 指定 ID 的订单
     API_ORDERS_COMPLETE: '/api/orders/{orderId}/complete', // 完成订单
 
+    // 维保订单
+    API_MAINTENANCE_ORDERS      : '/api/maintenance-orders',
+    API_MAINTENANCE_ORDERS_BY_ID: '/api/maintenance-orders/{orderId}',
+
     // 审批
     API_AUDITS_BY_ID    : '/api/audits/{auditId}',            // 指定 ID 的审批
     API_AUDITS_BY_TARGET: '/api/audits/of-target/{targetId}', // 审批目标的审批

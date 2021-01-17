@@ -65,9 +65,9 @@ public class Audit {
     private String desc;
 
     /**
-     * 审批项 (审批可能需要多个人进行审核，每个人的就是一项)
+     * 审批阶段 (每个阶段有多个候选审批员，但只会选择一个来审批)
      */
-    private List<AuditItem> items = new LinkedList<>();
+    private List<AuditStep> steps = new LinkedList<>();
 
     /**
      * 审批的配置

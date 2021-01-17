@@ -8,12 +8,12 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
- * 审批项目
+ * 审批阶段
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public class AuditItem {
+public class AuditStep {
     private static final String[] STATE_LABELS = { "初始化", "待审批", "拒绝", "通过" };
 
     public static final int STATE_INIT = 0;
@@ -27,14 +27,14 @@ public class AuditItem {
     private AuditType type;
 
     /**
+     * 审批的阶段，每个阶段有多个候选审批员，当只会选择一个来审批
+     */
+    private int step;
+
+    /**
      * 审批 ID
      */
     private long auditId;
-
-    /**
-     * 审批项 ID
-     */
-    private long auditItemId;
 
     /**
      * 审批申请人的 ID
@@ -65,11 +65,6 @@ public class AuditItem {
      * 审批人员的 ID
      */
     private long auditorId;
-
-    /**
-     * 审批的阶段，每个审批可能需要多阶段，多个人进行审批
-     */
-    private int step;
 
     /**
      * 审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)

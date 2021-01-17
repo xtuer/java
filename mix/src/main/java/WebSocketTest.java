@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 // https://github.com/TooTallNate/Java-WebSocket
 public class WebSocketTest {
     public static void main(String[] args) throws URISyntaxException {
-        WebSocketClient mWs = new WebSocketClient(new URI("ws://localhost:3721?userId=1&username=biao")) {
+        WebSocketClient mWs = new WebSocketClient(new URI("ws://192.168.1.245:1240/websocket/info?t=1610617067839")) {
             @Override
             public void onMessage(String message) {
                 System.out.println(message);

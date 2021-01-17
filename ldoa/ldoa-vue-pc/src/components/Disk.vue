@@ -36,7 +36,7 @@ Slot: 无
         <Table :data="files" :columns="columns" :loading="reloading" border>
             <!-- 介绍信息 -->
             <template slot-scope="{ row: file }" slot="createdAt">
-                {{ file.createAt | formatDate('YYYY-MM-DD HH:mm') }}
+                {{ file.createdAt | formatDate('YYYY-MM-DD HH:mm') }}
             </template>
 
             <!-- 操作按钮 -->

@@ -67,7 +67,7 @@ public class AuditService extends BaseService {
      */
     private Audit findAuditByAuditIdOrTargetId(long auditId, long targetId) {
         // 1. 查询审批
-        // 2. 查询审批项
+        // 2. 查询审批阶段
         // 3. 查询审批配置
 
         // [1] 查询审批
@@ -84,8 +84,8 @@ public class AuditService extends BaseService {
         }
 
         // [2] 查询审批项
-        List<AuditItem> items = auditMapper.findAuditItemsByAuditId(audit.getAuditId());
-        audit.setItems(items);
+        List<AuditStep> steps = auditMapper.findAuditStepsByAuditId(audit.getAuditId());
+        audit.setSteps(steps);
 
         // [3] 查询审批配置
         AuditConfig config = auditMapper.findAuditConfigByType(audit.getType());
@@ -187,24 +187,23 @@ public class AuditService extends BaseService {
         final Audit back = audit;
         config.getSteps().forEach(step -> {
             step.getAuditors().forEach(auditor -> {
-               AuditItem item = new AuditItem()
+               AuditStep item = new AuditStep()
                        .setType(type)
                        .setAuditId(back.getAuditId())
-                       .setAuditItemId(super.nextId())
                        .setApplicantId(applicant.getUserId())
                        .setTargetId(targetId)
                        .setAuditorId(auditor.getUserId())
                        .setStep(step.getStep())
-                       .setState(AuditItem.STATE_INIT);
-                back.getItems().add(item);
+                       .setState(AuditStep.STATE_INIT);
+                back.getSteps().add(item);
             });
         });
 
         // [5] 设置 step 为 1 的审批项的状态为 1 (待审批)
-        audit.getItems()
+        audit.getSteps()
                 .stream()
                 .filter(item -> item.getStep() == 1)
-                .forEach(item -> item.setState(AuditItem.STATE_WAIT));
+                .forEach(item -> item.setState(AuditStep.STATE_WAIT));
 
         log.info("[开始] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
@@ -216,7 +215,7 @@ public class AuditService extends BaseService {
         auditMapper.upsertAudit(audit);
 
         // 保存审批项
-        auditMapper.insertAuditItems(audit.getItems());
+        auditMapper.insertAuditItems(audit.getSteps());
 
         log.info("[成功] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
@@ -287,21 +286,21 @@ public class AuditService extends BaseService {
         //    3.3 如果不是第一阶段，更新当前阶段待审批状态的审批项状态为初始化, 上一阶段审批项的状态为待审批
 
         // [1] 查询审批项，得到审批的 ID，然后获取此审批的所有审批项，计算出上一阶段、当前阶段、下一阶段的审批项
-        AuditItem item = auditMapper.findAuditItemByAuditItemId(auditItemId); // 当前审批项
+        /*AuditStep item = auditMapper.findAuditItemByAuditItemId(auditItemId); // 当前审批项
         final int step = item.getStep(); // 当前审批项的阶段
         final long auditId = item.getAuditId();
 
-        List<AuditItem> allItems          = auditMapper.findAuditItemsByAuditId(item.getAuditId()); // 所属审批的所有审批项
-        List<AuditItem> currentStepItems  = allItems.stream().filter(t -> t.getStep() == step).collect(Collectors.toList());   // 当前阶段的审批项
-        List<AuditItem> previousStepItems = allItems.stream().filter(t -> t.getStep() == step-1).collect(Collectors.toList()); // 上一阶段的审批项
-        List<AuditItem> nextStepItems     = allItems.stream().filter(t -> t.getStep() == step+1).collect(Collectors.toList()); // 下一阶段的审批项
+        List<AuditStep> allItems          = auditMapper.findAuditStepsByAuditId(item.getAuditId()); // 所属审批的所有审批项
+        List<AuditStep> currentStepItems  = allItems.stream().filter(t -> t.getStep() == step).collect(Collectors.toList());   // 当前阶段的审批项
+        List<AuditStep> previousStepItems = allItems.stream().filter(t -> t.getStep() == step-1).collect(Collectors.toList()); // 上一阶段的审批项
+        List<AuditStep> nextStepItems     = allItems.stream().filter(t -> t.getStep() == step+1).collect(Collectors.toList()); // 下一阶段的审批项
 
         log.info("[开始] 审批审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
 
         // 同步从数据库中查询得到的当前审批项的状态
-        for (AuditItem t : currentStepItems) {
-            if (t.getAuditItemId() == item.getAuditItemId()) {
-                t.setState(accepted ? AuditItem.STATE_ACCEPTED : AuditItem.STATE_REJECTED);
+        for (AuditStep t : currentStepItems) {
+            if (t.getAuditStepId() == item.getAuditStepId()) {
+                t.setState(accepted ? AuditStep.STATE_ACCEPTED : AuditStep.STATE_REJECTED);
                 break;
             }
         }
@@ -309,14 +308,14 @@ public class AuditService extends BaseService {
         if (accepted) {
             // [2] 如果审批通过
             // [2.1] 更新当前审批项的状态为通过
-            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATE_ACCEPTED, comment);
+            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditStep.STATE_ACCEPTED, comment);
             log.info("[通过] 审批审批项，通过审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
 
             // [2.2] 统计最大的阶段数和当前阶段的审批项数量、通过的审批项数量、审批员数量
-            final int maxStep = allItems.stream().mapToInt(AuditItem::getStep).max().orElse(Integer.MAX_VALUE); // 最大的阶段数
+            final int maxStep = allItems.stream().mapToInt(AuditStep::getStep).max().orElse(Integer.MAX_VALUE); // 最大的阶段数
             final int currentStepItemCount = currentStepItems.size();                // 当前阶段的审批项数量
             final int currentStepAcceptedItemCount = (int) currentStepItems.stream() // 当前阶段通过的审批项数量
-                    .filter(t -> t.getState() == AuditItem.STATE_ACCEPTED)
+                    .filter(t -> t.getState() == AuditStep.STATE_ACCEPTED)
                     .count();
 
             // [2.3] 当前阶段的审批项都为通过时
@@ -328,14 +327,14 @@ public class AuditService extends BaseService {
                     log.info("[通过] 审批审批项，通过审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
                 } else {
                     // [2.3.2] 如果不是最后一阶段，则修改下一阶段的所有审批项的状态为待审批
-                    nextStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditItemId(), AuditItem.STATE_WAIT));
+                    nextStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditStepId(), AuditStep.STATE_WAIT));
                     log.info("[通过] 审批审批项，下一阶段审批项状态修改为待审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
                 }
             }
         } else {
             // [3] 如果审批被拒绝
             // [3.1] 更新当前审批项的状态为拒绝
-            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditItem.STATE_REJECTED, comment);
+            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditStep.STATE_REJECTED, comment);
             log.info("[拒绝] 审批审批项，拒绝审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
 
             if (step == 1) {
@@ -346,14 +345,14 @@ public class AuditService extends BaseService {
             } else {
                 // [3.3] 如果不是第一阶段，更新当前阶段待审批状态的审批项状态为初始化, 上一阶段审批项的状态为待审批
                 currentStepItems.stream()
-                        .filter(t -> t.getState() == AuditItem.STATE_WAIT)
-                        .forEach(t -> auditMapper.updateAuditItemState(t.getAuditItemId(), AuditItem.STATE_INIT));
-                previousStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditItemId(), AuditItem.STATE_WAIT));
+                        .filter(t -> t.getState() == AuditStep.STATE_WAIT)
+                        .forEach(t -> auditMapper.updateAuditItemState(t.getAuditStepId(), AuditStep.STATE_INIT));
+                previousStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditStepId(), AuditStep.STATE_WAIT));
                 log.info("[拒绝] 审批审批项，前一阶段审批项状态修改为待审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
             }
         }
 
-        log.info("[结束] 审批审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
+        log.info("[结束] 审批审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);*/
     }
 
     /**

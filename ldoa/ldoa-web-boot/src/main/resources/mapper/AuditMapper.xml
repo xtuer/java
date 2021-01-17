@@ -74,21 +74,21 @@
     </sql>
 
     <!-- 查询审批项 -->
-    <select id="findAuditItemByAuditItemId" resultType="AuditItem">
+    <select id="findAuditItemByAuditItemId" resultType="AuditStep">
         SELECT <include refid="auditItemColumns"/>
         FROM audit_item ai
         WHERE audit_item_id = #{auditItemId}
     </select>
 
     <!-- 查询审批项 -->
-    <select id="findAuditItemsByAuditId" resultType="AuditItem">
+    <select id="findAuditStepsByAuditId" resultType="AuditStep">
         SELECT <include refid="auditItemColumns"/>
         FROM audit_item ai
         WHERE audit_id = #{auditId}
     </select>
 
     <!-- 查询审批员需要审批的审批项 (state 为 -1 时查询全部) -->
-    <select id="findAuditItemsByApplicantIdOrAuditorIdAndState" resultType="AuditItem">
+    <select id="findAuditStepsByApplicantIdOrAuditorIdAndState" resultType="AuditStep">
         SELECT <include refid="auditItemColumns"/>, u.nickname AS applicant_nickname, a.desc
         FROM audit_item ai
             LEFT JOIN audit a ON a.audit_id = ai.audit_id
