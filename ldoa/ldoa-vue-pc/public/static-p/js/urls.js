@@ -49,6 +49,7 @@ const Urls = {
     API_AUDIT_CONFIGS   : '/api/audit-configs',               // 审批配置
     API_AUDIT_ITEMS     : '/api/audit-items',                 // 审批项
     API_AUDIT_ITEMS_ACCEPT: '/api/audit-items/{auditItemId}/accept', // 通过或拒绝审批项
+    API_AUDITORS          : '/api/auditors',                         // 审批员
 
     // 库存
     API_STOCKS                   : '/api/stocks',              // 库存

@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
+import com.xtuer.bean.User;
 import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.audit.AuditConfig;
 import com.xtuer.bean.audit.AuditStep;
@@ -140,5 +141,22 @@ public class AuditController {
                                            @RequestParam(required = false) String comment) {
         auditService.acceptAuditItem(auditItemId, accepted, comment);
         return Result.ok();
+    }
+
+    /**
+     * 查询指定审批类型第 step 阶段的审批员
+     *
+     * 网址: http://localhost:8080/api/auditors
+     * 参数:
+     *      type (必要): 审批类型
+     *      step (必要): 审批阶段
+     *
+     * @param type 审批类型
+     * @param step 审批阶段
+     * @return payload 为审批员数组
+     */
+    @GetMapping(Urls.API_AUDITORS)
+    public Result<List<User>> findAuditors(@RequestParam("type") AuditType type, int step) {
+        return Result.ok(auditService.findAuditorsByTypeAndStep(type, step));
     }
 }

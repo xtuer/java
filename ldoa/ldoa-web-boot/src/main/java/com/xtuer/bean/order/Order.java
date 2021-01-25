@@ -43,6 +43,11 @@ public class Order {
     private String orderSn;
 
     /**
+     * 订单类型: 0 (销售订单)、1 (样品订单)
+     */
+    private int type;
+
+    /**
      * 客户单位
      */
     @NotBlank(message = "客户单位不能为空")
@@ -126,6 +131,11 @@ public class Order {
      * 附件
      */
     private UploadedFile attachment = new UploadedFile();
+
+    /**
+     * 当前审批员 ID
+     */
+    private long currentAuditorId;
 
     /**
      * 获取订单状态 Label

@@ -4,6 +4,7 @@ import com.xtuer.bean.Const;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.UploadedFile;
 import com.xtuer.bean.User;
+import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.product.Product;
@@ -117,7 +118,7 @@ public class OrderService extends BaseService {
         }
 
         // [4] 创建订单的审批，失败则不继续处理
-        Result<String> result = auditService.upsertOrderAudit(salesperson, order);
+        Result<Audit> result = auditService.upsertOrderAudit(salesperson, order);
         if (!result.isSuccess()) {
             return Result.fail(result);
         }

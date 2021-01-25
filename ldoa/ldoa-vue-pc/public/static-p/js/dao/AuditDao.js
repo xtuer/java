@@ -108,4 +108,22 @@ export default class AuditDao {
             return Utils.response(null, success, message);
         });
     }
+
+    /**
+     * 查询指定审批类型第 step 阶段的审批员
+     *
+     * 网址: http://localhost:8080/api/auditors
+     * 参数:
+     *      type (必要): 审批类型
+     *      step (必要): 审批阶段
+     *
+     * @param type 审批类型
+     * @param step 审批阶段
+     * @return payload 为审批员数组
+     */
+    static findAuditors(type, step) {
+        return Rest.get(Urls.API_AUDITORS, { data: { type, step } }).then(({ data: auditors, success, message }) => {
+            return Utils.response(auditors, success, message);
+        });
+    }
 }

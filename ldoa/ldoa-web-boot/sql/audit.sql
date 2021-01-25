@@ -40,6 +40,7 @@ CREATE TABLE audit_step (
     auditor_id    bigint(20) DEFAULT 0         COMMENT '审批员 ID',
     state         int(11)    DEFAULT 0         COMMENT '审批状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)',
     comment       text                         COMMENT '审批意见',
+    attachment_id bigint(20) DEFAULT 0         COMMENT '附件 ID',
 
     processed_at datetime COMMENT '处理时间',
     created_at   datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

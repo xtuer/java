@@ -92,6 +92,7 @@ public interface Urls {
     String API_AUDIT_CONFIGS_BY_TYPE = "/api/audit-configs/{type}";        // 指定类型的审批
     String API_AUDIT_ITEMS           = "/api/audit-items";                 // 审批项
     String API_AUDIT_ITEMS_ACCEPT    = "/api/audit-items/{auditItemId}/accept"; // 通过或拒绝审批项
+    String API_AUDITORS              = "/api/auditors";                         // 审批员
 
     // 库存
     String API_STOCKS          = "/api/stocks";          // 库存

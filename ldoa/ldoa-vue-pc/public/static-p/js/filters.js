@@ -96,6 +96,17 @@ const auditTypeName = function(typeValue) {
     return AUDIT_TYPES.filter(t => t.value === typeValue).map(t => t.name).join('') || '未知';
 };
 
+/**
+ * 获取 value 对应的 label
+ *
+ * @param {Int} value 值
+ * @param {Array} pairs value/label 对的数组
+ * @return {String} 返回 label 的字符串
+ */
+const labelForValue = function(value, pairs) {
+    return pairs.filter(p => p.value === value).map(p => p.label).join('') || '未知';
+};
+
 export default {
     formatDate,
     roleName,
@@ -104,4 +115,5 @@ export default {
     repoUrlToDownloadUrl,
     trim,
     auditTypeName,
+    labelForValue,
 };

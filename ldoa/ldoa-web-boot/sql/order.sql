@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order` (
     order_id bigint(20) NOT NULL              COMMENT '订单 ID',
     order_sn varchar(64) NOT NULL             COMMENT '订单 SN',
+    type             int(11)       DEFAULT 0  COMMENT '订单类型: 0 (销售订单)、1 (样品订单)',
     customer_company varchar(256)  DEFAULT '' COMMENT '客户单位',
     customer_contact varchar(64)   DEFAULT '' COMMENT '客户联系人',
     customer_address varchar(512)  DEFAULT '' COMMENT '客户收件地址',

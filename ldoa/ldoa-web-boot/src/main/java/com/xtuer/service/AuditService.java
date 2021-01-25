@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 审核服务
@@ -35,6 +35,32 @@ public class AuditService extends BaseService {
 
     @Autowired
     private MaintenanceOrderService maintenanceOrderService;
+
+    /**
+     * 查询指定审批类型第 step 阶段的审批员
+     *
+     * @param type 审批类型
+     * @param step 审批阶段
+     * @return 返回审批员数组
+     */
+    public List<User> findAuditorsByTypeAndStep(AuditType type, int step) {
+        // 1. 查询审批类型 type 对应的审批配置
+        // 2. 返回第 step 阶段的审批员
+        // 3. 如果没有对应的数据，返回空集合
+
+        // [1] 查询审批类型 type 对应的审批配置
+        AuditConfig config = auditMapper.findAuditConfigByType(type);
+
+        for (AuditConfigStep s : config.getSteps()) {
+            // [2] 返回第 step 阶段的审批员
+            if (s.getStep() == step) {
+                return s.getAuditors();
+            }
+        }
+
+        // [3] 如果没有对应的数据，返回空集合
+        return Collections.emptyList();
+    }
 
     /**
      * 查询审批
@@ -83,7 +109,7 @@ public class AuditService extends BaseService {
             return null;
         }
 
-        // [2] 查询审批项
+        // [2] 查询审阶段
         List<AuditStep> steps = auditMapper.findAuditStepsByAuditId(audit.getAuditId());
         audit.setSteps(steps);
 
@@ -102,11 +128,11 @@ public class AuditService extends BaseService {
      * @return 返回操作结果
      * @exception ApplicationException 审批配置无效时抛异常
      */
-    public Result<String> upsertOrderAudit(User applicant, Order order) {
+    public Result<Audit> upsertOrderAudit(User applicant, Order order) {
         Objects.requireNonNull(order, "订单不能为空");
         String desc = String.format("销售订单: %s, 客户: %s", order.getOrderSn(), order.getCustomerCompany());
 
-        return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order), desc);
+        return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order), desc, order.getCurrentAuditorId());
     }
 
     /**
@@ -117,11 +143,11 @@ public class AuditService extends BaseService {
      * @return 返回操作结果
      * @exception ApplicationException 审批配置无效时抛异常
      */
-    public Result<String> upsertMaintenanceOrderAudit(User applicant, MaintenanceOrder order) {
+    public Result<Audit> upsertMaintenanceOrderAudit(User applicant, MaintenanceOrder order) {
         Objects.requireNonNull(order, "维保订单不能为空");
         String desc = String.format("维保订单: %s, 客户: %s", order.getMaintenanceOrderSn(), order.getCustomerName());
 
-        return upsertAudit(applicant, AuditType.MAINTENANCE_ORDER, order.getMaintenanceOrderId(), Utils.toJson(order), desc);
+        return upsertAudit(applicant, AuditType.MAINTENANCE_ORDER, order.getMaintenanceOrderId(), Utils.toJson(order), desc, 0);
     }
 
     /**
@@ -132,11 +158,11 @@ public class AuditService extends BaseService {
      * @return 返回操作结果
      * @exception ApplicationException 审批配置无效时抛异常
      */
-    public Result<String> insertStockRequestAudit(User applicant, StockRequest request) {
+    public Result<Audit> insertStockRequestAudit(User applicant, StockRequest request) {
         Objects.requireNonNull(request, "出库申请不能为空");
         String desc = String.format("出库单号: %s, 物料: %s", request.getStockRequestSn(), request.getDesc());
 
-        return upsertAudit(applicant, AuditType.OUT_OF_STOCK, request.getStockRequestId(), Utils.toJson(request), desc);
+        return upsertAudit(applicant, AuditType.OUT_OF_STOCK, request.getStockRequestId(), Utils.toJson(request), desc, 0);
     }
 
     /**
@@ -146,18 +172,24 @@ public class AuditService extends BaseService {
      * @param type      审批类型
      * @param targetId  审批对象的 ID
      * @param desc      审批的简要描述
+     * @param firstStepAuditorId 第 1 阶段审批员 ID
      * @return 返回操作结果
      * @exception ApplicationException 审批配置无效时抛异常
      */
     @Transactional(rollbackFor = Exception.class)
-    public Result<String> upsertAudit(User applicant, AuditType type, long targetId, String targetJson, String desc) {
+    public Result<Audit> upsertAudit(User applicant,
+                                     AuditType type,
+                                     long targetId,
+                                     String targetJson,
+                                     String desc,
+                                     long firstStepAuditorId) {
         // 1. 查询审批配置
         // 2. 校验审批配置，如果审批配置无效则返回
         // 3. 查询审批，不存在则创建
-        // 4. 创建审批项
-        // 5. 设置 step 为 1 的审批项的状态为 1 (待审批)
-        // 6. 删除同一个 targetId + type 的审批项，例如审批被拒绝后重新提交审批
-        // 7. 保存到数据库
+        // 4. 创建审批阶段
+        // 5. 保存审批到数据库
+        // 6. 删除已经存在的审批阶段，插入新创建的审批阶段
+        // 7. 设置第 1 阶段为当前审批阶段
 
         // [1] 查询审批配置
         AuditConfig config = auditMapper.findAuditConfigByType(type);
@@ -183,43 +215,35 @@ public class AuditService extends BaseService {
         audit.setTargetJson(targetJson);
         audit.setDesc(desc);
 
-        // [4] 创建审批项
+        // [4] 创建审阶段
         final Audit back = audit;
         config.getSteps().forEach(step -> {
-            step.getAuditors().forEach(auditor -> {
-               AuditStep item = new AuditStep()
-                       .setType(type)
-                       .setAuditId(back.getAuditId())
-                       .setApplicantId(applicant.getUserId())
-                       .setTargetId(targetId)
-                       .setAuditorId(auditor.getUserId())
-                       .setStep(step.getStep())
-                       .setState(AuditStep.STATE_INIT);
-                back.getSteps().add(item);
-            });
+            AuditStep item = new AuditStep()
+                    .setType(type)
+                    .setAuditId(back.getAuditId())
+                    .setApplicantId(applicant.getUserId())
+                    .setTargetId(targetId)
+                    .setStep(step.getStep())
+                    .setState(AuditStep.STATE_INIT)
+                    .setAuditorId(0);
+            back.getSteps().add(item); // 新创建的审批阶段添加到审批中
         });
-
-        // [5] 设置 step 为 1 的审批项的状态为 1 (待审批)
-        audit.getSteps()
-                .stream()
-                .filter(item -> item.getStep() == 1)
-                .forEach(item -> item.setState(AuditStep.STATE_WAIT));
 
         log.info("[开始] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
-        // [6] 删除同一个 targetId 的审批项，例如审批被拒绝后重新提交审批
-        auditMapper.deleteAuditItemsByTargetId(targetId);
-
-        // [7] 保存到数据库
-        // 保存审批
+        // [5] 保存审批到数据库
         auditMapper.upsertAudit(audit);
 
-        // 保存审批项
-        auditMapper.insertAuditItems(audit.getSteps());
+        // [6] 删除已经存在的审批阶段，插入新创建的审批阶段
+        auditMapper.deleteAuditSteps(audit.getAuditId());
+        auditMapper.insertAuditSteps(audit.getSteps());
+
+        // [7] 设置第 1 阶段为当前审批阶段
+        auditMapper.changeCurrentAuditStep(audit.getAuditId(), 1, firstStepAuditorId);
 
         log.info("[成功] 创建审批, 用户: [{}], 类型: [{}], 审批对象 ID: [{}]", applicant.getNickname(), type, targetId);
 
-        return Result.ok();
+        return Result.ok(audit);
     }
 
     /**
@@ -249,6 +273,17 @@ public class AuditService extends BaseService {
         }
 
         return Result.ok();
+    }
+
+    /**
+     * 设置第 step 阶段为当前阶段
+     *
+     * @param auditId   审批 ID
+     * @param step      审批阶段
+     * @param auditorId 审批员 ID
+     */
+    public void changeCurrentAuditStep(long auditId, int step, long auditorId) {
+        auditMapper.changeCurrentAuditStep(auditId, step, auditorId);
     }
 
     /**

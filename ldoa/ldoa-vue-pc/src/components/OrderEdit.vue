@@ -23,13 +23,21 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <FormItem label="客户单位:" prop="customerCompany" style="flex: 1">
                     <Input v-model="orderClone.customerCompany" clearable placeholder="请输入客户单位"/>
                 </FormItem>
-                <FormItem label="客户联系人:" prop="customerContact">
+                <FormItem label="客户联系人:" prop="customerContact" style="width: 300px">
                     <Input v-model="orderClone.customerContact" clearable placeholder="请输入客户联系人"/>
                 </FormItem>
             </div>
-            <FormItem label="客户收件地址:" prop="customerAddress">
-                <Input v-model="orderClone.customerAddress" clearable placeholder="请输入客户收件地址"/>
-            </FormItem>
+            <div style="display: flex">
+                <FormItem label="客户收件地址:" prop="customerAddress" style="flex: 1">
+                    <Input v-model="orderClone.customerAddress" clearable placeholder="请输入客户收件地址"/>
+                </FormItem>
+                <FormItem label="订单类型:" style="width: 300px">
+                    <Select v-model="orderClone.type">
+                        <Option :value="0">销售订单</Option>
+                        <Option :value="0">样品订单</Option>
+                    </Select>
+                </FormItem>
+            </div>
             <div class="three-column" style="grid-template-columns: 1fr 1fr max-content">
                 <FormItem label="订单日期:" prop="orderDate">
                     <DatePicker v-model="orderClone.orderDate" type="date" placeholder="请选择订单日期"></DatePicker>
@@ -89,7 +97,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </FormItem>
         </Form>
 
-        <div slot="footer">
+        <div slot="footer" class="footer">
+            <AuditorSelect v-model="orderClone.currentAuditorId" :step="1" type="ORDER"/>
+            <span class="stretch"></span>
             <Button type="text" @click="showEvent(false)">取消</Button>
             <Button type="primary" :loading="saving" @click="saveOrder">保存</Button>
         </div>
@@ -103,6 +113,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 import FileUpload from '@/components/FileUpload.vue';
 import ProductSelect from '@/components/ProductSelect.vue';
+import AuditorSelect from '@/components/AuditorSelect.vue';
 
 export default {
     props: {
@@ -113,7 +124,7 @@ export default {
         prop : 'visible',
         event: 'on-visible-change',
     },
-    components: { FileUpload, ProductSelect },
+    components: { FileUpload, ProductSelect, AuditorSelect },
     data() {
         return {
             orderClone: this.newOrder(),
@@ -186,6 +197,12 @@ export default {
             this.$refs.orderForm.validate(valid => {
                 if (!valid) { return; }
 
+                // 审批员不能为空
+                if (!Utils.isValidId(this.orderClone.currentAuditorId)) {
+                    this.$Message.error('请选择审批员');
+                    return;
+                }
+
                 this.saving = true;
 
                 OrderDao.upsertOrder(this.orderClone).then(order => {
@@ -222,6 +239,7 @@ export default {
             return {
                 orderId        : '0',   // 订单 ID
                 orderSn        : '',    // 订单编号
+                type           : 0,     // 订单类型: 0 (销售订单)、1 (样品订单)
                 customerCompany: '',    // 客户单位
                 customerContact: '',    // 客户联系人
                 customerAddress: '',    // 客户收件地址
@@ -236,7 +254,8 @@ export default {
                 state          : 0,     // 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
                 productCodes   : '',    // 订单的产品编码，使用逗号分隔，方便搜索
                 items          : [],    // 订单项
-                attachment     : {},    // 附件
+                attachment     : {},    // 附件,
+                currentAuditorId: '0',  // 当前审批员 ID
             };
         },
         // 创建订单项
@@ -263,6 +282,14 @@ export default {
 
     .ivu-table-header thead tr th, .ivu-table-fixed-header thead tr th {
         padding: 0 !important;
+    }
+
+    .footer {
+        display: flex;
+
+        .auditor-select {
+            width: 100px;
+        }
     }
 }
 </style>

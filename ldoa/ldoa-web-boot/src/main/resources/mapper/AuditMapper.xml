@@ -69,8 +69,8 @@
     ========================================================================================-->
     <!-- 审批项的列 -->
     <sql id="auditItemColumns">
-        ai.type, ai.audit_id, ai.audit_item_id, ai.applicant_id, ai.target_id, ai.auditor_id,
-        ai.step, ai.state, ai.processed_at, ai.comment, ai.created_at
+        ai.type, ai.audit_id, ai.step, ai.applicant_id, ai.target_id, ai.auditor_id,
+        ai.state, ai.processed_at, ai.comment, ai.attachment_id, ai.created_at
     </sql>
 
     <!-- 查询审批项 -->
@@ -83,7 +83,7 @@
     <!-- 查询审批项 -->
     <select id="findAuditStepsByAuditId" resultType="AuditStep">
         SELECT <include refid="auditItemColumns"/>
-        FROM audit_item ai
+        FROM audit_step ai
         WHERE audit_id = #{auditId}
     </select>
 
@@ -108,12 +108,12 @@
         LIMIT ${page.offset}, ${page.count}
     </select>
 
-    <!-- 插入审批项 -->
-    <insert id="insertAuditItems">
-        INSERT INTO audit_item (type, audit_id, audit_item_id, applicant_id, target_id, auditor_id, step, state)
+    <!-- 插入审阶段 -->
+    <insert id="insertAuditSteps">
+        INSERT INTO audit_step (type, audit_id, applicant_id, target_id, auditor_id, step, state)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.type}, #{item.auditId}, #{item.auditItemId}, #{item.applicantId},
+            (#{item.type}, #{item.auditId}, #{item.applicantId},
             #{item.targetId}, #{item.auditorId}, #{item.step}, #{item.state})
         </foreach>
     </insert>
@@ -130,7 +130,14 @@
     </update>
 
     <!-- 删除指定 targetId 和类型的审批项 -->
-    <delete id="deleteAuditItemsByTargetId">
-        DELETE FROM audit_item WHERE target_id = #{targetId}
+    <delete id="deleteAuditSteps">
+        DELETE FROM audit_step WHERE audit_id = #{auditId}
     </delete>
+
+    <!-- 设置第 step 阶段为当前阶段 -->
+    <update id="changeCurrentAuditStep">
+        UPDATE audit_step
+        SET state = 1, auditor_id = #{auditorId}
+        WHERE audit_id = #{auditId} AND step = #{step}
+    </update>
 </mapper>

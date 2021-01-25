@@ -48,6 +48,12 @@ window.AUDIT_ITEM_STATE = [
     { value: -1, label: '所有' },
 ];
 
+// 订单类型
+window.ORDER_TYPES = [
+    { value: 0, label: '销售订单' },
+    { value: 1, label: '样品订单' },
+];
+
 // 性别
 window.GENDERS = [
     { value: 0, name: '未选' },

@@ -36,12 +36,14 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </tr>
             <tr>
                 <td>销售负责人</td>
-                <td colspan="4">{{ salesperson }}</td>
+                <td colspan="1">{{ salesperson }}</td>
+                <td style="text-align: right">订单类型</td>
+                <td colspan="2">{{ order.type | labelForValue(window.ORDER_TYPES) }}</td>
             </tr>
 
             <tr>
                 <td colspan="5">
-                    <div style="display: grid; grid-template-columns: max-content max-content 1fr; grid-gap: 40px">
+                    <div style="display: grid; grid-template-columns: max-content max-content 1fr; grid-gap: 60px">
                         <div>订单日期: {{ order.orderDate | formatDate }}</div>
                         <div>交货日期: {{ order.deliveryDate | formatDate }}</div>
                     </div>
@@ -88,9 +90,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </tr>
 
             <!-- 审批信息 -->
-            <tr v-for="item in audit.items" :key="item.auditItemId">
+            <tr v-for="step in audit.steps" :key="step.step">
                 <td colspan="5">
-                    <AuditItem :audit-item="item"/>
+                    <AuditStep :step="step"/>
                 </td>
             </tr>
         </table>
@@ -107,7 +109,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 <script>
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
-import AuditItem from '@/components/AuditItem.vue';
+import AuditStep from '@/components/AuditStep.vue';
 
 export default {
     props: {
@@ -118,7 +120,7 @@ export default {
         prop : 'visible',
         event: 'on-visible-change',
     },
-    components: { AuditItem },
+    components: { AuditStep },
     data() {
         return {
             order: {}, // 订单

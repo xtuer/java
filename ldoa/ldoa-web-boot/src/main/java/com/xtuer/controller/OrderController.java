@@ -69,6 +69,7 @@ public class OrderController extends BaseController {
      * 参数: 无
      * 请求体: 为订单的 JSON 字符串
      *      orderId         (必要): 订单 ID，为 0 时创建订单，非 0 时更新订单
+     *      type            [可选]: 订单类型: 0 (销售订单)、1 (样品订单)
      *      customerCompany (必要): 客户单位
      *      customerContact (必要): 客户联系人
      *      customerAddress (必要): 客户收件地址

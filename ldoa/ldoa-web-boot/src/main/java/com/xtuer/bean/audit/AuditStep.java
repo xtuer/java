@@ -87,6 +87,11 @@ public class AuditStep {
     private String comment;
 
     /**
+     * 附件 ID
+     */
+    private long attachmentId;
+
+    /**
      * 获取审批状态 Label
      *
      * @return 返回订单状态的 Label

@@ -95,32 +95,44 @@ export default class AuditUtils {
     }
 
     /**
-     * 把审批配置中的信息合并到审批项里，方便审批项的使用
+     * 把审批配置中的信息合并到审批阶段里，方便审批阶段的使用
      *
      * @param {JSON} audit 审批 (其中包含了审批配置、审批项等)
      * @return 无
      */
     static mergeAuditConfigToAuditItem(audit) {
-        // 1. 查询审批项对应阶段的配置
-        // 2. 设置审批项的描述
-        // 3. 合并数据到审批项
+        // 1. 查询审批阶段对应阶段的配置
+        // 2. 设置审批阶段的描述、审批员、审批模板
+        // 3. 设置审批阶段的审批员名字
+        // 4. 缓存下一阶段的审批员
 
-        audit.items.forEach(item => {
-            // [1] 查询审批项对应阶段的配置
-            const configStep = audit.config.steps.find(t => t.step === item.step);
+        for (let i = 0; i < audit.steps.length; i++) {
+            const step = audit.steps[i];
+
+            // [1] 查询审批阶段对应阶段的配置
+            const configStep = audit.config.steps.find(s => s.step === step.step);
 
             if (!configStep) {
-                console.error(`审批流程 [${item.step}] 的配置不存在`);
+                console.error(`审批流程 [${step.step}] 的配置不存在`);
                 return;
             }
 
-            // [2] 设置审批项的描述
-            item.desc = configStep.desc;
+            // [2] 设置审批阶段的描述、审批员、审批模板
+            step.desc = configStep.desc;
+            step.auditors = configStep.auditors;
+            step.commentTemplate = configStep.commentTemplate.trim();
 
-            // [3] 合并数据到审批项
-            configStep.auditors.filter(auditor => auditor.userId === item.auditorId).forEach(auditor => {
-                item.auditorNickname = auditor.nickname;
-            });
-        });
+            // [3] 设置审批阶段的审批员名字
+            const auditor = step.auditors.find(a => a.userId === step.auditorId);
+            if (auditor) {
+                step.auditorNickname = auditor.nickname;
+            }
+
+            // [4] 缓存下一阶段的审批员
+            const nextConfigStep = audit.config.steps.find(s => s.step === step.step + 1);
+            if (nextConfigStep) {
+                step.nextStepAuditors = nextConfigStep.auditors;
+            }
+        }
     }
 }

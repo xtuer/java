@@ -111,12 +111,11 @@ public interface AuditMapper {
     List<AuditStep> findAuditStepsByApplicantIdOrAuditorIdAndState(long applicantId, long auditorId, int state, Page page);
 
     /**
-     * 插入审批项
+     * 插入审批阶段
      *
-     * @param items 审批项的数组
+     * @param items 审批阶段的数组
      */
-    void insertAuditItems(List<AuditStep> items);
-
+    void insertAuditSteps(List<AuditStep> items);
 
     /**
      * 通过或者拒绝审批项
@@ -136,9 +135,18 @@ public interface AuditMapper {
     void updateAuditItemState(long auditItemId, int state);
 
     /**
-     * 删除指定 targetId 审批项
+     * 删除审批的审批阶段
      *
-     * @param targetId 审批目标 ID
+     * @param auditId 审批 ID
      */
-    void deleteAuditItemsByTargetId(long targetId);
+    void deleteAuditSteps(long auditId);
+
+    /**
+     * 设置第 step 阶段为当前阶段
+     *
+     * @param auditId   审批 ID
+     * @param step      审批阶段
+     * @param auditorId 审批员 ID
+     */
+    void changeCurrentAuditStep(long auditId, int step, long auditorId);
 }
