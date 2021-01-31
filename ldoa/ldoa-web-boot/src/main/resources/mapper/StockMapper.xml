@@ -190,7 +190,7 @@
                 AND pi.code LIKE CONCAT('%', #{filter.code},'%')
             </if>
         </where>
-        ORDER BY pi.product_item_id
+        ORDER BY pi.product_item_id DESC
         LIMIT ${page.offset}, ${page.size}
     </select>
 </mapper>
