@@ -4,6 +4,7 @@ import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
+import com.xtuer.bean.product.ProductItem;
 import com.xtuer.bean.stock.*;
 import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.StockMapper;
@@ -152,5 +153,27 @@ public class StockController extends BaseController {
     @PutMapping(Urls.API_STOCKS_OUT_REQUESTS_BY_ID)
     public Result<Boolean> stockOut(@PathVariable long requestId) {
         return stockService.stockOut(requestId);
+    }
+
+    /**
+     * 查询物料的库存
+     *
+     * 网址: http://localhost:8080/api/stocks
+     * 参数:
+     *      name       [可选]: 物料名称
+     *      code       [可选]: 物料编码
+     *      batch      [可选]: 入库批次
+     *      count      [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
+     *      pageNumber [可选]: 页码
+     *      pageSize   [可选]: 数量
+     *
+     * @param filter 过滤条件
+     * @param page   分页
+     *
+     * @return payload 为物料数组，其中包含了出库信息
+     */
+    @GetMapping(Urls.API_STOCKS)
+    public Result<List<ProductItem>> findStocks(StockFilter filter, Page page) {
+        return Result.ok(stockMapper.findStocks(filter, page));
     }
 }

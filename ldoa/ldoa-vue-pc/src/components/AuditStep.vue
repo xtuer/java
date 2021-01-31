@@ -114,6 +114,11 @@ export default {
         if (this.needAudit) {
             this.comment = this.step.comment || this.step.commentTemplate;
         }
+
+        // 下一阶段只有一个审批员时，默认流转到他
+        if (this.step.nextStepAuditors && this.step.nextStepAuditors.length === 1) {
+            this.nextStepAuditorId = this.step.nextStepAuditors[0].userId;
+        }
     },
     methods: {
         // 通过审批
@@ -155,10 +160,10 @@ export default {
         // 校验数据是否有效，有效返回 true，否则返回 false
         validate() {
             // 附件检测
-            if (this.step.needAttachment && !Utils.isValidId(this.attachment.attachmentId)) {
-                this.$Message.error('请上传附件');
-                return false;
-            }
+            // if (this.step.needAttachment && !Utils.isValidId(this.attachment.attachmentId)) {
+            //     this.$Message.error('请上传附件');
+            //     return false;
+            // }
 
             // 非最后一阶段需要选择下一阶段的审批员
             if (!this.step.lastStep && !Utils.isValidId(this.nextStepAuditorId)) {

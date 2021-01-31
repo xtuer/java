@@ -159,4 +159,38 @@
             SELECT 1 FROM stock_request WHERE order_id = #{orderId} AND type = 'OUT'
         )
     </select>
+
+    <!-- 插入或者更新库存 -->
+    <insert id="upsertStock">
+        INSERT INTO stock (product_item_id, batch, count)
+        VALUES (#{productItemId}, #{batch}, #{count})
+
+        ON DUPLICATE KEY
+        UPDATE count = count + #{count}
+    </insert>
+
+    <!-- 查询物料的库存 -->
+    <select id="findStocks" resultType="ProductItem">
+        SELECT pi.product_item_id, pi.name, pi.code, pi.type, pi.model,
+               pi.standard, pi.material, pi.unit, pi.desc, pi.warn_count,
+               stock.count, stock.batch
+        FROM product_item pi
+        LEFT JOIN stock ON stock.product_item_id = pi.product_item_id
+            <if test="filter.count > 0"><![CDATA[
+                AND stock.count <= #{filter.count}
+            ]]></if>
+        <where>
+            <if test="filter.batch!=null and filter.batch!='' ">
+                AND stock.batch LIKE CONCAT('%', #{filter.batch},'%')
+            </if>
+            <if test="filter.name!=null and filter.name!='' ">
+                AND pi.name LIKE CONCAT('%', #{filter.name},'%')
+            </if>
+            <if test="filter.code!=null and filter.code!='' ">
+                AND pi.code LIKE CONCAT('%', #{filter.code},'%')
+            </if>
+        </where>
+        ORDER BY pi.product_item_id
+        LIMIT ${page.offset}, ${page.size}
+    </select>
 </mapper>

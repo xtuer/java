@@ -49,13 +49,13 @@ export default {
                 },
                 { label: '订单系统', icon: 'logo-usd', menuItems:
                     [
-                        { label: '销售订单', name: 'orders' },
+                        { label: '生产订单', name: 'orders' },
                         { label: '维保订单', name: 'maintenance-orders' },
                     ]
                 },
                 { label: '生产系统', icon: 'md-compass', menuItems:
                     [
-                        { label: '库存查询', name: 'stock' },
+                        { label: '库存查询', name: 'stocks' },
                         { label: '物料入库', name: 'stock-in' },
                         { label: '物料出库', name: 'stock-out' },
                     ]
@@ -68,6 +68,7 @@ export default {
                 },
                 { label: '个人中心', icon: 'ios-people', menuItems:
                     [
+                        { label: '我的信息',   name: 'user-info' },
                         { label: '收到的审批', name: 'audit-received' },
                         { label: '发起的审批', name: 'audit-request'  },
                     ]

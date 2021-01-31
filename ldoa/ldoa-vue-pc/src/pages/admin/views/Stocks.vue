@@ -13,8 +13,8 @@
                 <Input v-model="filter.code" placeholder="请输入物料编码" @on-enter="searchProductItems">
                     <span slot="prepend">物料编码</span>
                 </Input>
-                <Input v-model="filter.model" placeholder="规格/型号" @on-enter="searchProductItems">
-                    <span slot="prepend">规格/型号</span>
+                <Input v-model="filter.batch" placeholder="入库批次" @on-enter="searchProductItems">
+                    <span slot="prepend">入库批次</span>
                 </Input>
                 <Input v-model="filter.count" placeholder="请输入物料编码" search enter-button @on-search="searchProductItems">
                     <span slot="prepend">数量小于</span>
@@ -26,7 +26,12 @@
         <Table :data="items" :columns="columns" :loading="reloading" border>
             <!-- 数量 -->
             <template slot-scope="{ row: item }" slot="count">
-                <span :class="itemClass(item)">{{ item.count}}</span> {{item.unit}}
+                <span :class="itemClass(item)">{{ item.count }}</span> {{item.unit}}
+            </template>
+
+            <!-- 批次 -->
+            <template slot-scope="{ row: item }" slot="batch">
+                <span class="text-color-gray">{{ item.batch || '未入库' }}</span>
             </template>
         </Table>
 
@@ -38,7 +43,7 @@
 </template>
 
 <script>
-import ProductDao from '@/../public/static-p/js/dao/ProductDao';
+import StockDao from '@/../public/static-p/js/dao/StockDao';
 
 export default {
     data() {
@@ -47,7 +52,7 @@ export default {
             filter: { // 搜索条件
                 name      : '',
                 code      : '',
-                model     : '',
+                batch     : '',
                 count     : 10000,
                 pageSize  : 20,
                 pageNumber: 1,
@@ -66,6 +71,7 @@ export default {
                 { key : 'standard', title: '标准/规范', width: 110 },
                 { key : 'material', title: '材质', width: 110 },
                 { slot: 'count',    title: '数量', width: 110, align: 'right' },
+                { slot: 'batch',    title: '批次', width: 110 },
                 { key : 'desc',     title: '物料描述', minWidth: 150 },
             ],
         };
@@ -88,7 +94,7 @@ export default {
         fetchMoreProductItems() {
             this.loading = true;
 
-            ProductDao.findProductItems(this.filter).then(items => {
+            StockDao.findStocks(this.filter).then(items => {
                 this.items.push(...items);
 
                 this.more      = items.length >= this.filter.pageSize;
@@ -98,6 +104,7 @@ export default {
             });
         },
         itemClass(item) {
+            console.log(item.count, item.warnCount);
             return {
                 'text-color-error': item.count <= item.warnCount
             };

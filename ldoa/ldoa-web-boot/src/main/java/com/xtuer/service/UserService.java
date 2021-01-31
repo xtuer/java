@@ -180,7 +180,7 @@ public class UserService extends BaseService {
         if (StringUtils.isNumeric(mobile) && mobile.length() == 11) {
             // 简单的校验：手机号为 11 个数字
             userMapper.updateUserMobile(userId, mobile);
-            return Result.ok("手机更新成功");
+            return Result.ok(null, "手机号码更新成功");
         } else {
             return Result.fail("请输入正确的手机号");
         }

@@ -2,10 +2,7 @@ package com.xtuer.mapper;
 
 import com.xtuer.bean.Page;
 import com.xtuer.bean.product.ProductItem;
-import com.xtuer.bean.stock.StockRecord;
-import com.xtuer.bean.stock.StockRecordFilter;
-import com.xtuer.bean.stock.StockRequest;
-import com.xtuer.bean.stock.StockRequestFilter;
+import com.xtuer.bean.stock.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -90,7 +87,7 @@ public interface StockMapper {
     /**
      * 标记库存操作完成
      *
-     * @param recordId 库存操作申请 ID
+     * @param requestId 库存操作申请 ID
      */
     void completeStockRecordByRequestId(long requestId);
 
@@ -101,4 +98,20 @@ public interface StockMapper {
      * @return 订单已经存在出库操作申请返回 true，否则返回 false
      */
     boolean hasOrderStockOutRequest(long orderId);
+
+    /**
+     * 插入或者更新库存
+     *
+     * @param productItemId 物料 ID
+     * @param batch 批次
+     * @param count 数量
+     */
+    void upsertStock(long productItemId, String batch, int count);
+
+    /**
+     * 查询物料的库存
+     *
+     * @return 返回物料数组，其中包含了出库信息
+     */
+    List<ProductItem> findStocks(StockFilter filter, Page page);
 }

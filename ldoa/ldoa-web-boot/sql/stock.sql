@@ -1,4 +1,24 @@
 #-------------------------------------------
+# 表名: stock
+# 作者: 公孙二狗
+# 日期: 2021-01-31
+# 版本: 1.0
+# 描述: 物料库存，不同的批次独立存储
+#------------------------------------------
+DROP TABLE IF EXISTS stock;
+
+CREATE TABLE stock (
+    product_item_id bigint(20)  unsigned NOT NULL COMMENT '物料 ID',
+    batch           varchar(64) NOT NULL          COMMENT '批次',
+    count           int(11)     DEFAULT 0         COMMENT '数量',
+
+    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+
+    PRIMARY KEY (product_item_id, batch) COMMENT '物料 ID + 批次作为主键'
+)ENGINE=InnoDB COMMENT '物料库存';
+
+#-------------------------------------------
 # 表名: stock_record
 # 作者: 公孙二狗
 # 日期: 2020-11-21

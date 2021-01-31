@@ -78,4 +78,9 @@ public class ProductItem {
      * 库存告警数量
      */
     private int warnCount;
+
+    /**
+     * 批次 (出库查询时使用)
+     */
+    private String batch;
 }

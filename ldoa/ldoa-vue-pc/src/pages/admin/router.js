@@ -44,9 +44,9 @@ export default new Router({
                 // =====================================================================================
                 // 库存查询
                 {
-                    path: '/stock',
-                    name: 'stock',
-                    component: () => import(/* webpackChunkName: "product" */ './views/Stock.vue'),
+                    path: '/stocks',
+                    name: 'stocks',
+                    component: () => import(/* webpackChunkName: "product" */ './views/Stocks.vue'),
                 },
                 // 物料入库
                 {
@@ -93,6 +93,12 @@ export default new Router({
                 // =====================================================================================
                 //                                         个人中心
                 // =====================================================================================
+                // 个人信息
+                {
+                    path: '/user-info',
+                    name: 'user-info',
+                    component: () => import(/* webpackChunkName: "product" */ './views/UserInfo.vue'),
+                },
                 // 我收到的审批
                 {
                     path: '/audit-received',

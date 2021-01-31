@@ -116,4 +116,26 @@ export default class StockDao {
             return Utils.response(data, success, message);
         });
     }
+
+    /**
+     * 查询物料的库存
+     *
+     * 网址: http://localhost:8080/api/stocks
+     * 参数:
+     *      name       [可选]: 物料名称
+     *      code       [可选]: 物料编码
+     *      batch      [可选]: 入库批次
+     *      count      [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
+     *      pageNumber [可选]: 页码
+     *      pageSize   [可选]: 数量
+     *
+     * @param filter 过滤条件
+     *
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为物料数组，其中包含了出库信息，reject 的参数为错误信息
+     */
+    static findStocks(filter) {
+        return Rest.get(Urls.API_STOCKS, { data: filter }).then(({ data: stocks, success, message }) => {
+            return Utils.response(stocks, success, message);
+        });
+    }
 }

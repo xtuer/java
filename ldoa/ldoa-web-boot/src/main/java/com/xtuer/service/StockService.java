@@ -109,7 +109,8 @@ public class StockService extends BaseService {
         // [4] 入库: 增加产品项的数量
 
         stockMapper.insertStockRecord(record);
-        productMapper.increaseProductItemCount(record.getProductItemId(), record.getCount());
+        // productMapper.increaseProductItemCount(record.getProductItemId(), record.getCount());
+        stockMapper.upsertStock(record.getProductItemId(), record.getBatch(), record.getCount());
 
         // [5] 查询新创建的记录
         record = stockMapper.findStockRecordById(record.getStockRecordId());
