@@ -188,7 +188,7 @@ export default {
                 // [3] 找到被编辑对象的下标
                 this.saving = true;
                 const item  = Utils.clone(this.itemClone);  // 重要: 克隆被编辑的对象
-                const index = this.items.findIndex(i => i.productItemId === item.productItemId); // 用户下标
+                const index = this.items.findIndex(i => i.productItemId === item.productItemId); // 物料下标
 
                 ProductDao.upsertProductItem(item).then(() => {
                     // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面

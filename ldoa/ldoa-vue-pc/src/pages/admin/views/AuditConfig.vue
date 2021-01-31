@@ -38,6 +38,10 @@
                             <Input v-model="step.commentTemplate" type="textarea" slot="content" :rows="8" placeholder="请填写审批意见的模板"/>
                         </Poptip>
                         <Checkbox v-model="step.attachment">上传附件</Checkbox>
+                        <div class="stretch"></div>
+
+                        <!-- 删除阶段按钮，只有阶段数大于 1 时才显示 -->
+                        <Icon v-if="auditConfig.steps.length > 1" type="md-close-circle" class="clickable" size="18" @click="removeStep(index)"/>
                     </div>
 
                     <!-- 审批员 -->
@@ -196,6 +200,16 @@ export default {
             if (index >= 0) {
                 step.auditors.splice(index, 1);
             }
+        },
+        // 删除阶段
+        removeStep(index) {
+            // [2] 确认修改
+            this.$Modal.confirm({
+                title: '确定删除吗?',
+                onOk: () => {
+                    this.auditConfig.steps.remove(index);
+                }
+            });
         },
         // 保存审批配置
         save() {

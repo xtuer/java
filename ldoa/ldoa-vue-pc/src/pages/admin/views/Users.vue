@@ -255,7 +255,7 @@ export default {
 
             // [2] 确认修改
             this.$Modal.confirm({
-                title: `确定修改用户 <font color="red">${user.nickname} </font> 的权限吗吗?`,
+                title: `确定修改用户 <font color="red">${user.nickname} </font> 的权限吗?`,
                 loading: true,
                 onOk: () => {
                     UserDao.patchUser({ userId: user.userId, role: user.roleValue }).then(() => {
