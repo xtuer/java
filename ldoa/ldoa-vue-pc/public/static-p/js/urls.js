@@ -50,6 +50,7 @@ const Urls = {
     API_AUDIT_CONFIGS     : '/api/audit-configs',               // 审批配置
     API_AUDIT_STEPS       : '/api/audit-steps',                 // 审批项
     API_AUDIT_STEPS_ACCEPT: '/api/audits/{auditId}/steps/{step}/accept', // 通过或拒绝审批阶段
+    API_AUDIT_STEPS_RECALL: '/api/audits/{auditId}/steps/{step}/recall', // 撤销审批阶段
     API_AUDITORS          : '/api/auditors',                    // 审批员
 
     // 库存

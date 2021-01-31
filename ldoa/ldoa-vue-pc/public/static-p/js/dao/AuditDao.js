@@ -126,18 +126,35 @@ export default class AuditDao {
      *      comment      [可选]: 审批意见
      *      attachmentId [可选]: 附件 ID
      *
-     * @param auditId  审批 ID
-     * @param step     审批阶段
-     * @param accepted true 为通过审批，false 为拒绝审批
-     * @param comment  审批意见
-     * @param attachmentId 附件 ID
-     * @param nextStepAuditorId 下一阶段的审批员 ID
+     * @param {Long}   auditId  审批 ID
+     * @param {Int}    step     审批阶段
+     * @param {Bool}   accepted true 为通过审批，false 为拒绝审批
+     * @param {String} comment  审批意见
+     * @param {Long}   attachmentId 附件 ID
+     * @param {Long}   nextStepAuditorId 下一阶段的审批员 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
      */
     static acceptAuditStep(auditId, step, accepted, comment, attachmentId, nextStepAuditorId) {
         return Rest.update(Urls.API_AUDIT_STEPS_ACCEPT, {
             params: { auditId, step },
             data: { accepted, comment, attachmentId, nextStepAuditorId }
         }).then(({ success, message }) => {
+            return Utils.response(null, success, message);
+        });
+    }
+
+    /**
+     * 审批: 撤销审批阶段
+     *
+     * 网址: http://localhost:8080/api/audits/{auditId}/steps/{step}/recall
+     * 参数: 无
+     *
+     * @param {Long} auditId  审批 ID
+     * @param {Int}  step     审批阶段
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static recallAuditStep(auditId, step) {
+        return Rest.update(Urls.API_AUDIT_STEPS_RECALL, { params: { auditId, step } }).then(({ success, message }) => {
             return Utils.response(null, success, message);
         });
     }

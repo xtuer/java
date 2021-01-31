@@ -178,6 +178,21 @@ public class AuditController {
     }
 
     /**
+     * 审批: 撤销审批阶段
+     *
+     * 网址: http://localhost:8080/api/audits/{auditId}/steps/{step}/recall
+     * 参数: 无
+     *
+     * @param auditId  审批 ID
+     * @param step     审批阶段
+     */
+    @PutMapping(Urls.API_AUDIT_STEPS_RECALL)
+    public Result<Boolean> recallAuditStep(@PathVariable long auditId, @PathVariable int  step) {
+        auditService.recallAuditStep(auditId, step);
+        return Result.ok();
+    }
+
+    /**
      * 查询指定审批类型第 step 阶段的审批员
      *
      * 网址: http://localhost:8080/api/auditors
@@ -193,4 +208,6 @@ public class AuditController {
     public Result<List<User>> findAuditors(@RequestParam("type") AuditType type, int step) {
         return Result.ok(auditService.findAuditorsByTypeAndStep(type, step));
     }
+
+
 }

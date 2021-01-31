@@ -105,6 +105,7 @@ export default class AuditUtils {
         // 2. 设置审批阶段的描述、审批员、审批模板、是否上传附件、计算是否最后一个阶段
         // 3. 设置审批阶段的审批员名字
         // 4. 缓存下一阶段的审批员
+        // 5. 判断是否可撤回: 当前阶段已通过，且下一阶段为待审批
 
         const maxStep = Math.max(...audit.config.steps.map(s => s.step)); // 最大阶段值
 
@@ -136,6 +137,14 @@ export default class AuditUtils {
             const nextConfigStep = audit.config.steps.find(s => s.step === step.step + 1);
             if (nextConfigStep) {
                 step.nextStepAuditors = nextConfigStep.auditors;
+            }
+
+            // [5] 判断是否可撤回: 当前阶段已通过，且下一阶段为待审批
+            const nextStep = audit.steps[i + 1];
+            if (nextStep) {
+                if (step.state === 3 && nextStep.state === 1) {
+                    step.recallable = true;
+                }
             }
         }
     }

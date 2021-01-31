@@ -45,6 +45,9 @@ step: 审批阶段
 
                 <!-- 审批员和审批时间 -->
                 <div v-if="step.state >= 1" class="sign">
+                    <!-- 撤回按钮 -->
+                    <Button v-if="isCurrentUser(step.auditorId) && step.recallable" type="warning" size="small" @click="recallStep(step)">撤回</Button>
+
                     <!-- 等待审批或者已经审批，显示执行审批的审批员名字 -->
                     {{ step.auditorNickname }} / {{ step.processedAt | formatDate }}
                 </div>
@@ -164,6 +167,20 @@ export default {
             }
 
             return true;
+        },
+        // 撤销审批阶段
+        recallStep(step) {
+            this.$Modal.confirm({
+                title: '确定撤销吗?',
+                loading: true,
+                onOk: () => {
+                    AuditDao.recallAuditStep(step.auditId, step.step).then(() => {
+                        step.state = 1;
+                        this.$Message.success('撤销成功');
+                        this.$Modal.remove();
+                    });
+                }
+            });
         },
         auditStyle() {
             if (this.step.state === 2) {

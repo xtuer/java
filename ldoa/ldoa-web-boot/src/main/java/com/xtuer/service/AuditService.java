@@ -260,7 +260,7 @@ public class AuditService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public void acceptAuditStep(long auditId, int step, boolean accepted, String comment, long attachmentId, long nextStepAuditorId) {
         // 审批阶段状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
-        // 1. 查询所有审批阶段，计算最大阶段数，前一个阶段数
+        // 1. 查询所有审批阶段，计算最大阶段数，前一个阶段数，且判断当前阶段的状态为待审批状态 1 才能继续处理
         // 2. 移动附件的临时文件到文件仓库
         // 3. 如果审批通过:
         //    3.1 更新当前审批阶段的状态为通过
@@ -280,7 +280,7 @@ public class AuditService extends BaseService {
         //    3.2 如果是第一阶段，则审批不通过
         //    3.3 如果不是第一阶段，更新当前阶段待审批状态的审批项状态为初始化, 上一阶段审批项的状态为待审批
 
-        // [1] 查询所有审批阶段，计算最大阶段数，前一个阶段数
+        // [1] 查询所有审批阶段，计算最大阶段数，前一个阶段数，且判断当前阶段的状态为待审批状态 1 才能继续处理
         List<AuditStep> allSteps = auditMapper.findAuditStepsByAuditId(auditId);
         AuditStep currentStep = allSteps.stream().filter(s -> s.getStep() == step).findFirst().orElse(null);
         int maxStep  = allSteps.stream().mapToInt(AuditStep::getStep).max().orElse(Integer.MAX_VALUE);
@@ -289,6 +289,12 @@ public class AuditService extends BaseService {
 
         if (currentStep == null) {
             log.warn("[结束] 审批审批阶段: 审批 [{}], 阶段 [{}]，阶段不存在", auditId, step);
+            return;
+        }
+
+        // 当前阶段的状态为待审批状态 1 才能继续处
+        if (currentStep.getState() != AuditStep.STATE_WAIT) {
+            log.warn("[结束] 审批审批阶段: 审批 [{}], 阶段 [{}]，状态不为待审批", auditId, step);
             return;
         }
 
@@ -333,5 +339,42 @@ public class AuditService extends BaseService {
         }
 
         log.info("[结束] 审批审批项: 审批 [{}], 阶段 [{}]", auditId, step);
+    }
+
+    /**
+     * 撤销审批阶段，要求被撤销阶段的状态为已通过，且下一阶段的状态为待审批
+     *
+     * @param auditId 审批 ID
+     * @param step    审批阶段
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void recallAuditStep(long auditId, int step) {
+        // 1. 查询所有审批阶段，取得当前和下一个审批阶段
+        // 2. 满足条件时进行撤销: 被撤销阶段的状态为已通过，且下一阶段的状态为待审批
+        //    2.1 修改被撤销阶段的状态为待审批
+        //    2.2 下一阶段的状态为初始化，审批员为 0
+
+        // [1] 查询所有审批阶段，取得当前和下一个审批阶段
+        List<AuditStep> allSteps = auditMapper.findAuditStepsByAuditId(auditId);
+        AuditStep currStep = allSteps.stream().filter(s -> s.getStep() == step).findFirst().orElse(null);
+        AuditStep nextStep = allSteps.stream().filter(s -> s.getStep() == step + 1).findFirst().orElse(null);
+
+        if (currStep == null || nextStep == null) {
+            return;
+        }
+
+        // [2] 满足条件时进行撤销: 被撤销阶段的状态为已通过，且下一阶段的状态为待审批
+        if (currStep.getState() == AuditStep.STATE_ACCEPTED && nextStep.getState() == AuditStep.STATE_WAIT) {
+            log.info("[开始] 撤回审批: 审批 [{}], 阶段 [{}]", auditId, step);
+
+            // [2.1] 修改被撤销阶段的状态为待审批
+            auditMapper.updateAuditStepState(auditId, currStep.getStep(), AuditStep.STATE_WAIT);
+
+            // [2.2] 下一阶段的状态为初始化，审批员为 0
+            auditMapper.updateAuditStepState(auditId, nextStep.getStep(), AuditStep.STATE_INIT);
+            auditMapper.updateAuditStepAuditor(auditId, nextStep.getStep(), 0L);
+
+            log.info("[结束] 撤回审批: 审批 [{}], 阶段 [{}]", auditId, step);
+        }
     }
 }
