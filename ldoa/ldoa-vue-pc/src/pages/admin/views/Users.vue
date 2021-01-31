@@ -19,6 +19,7 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: user }" slot="action">
                 <template v-if="!isSystemAdmin(user)">
+                    <Button type="primary" size="small" @click="showChangeRoleModal(user)">修改权限</Button>
                     <Button type="primary" size="small" @click="resetPassword(user)">重置密码</Button>
                     <Button type="error" size="small" @click="deleteUser(user)">删除</Button>
                 </template>
@@ -42,7 +43,7 @@
                 <FormItem label="密码:" prop="password">
                     <Input v-model="userClone.password" placeholder="请输入密码"/>
                 </FormItem>
-                <FormItem label="角色:" prop="roleValue">
+                <FormItem label="权限:" prop="roleValue">
                     <Select v-model="userClone.roleValue">
                         <Option v-for="role in roles" :value="role.value" :key="role.value">{{ role.name }}</Option>
                     </Select>
@@ -55,6 +56,17 @@
             <div slot="footer">
                 <Button type="text" @click="modal = false">取消</Button>
                 <Button type="primary" :loading="saving" @click="saveUser">保存</Button>
+            </div>
+        </Modal>
+
+        <!-- 修改权限弹窗 -->
+        <Modal v-model="roleModal" :mask-closable="false" title="修改权限" class="change-role-modal">
+            <Select v-model="userClone.roleValue">
+                <Option v-for="role in roles" :value="role.value" :key="role.value">{{ role.name }}</Option>
+            </Select>
+            <div slot="footer">
+                <Button type="text" @click="roleModal = false">取消</Button>
+                <Button type="primary" :loading="saving" @click="changeRole">保存</Button>
             </div>
         </Modal>
     </div>
@@ -80,13 +92,14 @@ export default {
                 { key : 'nickname', title: '姓名', width: 150 },
                 { key : 'username', title: '账号', width: 150, sortable: true },
                 { key : 'mobile',   title: '手机', width: 150 },
-                { slot: 'roles',    title: '角色', sortable: true },
-                { slot: 'action',   title: '操作', width: 180, align: 'center', className: 'table-action' },
+                { slot: 'roles',    title: '权限', sortable: true },
+                { slot: 'action',   title: '操作', width: 240, align: 'center', className: 'table-action' },
             ],
 
             userClone: {},    // 用于编辑的用户
             modal    : false, // 是否显示弹窗
             saving   : false, // 保存中
+            roleModal: false, // 修改用户权限弹窗
             userRules: {
                 username: [
                     { required: true, whitespace: true, message: '账号不能为空', trigger: 'blur' }
@@ -217,6 +230,41 @@ export default {
                         this.users.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
                         this.$Modal.remove();
                         this.$Message.success('删除成功');
+                    });
+                }
+            });
+        },
+        // 显示修改权限弹窗
+        showChangeRoleModal(user) {
+            this.userClone = Utils.clone(user); // 重要: 克隆对象
+            this.roleModal = true;
+        },
+        // 修改用户的权限
+        changeRole() {
+            // 1. 校验权限不能为空
+            // 2. 确认修改
+            // 3. 修改成功后更新列表中用户的权限，关闭弹窗
+
+            // [1] 校验权限不能为空
+            if (!this.userClone.roleValue) {
+                this.$Message.error('请选择权限');
+                return;
+            }
+
+            const user = this.userClone;
+
+            // [2] 确认修改
+            this.$Modal.confirm({
+                title: `确定修改用户 <font color="red">${user.nickname} </font> 的权限吗吗?`,
+                loading: true,
+                onOk: () => {
+                    UserDao.patchUser({ userId: user.userId, role: user.roleValue }).then(() => {
+                        const found = this.users.find(u => u.userId === user.userId);
+                        if (found) {
+                            found.roles = [user.roleValue];
+                        }
+                        this.$Modal.remove();
+                        this.roleModal = false;
                     });
                 }
             });

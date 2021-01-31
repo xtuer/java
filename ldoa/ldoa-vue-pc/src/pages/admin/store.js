@@ -26,6 +26,10 @@ export default new Vuex.Store({
         // 已登录返回 true，否则返回 false
         logined(state) {
             return state.user.userId;
+        },
+        // 当前登陆用户 ID
+        currentUserId(state) {
+            return state.user.userId;
         }
     }
 });

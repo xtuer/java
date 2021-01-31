@@ -23,6 +23,7 @@ CREATE TABLE `order` (
     delivery_date    datetime NOT NULL        COMMENT '交货日期',
     state            int(11)       DEFAULT 0  COMMENT '状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)',
     product_codes    varchar(512)  DEFAULT '' COMMENT '产品编码，使用逗号分隔',
+    product_names    text                     COMMENT '产品名称，使用逗号分隔',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

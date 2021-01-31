@@ -99,7 +99,7 @@ export default {
         },
         itemClass(item) {
             return {
-                'color-error': item.count <= item.warnCount
+                'text-color-error': item.count <= item.warnCount
             };
         }
     },

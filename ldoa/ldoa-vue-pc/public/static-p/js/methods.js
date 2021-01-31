@@ -47,6 +47,26 @@ const isSystemAdmin = function(user) {
     return user.roles.includes('ROLE_ADMIN_SYSTEM');
 };
 
+/**
+ * 判断传入的 userId 是否当前登陆用户的 ID
+ *
+ * @param {Long} userId 用户 ID
+ * @return {Bool} 是当前用户返回 true，否则返回 false
+ */
+const isCurrentUser = function(userId) {
+    return userId === this.$store.state.user.userId;
+};
+
+/**
+ * 获取当前登陆用户的 ID
+ *
+ * @return {Long} 返回登陆用户的 ID
+ */
+const currentUserId = function() {
+    return this.$store.state.user.userId;
+};
+
+
 // 状态: { "初始化", "审批中", "审批拒绝", "审批通过", "完成" }
 /**
  * 返回状态对应的颜色，给 Tag 使用，参考 https://iviewui.com/components/tag
@@ -70,5 +90,7 @@ export default {
     download,
     goBack,
     isSystemAdmin,
+    isCurrentUser,
+    currentUserId,
     stateColor,
 };

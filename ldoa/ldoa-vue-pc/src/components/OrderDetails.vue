@@ -23,21 +23,21 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
             <!-- 客户信息 -->
             <tr>
-                <td>客户单位</td>
+                <td class="text-color-gray">客户单位</td>
                 <td colspan="4">{{ order.customerCompany }}</td>
             </tr>
             <tr>
-                <td>客户联系人</td>
+                <td class="text-color-gray">客户联系人</td>
                 <td colspan="5">{{ order.customerContact }}</td>
             </tr>
             <tr>
-                <td>客户收件地址</td>
+                <td class="text-color-gray">客户收件地址</td>
                 <td colspan="4">{{ order.customerAddress }}</td>
             </tr>
             <tr>
-                <td>销售负责人</td>
+                <td class="text-color-gray">销售负责人</td>
                 <td colspan="1">{{ salesperson }}</td>
-                <td style="text-align: right">订单类型</td>
+                <td class="text-color-gray text-align-right">订单类型</td>
                 <td colspan="2">{{ order.type | labelForValue(window.ORDER_TYPES) }}</td>
             </tr>
 
@@ -65,28 +65,47 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <td class="center">{{ item.count }}</td>
                 <td>{{ item.comment }}</td>
             </tr>
+            <tr v-if="items.length === 0">
+                <td colspan="5" class="text-color-gray text-align-center">无</td>
+            </tr>
 
             <!-- 校准 -->
             <tr>
                 <td colspan="5">
-                    <div>是否校准: {{ order.calibrated ? '是' : '否' }}</div>
-                    <div style="margin-top: 20px">校准信息: {{ order.calibrationInfo || '无' }}</div>
+                    <div>
+                        <span class="text-color-gray">是否校准:</span>
+                        {{ order.calibrated ? '是' : '否' }}
+                    </div>
+                    <div class="margin-top-20">
+                        <span class="text-color-gray">校准信息:</span>
+                        {{ order.calibrationInfo || '无' }}
+                    </div>
                 </td>
             </tr>
 
             <!-- 其他要求 -->
             <tr>
                 <td colspan="5">
-                    <div> 其他要求: {{ order.requirement || '无' }}</div>
+                    <div>
+                        <span class="text-color-gray">其他要求:</span>
+                        {{ order.requirement || '无' }}
+                    </div>
 
-                    <div style="margin-top: 20px">
-                        订单附件:
+                    <div class="margin-top-20">
+                        <span class="text-color-gray">订单附件:</span>
                         <a v-if="attachment.id !== '0'" :href="attachment.url">{{ attachment.filename }}</a>
                         <span v-else>无</span>
                     </div>
 
-                    <div class="sign">销售人员 ({{ salesperson }}) / {{ order.createdAt | formatDate }}</div>
+                    <div class="margin-top-20">
+                        <span class="text-color-gray">销售人员:</span>
+                        {{ salesperson }} / {{ order.createdAt | formatDate }}
+                    </div>
                 </td>
+            </tr>
+
+            <tr>
+                <td colspan="5" class="text-align-center background-gray">审批</td>
             </tr>
 
             <!-- 审批信息 -->
@@ -101,7 +120,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div slot="footer">
             <!-- <Button type="text" @click="showEvent(false)">取消</Button> -->
             <!-- <Button type="primary" @click="showEvent(false)">确定</Button> -->
-            <Button v-if="auditPass" :loading="saving" type="primary" @click="completeOrder">完成订单</Button>
+            <Button v-if="canCompleteOrder" :loading="saving" type="primary" @click="completeOrder">完成订单</Button>
         </div>
     </Modal>
 </template>
@@ -127,7 +146,6 @@ export default {
             audit: {}, // 审批
             loading  : false,
             saving   : false,
-            auditPass: false, // 审批是否通过
         };
     },
     computed: {
@@ -154,6 +172,16 @@ export default {
             } else {
                 return { id: '0' };
             }
+        },
+        // 是否可以完成订单
+        canCompleteOrder() {
+            // 当前状态为 3 且其销售员为当前登陆用户
+            // order.state === 3; // "初始化", "审批中", "审批拒绝", "审批通过", "完成"
+            if (this.order.state === 3 && this.isCurrentUser(this.order.salespersonId)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     },
     methods: {
@@ -177,7 +205,6 @@ export default {
             ]).then(([order, audit]) => {
                 this.order = order;
                 this.audit = audit;
-                this.auditPass = order.state === 3; // "初始化", "审批中", "审批拒绝", "审批通过", "完成"
                 this.loading = false;
             }).catch(error => {
                 this.loading = false;

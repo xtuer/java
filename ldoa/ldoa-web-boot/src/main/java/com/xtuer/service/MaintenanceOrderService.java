@@ -19,7 +19,7 @@ public class MaintenanceOrderService extends BaseService {
     private MaintenanceOrderMapper orderMapper;
 
     @Autowired
-    private AuditService auditService;
+    private AuditServiceHelper auditServiceHelper;
 
     /**
      * 插入或者更新维保订单
@@ -60,7 +60,7 @@ public class MaintenanceOrderService extends BaseService {
         orderMapper.upsertMaintenanceOrder(order);
 
         // [5] 创建审批
-        auditService.upsertMaintenanceOrderAudit(servicePerson, order);
+        auditServiceHelper.upsertMaintenanceOrderAudit(servicePerson, order);
 
         return Result.ok(order);
     }

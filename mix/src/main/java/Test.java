@@ -7,25 +7,40 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.stream.Stream;
 
 public class Test {
-    public static void main(String[] args) throws Exception {
-        // ssh root@192.168.1.250 "kubectl exec -ti mysql-operator-59cd7bc869-8xng9 -n mysql-operator -- ps aux -w -w | grep mysql"
-        ProcessBuilder pb = new ProcessBuilder("ssh", "root@192.168.1.250", "kubectl exec -ti mysql-operator-59cd7bc869-8xng9 -n mysql-operator -- ps aux -w -w | grep mysql");
-        pb.redirectErrorStream(true); // 错误的输出会 redirect 到成功的输出中
-        Process p = pb.start();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line = null;
+    public static void main(String[] args) {
+        Connection connection = null;
+        Statement statement;
+        ResultSet resultSet;
+        try {
+            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");//这个驱动不能是其他的..
+            connection = DriverManager.getConnection("jdbc:odbc:ldoa", "root", "root"); //user是data Source ，root是用
 
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
+            System.out.println("open easy");
+            String query = "Select * from user";
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            connection.close();
+            System.out.println("close easy");
+
         }
-
-        // p.waitFor();
-
-        System.out.println("End");
+        catch (ClassNotFoundException cnfex) {
+            System.err.println(
+                    "装载 JDBC/ODBC 驱动程序失败。");
+            cnfex.printStackTrace();
+            System.exit(1); // terminate program
+        }
+        catch (SQLException sqlex) {
+            System.err.println("无法连接数据库");
+            sqlex.printStackTrace();
+            System.exit(1); // terminate program
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 }

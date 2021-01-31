@@ -7,7 +7,7 @@
     <sql id="orderFullColumns">
         o.order_id, o.order_sn, o.type, o.customer_company, o.customer_contact, o.customer_address,
         o.order_date, o.delivery_date, o.salesperson_id, o.calibrated, o.calibration_info,
-        o.requirement, o.state, o.attachment_id, o.product_codes, o.created_at,
+        o.requirement, o.state, o.attachment_id, o.product_codes, o.product_names, o.created_at,
 
         oi.order_item_id, oi.count, oi.comment,
 
@@ -39,6 +39,9 @@
                     <if test="filter.productCodes!=null and filter.productCodes!='' ">
                         AND product_codes LIKE CONCAT('%', #{filter.productCodes},'%')
                     </if>
+                    <if test="filter.productNames!=null and filter.productNames!='' ">
+                        AND product_names LIKE CONCAT('%', #{filter.productNames},'%')
+                    </if>
                     <if test="filter.state >= 0">
                         AND state = #{filter.state}
                     </if>
@@ -60,16 +63,16 @@
     <update id="upsertOrder">
         INSERT INTO `order` (order_id, order_sn, type, customer_company, customer_contact, customer_address,
             order_date, delivery_date, salesperson_id, calibrated, calibration_info,
-            requirement, attachment_id, product_codes, state)
+            requirement, attachment_id, product_codes, product_names, state)
         VALUES (#{orderId}, #{orderSn}, #{type}, #{customerCompany}, #{customerContact}, #{customerAddress},
             #{orderDate}, #{deliveryDate}, #{salespersonId}, #{calibrated}, #{calibrationInfo},
-            #{requirement}, #{attachmentId}, #{productCodes}, #{state})
+            #{requirement}, #{attachmentId}, #{productCodes}, #{productNames}, #{state})
 
         ON DUPLICATE KEY
         UPDATE customer_company = #{customerCompany}, customer_contact = #{customerContact}, customer_address = #{customerAddress},
             order_date = #{orderDate}, delivery_date = #{deliveryDate}, calibrated = #{calibrated},
             calibration_info = #{calibrationInfo}, requirement = #{requirement},
-            attachment_id = #{attachmentId}, product_codes = #{productCodes}, type = #{type}
+            attachment_id = #{attachmentId}, product_codes = #{productCodes}, product_names = #{productNames}, type = #{type}
     </update>
 
     <!-- 插入订单项 -->
@@ -108,6 +111,7 @@
         <result property="attachmentId"    column="attachment_id"/>
         <result property="state"           column="state"/>
         <result property="productCodes"    column="product_codes"/>
+        <result property="productNames"    column="product_names"/>
         <result property="createdAt"       column="created_at"/>
 
         <association property="salesperson" resultMap="salespersonMap"/>

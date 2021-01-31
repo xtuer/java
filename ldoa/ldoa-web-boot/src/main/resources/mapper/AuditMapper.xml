@@ -45,13 +45,33 @@
         WHERE target_id = #{targetId}
     </select>
 
+    <!-- 查询审批
+         审批申请人 ID 大于 0，则查询此审批申请人发起的审批
+         state 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+    -->
+    <select id="findAuditsByApplicantIdAndState" resultType="Audit">
+        SELECT type, audit_id, applicant_id, target_id, `desc`, state, audit.created_at, user.nickname AS applicant_nickname
+        FROM audit
+            LEFT JOIN user ON user.user_id = audit.applicant_id
+        <where>
+            <if test="applicantId > 0">
+                applicant_id = #{applicantId}
+            </if>
+            <if test="state >= 0">
+                AND state = #{state}
+            </if>
+        </where>
+        ORDER BY audit.created_at
+        LIMIT ${page.offset}, ${page.count}
+    </select>
+
     <!-- 更新或者插入审批 -->
     <insert id="upsertAudit">
-        INSERT INTO audit (type, audit_id, applicant_id, target_id, target_json, `desc`)
-        VALUES (#{type}, #{auditId}, #{applicantId}, #{targetId}, #{targetJson}, #{desc})
+        INSERT INTO audit (type, audit_id, applicant_id, target_id, target_json, `desc`, state)
+        VALUES (#{type}, #{auditId}, #{applicantId}, #{targetId}, #{targetJson}, #{desc}, #{state})
 
         ON DUPLICATE KEY
-        UPDATE target_json = #{targetJson}, `desc` = #{desc}
+        UPDATE target_json = #{targetJson}, `desc` = #{desc}, state = #{state}
     </insert>
 
     <!-- 更新审批状态 -->
@@ -68,29 +88,33 @@
     |                                             审批项
     ========================================================================================-->
     <!-- 审批项的列 -->
-    <sql id="auditItemColumns">
+    <sql id="auditStepColumns">
         ai.type, ai.audit_id, ai.step, ai.applicant_id, ai.target_id, ai.auditor_id,
         ai.state, ai.processed_at, ai.comment, ai.attachment_id, ai.created_at
     </sql>
 
     <!-- 查询审批项 -->
     <select id="findAuditItemByAuditItemId" resultType="AuditStep">
-        SELECT <include refid="auditItemColumns"/>
-        FROM audit_item ai
+        SELECT <include refid="auditStepColumns"/>
+        FROM audit_step ai
         WHERE audit_item_id = #{auditItemId}
     </select>
 
-    <!-- 查询审批项 -->
+    <!-- 查询审批阶段 (同时查询了附件) -->
     <select id="findAuditStepsByAuditId" resultType="AuditStep">
-        SELECT <include refid="auditItemColumns"/>
+        SELECT <include refid="auditStepColumns"/>,
+            uf.id AS 'attachment.id',
+            uf.filename AS 'attachment.filename',
+            uf.url AS 'attachment.url'
         FROM audit_step ai
+            LEFT JOIN uploaded_file uf ON uf.id = ai.attachment_id
         WHERE audit_id = #{auditId}
     </select>
 
     <!-- 查询审批员需要审批的审批项 (state 为 -1 时查询全部) -->
     <select id="findAuditStepsByApplicantIdOrAuditorIdAndState" resultType="AuditStep">
-        SELECT <include refid="auditItemColumns"/>, u.nickname AS applicant_nickname, a.desc
-        FROM audit_item ai
+        SELECT <include refid="auditStepColumns"/>, u.nickname AS applicant_nickname, a.desc
+        FROM audit_step ai
             LEFT JOIN audit a ON a.audit_id = ai.audit_id
             LEFT JOIN user u ON u.user_id = ai.applicant_id
         <where>
@@ -119,14 +143,19 @@
     </insert>
 
     <!-- 通过或者拒绝审批项 -->
-    <update id="acceptOrRejectAuditItem">
-        UPDATE audit_item SET state = #{state}, comment = #{comment}, processed_at = now()
-        WHERE audit_item_id = #{auditItemId}
+    <update id="acceptOrRejectAuditStep">
+        UPDATE audit_step SET state = #{state}, comment = #{comment}, attachment_id = #{attachmentId}, processed_at = now()
+        WHERE audit_id = #{auditId} AND step = #{step}
     </update>
 
     <!-- 更新审批项的状态 -->
-    <update id="updateAuditItemState">
-        UPDATE audit_item SET state = #{state} WHERE audit_item_id = #{auditItemId}
+    <update id="updateAuditStepState">
+        UPDATE audit_step SET state = #{state} WHERE audit_id = #{auditId} AND step = #{step}
+    </update>
+
+    <!-- 更新审批阶段的审批员 -->
+    <update id="updateAuditStepAuditor">
+        UPDATE audit_step SET auditor_id = #{auditorId} WHERE audit_id = #{auditId} AND step = #{step}
     </update>
 
     <!-- 删除指定 targetId 和类型的审批项 -->

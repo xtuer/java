@@ -3,30 +3,48 @@
  */
 
 /*
-ROLE_ADMIN("管理员"),
-ROLE_SALESPERSON("销售"),
-ROLE_SERVICE("售后"),
-ROLE_CHECK("检验"),
-ROLE_BUYER("采购物流"),
-ROLE_PRODUCE("生产操作"),
-ROLE_SCHEDULE("生产调度"),
-ROLE_QUALITY("质量保证"),
-ROLE_SUPPORT("技术支持"),
-ROLE_DESIGN("设计工艺"),
+管理者：黄经理
+销售部销售：薛诚、李征、宋岩、朱娟
+销售部技术支持：姜萌
+生产部生产维保：王嘉琦、贾琳、高金东、卢鑫
+销售部综合保证：王宇
+生产部质量保证：李玲琴
+生产部计划调度：王嘉琦
+生产部检验测试：赵文彬
+技术部硬件技术：李宇良
+技术部软件技术：刘建忠
+
+ROLE_ADMIN_SYSTEM("系统管理员"),
+ROLE_ADMIN("管理者"),
+
+ROLE_SALE_SALESPERSON("销售部销售"),
+ROLE_SALE_SUPPORT("销售部技术支持"),
+ROLE_SALE_GUARANTEE("销售部综合保证"),
+
+ROLE_PRODUCE_MAINTENANCE("生产部生产维保"),
+ROLE_PRODUCE_QUALITY("生产部质量保证"),
+ROLE_PRODUCE_SCHEDULE("生产部计划调度"),
+ROLE_PRODUCE_TEST("生产部检验测试"),
+
+ROLE_TECHNIQUE_HARDWARE("技术部硬件技术"),
+ROLE_TECHNIQUE_SOFTWARE("技术部软件技术");
 */
 // 角色
 window.ROLES = [
     { value: 'ROLE_ADMIN_SYSTEM', name: '系统管理员' },
-    { value: 'ROLE_ADMIN',        name: '管理员' },
-    { value: 'ROLE_SALESPERSON',  name: '销售' },
-    { value: 'ROLE_SERVICE',      name: '售后' },
-    { value: 'ROLE_CHECK',        name: '检验' },
-    { value: 'ROLE_BUYER',        name: '采购物流' },
-    { value: 'ROLE_PRODUCE',      name: '生产操作' },
-    { value: 'ROLE_SCHEDULE',     name: '生产调度' },
-    { value: 'ROLE_QUALITY',      name: '质量保证' },
-    { value: 'ROLE_SUPPORT',      name: '技术支持' },
-    { value: 'ROLE_DESIGN',       name: '设计工艺' },
+    { value: 'ROLE_ADMIN',        name: '管理者' },
+
+    { value: 'ROLE_SALE_SALESPERSON', name: '销售部销售' },
+    { value: 'ROLE_SALE_SUPPORT', name: '销售部技术支持' },
+    { value: 'ROLE_SALE_GUARANTEE', name: '销售部综合保证' },
+
+    { value: 'ROLE_PRODUCE_MAINTENANCE', name: '生产部生产维保' },
+    { value: 'ROLE_PRODUCE_QUALITY', name: '生产部质量保证' },
+    { value: 'ROLE_PRODUCE_SCHEDULE', name: '生产部计划调度' },
+    { value: 'ROLE_PRODUCE_TEST', name: '生产部检验测试' },
+
+    { value: 'ROLE_TECHNIQUE_HARDWARE', name: '技术部硬件技术' },
+    { value: 'ROLE_TECHNIQUE_SOFTWARE', name: '技术部软件技术' },
 ];
 
 // 审批类型
@@ -40,8 +58,15 @@ window.AUDIT_TYPES = [
 window.TYPE_ORDER = 'ORDER';               // 订单
 window.TYPE_OUT_OF_STOCK = 'OUT_OF_STOCK'; // 出库申请
 
-// 审批项状态
-window.AUDIT_ITEM_STATE = [
+window.AUDIT_STATES = [
+    { value: 1, label: '待审批' },
+    { value: 2, label: '拒绝' },
+    { value: 3, label: '通过' },
+    { value: -1, label: '所有' },
+];
+
+// 审批阶段状态
+window.AUDIT_ITEM_STATES = [
     { value: 1,  label: '待审批' },
     { value: 2,  label: '拒绝' },
     { value: 3,  label: '通过' },

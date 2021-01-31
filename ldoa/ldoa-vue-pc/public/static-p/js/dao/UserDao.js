@@ -84,8 +84,9 @@ export default class UserDao {
      *      oldPassword   [可选]: 旧密码
      *      newPassword   [可选]: 新密码
      *      renewPassword [可选]: 确认的密码
+     *      role          [可选]: 角色
      *
-     * 案例: UserDao.patchUser({ id: 1, nickname: 'Bob' })
+     * 案例: UserDao.patchUser({ userId: 1, nickname: 'Bob' })
      *
      * 1. 更新头像成功时，data 为头像的正式 URL
      * 2. 更新其他属性成功时 data 为空，message 为对应属性更新成功提示
@@ -93,7 +94,7 @@ export default class UserDao {
      * @return {Promise} 返回 Promise 对象，resolve 的参数为对应更新操作的结果，reject 的参数为错误信息
      */
     static patchUser(user) {
-        return Rest.patch(Urls.API_USERS_BY_ID, { params: { userId: user.id }, data: user }).then(({ data, success, message }) => {
+        return Rest.patch(Urls.API_USERS_BY_ID, { params: { userId: user.userId }, data: user }).then(({ data, success, message }) => {
             return Utils.response(data, success, message, true);
         });
     }

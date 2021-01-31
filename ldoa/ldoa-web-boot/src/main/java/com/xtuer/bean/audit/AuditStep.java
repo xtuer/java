@@ -1,5 +1,6 @@
 package com.xtuer.bean.audit;
 
+import com.xtuer.bean.UploadedFile;
 import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -90,6 +91,11 @@ public class AuditStep {
      * 附件 ID
      */
     private long attachmentId;
+
+    /**
+     * 附件
+     */
+    private UploadedFile attachment;
 
     /**
      * 获取审批状态 Label

@@ -125,16 +125,16 @@ VALUES (1, 'ROLE_ADMIN_SYSTEM');
 # 3. 创建角色
 INSERT INTO role (name, value)
 VALUES ('ROLE_ADMIN_SYSTEM', '系统管理员'),
-       ('ROLE_ADMIN_ORG',    '机构管理员'),
-       ('ROLE_SALESPERSON',  '销售'),
-       ('ROLE_SERVICE',      '售后'),
-       ('ROLE_CHECK',        '检验'),
-       ('ROLE_BUYER',        '采购物流'),
-       ('ROLE_PRODUCE',      '生产操作'),
-       ('ROLE_SCHEDULE',     '生产调度'),
-       ('ROLE_QUALITY',      '质量保证'),
-       ('ROLE_SUPPORT',      '技术支持'),
-       ('ROLE_DESIGN',       '设计工艺');
+       ('ROLE_ADMIN', '管理者'),
+       ('ROLE_SALE_SALESPERSON', '销售部销售'),
+       ('ROLE_SALE_SUPPORT', '销售部技术支持'),
+       ('ROLE_SALE_GUARANTEE', '销售部综合保证'),
+       ('ROLE_PRODUCE_MAINTENANCE', '生产部生产维保'),
+       ('ROLE_PRODUCE_QUALITY', '生产部质量保证'),
+       ('ROLE_PRODUCE_SCHEDULE', '生产部计划调度'),
+       ('ROLE_PRODUCE_TEST', '生产部检验测试'),
+       ('ROLE_TECHNIQUE_HARDWARE', '技术部硬件技术'),
+       ('ROLE_TECHNIQUE_SOFTWARE', '技术部软件技术');
 
 #--------------------------------------------------------------------------------------
 # SQL 示例

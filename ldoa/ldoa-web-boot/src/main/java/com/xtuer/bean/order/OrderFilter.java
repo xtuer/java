@@ -22,6 +22,11 @@ public class OrderFilter {
     private String productCodes;
 
     /**
+     * 订单的产品名称，使用逗号分隔，方便搜索
+     */
+    private String productNames;
+
+    /**
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
     private int state;

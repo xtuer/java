@@ -86,13 +86,14 @@ public interface Urls {
     String API_MAINTENANCE_ORDERS_BY_ID = "/api/maintenance-orders/{orderId}";
 
     // 审批
-    String API_AUDITS_BY_ID          = "/api/audits/{auditId}";            // 指定 ID 的审批
-    String API_AUDITS_BY_TARGET      = "/api/audits/of-target/{targetId}"; // 审批目标的审批
-    String API_AUDIT_CONFIGS         = "/api/audit-configs";               // 审批配置
-    String API_AUDIT_CONFIGS_BY_TYPE = "/api/audit-configs/{type}";        // 指定类型的审批
-    String API_AUDIT_ITEMS           = "/api/audit-items";                 // 审批项
-    String API_AUDIT_ITEMS_ACCEPT    = "/api/audit-items/{auditItemId}/accept"; // 通过或拒绝审批项
-    String API_AUDITORS              = "/api/auditors";                         // 审批员
+    String API_AUDITS                = "/api/audits";                               // 审批
+    String API_AUDITS_BY_ID          = "/api/audits/{auditId}";                     // 指定 ID 的审批
+    String API_AUDITS_BY_TARGET      = "/api/audits/of-target/{targetId}";          // 审批目标的审批
+    String API_AUDIT_CONFIGS         = "/api/audit-configs";                        // 审批配置
+    String API_AUDIT_CONFIGS_BY_TYPE = "/api/audit-configs/of-type/{type}";         // 指定类型的审批
+    String API_AUDIT_STEPS           = "/api/audit-steps";                          // 审批项
+    String API_AUDIT_STEPS_ACCEPT    = "/api/audits/{auditId}/steps/{step}/accept"; // 通过或拒绝审批阶段
+    String API_AUDITORS              = "/api/auditors";                             // 审批员
 
     // 库存
     String API_STOCKS          = "/api/stocks";          // 库存

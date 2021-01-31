@@ -59,8 +59,8 @@ export default class AuditDao {
      * 网址: http://localhost:8080/api/audits/of-target/{targetId}
      * 参数: 无
      *
-     * @param targetId 审批目标的 ID
-     * @return payload 为审批
+     * @param {Long} targetId 审批目标的 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为审批，reject 的参数为错误信息
      */
     static findAuditOfTarget(targetId) {
         return Rest.get(Urls.API_AUDITS_BY_TARGET, { params: { targetId } }).then(({ data: audit, success, message }) => {
@@ -70,6 +70,27 @@ export default class AuditDao {
             }
 
             return Utils.response(audit, success, message);
+        });
+    }
+
+    /**
+     * 查询审批:
+     *      * 审批申请人 ID 大于 0，则查询此审批申请人发起的审批
+     *      * state 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+     *
+     * 网址: http://localhost:8080/api/audits
+     * 参数:
+     *      applicantId [可选]: 审批申请人 ID
+     *      state       [可选]: 审批状态
+     *      pageNumber  [可选]: 页码
+     *      pageSize    [可选]: 数量
+     *
+     * @param {Json} filter 过滤条件，参考上面的参数
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为审批数组，reject 的参数为错误信息
+     */
+    static findAudits(filter) {
+        return Rest.get(Urls.API_AUDITS, { data: filter }).then(({ data: audits, success, message }) => {
+            return Utils.response(audits, success, message);
         });
     }
 
@@ -90,21 +111,33 @@ export default class AuditDao {
      * @param {JSON} filter 过滤条件
      * @return {Promise} 返回 Promise 对象，resolve 的参数为审批项的数组，reject 的参数为错误信息
      */
-    static findAuditItemsByApplicantIdOrAuditorIdAndState(filter) {
-        return Rest.get(Urls.API_AUDIT_ITEMS, { data: filter }).then(({ data: auditItems, success, message }) => {
+    static findAuditStepsByApplicantIdOrAuditorIdAndState(filter) {
+        return Rest.get(Urls.API_AUDIT_STEPS, { data: filter }).then(({ data: auditItems, success, message }) => {
             return Utils.response(auditItems, success, message);
         });
     }
 
     /**
-     * 审批: 通过或者拒绝审批项
+     * 审批: 通过或者拒绝审批阶段
      *
-     * @param {Long} auditItemId 审批项 ID
-     * @param {Bool} accepted    true 为通过审批，false 为拒绝审批
-     * @param {String} comment   审批意见
+     * 网址: http://localhost:8080/api/audits/{auditId}/steps/{step}/accept
+     * 参数:
+     *      accepted     (必要): 为 true 表示通过，false 表示拒绝
+     *      comment      [可选]: 审批意见
+     *      attachmentId [可选]: 附件 ID
+     *
+     * @param auditId  审批 ID
+     * @param step     审批阶段
+     * @param accepted true 为通过审批，false 为拒绝审批
+     * @param comment  审批意见
+     * @param attachmentId 附件 ID
+     * @param nextStepAuditorId 下一阶段的审批员 ID
      */
-    static acceptAuditItem(auditItemId, accepted, comment) {
-        return Rest.update(Urls.API_AUDIT_ITEMS_ACCEPT, { params: { auditItemId }, data: { accepted, comment } }).then(({ success, message }) => {
+    static acceptAuditStep(auditId, step, accepted, comment, attachmentId, nextStepAuditorId) {
+        return Rest.update(Urls.API_AUDIT_STEPS_ACCEPT, {
+            params: { auditId, step },
+            data: { accepted, comment, attachmentId, nextStepAuditorId }
+        }).then(({ success, message }) => {
             return Utils.response(null, success, message);
         });
     }

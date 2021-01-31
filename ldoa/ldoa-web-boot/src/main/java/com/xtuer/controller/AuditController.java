@@ -42,7 +42,7 @@ public class AuditController {
     /**
      * 查询指定类型的审批配置
      *
-     * 网址: http://localhost:8080/api/audit-configs/{type}
+     * 网址: http://localhost:8080/api/audit-configs/of-type/{type}
      * 参数: 无
      *
      * @param type 审批的类型
@@ -98,12 +98,37 @@ public class AuditController {
     }
 
     /**
-     * 查询审批项:
+     * 查询审批:
+     *      * 审批申请人 ID 大于 0，则查询此审批申请人发起的审批
+     *      * state 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+     *
+     * 网址: http://localhost:8080/api/audits
+     * 参数:
+     *      applicantId [可选]: 审批申请人 ID
+     *      state       [可选]: 审批状态
+     *      pageNumber  [可选]: 页码
+     *      pageSize    [可选]: 数量
+     *
+     * @param applicantId 审批申请人 ID
+     * @param state       审批状态
+     * @param page        分页对象
+     * @return payload 为审批数组
+     */
+    @GetMapping(Urls.API_AUDITS)
+    public Result<List<Audit>> findAudits(
+            @RequestParam(required = false, defaultValue = "0") long applicantId,
+            @RequestParam(required = false, defaultValue = "-1") int state,
+            Page page) {
+        return Result.ok(auditMapper.findAuditsByApplicantIdAndState(applicantId, state, page));
+    }
+
+    /**
+     * 查询审批阶段:
      *     * 审批员 ID 大于 0，则查询此审批员收到的审批
      *     * 申请人 ID 大于 0，则查询此人发起的审批
      *     * state 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
      *
-     * 网址: http://localhost:8080/api/audit-items?auditorId=1
+     * 网址: http://localhost:8080/api/audit-steps?auditorId=1
      * 参数:
      *      applicantId [可选]: 审批申请人 ID
      *      auditorId   [可选]: 审批员 ID
@@ -111,10 +136,10 @@ public class AuditController {
      *      pageNumber  [可选]: 页码
      *      pageSize    [可选]: 数量
      *
-     * @return payload 为审批项数组
+     * @return payload 为审批阶段数组
      */
-    @GetMapping(Urls.API_AUDIT_ITEMS)
-    public Result<List<AuditStep>> findAuditItemsByApplicantIdOrAuditorIdAndState(
+    @GetMapping(Urls.API_AUDIT_STEPS)
+    public Result<List<AuditStep>> findAuditSteps(
             @RequestParam(required = false, defaultValue = "0") long applicantId,
             @RequestParam(required = false, defaultValue = "0") long auditorId,
             @RequestParam(required = false, defaultValue = "-1") int state,
@@ -125,21 +150,30 @@ public class AuditController {
     }
 
     /**
-     * 审批: 通过或者拒绝审批项
+     * 审批: 通过或者拒绝审批阶段
      *
-     * 网址: http://localhost:8080/api/audit-items/{auditItemId}/accept
+     * 网址: http://localhost:8080/api/audits/{auditId}/steps/{step}/accept
      * 参数:
-     *      accepted (必要): 为 true 表示通过，false 表示拒绝
-     *      comment  [可选]: 审批意见
+     *      accepted     (必要): 为 true 表示通过，false 表示拒绝
+     *      comment      [可选]: 审批意见
+     *      attachmentId [可选]: 附件 ID
+     *      nextStepAuditorId [必要]: 下一阶段审批员 ID
      *
-     * @param auditItemId 审批项 ID
-     * @param accepted    true 为通过审批，false 为拒绝审批
+     * @param auditId  审批 ID
+     * @param step     审批阶段
+     * @param accepted true 为通过审批，false 为拒绝审批
+     * @param comment  审批意见
+     * @param attachmentId 附件 ID
+     * @param nextStepAuditorId 下一阶段审批员 ID
      */
-    @PutMapping(Urls.API_AUDIT_ITEMS_ACCEPT)
-    public Result<Boolean> acceptAuditItem(@PathVariable long auditItemId,
+    @PutMapping(Urls.API_AUDIT_STEPS_ACCEPT)
+    public Result<Boolean> acceptAuditStep(@PathVariable long auditId,
+                                           @PathVariable int  step,
                                            @RequestParam boolean accepted,
-                                           @RequestParam(required = false) String comment) {
-        auditService.acceptAuditItem(auditItemId, accepted, comment);
+                                           @RequestParam(required = false) String comment,
+                                           @RequestParam(required = false) long attachmentId,
+                                           @RequestParam long nextStepAuditorId) {
+        auditService.acceptAuditStep(auditId, step, accepted, comment, attachmentId, nextStepAuditorId);
         return Result.ok();
     }
 

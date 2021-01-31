@@ -35,7 +35,7 @@ public class StockService extends BaseService {
     private ProductMapper productMapper;
 
     @Autowired
-    private AuditService auditService;
+    private AuditServiceHelper auditServiceHelper;
 
     /**
      * 查询指定 ID 的库存操作申请
@@ -186,7 +186,7 @@ public class StockService extends BaseService {
         }
 
         // [5] 创建出库申请的审批，失败则不继续处理，抛异常是为了事务回滚
-        auditService.insertStockRequestAudit(user, request);
+        auditServiceHelper.insertStockRequestAudit(user, request);
 
         return Result.ok(request);
     }

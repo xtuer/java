@@ -108,6 +108,11 @@ public class RepoFileService {
      * @param dirs 文件夹名的数组
      */
     public void moveTempFileToRepo(long uploadedFileId, String... dirs) {
+        // 无效 ID 则返回
+        if (Utils.isInvalidId(uploadedFileId)) {
+            return;
+        }
+
         UploadedFile file = fileMapper.findUploadedFileById(uploadedFileId);
 
         if (file != null) {

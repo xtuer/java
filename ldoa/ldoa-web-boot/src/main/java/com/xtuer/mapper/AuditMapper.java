@@ -59,6 +59,18 @@ public interface AuditMapper {
     Audit findAuditByTargetId(long targetId);
 
     /**
+     * 查询审批
+     * * 审批申请人 ID 大于 0，则查询此审批申请人发起的审批
+     * * state 为 -1 时查询所有符合条件的审批，否则查询此状态的审批
+     *
+     * @param applicantId 审批申请人 ID
+     * @param state       审批状态
+     * @param page        分页对象
+     * @return 返回审批的数组
+     */
+    List<Audit> findAuditsByApplicantIdAndState(long applicantId, int state, Page page);
+
+    /**
      * 插入审批
      *
      * @param audit 审批
@@ -81,7 +93,7 @@ public interface AuditMapper {
     void deleteAuditByTargetId(long targetId);
 
     /*===============================================================================
-     *                                     审批项
+     *                                     审批阶段
      *=============================================================================*/
     /**
      * 查询审批项
@@ -92,7 +104,7 @@ public interface AuditMapper {
     AuditStep findAuditItemByAuditItemId(long auditItemId);
 
     /**
-     * 查询审批的阶段
+     * 查询审批的阶段 (同时查询了附件)
      *
      * @param auditId 审批 ID
      * @return 返回审批阶段数组
@@ -120,19 +132,31 @@ public interface AuditMapper {
     /**
      * 通过或者拒绝审批项
      *
-     * @param auditItemId 审批项 ID
-     * @param state      状态
-     * @param comment     审批意见
+     * @param auditId 审批项 ID
+     * @param step    阶段
+     * @param state   状态
+     * @param comment 审批意见
+     * @param attachmentId 附件 ID
      */
-    void acceptOrRejectAuditItem(long auditItemId, int state, String comment);
+    void acceptOrRejectAuditStep(long auditId, int step, int state, String comment, long attachmentId);
 
     /**
-     * 更新审批项的状态
+     * 更新审批阶段的状态
      *
-     * @param auditItemId 审批项的 ID
-     * @param state       审批项的状态
+     * @param auditId 审批 ID
+     * @param step    阶段
+     * @param state   阶段的状态
      */
-    void updateAuditItemState(long auditItemId, int state);
+    void updateAuditStepState(long auditId, int step, int state);
+
+    /**
+     * 更新审批阶段的审批员
+     *
+     * @param auditId   审批 ID
+     * @param step      阶段
+     * @param auditorId 审批员 ID
+     */
+    void updateAuditStepAuditor(long auditId, int step, long auditorId);
 
     /**
      * 删除审批的审批阶段

@@ -3,12 +3,8 @@ package com.xtuer.service;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.audit.*;
-import com.xtuer.bean.order.MaintenanceOrder;
-import com.xtuer.bean.order.Order;
-import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.AuditMapper;
-import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 审核服务
@@ -28,13 +23,7 @@ public class AuditService extends BaseService {
     private AuditMapper auditMapper;
 
     @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private StockService stockService;
-
-    @Autowired
-    private MaintenanceOrderService maintenanceOrderService;
+    private AuditServiceHelper helper;
 
     /**
      * 查询指定审批类型第 step 阶段的审批员
@@ -50,6 +39,10 @@ public class AuditService extends BaseService {
 
         // [1] 查询审批类型 type 对应的审批配置
         AuditConfig config = auditMapper.findAuditConfigByType(type);
+
+        if (config == null) {
+            return Collections.emptyList();
+        }
 
         for (AuditConfigStep s : config.getSteps()) {
             // [2] 返回第 step 阶段的审批员
@@ -121,51 +114,6 @@ public class AuditService extends BaseService {
     }
 
     /**
-     * 更新或者创建订单的审批
-     *
-     * @param applicant 申请人
-     * @param order     订单
-     * @return 返回操作结果
-     * @exception ApplicationException 审批配置无效时抛异常
-     */
-    public Result<Audit> upsertOrderAudit(User applicant, Order order) {
-        Objects.requireNonNull(order, "订单不能为空");
-        String desc = String.format("销售订单: %s, 客户: %s", order.getOrderSn(), order.getCustomerCompany());
-
-        return upsertAudit(applicant, AuditType.ORDER, order.getOrderId(), Utils.toJson(order), desc, order.getCurrentAuditorId());
-    }
-
-    /**
-     * 更新或者创建维保订单的审批
-     *
-     * @param applicant 申请人
-     * @param order     维保订单
-     * @return 返回操作结果
-     * @exception ApplicationException 审批配置无效时抛异常
-     */
-    public Result<Audit> upsertMaintenanceOrderAudit(User applicant, MaintenanceOrder order) {
-        Objects.requireNonNull(order, "维保订单不能为空");
-        String desc = String.format("维保订单: %s, 客户: %s", order.getMaintenanceOrderSn(), order.getCustomerName());
-
-        return upsertAudit(applicant, AuditType.MAINTENANCE_ORDER, order.getMaintenanceOrderId(), Utils.toJson(order), desc, 0);
-    }
-
-    /**
-     * 创建物料出库申请
-     *
-     * @param applicant 申请人
-     * @param request   出库申请
-     * @return 返回操作结果
-     * @exception ApplicationException 审批配置无效时抛异常
-     */
-    public Result<Audit> insertStockRequestAudit(User applicant, StockRequest request) {
-        Objects.requireNonNull(request, "出库申请不能为空");
-        String desc = String.format("出库单号: %s, 物料: %s", request.getStockRequestSn(), request.getDesc());
-
-        return upsertAudit(applicant, AuditType.OUT_OF_STOCK, request.getStockRequestId(), Utils.toJson(request), desc, 0);
-    }
-
-    /**
      * 更新或者创建审批
      *
      * @param applicant 申请人
@@ -211,9 +159,10 @@ public class AuditService extends BaseService {
                     .setTargetId(targetId);
         }
 
-        // 设置审批的目标和描述
+        // 设置审批的目标、描述和状态
         audit.setTargetJson(targetJson);
         audit.setDesc(desc);
+        audit.setState(Audit.STATUS_AUDITING);
 
         // [4] 创建审阶段
         final Audit back = audit;
@@ -299,18 +248,29 @@ public class AuditService extends BaseService {
     }
 
     /**
-     * 审批: 通过或者拒绝审批项
+     * 审批: 通过或者拒绝审批阶段
      *
-     * @param auditItemId 审批项 ID
-     * @param accepted    true 为通过，false 为拒绝
-     * @param comment     审批意见
+     * @param auditId  审批 ID
+     * @param step     审批阶段
+     * @param accepted true 为通过审批，false 为拒绝审批
+     * @param comment  审批意见
+     * @param attachmentId 附件 ID
+     * @param nextStepAuditorId 下一阶段审批员 ID
      */
     @Transactional(rollbackFor = Exception.class)
-    public void acceptAuditItem(long auditItemId, boolean accepted, String comment) {
-        // 审批项状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
-        // 1. 查询审批项，得到审批的 ID，然后获取此审批的所有审批项，计算出上一阶段、当前阶段、下一阶段的审批项
-        // 2. 如果审批通过:
-        //    2.1 更新当前审批项的状态为通过
+    public void acceptAuditStep(long auditId, int step, boolean accepted, String comment, long attachmentId, long nextStepAuditorId) {
+        // 审批阶段状态: 0 (初始化), 1 (待审批), 2 (拒绝), 3 (通过)
+        // 1. 查询所有审批阶段，计算最大阶段数，前一个阶段数
+        // 2. 移动附件的临时文件到文件仓库
+        // 3. 如果审批通过:
+        //    3.1 更新当前审批阶段的状态为通过
+        //    3.2 如果是最后一阶段，则审批通过
+        //    3.2 如果不是最后一阶段，则修改下一阶段的状态为待审批，且设置其审批员
+        // 4. 如果审批被拒绝:
+        //    4.1 更新当前审批项的状态为拒绝
+        //    4.2 如果是第一阶段，则审批不通过
+        //    4.3 如果不是第一阶段，则修改上一阶段审批项的状态为待审批
+
         //    2.2 统计最大的阶段数和当前阶段的审批项数量、通过的审批项数量、审批员数量
         //    2.3 当前阶段的审批项都为通过时:
         //        2.3.1 如果是最后一阶段，则审批通过
@@ -320,107 +280,58 @@ public class AuditService extends BaseService {
         //    3.2 如果是第一阶段，则审批不通过
         //    3.3 如果不是第一阶段，更新当前阶段待审批状态的审批项状态为初始化, 上一阶段审批项的状态为待审批
 
-        // [1] 查询审批项，得到审批的 ID，然后获取此审批的所有审批项，计算出上一阶段、当前阶段、下一阶段的审批项
-        /*AuditStep item = auditMapper.findAuditItemByAuditItemId(auditItemId); // 当前审批项
-        final int step = item.getStep(); // 当前审批项的阶段
-        final long auditId = item.getAuditId();
+        // [1] 查询所有审批阶段，计算最大阶段数，前一个阶段数
+        List<AuditStep> allSteps = auditMapper.findAuditStepsByAuditId(auditId);
+        AuditStep currentStep = allSteps.stream().filter(s -> s.getStep() == step).findFirst().orElse(null);
+        int maxStep  = allSteps.stream().mapToInt(AuditStep::getStep).max().orElse(Integer.MAX_VALUE);
+        int prevStep = step - 1;
+        int nextStep = step + 1;
 
-        List<AuditStep> allItems          = auditMapper.findAuditStepsByAuditId(item.getAuditId()); // 所属审批的所有审批项
-        List<AuditStep> currentStepItems  = allItems.stream().filter(t -> t.getStep() == step).collect(Collectors.toList());   // 当前阶段的审批项
-        List<AuditStep> previousStepItems = allItems.stream().filter(t -> t.getStep() == step-1).collect(Collectors.toList()); // 上一阶段的审批项
-        List<AuditStep> nextStepItems     = allItems.stream().filter(t -> t.getStep() == step+1).collect(Collectors.toList()); // 下一阶段的审批项
-
-        log.info("[开始] 审批审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
-
-        // 同步从数据库中查询得到的当前审批项的状态
-        for (AuditStep t : currentStepItems) {
-            if (t.getAuditStepId() == item.getAuditStepId()) {
-                t.setState(accepted ? AuditStep.STATE_ACCEPTED : AuditStep.STATE_REJECTED);
-                break;
-            }
+        if (currentStep == null) {
+            log.warn("[结束] 审批审批阶段: 审批 [{}], 阶段 [{}]，阶段不存在", auditId, step);
+            return;
         }
+
+        log.info("[开始] 审批审批阶段: 审批 [{}], 阶段 [{}]", auditId, step);
+
+        // [2] 移动附件的临时文件到文件仓库
+        repoFileService.moveTempFileToRepo(attachmentId);
 
         if (accepted) {
-            // [2] 如果审批通过
-            // [2.1] 更新当前审批项的状态为通过
-            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditStep.STATE_ACCEPTED, comment);
-            log.info("[通过] 审批审批项，通过审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
+            // [3] 如果审批通过
+            // [3.1] 更新当前审批项的状态为通过
+            auditMapper.acceptOrRejectAuditStep(auditId, step, AuditStep.STATE_ACCEPTED, comment, attachmentId);
+            log.info("[通过] 审批审批阶段，通过: 审批 [{}], 阶段 [{}]", auditId, step);
 
-            // [2.2] 统计最大的阶段数和当前阶段的审批项数量、通过的审批项数量、审批员数量
-            final int maxStep = allItems.stream().mapToInt(AuditStep::getStep).max().orElse(Integer.MAX_VALUE); // 最大的阶段数
-            final int currentStepItemCount = currentStepItems.size();                // 当前阶段的审批项数量
-            final int currentStepAcceptedItemCount = (int) currentStepItems.stream() // 当前阶段通过的审批项数量
-                    .filter(t -> t.getState() == AuditStep.STATE_ACCEPTED)
-                    .count();
-
-            // [2.3] 当前阶段的审批项都为通过时
-            if (currentStepItemCount == currentStepAcceptedItemCount) {
-                if (step == maxStep) {
-                    // [2.3.1] 如果是最后一阶段，则审批通过
-                    auditMapper.updateAuditState(item.getAuditId(), Audit.STATUS_ACCEPTED);
-                    acceptTarget(item.getAuditId(), item.getTargetId(), item.getType());
-                    log.info("[通过] 审批审批项，通过审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
-                } else {
-                    // [2.3.2] 如果不是最后一阶段，则修改下一阶段的所有审批项的状态为待审批
-                    nextStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditStepId(), AuditStep.STATE_WAIT));
-                    log.info("[通过] 审批审批项，下一阶段审批项状态修改为待审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
-                }
+            if (step == maxStep) {
+                // [3.2] 如果是最后一阶段，则审批通过
+                auditMapper.updateAuditState(auditId, Audit.STATUS_ACCEPTED);
+                helper.acceptTarget(auditId, currentStep.getTargetId(), currentStep.getType());
+                log.info("[通过] 审批审批阶段，通过审批: 审批 [{}]", auditId);
+            } else {
+                // [3.3] 如果不是最后一阶段，则修改下一阶段的状态为待审批，且设置其审批员
+                auditMapper.updateAuditStepState(auditId, nextStep, AuditStep.STATE_WAIT);
+                auditMapper.updateAuditStepAuditor(auditId, nextStep, nextStepAuditorId);
+                log.info("[通过] 审批审批阶段，下一阶段状态修改为待审批: 审批 [{}], 阶段 [{}]", auditId, nextStep);
             }
         } else {
-            // [3] 如果审批被拒绝
-            // [3.1] 更新当前审批项的状态为拒绝
-            auditMapper.acceptOrRejectAuditItem(auditItemId, AuditStep.STATE_REJECTED, comment);
-            log.info("[拒绝] 审批审批项，拒绝审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
+            // [4] 如果审批被拒绝
+            // [4.1] 更新当前审批项的状态为拒绝
+            auditMapper.acceptOrRejectAuditStep(auditId, step, AuditStep.STATE_REJECTED, comment, attachmentId);
+            log.info("[通过] 审批审批阶段，拒绝: 审批 [{}], 阶段 [{}]", auditId, step);
 
             if (step == 1) {
-                // [3.2] 如果是第一阶段，则审批不通过
-                auditMapper.updateAuditState(item.getAuditId(), Audit.STATUS_REJECTED);
-                rejectTarget(item.getAuditId(), item.getTargetId(), item.getType());
-                log.info("[拒绝] 审批审批项，拒绝审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
+                // [4.2] 如果是第一阶段，则审批不通过
+                auditMapper.updateAuditState(auditId, Audit.STATUS_REJECTED);
+                helper.rejectTarget(auditId, currentStep.getTargetId(), currentStep.getType());
+                log.info("[拒绝] 审批审批阶段，通过审批: 审批 [{}]", auditId);
             } else {
-                // [3.3] 如果不是第一阶段，更新当前阶段待审批状态的审批项状态为初始化, 上一阶段审批项的状态为待审批
-                currentStepItems.stream()
-                        .filter(t -> t.getState() == AuditStep.STATE_WAIT)
-                        .forEach(t -> auditMapper.updateAuditItemState(t.getAuditStepId(), AuditStep.STATE_INIT));
-                previousStepItems.forEach(t -> auditMapper.updateAuditItemState(t.getAuditStepId(), AuditStep.STATE_WAIT));
-                log.info("[拒绝] 审批审批项，前一阶段审批项状态修改为待审批: 审批 [{}], 审批项 [{}]", auditId, auditItemId);
+                // [4.3] 如果不是第一阶段，则修改上一阶段审批项的状态为待审批
+                auditMapper.updateAuditStepState(auditId, prevStep, AuditStep.STATE_WAIT);
+                log.info("[拒绝] 审批审批项，前一阶段审批项状态修改为待审批: 审批 [{}], 阶段 [{}]，前一阶段: [{}]", auditId, step, prevStep);
             }
         }
 
-        log.info("[结束] 审批审批项: 审批 [{}], 审批项 [{}]", auditId, auditItemId);*/
-    }
-
-    /**
-     * target 的审批通过
-     *
-     * @param auditId  审批的 ID
-     * @param targetId 审批目标的 ID
-     * @param type     审批的类型
-     */
-    public void acceptTarget(long auditId, long targetId, AuditType type) {
-        if (type == AuditType.ORDER) {
-            orderService.acceptOrder(targetId);
-        } else if (type == AuditType.MAINTENANCE_ORDER) {
-            maintenanceOrderService.acceptOrder(targetId);
-        } else if (type == AuditType.OUT_OF_STOCK) {
-            stockService.acceptStockRequest(targetId);
-        }
-    }
-
-    /**
-     * target 的审批被拒绝
-     *
-     * @param auditId  审批的 ID
-     * @param targetId 审批目标的 ID
-     * @param type     审批的类型
-     */
-    public void rejectTarget(long auditId, long targetId, AuditType type) {
-        if (type == AuditType.ORDER) {
-            orderService.rejectOrder(targetId);
-        } else if (type == AuditType.MAINTENANCE_ORDER) {
-            maintenanceOrderService.rejectOrder(targetId);
-        } else if (type == AuditType.OUT_OF_STOCK) {
-            stockService.rejectStockRequest(targetId);
-        }
+        log.info("[结束] 审批审批项: 审批 [{}], 阶段 [{}]", auditId, step);
     }
 }

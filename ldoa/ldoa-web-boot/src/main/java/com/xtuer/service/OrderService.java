@@ -29,7 +29,7 @@ public class OrderService extends BaseService {
     private OrderMapper orderMapper;
 
     @Autowired
-    private AuditService auditService;
+    private AuditServiceHelper auditServiceHelper;
 
     @Autowired
     private FileMapper fileMapper;
@@ -100,8 +100,9 @@ public class OrderService extends BaseService {
         }
         order.setState(Order.STATE_AUDITING); // 状态为等待审批
 
-        // [2] 设置订单的产品编码
+        // [2] 设置订单的产品名称
         order.setProductCodes(this.getOrderProductCodes(order));
+        order.setProductNames(this.getOrderProductNames(order));
 
 
         // [3] 设置订单项
@@ -118,7 +119,7 @@ public class OrderService extends BaseService {
         }
 
         // [4] 创建订单的审批，失败则不继续处理
-        Result<Audit> result = auditService.upsertOrderAudit(salesperson, order);
+        Result<Audit> result = auditServiceHelper.upsertOrderAudit(salesperson, order);
         if (!result.isSuccess()) {
             return Result.fail(result);
         }
@@ -153,6 +154,21 @@ public class OrderService extends BaseService {
                 .map(OrderItem::getProduct)        // 获取订单项的产品
                 .filter(Objects::nonNull)          // 去掉 null 的产品
                 .map(Product::getCode)             // 获取产品的编码
+                .collect(Collectors.joining(",")); // 返回逗号分隔的产品编码
+    }
+
+    /**
+     * 获取订单的所有产品名称
+     *
+     * @param order 订单
+     * @return 返回产品名称
+     */
+    public String getOrderProductNames(Order order) {
+        return order.getItems()                    // 获取订单项
+                .stream()                          // 转为 stream
+                .map(OrderItem::getProduct)        // 获取订单项的产品
+                .filter(Objects::nonNull)          // 去掉 null 的产品
+                .map(Product::getName)             // 获取产品的名称
                 .collect(Collectors.joining(",")); // 返回逗号分隔的产品编码
     }
 

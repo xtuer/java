@@ -34,7 +34,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <FormItem label="订单类型:" style="width: 300px">
                     <Select v-model="orderClone.type">
                         <Option :value="0">销售订单</Option>
-                        <Option :value="0">样品订单</Option>
+                        <Option :value="1">样品订单</Option>
                     </Select>
                 </FormItem>
             </div>

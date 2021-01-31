@@ -87,7 +87,7 @@ public class User {
         Utils.dump(user1);
         System.out.println(user1.getRoles());
 
-        User user2 = new User("Bob", "Passw0rd", Role.ROLE_SALESPERSON);
+        User user2 = new User("Bob", "Passw0rd", Role.ROLE_SALE_SALESPERSON);
         Utils.dump(user2);
         System.out.println(user2.getRoles());
 
@@ -99,7 +99,7 @@ public class User {
         Utils.dump(user2);
 
         User user3 = new User();
-        user3.setUsername("Bob").setPassword("pass").addRole(Role.ROLE_ADMIN_ORG);
+        user3.setUsername("Bob").setPassword("pass").addRole(Role.ROLE_ADMIN);
         Utils.dump(SecurityUtils.buildUserDetails(user3));
     }
 }

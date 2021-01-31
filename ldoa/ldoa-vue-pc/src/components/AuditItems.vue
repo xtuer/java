@@ -16,7 +16,7 @@ Slot: 无
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <RadioGroup v-model="filter.state" type="button" @on-change="searchAuditItems">
-                <Radio v-for="s in window.AUDIT_ITEM_STATE" :key="s.value" :label="s.value">{{ s.label }}</Radio>
+                <Radio v-for="s in window.AUDIT_ITEM_STATES" :key="s.value" :label="s.value">{{ s.label }}</Radio>
             </RadioGroup>
         </div>
 
@@ -115,7 +115,7 @@ export default {
         fetchMoreAuditItems() {
             this.loading = true;
 
-            AuditDao.findAuditItemsByApplicantIdOrAuditorIdAndState(this.filter).then(auditItems => {
+            AuditDao.findAuditStepsByApplicantIdOrAuditorIdAndState(this.filter).then(auditItems => {
                 this.auditItems.push(...auditItems);
 
                 this.more      = auditItems.length >= this.filter.pageSize;

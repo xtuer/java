@@ -1,18 +1,12 @@
 package com.xtuer.controller;
 
-import com.xtuer.bean.Page;
-import com.xtuer.bean.Result;
-import com.xtuer.bean.Urls;
-import com.xtuer.bean.User;
+import com.xtuer.bean.*;
 import com.xtuer.mapper.UserMapper;
 import com.xtuer.service.UserService;
-import com.xtuer.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -96,6 +90,7 @@ public class UserController extends BaseController {
      *      oldPassword   [可选]: 旧密码
      *      newPassword   [可选]: 新密码
      *      renewPassword [可选]: 确认的密码
+     *      role          [可选]: 角色
      *
      * @param userId        用户 ID
      * @param nickname      昵称
@@ -105,6 +100,7 @@ public class UserController extends BaseController {
      * @param newPassword   新密码
      * @param renewPassword 确认的密码
      * @param gender        性别
+     * @param role          角色
      * @return 1. 更新头像成功时，payload 为头像的正式 URL
      *         2. 更新其他属性成功时 payload 为空，message 为对应属性更新成功提示
      */
@@ -116,7 +112,8 @@ public class UserController extends BaseController {
                                     @RequestParam(required = false) String oldPassword,
                                     @RequestParam(required = false) String newPassword,
                                     @RequestParam(required = false) String renewPassword,
-                                    @RequestParam(required = false, defaultValue = "-1") int gender) {
+                                    @RequestParam(required = false, defaultValue = "-1") int gender,
+                                    @RequestParam(required = false) Role role) {
         // 更新昵称
         if (StringUtils.isNotBlank(nickname)) {
             userService.updateUserNickname(userId, nickname.trim());
@@ -143,6 +140,12 @@ public class UserController extends BaseController {
         // 更新密码
         if (StringUtils.isNotBlank(oldPassword) || StringUtils.isNotBlank(newPassword) || StringUtils.isNotBlank(renewPassword)) {
             return userService.updateUserPassword(userId, oldPassword, newPassword, renewPassword);
+        }
+
+        // 更新角色
+        if (role != null) {
+            userService.changeUserRole(userId, role);
+            return Result.ok(null, "权限更新成功");
         }
 
         // 什么都没有更新，则认为更新失败

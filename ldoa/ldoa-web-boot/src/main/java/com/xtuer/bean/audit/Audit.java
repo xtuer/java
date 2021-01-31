@@ -18,11 +18,12 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonIgnoreProperties({"contentJson"}) // 很重要，如果没有会导致递归
 public class Audit {
-    private static final String[] STATE_LABELS = { "初始化", "拒绝", "通过" };
+    private static final String[] STATE_LABELS = { "初始化", "待审批", "拒绝", "通过" };
 
     public static final int STATUS_INIT     = 0;
-    public static final int STATUS_REJECTED = 1;
-    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_AUDITING = 1;
+    public static final int STATUS_REJECTED = 2;
+    public static final int STATUS_ACCEPTED = 3;
 
     /**
      * 审批类型
@@ -38,6 +39,11 @@ public class Audit {
      * 审批申请人的 ID
      */
     private long applicantId;
+
+    /**
+     * 审批申请人的名字
+     */
+    private String applicantNickname;
 
     /**
      * 审批目标的 ID

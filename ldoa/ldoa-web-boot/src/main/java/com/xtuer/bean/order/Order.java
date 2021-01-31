@@ -118,6 +118,11 @@ public class Order {
     private String productCodes;
 
     /**
+     * 订单的产品名称，使用逗号分隔，方便搜索
+     */
+    private String productNames;
+
+    /**
      * 订单项
      */
     private List<OrderItem> items = new LinkedList<>();

@@ -102,9 +102,11 @@ export default class AuditUtils {
      */
     static mergeAuditConfigToAuditItem(audit) {
         // 1. 查询审批阶段对应阶段的配置
-        // 2. 设置审批阶段的描述、审批员、审批模板
+        // 2. 设置审批阶段的描述、审批员、审批模板、是否上传附件、计算是否最后一个阶段
         // 3. 设置审批阶段的审批员名字
         // 4. 缓存下一阶段的审批员
+
+        const maxStep = Math.max(...audit.config.steps.map(s => s.step)); // 最大阶段值
 
         for (let i = 0; i < audit.steps.length; i++) {
             const step = audit.steps[i];
@@ -117,10 +119,12 @@ export default class AuditUtils {
                 return;
             }
 
-            // [2] 设置审批阶段的描述、审批员、审批模板
+            // [2] 设置审批阶段的描述、审批员、审批模板、是否上传附件、计算是否最后一个阶段
             step.desc = configStep.desc;
             step.auditors = configStep.auditors;
             step.commentTemplate = configStep.commentTemplate.trim();
+            step.lastStep = (step.step === maxStep); // 是否最后一个阶段
+            step.needAttachment = configStep.attachment; // 是否上传附件
 
             // [3] 设置审批阶段的审批员名字
             const auditor = step.auditors.find(a => a.userId === step.auditorId);

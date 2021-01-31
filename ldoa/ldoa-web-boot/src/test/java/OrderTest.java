@@ -1,9 +1,9 @@
 import com.xtuer.Application;
+import com.xtuer.bean.User;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.order.OrderItem;
-import com.xtuer.bean.User;
 import com.xtuer.mapper.OrderMapper;
-import com.xtuer.service.AuditService;
+import com.xtuer.service.AuditServiceHelper;
 import com.xtuer.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class OrderTest {
     private OrderService orderService;
 
     @Autowired
-    private AuditService auditService;
+    private AuditServiceHelper auditServiceHelper;
 
     @Test
     public void insertOrder() {
@@ -34,7 +34,7 @@ public class OrderTest {
     public void testOrderAudit() {
         User user = new User(121L, "Bob", "Passw0rd");
         Order order = newOrder();
-        auditService.upsertOrderAudit(user, order);
+        auditServiceHelper.upsertOrderAudit(user, order);
     }
 
     /**

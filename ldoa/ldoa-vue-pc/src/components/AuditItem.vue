@@ -10,7 +10,7 @@ audit-item: 审批项
 -->
 <template>
     <div class="audit-item">
-        <div class="color-gray">{{ auditItem.desc }}:</div>
+        <div class="text-color-gray">{{ auditItem.desc }}:</div>
         <div>{{ auditItem.comment }}</div>
         <div class="sign">
             {{ auditItem.auditorNickname }} / {{ auditItem.processedAt | formatDate }}

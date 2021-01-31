@@ -10,8 +10,8 @@
                 <Input v-model="filter.orderSn" placeholder="请输入订单号" @on-enter="searchOrders">
                     <span slot="prepend">订单号</span>
                 </Input>
-                <Input v-model="filter.productCodes" placeholder="请输入产品编码" search enter-button @on-search="searchOrders">
-                    <span slot="prepend">产品编码</span>
+                <Input v-model="filter.productNames" placeholder="请输入产品名称" search enter-button @on-search="searchOrders">
+                    <span slot="prepend">产品名称</span>
                 </Input>
             </div>
             <Button type="primary" icon="md-add" @click="editOrder()">创建订单</Button>
@@ -37,6 +37,11 @@
                 </Poptip>
             </template>
 
+            <!-- 订单类型 -->
+            <template slot-scope="{ row: order }" slot="type">
+                {{ order.type | labelForValue(window.ORDER_TYPES) }}
+            </template>
+
             <!-- 销售员 -->
             <template slot-scope="{ row: order }" slot="salesperson">
                 {{ order.salesperson && order.salesperson.nickname }}
@@ -44,10 +49,10 @@
 
             <!-- 订单日期 -->
             <template slot-scope="{ row: order }" slot="orderDate">
-                {{ order.orderDate | formatDate}}
+                {{ order.orderDate | formatDate('YYYY-MM-DD') }}
             </template>
             <template slot-scope="{ row: order }" slot="deliveryDate">
-                {{ order.deliveryDate | formatDate }}
+                {{ order.deliveryDate | formatDate('YYYY-MM-DD') }}
             </template>
 
             <!-- 状态 -->
@@ -58,8 +63,7 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
                 <!-- <Button type="info" size="small" @click="detailsOrder(order)">详情</Button> -->
-                <!-- 审批拒绝的订单才能编辑 -->
-                <Button :disabled="order.state !== 2" icon="ios-create" type="primary" size="small" @click="editOrder(order)">编辑</Button>
+                <Button :disabled="!canEditOrder(order)" icon="ios-create" type="primary" size="small" @click="editOrder(order)">编辑</Button>
             </template>
         </Table>
 
@@ -88,7 +92,7 @@ export default {
             orders : [],
             filter: { // 搜索条件
                 orderSn     : '',
-                productCodes: '',
+                productNames: '',
                 state       : -1,
                 pageSize    : 20,
                 pageNumber  : 1,
@@ -104,12 +108,13 @@ export default {
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'orderSn',      title: '订单号', width: 180 },
                 { slot: 'customer',     title: '客户单位', minWidth: 180, className: 'table-poptip' },
-                { slot: 'orderDate',    title: '订单日期', width: 150, align: 'center' },
-                { slot: 'deliveryDate', title: '交货日期', width: 150, align: 'center' },
-                { key : 'productCodes', title: '产品编码', width: 150, tooltip: true },
-                { slot: 'salesperson',  title: '销售负责人', width: 120 },
-                { slot: 'state',         title: '状态', width: 120, align: 'center' },
-                { slot: 'action', title: '操作', width: 120, align: 'center', className: 'table-action' },
+                { key : 'productNames', title: '产品名称', width: 150, tooltip: true },
+                { slot: 'type',         title: '类型', width: 110, align: 'center' },
+                { slot: 'orderDate',    title: '订单日期', width: 110, align: 'center' },
+                { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center' },
+                { slot: 'salesperson',  title: '销售负责人', width: 110 },
+                { slot: 'state',         title: '状态', width: 110, align: 'center' },
+                { slot: 'action', title: '操作', width: 110, align: 'center', className: 'table-action' },
             ],
         };
     },
@@ -176,6 +181,14 @@ export default {
             if (found) {
                 found.state = 4;
                 found.stateLabel = '完成';
+            }
+        },
+        // 判断订单是否可以编辑: 创建者为当前用户，且审批拒绝的订单才能编辑
+        canEditOrder(order) {
+            if (this.isCurrentUser(order.salespersonId) && order.state === 2) {
+                return true;
+            } else {
+                return false;
             }
         }
     }

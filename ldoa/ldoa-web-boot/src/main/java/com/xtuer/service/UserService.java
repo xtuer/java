@@ -286,6 +286,21 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 修改用户角色
+     *
+     * @param userId 用户的 ID
+     * @param role   角色
+     */
+    @Transactional
+    @CacheInvalidate(name = CacheConst.CACHE, key = CacheConst.KEY_USER_ID)
+    public void changeUserRole(long userId, Role role) {
+        // 1. 删除用户的角色
+        // 2. 更新用户的角色
+        userMapper.deleteUserRoles(userId);
+        userMapper.insertUserRole(userId, role);
+    }
+
+    /**
      * 删除用户
      *
      * @param userId 用户 ID
@@ -305,8 +320,6 @@ public class UserService extends BaseService {
     public void redirectToUserBackendPage(User user, HttpServletResponse response) throws IOException {
         if (user.hasRole(Role.ROLE_ADMIN_SYSTEM)) {
             response.sendRedirect("/admin");
-        } else if (user.hasRole(Role.ROLE_ADMIN_ORG)) {
-            response.sendRedirect("/admin-org");
         } else {
             response.sendRedirect("/admin");
         }
