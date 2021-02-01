@@ -1,5 +1,9 @@
 <template>
-    <div class="user-info">
+    <div class="user-info-page">
+        <!-- 头像 -->
+        <div @click="$refs.fileUpload.show()" class="avatar" :style="avatarStyle()"></div>
+
+        <!-- 基本信息 -->
         <div class="base-info">
             <div class="text-color-gray">名字:</div><div>{{ me.nickname }}</div>
             <div class="text-color-gray">账号:</div><div>{{ me.username }}</div>
@@ -11,6 +15,7 @@
                 {{ me.mobile || '无' }}
                 <Icon type="md-create" class="clickable" @click="showChangeMobile"/>
             </div>
+            <!-- 手机号码编辑 -->
             <div v-else style="width: 200px">
                 <Input v-model="mobile" placeholder="请输入手机号码"/>
 
@@ -26,6 +31,7 @@
                 ********
                 <Icon type="md-create" class="clickable" @click="showChangePassword"/>
             </div>
+            <!-- 密码编辑 -->
             <div v-else style="width: 200px">
                 <div>旧密码: <Input v-model="password.oldPassword" type="password" placeholder="请输入旧密码"/></div>
                 <div class="margin-top-10">新密码: <Input v-model="password.newPassword" type="password" placeholder="请输入新密码"/></div>
@@ -37,13 +43,18 @@
                 </div>
             </div>
         </div>
+
+        <!-- 头像上传组件 -->
+        <FileUpload ref="fileUpload" image button-hide @on-success="avatarUploaded"/>
     </div>
 </template>
 
 <script>
 import UserDao from '@/../public/static-p/js/dao/UserDao';
+import FileUpload from '@/components/FileUpload.vue';
 
 export default {
+    components: { FileUpload },
     data() {
         return {
             modeChangeMobile: false,
@@ -126,17 +137,55 @@ export default {
             }).catch(() => {
                 this.saving = false;
             });
+        },
+        // 头像的样式
+        avatarStyle() {
+            const url = this.me.avatar ? this.me.avatar : '/static-p/img/avatar.jpg';
+            return {
+                backgroundImage: `url(${url})`
+            };
+        },
+        // 上传头像成功
+        avatarUploaded(file) {
+            UserDao.patchUser({ userId: this.me.userId, avatar: file.url }).then(avatar => {
+                this.me.avatar = avatar;
+            });
         }
     }
 };
 </script>
 
 <style lang="scss">
-.user-info {
+.user-info-page {
+    display: flex;
+    flex-direction: column;
+    margin-left: 30px;
+    margin-top: 30px;
+
+    .avatar {
+        // background-image   : url(apple.png);
+        background-repeat  : no-repeat;
+        background-position: center;
+        background-size: cover;
+
+        width : 90px;
+        height: 90px;
+        margin-left  : 20px;
+        border-radius: 6px;
+        box-shadow   : 0 0 2px #ccc; /* box-shadow: 0 0 1px #bbb; */
+
+        &:hover {
+            box-shadow: 0 0 4px #ccc;
+            transition: box-shadow .4s;
+            cursor: pointer;
+        }
+    }
+
     .base-info {
         display: grid;
         grid-template-columns: max-content 1fr;
-        grid-gap: 10px 10px;
+        grid-gap: 20px 10px;
+        margin-top: 20px;
     }
 }
 </style>
