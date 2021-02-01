@@ -41,6 +41,9 @@
 .ivu-tag {
     cursor: default;
 }
+.ivu-tag-border {
+    line-height: 21px !important; /* 默认为 24px，导致不能垂直居中*/
+}
 
 .ivu-modal-wrap .ivu-modal {
     margin-bottom: 40px;

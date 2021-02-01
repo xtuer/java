@@ -66,7 +66,7 @@
             </template>
             <!-- 状态 -->
             <template slot-scope="{ row: request }" slot="state">
-                <Tag :color="stateColor(request.state)">{{ request.stateLabel }}</Tag>
+                <Tag :color="stateColor(request.state)" type="border">{{ request.stateLabel }}</Tag>
             </template>
         </Table>
 

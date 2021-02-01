@@ -19,7 +19,7 @@
 
             <!-- 状态 -->
             <template slot-scope="{ row: audit }" slot="state">
-                <Tag :color="stateColor(audit.state)">{{ audit.stateLabel }}</Tag>
+                <Tag :color="stateColor(audit.state)" type="border">{{ audit.stateLabel }}</Tag>
             </template>
 
             <!-- 申请时间 -->

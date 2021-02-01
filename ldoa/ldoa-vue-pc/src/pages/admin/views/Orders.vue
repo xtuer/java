@@ -57,7 +57,7 @@
 
             <!-- 状态 -->
             <template slot-scope="{ row: order }" slot="state">
-                <Tag :color="stateColor(order.state)">{{ order.stateLabel }}</Tag>
+                <Tag :color="stateColor(order.state)" type="border">{{ order.stateLabel }}</Tag>
             </template>
 
             <!-- 操作按钮 -->
