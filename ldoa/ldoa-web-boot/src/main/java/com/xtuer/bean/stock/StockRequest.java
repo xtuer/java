@@ -75,6 +75,11 @@ public class StockRequest {
     private Date createdAt;
 
     /**
+     * 当前审批员 ID
+     */
+    private long currentAuditorId;
+
+    /**
      * 库存操作记录，每个操作记录管理一个物料的信息
      */
     private List<StockRecord> records = new LinkedList<>();

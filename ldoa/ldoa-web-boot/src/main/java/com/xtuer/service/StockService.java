@@ -3,6 +3,7 @@ package com.xtuer.service;
 import com.xtuer.bean.Const;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
+import com.xtuer.bean.product.BatchCount;
 import com.xtuer.bean.product.ProductItem;
 import com.xtuer.bean.stock.StockOutRequestFormBean;
 import com.xtuer.bean.stock.StockRecord;
@@ -19,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,8 +133,9 @@ public class StockService extends BaseService {
         // 1. 如果没有出库物料，则返回
         // 2. 如果订单已经有出库申请，则不允许继续申请
         // 3. 创建出库请求
-        // 4. 创建出库记录，每个物料一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
-        // 5. 创建出库申请的审批，失败则不继续处理
+        // 4. 创建出库记录，物料的每个批次一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
+        // 5. 保存出库申请和其出库记录到数据库
+        // 6. 创建出库申请的审批，失败则不继续处理
 
         // [1] 如果没有出库物料，则返回
         if (CollectionUtils.isEmpty(out.getProductItems())) {
@@ -148,11 +151,6 @@ public class StockService extends BaseService {
             return Result.fail("订单已经存在出库申请，请不要重复申请");
         }
 
-        // Result<Boolean> validateResult = this.checkProductItemsStock(out.getProductItems());
-        // if (!validateResult.isSuccess()) {
-            // return Result.fail(validateResult.getMessage());
-        // }
-
         // 出库描述: 物料名称拼接在一起
         String desc = out.getProductItems().stream().map(ProductItem::getName).collect(Collectors.joining(", "));
 
@@ -167,26 +165,47 @@ public class StockService extends BaseService {
         request.setApplicantUsername(user.getNickname());
         request.setDesc(desc);
         request.setCreatedAt(new Date());
+        request.setCurrentAuditorId(out.getCurrentAuditorId());
 
+        // [4] 创建出库记录，物料的每个批次一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
+        List<StockRecord> stockRecords = new LinkedList<>();
+
+        for (ProductItem item : out.getProductItems()) {
+            // [4.1] 找到物料的出库批次和数量
+            List<BatchCount> batchCounts = out.getBatchCounts()
+                    .stream()
+                    .filter(bc -> bc.getProductItemId() == item.getProductItemId())
+                    .collect(Collectors.toList());
+
+            if (CollectionUtils.isEmpty(batchCounts)) {
+                return Result.fail("物料 {} 没有出库批次和数量", item.getName());
+            }
+
+            for (BatchCount bc : batchCounts) {
+                StockRecord record = new StockRecord();
+                record.setStockRecordId(super.nextId());
+                record.setType(StockRecord.Type.OUT);
+                record.setUserId(user.getUserId());
+                record.setStockRequestId(request.getStockRequestId());
+                record.setStockRequestSn(request.getStockRequestSn());
+                record.setProductId(item.getProductId());
+                record.setProductItemId(item.getProductItemId());
+                record.setBatch(bc.getBatch());
+                record.setCount(bc.getCount());
+                record.setComplete(false); // 标记为未完成
+
+                stockRecords.add(record);
+            }
+        }
+
+        // [5] 保存出库申请和其出库记录到数据库
         stockMapper.insertStockRequest(request);
 
-        // [4] 创建出库记录，每个物料一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
-        for (ProductItem item : out.getProductItems()) {
-            StockRecord record = new StockRecord();
-            record.setStockRecordId(super.nextId());
-            record.setType(StockRecord.Type.OUT);
-            record.setUserId(user.getUserId());
-            record.setStockRequestId(request.getStockRequestId());
-            record.setStockRequestSn(request.getStockRequestSn());
-            record.setProductId(item.getProductId());
-            record.setProductItemId(item.getProductItemId());
-            record.setCount(item.getCount());
-            record.setComplete(false); // 标记为未完成
-
+        for (StockRecord record : stockRecords) {
             stockMapper.insertStockRecord(record);
         }
 
-        // [5] 创建出库申请的审批，失败则不继续处理，抛异常是为了事务回滚
+        // [6] 创建出库申请的审批，失败则不继续处理，抛异常是为了事务回滚
         auditServiceHelper.insertStockRequestAudit(user, request);
 
         return Result.ok(request);

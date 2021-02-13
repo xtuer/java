@@ -45,7 +45,10 @@ public class AuditConfig {
     public void setContentJson(String contentJson) {
         try {
             AuditConfig temp = Utils.fromJson(contentJson, AuditConfig.class);
-            BeanUtils.copyProperties(temp, this, "contentJson");
+
+            if (temp != null) {
+                BeanUtils.copyProperties(temp, this, "contentJson");
+            }
         } catch (Exception ignored) {}
     }
 }

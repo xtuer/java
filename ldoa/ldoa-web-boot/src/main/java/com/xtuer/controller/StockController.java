@@ -123,6 +123,8 @@ public class StockController extends BaseController {
      * 请求体:
      *      orderId     : 订单 ID
      *      productItems: 出库的产品项数组
+     *      batchCounts : 出库的批出数量
+     *      currentAuditorId: 当前审批员 ID
      *
      * @param out 出库信息
      */
@@ -160,12 +162,13 @@ public class StockController extends BaseController {
      *
      * 网址: http://localhost:8080/api/stocks
      * 参数:
-     *      name       [可选]: 物料名称
-     *      code       [可选]: 物料编码
-     *      batch      [可选]: 入库批次
-     *      count      [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
-     *      pageNumber [可选]: 页码
-     *      pageSize   [可选]: 数量
+     *      productItemId [可选]: 物料 ID
+     *      name          [可选]: 物料名称
+     *      code          [可选]: 物料编码
+     *      batch         [可选]: 入库批次
+     *      count         [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
+     *      pageNumber    [可选]: 页码
+     *      pageSize      [可选]: 数量
      *
      * @param filter 过滤条件
      * @param page   分页

@@ -180,6 +180,9 @@
                 AND stock.count <= #{filter.count}
             ]]></if>
         <where>
+            <if test="filter.productItemId > 0">
+                AND pi.product_item_id = #{filter.productItemId}
+            </if>
             <if test="filter.batch!=null and filter.batch!='' ">
                 AND stock.batch LIKE CONCAT('%', #{filter.batch},'%')
             </if>

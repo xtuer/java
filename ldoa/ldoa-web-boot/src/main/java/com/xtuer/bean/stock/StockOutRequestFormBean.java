@@ -1,9 +1,11 @@
 package com.xtuer.bean.stock;
 
+import com.xtuer.bean.product.BatchCount;
 import com.xtuer.bean.product.ProductItem;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,4 +23,14 @@ public class StockOutRequestFormBean {
      * 产品项 (物料)
      */
     private List<ProductItem> productItems;
+
+    /**
+     * 物料出库的批次和数量
+     */
+    private List<BatchCount> batchCounts = new LinkedList<>();
+
+    /**
+     * 当前审批员 ID
+     */
+    private long currentAuditorId;
 }

@@ -44,8 +44,8 @@
             <Dropdown @on-click="openSelect">
                 <Button type="primary" icon="md-arrow-up">出库申请</Button>
                 <DropdownMenu slot="list">
-                    <DropdownItem name="item">选择物料</DropdownItem>
-                    <DropdownItem name="order">选择订单</DropdownItem>
+                    <DropdownItem name="item">物料出库</DropdownItem>
+                    <DropdownItem name="order">订单出库</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
         </div>
@@ -75,14 +75,8 @@
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreRequests">更多...</Button>
         </div>
 
-        <!-- 物料选择弹窗 -->
-        <ProductItemSelect v-model="itemSelectVisible" @on-ok="stockOutDirectProductItems"/>
-
-        <!-- 订单选择弹窗 -->
-        <OrderSelect v-model="orderSelectVisible" not-in-stock-request @on-ok="stockOutOrderProductItems"/>
-
         <!-- 物料出库弹窗 -->
-        <StockOutModal v-model="stockOutVisible" :order-id="order.orderId" :order-sn="order.orderSn" :products="products" @on-ok="stockOutRequestOk"/>
+        <StockOutModal v-model="stockOutVisible" :direct="stockOutDirect" @on-ok="stockOutRequestOk"/>
 
         <!-- 物料出库申请详情弹窗 -->
         <StockRequestDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId" @on-ok="stockOutComplete"/>
@@ -91,15 +85,11 @@
 
 <script>
 import StockDao from '@/../public/static-p/js/dao/StockDao';
-import OrderDao from '@/../public/static-p/js/dao/OrderDao';
-import ProductDao from '@/../public/static-p/js/dao/ProductDao';
-import OrderSelect from '@/components/OrderSelect.vue';
-import ProductItemSelect from '@/components/ProductItemSelect.vue';
 import StockOutModal from '@/components/StockOutModal.vue';
 import StockRequestDetails from '@/components/StockRequestDetails.vue';
 
 export default {
-    components: { OrderSelect, ProductItemSelect, StockOutModal, StockRequestDetails },
+    components: { StockOutModal, StockRequestDetails },
     data() {
         return {
             requests: [],
@@ -114,6 +104,11 @@ export default {
             more     : false, // 是否还有更多出库
             loading  : false, // 加载中
             reloading: false,
+            stockOutVisible: false, // 出库弹窗是否可见
+            stockOutDirect : false, // 出库类型: true (物料出库), false (订单出库)
+            stockRequestId: '0',
+            stockRequestDetailsVisible: false,
+
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'requestSn',         title: '出库单号', width: 200 },
@@ -123,13 +118,6 @@ export default {
                 { key : 'applicantUsername', title: '申请人', width: 120 },
                 { slot: 'createdAt',         title: '创建时间', width: 150, align: 'center' },
             ],
-            itemSelectVisible : false, // 物料选择弹窗是否可见
-            orderSelectVisible: false, // 订单选择弹窗石佛可见
-            stockOutVisible   : false, // 出库弹窗是否可见
-            order   : { orderId: '0', orderSn: 'XXXX' },   // 订单
-            products: [{ productId: '0', items: [] }], // 订单的产品: 每个产品有多个 items => { items }
-            stockRequestId: '0',
-            stockRequestDetailsVisible: false,
         };
     },
     mounted() {
@@ -170,52 +158,12 @@ export default {
         // 打开选择弹窗
         openSelect(type) {
             if (type === 'item') {
-                this.itemSelectVisible = true;
+                this.stockOutDirect = true;
+                this.stockOutVisible = true;
             } else if (type === 'order') {
-                this.orderSelectVisible = true;
+                this.stockOutDirect = false;
+                this.stockOutVisible = true;
             }
-        },
-        // 物料直接出库
-        stockOutDirectProductItems(productItem) {
-            // 1. 构建虚拟订单和产品
-            // 2. 显示出库弹窗
-
-            // [1] 构建虚拟订单和产品
-            this.order = { orderId: '0', orderSn: 'XXXXX' };
-            this.products = [];
-            this.products.push({
-                productId: '0',
-                items    : [productItem],
-            });
-
-            // [2] 显示出库弹窗
-            this.stockOutVisible = true;
-        },
-        // 订单的物料出库
-        stockOutOrderProductItems(order) {
-            // 1. 查询订单
-            // 2. 查询订单的产品
-            // 3. 得到产品项
-            // 4. 显示出库弹窗
-
-            // [1] 查询订单
-            OrderDao.findOrderById(order.orderId).then(retOrder => {
-                // 产品的 ID
-                const productIds = retOrder.items
-                    .map(item => item.product)
-                    .filter(product => product) // 去掉无效产品
-                    .map(product => product.productId);
-
-                // [2] 查询订单的产品
-                ProductDao.findProducts({ productIds }).then(products => {
-                    // [3] 得到产品项
-                    this.order = retOrder;
-                    this.products = products;
-
-                    // [4] 显示出库弹窗
-                    this.stockOutVisible = true;
-                });
-            });
         },
         // 出库申请成功
         stockOutRequestOk(request) {

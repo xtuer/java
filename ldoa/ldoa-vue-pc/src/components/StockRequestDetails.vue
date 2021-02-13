@@ -42,8 +42,8 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
             <!-- 审批信息 -->
             <div class="audit">
-                <div v-for="item in audit.items" :key="item.auditItemId" class="audit-item-wrapper">
-                    <AuditItem :audit-item="item"/>
+                <div v-for="step in audit.steps" :key="step.step" class="audit-item-wrapper">
+                    <AuditStep :step="step"/>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 import StockDao from '@/../public/static-p/js/dao/StockDao';
 import OrderDao from '@/../public/static-p/js/dao/OrderDao';
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
-import AuditItem from '@/components/AuditItem.vue';
+import AuditStep from '@/components/AuditStep.vue';
 
 export default {
     props: {
@@ -73,7 +73,7 @@ export default {
         prop : 'visible',
         event: 'on-visible-change',
     },
-    components: { AuditItem },
+    components: { AuditStep },
     data() {
         return {
             audit: {},

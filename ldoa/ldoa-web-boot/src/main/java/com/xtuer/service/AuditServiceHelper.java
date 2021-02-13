@@ -74,7 +74,7 @@ public class AuditServiceHelper {
         Objects.requireNonNull(request, "出库申请不能为空");
         String desc = String.format("出库单号: %s, 物料: %s", request.getStockRequestSn(), request.getDesc());
 
-        return auditService.upsertAudit(applicant, AuditType.OUT_OF_STOCK, request.getStockRequestId(), Utils.toJson(request), desc, 0);
+        return auditService.upsertAudit(applicant, AuditType.OUT_OF_STOCK, request.getStockRequestId(), Utils.toJson(request), desc, request.getCurrentAuditorId());
     }
 
     /**
