@@ -1,7 +1,6 @@
 package com.xtuer.bean.stock;
 
 import com.xtuer.bean.product.BatchCount;
-import com.xtuer.bean.product.ProductItem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,11 +17,6 @@ public class StockOutRequestFormBean {
      * 订单 ID
      */
     private long orderId;
-
-    /**
-     * 产品项 (物料)
-     */
-    private List<ProductItem> productItems;
 
     /**
      * 物料出库的批次和数量

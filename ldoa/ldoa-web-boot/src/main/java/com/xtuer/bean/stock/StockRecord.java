@@ -50,6 +50,11 @@ public class StockRecord {
     private String batch;
 
     /**
+     * 批次的库存数量 (出库时使用)
+     */
+    private int stockBatchCount;
+
+    /**
      * 厂家
      */
     private String manufacturer;

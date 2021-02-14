@@ -1,6 +1,7 @@
 package com.xtuer.mapper;
 
 import com.xtuer.bean.Page;
+import com.xtuer.bean.product.BatchCount;
 import com.xtuer.bean.product.ProductItem;
 import com.xtuer.bean.stock.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -100,13 +101,22 @@ public interface StockMapper {
     boolean hasOrderStockOutRequest(long orderId);
 
     /**
-     * 插入或者更新库存
+     * 增加库存
      *
      * @param productItemId 物料 ID
      * @param batch 批次
      * @param count 数量
      */
-    void upsertStock(long productItemId, String batch, int count);
+    void increaseStock(long productItemId, String batch, int count);
+
+    /**
+     * 减少库存
+     *
+     * @param productItemId 物料 ID
+     * @param batch 批次
+     * @param count 数量
+     */
+    void decreaseStock(long productItemId, String batch, int count);
 
     /**
      * 查询物料的库存
@@ -114,4 +124,13 @@ public interface StockMapper {
      * @return 返回物料数组，其中包含了出库信息
      */
     List<ProductItem> findStocks(StockFilter filter, Page page);
+
+    /**
+     * 查询物料批次的库存数量
+     *
+     * @param productItemId 物料 ID
+     * @param batch 批次
+     * @return 返回批次的库存数量
+     */
+    int findStockBatchCount(long productItemId, String batch);
 }

@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -108,11 +105,10 @@ public class StockService extends BaseService {
         record.setComplete(true);
 
         // [3] 创建入库记录
-        // [4] 入库: 增加产品项的数量
-
         stockMapper.insertStockRecord(record);
-        // productMapper.increaseProductItemCount(record.getProductItemId(), record.getCount());
-        stockMapper.upsertStock(record.getProductItemId(), record.getBatch(), record.getCount());
+
+        // [4] 入库
+        stockMapper.increaseStock(record.getProductItemId(), record.getBatch(), record.getCount());
 
         // [5] 查询新创建的记录
         record = stockMapper.findStockRecordById(record.getStockRecordId());
@@ -138,7 +134,7 @@ public class StockService extends BaseService {
         // 6. 创建出库申请的审批，失败则不继续处理
 
         // [1] 如果没有出库物料，则返回
-        if (CollectionUtils.isEmpty(out.getProductItems())) {
+        if (CollectionUtils.isEmpty(out.getBatchCounts())) {
             return Result.fail("没有出库物料");
         }
 
@@ -152,7 +148,7 @@ public class StockService extends BaseService {
         }
 
         // 出库描述: 物料名称拼接在一起
-        String desc = out.getProductItems().stream().map(ProductItem::getName).collect(Collectors.joining(", "));
+        String desc = out.getBatchCounts().stream().map(BatchCount::getProductItemName).collect(Collectors.joining(", "));
 
         // [3] 创建出库请求
         StockRequest request = new StockRequest();
@@ -170,32 +166,20 @@ public class StockService extends BaseService {
         // [4] 创建出库记录，物料的每个批次一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
         List<StockRecord> stockRecords = new LinkedList<>();
 
-        for (ProductItem item : out.getProductItems()) {
-            // [4.1] 找到物料的出库批次和数量
-            List<BatchCount> batchCounts = out.getBatchCounts()
-                    .stream()
-                    .filter(bc -> bc.getProductItemId() == item.getProductItemId())
-                    .collect(Collectors.toList());
+        for (BatchCount bc : out.getBatchCounts()) {
+            StockRecord record = new StockRecord();
+            record.setStockRecordId(super.nextId());
+            record.setType(StockRecord.Type.OUT);
+            record.setUserId(user.getUserId());
+            record.setStockRequestId(request.getStockRequestId());
+            record.setStockRequestSn(request.getStockRequestSn());
+            record.setProductId(bc.getProductId());
+            record.setProductItemId(bc.getProductItemId());
+            record.setBatch(bc.getBatch());
+            record.setCount(bc.getCount());
+            record.setComplete(false); // 标记为未完成
 
-            if (CollectionUtils.isEmpty(batchCounts)) {
-                return Result.fail("物料 {} 没有出库批次和数量", item.getName());
-            }
-
-            for (BatchCount bc : batchCounts) {
-                StockRecord record = new StockRecord();
-                record.setStockRecordId(super.nextId());
-                record.setType(StockRecord.Type.OUT);
-                record.setUserId(user.getUserId());
-                record.setStockRequestId(request.getStockRequestId());
-                record.setStockRequestSn(request.getStockRequestSn());
-                record.setProductId(item.getProductId());
-                record.setProductItemId(item.getProductItemId());
-                record.setBatch(bc.getBatch());
-                record.setCount(bc.getCount());
-                record.setComplete(false); // 标记为未完成
-
-                stockRecords.add(record);
-            }
+            stockRecords.add(record);
         }
 
         // [5] 保存出库申请和其出库记录到数据库
@@ -209,37 +193,6 @@ public class StockService extends BaseService {
         auditServiceHelper.insertStockRequestAudit(user, request);
 
         return Result.ok(request);
-    }
-
-    /**
-     * 校验物料库存，库存不够则返回 false
-     *
-     * @param items 物料数组
-     * @return 库存充足返回 true，否则返回 false
-     */
-    private Result<Boolean> checkProductItemsStock(Collection<ProductItem> items) {
-        // 1. 把相同的物料合并到一起，count 为所有相同物料的 count 之和
-        // 2. 当所有物料的库存都满足条件时则返回 true，否则返回 false
-
-        // [1] 把相同的物料合并到一起，count 为所有相同物料的 count 之和
-        items = items.stream().collect(Collectors.toMap(ProductItem::getProductItemId, i -> i, (o, n) -> {
-                o.setCount(o.getCount() + n.getCount());
-                return o;
-        })).values();
-
-        // [2] 当所有物料的库存都满足条件时则返回 true，否则返回 false
-        for (ProductItem item : items) {
-            int count = productMapper.findProductItemCount(item.getProductItemId());
-
-            if (count < item.getCount()) {
-                return Result.fail("库存不足: 物料[{}]的库存为 {}，需要 {}",
-                        item.getName(),
-                        count + " " + item.getUnit(),
-                        item.getCount() + " " + item.getUnit());
-            }
-        }
-
-        return Result.ok();
     }
 
     /**
@@ -277,31 +230,101 @@ public class StockService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public Result<Boolean> stockOut(long requestId) {
         // 1. 查询出库申请的物料出库记录
-        // 2. 校验物料库存，库存不足则不允许出库
-        // 3. 出库，每个物料的库存减去对应的数量
-        // 4. 更新物料出库记录的状态为完成
-        // 5. 更新出库申请的状态为完成
+        // 2. 查询出库记录相关的库存，放到出库记录里，方便操作
+        // 3. 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
+        // 4. 校验物料库存，库存不足则不允许出库
+        // 5. 出库: 更新库存，每个物料的库存减去对应的数量
+        // 6. 更新物料出库记录的状态为完成
+        // 7. 更新出库申请的状态为完成
 
         // [1] 查询出库申请的物料出库记录
         List<StockRecord> records = stockMapper.findStockRecordsByStockRequestId(requestId);
 
-        // [2] 校验物料库存，库存不足则不允许出库
-        Collection<ProductItem> items = records.stream().map(StockRecord::getProductItem).collect(Collectors.toList()); // 获取物料
-        Result<Boolean> validateResult = this.checkProductItemsStock(items);
+        // [2] 查询出库记录相关的库存，放到出库记录里，方便操作
+        for (StockRecord record : records) {
+            int count = stockMapper.findStockBatchCount(record.getProductItemId(), record.getBatch());
+            record.setStockBatchCount(count);
+        }
+
+        // [3] 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
+        List<BatchCount> batchCounts = mergeToBatchCount(records);
+
+        // [4] 校验物料库存，库存不足则不允许出库
+        Result<Boolean> validateResult = this.checkProductItemsStock(batchCounts);
         if (!validateResult.isSuccess()) {
             return Result.fail(validateResult.getMessage());
         }
 
-        // [3] 出库，每个物料的库存减去对应的数量
-        for (StockRecord record : records) {
-            productMapper.increaseProductItemCount(record.getProductItemId(), -record.getCount()); // 出库，数量为负值
+        // [5] 出库: 更新库存，每个物料批次的库存减去对应的数量
+        for (BatchCount bc : batchCounts) {
+            stockMapper.decreaseStock(bc.getProductItemId(), bc.getBatch(), bc.getCount());
         }
 
-        // [4] 更新物料出库记录的状态为完成
+        // [6] 更新物料出库记录的状态为完成
         stockMapper.completeStockRecordByRequestId(requestId);
 
-        // [5] 更新出库申请的状态为完成
+        // [7] 更新出库申请的状态为完成
         stockMapper.updateStockRequestState(requestId, StockRequest.STATE_COMPLETE);
+
+        return Result.ok();
+    }
+
+    /**
+     * 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
+     *
+     * @param records 出库记录
+     * @return 返回物料的批次数量数组
+     */
+    private List<BatchCount> mergeToBatchCount(Collection<StockRecord> records) {
+        // 1. 创建 Map，key 为物料 ID + 批次，value 为物料出库和库存信息的对象 BatchCount
+        // 2. 遍历库存操作记录 records，把相同物料同一批次的出库合并到一起放到 map 中
+        //    2.1 如果物料的 BatchCount bc 不存在，则创建并且插入到 map 中
+        //    2.2 出库数量为同一批次的所有出库数量之和
+        // 3. 返回 BatchCount 的 List
+
+        // [1] 创建 Map，key 为物料 ID + 批次，value 为物料出库和库存信息的对象 BatchCount
+        Map<String, BatchCount> map = new HashMap<>(); // key 为 productItemId + batch
+
+        // [2] 遍历库存操作记录 records，把相同物料同一批次的出库合并到一起放到 map 中
+        for (StockRecord record : records) {
+            String key = record.getProductItemId() + record.getBatch();
+            BatchCount bc = map.get(key);
+
+            // [2.1] 如果物料的 BatchCount bc 不存在，则创建并且插入到 map 中
+            if (bc == null) {
+                bc = new BatchCount();
+                bc.setProductItemId(record.getProductItemId());
+                bc.setProductItemName(record.getProductItem().getName());
+                bc.setBatch(record.getBatch());
+                bc.setCount(0);
+                bc.setStockBatchCount(record.getStockBatchCount()); // 库存数量
+                map.put(key, bc);
+            }
+
+            // [2.2] 出库数量为同一批次的所有出库数量之和
+            bc.setCount(bc.getCount() + record.getCount());
+        }
+
+        // [3] 返回 BatchCount 的 List
+        return new LinkedList<>(map.values());
+    }
+
+    /**
+     * 检查库存是否足够
+     *
+     * @param batchCounts 出库信息
+     * @return 库存足够返回 true，否则返回 false
+     */
+    private Result<Boolean> checkProductItemsStock(Collection<BatchCount> batchCounts) {
+        // 当所有物料的库存都满足条件时则返回 true，否则返回 false
+        for (BatchCount bc : batchCounts) {
+            if (bc.getCount() > bc.getStockBatchCount()) {
+                return Result.fail("库存不足: 物料[{}]的库存为 {}，需要 {}",
+                        bc.getProductItemName(),
+                        bc.getStockBatchCount() + "",
+                        bc.getCount() + "");
+            }
+        }
 
         return Result.ok();
     }

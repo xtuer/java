@@ -142,13 +142,6 @@
             unit = #{unit}, warn_count = #{warnCount}
     </insert>
 
-    <!-- 增加产品项的数量，即库存 (count 大于 0 为入库，小于 0 则为出库) -->
-    <update id="increaseProductItemCount">
-        UPDATE product_item
-        SET count = count + #{count}
-        WHERE product_item_id = #{productItemId}
-    </update>
-
     <!-- 查询产品项得数量 -->
     <select id="findProductItemCount" resultType="int">
         SELECT count FROM product_item WHERE product_item_id = #{productItemId}

@@ -42,17 +42,17 @@
         <OrderDetails v-model="orderModal" :order-id="orderId"/>
 
         <!-- 物料出库申请详情弹窗 -->
-        <StockRequestDetails v-model="stockRequestModal" :stock-request-id="stockRequestId"/>
+        <StockOutDetails v-model="stockRequestModal" :stock-request-id="stockRequestId"/>
     </div>
 </template>
 
 <script>
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import OrderDetails from '@/components/OrderDetails.vue';
-import StockRequestDetails from '@/components/StockRequestDetails.vue';
+import StockOutDetails from '@/components/StockOutDetails.vue';
 
 export default {
-    components: { OrderDetails, StockRequestDetails },
+    components: { OrderDetails, StockOutDetails },
     data() {
         return {
             audits : [],

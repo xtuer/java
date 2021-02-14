@@ -79,17 +79,17 @@
         <StockOutModal v-model="stockOutVisible" :direct="stockOutDirect" @on-ok="stockOutRequestOk"/>
 
         <!-- 物料出库申请详情弹窗 -->
-        <StockRequestDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId" @on-ok="stockOutComplete"/>
+        <StockOutDetails v-model="stockRequestDetailsVisible" :stock-request-id="stockRequestId" @on-ok="stockOutComplete"/>
     </div>
 </template>
 
 <script>
 import StockDao from '@/../public/static-p/js/dao/StockDao';
 import StockOutModal from '@/components/StockOutModal.vue';
-import StockRequestDetails from '@/components/StockRequestDetails.vue';
+import StockOutDetails from '@/components/StockOutDetails.vue';
 
 export default {
-    components: { StockOutModal, StockRequestDetails },
+    components: { StockOutModal, StockOutDetails },
     data() {
         return {
             requests: [],

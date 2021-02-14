@@ -160,14 +160,20 @@
         )
     </select>
 
-    <!-- 插入或者更新库存 -->
-    <insert id="upsertStock">
+    <!-- 增加库存 (不存在则自动创建) -->
+    <insert id="increaseStock">
         INSERT INTO stock (product_item_id, batch, count)
         VALUES (#{productItemId}, #{batch}, #{count})
 
         ON DUPLICATE KEY
         UPDATE count = count + #{count}
     </insert>
+
+    <!-- 减少库存 -->
+    <update id="decreaseStock">
+        UPDATE stock SET count = count - #{count}
+        WHERE product_item_id = #{productItemId} AND batch = #{batch}
+    </update>
 
     <!-- 查询物料的库存 -->
     <select id="findStocks" resultType="ProductItem">
@@ -195,5 +201,12 @@
         </where>
         ORDER BY pi.product_item_id DESC
         LIMIT ${page.offset}, ${page.size}
+    </select>
+
+    <!-- 查询物料批次的库存数量 -->
+    <select id="findStockBatchCount" resultType="int">
+        SELECT count
+        FROM stock
+        WHERE product_item_id = #{productItemId}  AND batch = #{batch}
     </select>
 </mapper>

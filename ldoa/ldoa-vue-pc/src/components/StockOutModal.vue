@@ -50,7 +50,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
         <!-- 底部工具栏 -->
         <div slot="footer" class="footer">
-            <Button v-show="direct" icon="md-add" @click="itemSelectVisible = true">添加物料</Button>
+            <Button v-show="direct" icon="md-add" class="margin-right-10" @click="itemSelectVisible = true">添加物料</Button>
             <AuditorSelect v-model="stockOutData.currentAuditorId" :step="1" type="OUT_OF_STOCK"/>
             <div class="stretch"></div>
             <Button type="text" @click="showEvent(false)">取消</Button>
@@ -91,7 +91,7 @@ export default {
             // 出库的数据, product 结构下有 items，item 下有 batchCounts，如下
             // { items: [{ batchCounts: [{batch, count}] }]}
             products: [],
-            stockOutData: { orderId: '0', orderSn: '', products: [], currentAuditorId: '0' },
+            stockOutData: { orderId: '0', orderSn: '', currentAuditorId: '0' },
             selectedItem: { product: {}, productItemId: '0', index: -1, maxCount: 0 }, // 用于记录选择出库的物料
             saving: false,
             itemSelectVisible : false, // 物料选择弹窗是否可见
@@ -138,7 +138,7 @@ export default {
 
             this.products     = [{ items: [] }];
             this.selectedItem = { product: {}, productItemId: '0', index: -1, maxCount: 0 };
-            this.stockOutData = { orderId: '0', orderSn: '', products: [], currentAuditorId: '0' };
+            this.stockOutData = { orderId: '0', orderSn: '', currentAuditorId: '0' };
         },
         // 选择了出库的物料 (可以有多个物料)
         productItemSelected(item) {
@@ -170,7 +170,7 @@ export default {
                 });
 
                 this.products = products;
-                this.stockOutData = { orderId: retOrder.orderId, orderSn: retOrder.orderSn, products: [] }; // [3] 设置出库数据的订单信息
+                this.stockOutData = { orderId: retOrder.orderId, orderSn: retOrder.orderSn, currentAuditorId: '0' }; // [3] 设置出库数据的订单信息
             });
         },
         // 点击打开库存选择弹窗
@@ -195,23 +195,36 @@ export default {
         // 出库申请
         stockOutRequest() {
             // 1. 审批员不能为空
-            // 2. 重新组织出库的数据
-            // 3. 把出库的批次数量提取出来
+            // 2. 把出库的批次数量提取出来，物料每个批次的出库数据作为一个对象
+            // 3. 构造出库的数据
             // 4. 提交到服务器
 
-            // 审批员不能为空
+            // [1] 审批员不能为空
             if (!Utils.isValidId(this.stockOutData.currentAuditorId)) {
                 this.$Message.error('请选择审批员');
                 return;
             }
 
-            const productItems = this.products.map(product => product.items).flat();
+            // [2] 把出库的批次数量提取出来，物料每个批次的出库数据作为一个对象
+            const batchCounts = [];
+            for (let product of this.products) {
+                for (let item of product.items) {
+                    for (let bc of item.batchCounts) {
+                        batchCounts.push({
+                            productId: product.productId,
+                            productItemId: item.productItemId,
+                            productItemName: item.name,
+                            batch: bc.batch,
+                            count: bc.count,
+                        });
+                    }
+                }
+            }
 
-            // [2] 重新组织出库的数据
+            // [3] 构造出库的数据
             const outData = {
-                orderId     : this.stockOutData.orderId,
-                productItems: productItems,
-                batchCounts : productItems.map(item => item.batchCounts).flat(), // [3] 把出库的批次数量提取出来
+                orderId: this.stockOutData.orderId,
+                batchCounts: batchCounts,
                 currentAuditorId: this.stockOutData.currentAuditorId, // 审批员 ID
             };
 
@@ -247,7 +260,6 @@ export default {
 
         .auditor-select {
             width: 200px;
-            margin: 0 10px;
         }
     }
 }

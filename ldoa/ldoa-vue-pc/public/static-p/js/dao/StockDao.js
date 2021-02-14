@@ -90,16 +90,15 @@ export default class StockDao {
      * 网址: http://localhost:8080/api/stocks/out/requests
      * 参数: 无
      * 请求体:
-     *      orderId     : 订单 ID
-     *      productItems: 出库的产品项数组
-     *      batchCounts : 物料出库的批次和数量
+     *      orderId: 订单 ID
+     *      batchCounts: 物料出库的批次和数量，其结构为 { productId, productItemId, productItemName, batch, count }
      *      currentAuditorId: 当前审批员 ID
      *
-     * @param {JSON} stockOutInfo 出库信息
+     * @param {JSON} stockOutData 出库信息
      * @return {Promise} 返回 Promise 对象，resolve 的参数为新创建的出库申请，reject 的参数为错误信息
      */
-    static stockOutRequest(stockOutInfo) {
-        return Rest.create(Urls.API_STOCKS_OUT_REQUESTS, { data: stockOutInfo, json: true }).then(({ data: request, success, message }) => {
+    static stockOutRequest(stockOutData) {
+        return Rest.create(Urls.API_STOCKS_OUT_REQUESTS, { data: stockOutData, json: true }).then(({ data: request, success, message }) => {
             return Utils.response(request, success, message);
         });
     }
