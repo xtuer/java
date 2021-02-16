@@ -4,6 +4,7 @@
 <mapper namespace="com.xtuer.mapper.StockMapper">
     <!-- 库存操作记录的列 -->
     <sql id="stockRecordColumns">
+        record.stock_record_id AS stock_record_id,
         record.product_id      AS product_id,
         record.product_item_id AS product_item_id,
         record.type  AS type,
@@ -136,6 +137,12 @@
         VALUES (#{stockRecordId}, #{productId}, #{productItemId}, #{type}, #{count},
                 #{batch}, #{productItemType}, #{manufacturer}, #{comment}, #{complete}, #{stockRequestId}, #{stockRequestSn}, #{userId})
     </insert>
+
+    <!-- 删除入库操作记录 -->
+    <delete id="deleteStockRecord">
+        DELETE FROM stock_record
+        WHERE stock_record_id = #{recordId}
+    </delete>
 
     <!-- 创建库存操作申请 -->
     <insert id="insertStockRequest">

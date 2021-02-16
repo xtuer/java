@@ -47,6 +47,9 @@
             <template slot-scope="{ row: record }" slot="date">
                 {{ record.createdAt | formatDate }}
             </template>
+            <template slot-scope="{ index }" slot="action">
+                <Button type="error" size="small" @click="deleteStockIn(index)">删除</Button>
+            </template>
         </Table>
 
         <!-- 底部工具栏 -->
@@ -128,7 +131,8 @@ export default {
                 { slot: 'date',            title: '日期', width: 150, align: 'center' },
                 { key : 'username',        title: '操作员', width: 110 },
                 { key : 'manufacturer',    title: '生产厂家', width: 150 },
-                { key : 'comment',         title: '备主', minWidth: 150 },
+                { key : 'comment',         title: '备主', minWidth: 250 },
+                { slot: 'action',          title: '操作', minWidth: 80, align: 'center', fixed: 'right' },
             ],
             stockInModal: false,
             productItemModal: false,
@@ -194,6 +198,7 @@ export default {
             };
             this.stockInModal = true;
         },
+        // 物料入库
         stockIn() {
             // 1. 表单验证不通过则返回
             // 2. 保存成功后添加到最前面
@@ -210,6 +215,26 @@ export default {
                 }).catch(() => {
                     this.saving = false;
                 });
+            });
+        },
+        // 删除入库
+        deleteStockIn(index) {
+            // 1. 删除提示
+            // 2. 从服务器删除成功后才从本地删除
+            // 3. 提示删除成功
+
+            const record = this.stockRecords[index];
+            const info = `物料 ${record.productItem.name}，批次 ${record.batch}`;
+            this.$Modal.confirm({
+                title: `确定删除 <font color="red">${info}</font> 的入库吗?`,
+                loading: true,
+                onOk: () => {
+                    StockDao.deleteStockRecord(record.stockRecordId).then(() => {
+                        this.stockRecords.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
+                        this.$Modal.remove();
+                        this.$Message.success('删除成功');
+                    });
+                }
             });
         },
         // 新建搜索条件

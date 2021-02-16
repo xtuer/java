@@ -95,7 +95,7 @@ export default {
                 { key : 'model',    title: '规格/型号', width: 110 },
                 { key : 'standard', title: '标准/规范', width: 110 },
                 { slot: 'count',    title: '数量', width: 110, align: 'center' },
-                { slot: 'batch-count', title: '出库批次 / 数量', width: 140, align: 'center' },
+                { slot: 'batch-count', title: '出库批次 / 数量', width: 150, align: 'center' },
             ],
             loading  : false,
             saving   : false,

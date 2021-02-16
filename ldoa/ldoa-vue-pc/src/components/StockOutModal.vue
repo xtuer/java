@@ -104,8 +104,8 @@ export default {
                 { key : 'type',        title: '物料类型', width: 110 },
                 { key : 'model',       title: '规格/型号', width: 110 },
                 { key : 'standard',    title: '标准/规范', width: 110 },
-                { slot: 'count',       title: '出库数量', width: 110 },
-                { slot: 'batch-count', title: '批次 / 数量', width: 110, align: 'center' },
+                { slot: 'count',       title: '数量', width: 110 },
+                { slot: 'batch-count', title: '出库批次 / 数量', width: 150, align: 'center' },
                 { slot: 'action',      title: '选择', width: 80, align: 'center' },
             ],
         };

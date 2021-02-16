@@ -85,6 +85,21 @@ export default class StockDao {
     }
 
     /**
+     * 删除入库操作记录及其入库数量，如果入库操作超过 1 个小时，则不允许删除
+     *
+     * 网址: http://localhost:8080/api/stocks/records/{recordId}
+     * 参数: 无
+     *
+     * @param {Long} recordId 库存操作记录 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static deleteStockRecord(recordId) {
+        return Rest.del(Urls.API_STOCKS_RECORDS_BY_ID, { params: { recordId } }).then(({ success, message }) => {
+            return Utils.response(null, success, message);
+        });
+    }
+
+    /**
      * 出库申请
      *
      * 网址: http://localhost:8080/api/stocks/out/requests

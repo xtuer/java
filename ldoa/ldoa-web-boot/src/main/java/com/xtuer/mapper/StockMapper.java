@@ -66,9 +66,16 @@ public interface StockMapper {
     /**
      * 创建库存操作记录
      *
-     * @param record 库存记录
+     * @param record 库存操作记录
      */
     void insertStockRecord(StockRecord record);
+
+    /**
+     * 删除入库操作记录
+     *
+     * @param recordId 库存操作记录 ID
+     */
+    void deleteStockRecord(long recordId);
 
     /**
      * 创建库存操作申请

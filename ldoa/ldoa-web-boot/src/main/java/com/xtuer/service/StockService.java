@@ -11,6 +11,7 @@ import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.ProductMapper;
 import com.xtuer.mapper.StockMapper;
+import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,47 @@ public class StockService extends BaseService {
         record = stockMapper.findStockRecordById(record.getStockRecordId());
 
         return Result.ok(record);
+    }
+
+    /**
+     * 删除入库操作记录及其入库数量，如果入库操作超过 1 个小时，则不允许删除
+     *
+     * @param stockRecordId 库存操作记录 ID
+     * @return 返回操作的结果，payload 为无
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Boolean> deleteStockRecord(long stockRecordId) {
+        // 1. 查询入库记录
+        // 2. 删除入库记录
+        // 3. 如果是入库操作
+        //    3.1 如果入库操作超过 1 个小时，则不允许删除
+        //    3.2 删除入库物料此次入库的数量
+
+        // [1] 查询入库记录
+        StockRecord record = stockMapper.findStockRecordById(stockRecordId);
+
+        if (record == null) {
+            return Result.fail("出库操作记录不存在");
+        }
+
+        // [2] 删除入库记录
+        stockMapper.deleteStockRecord(stockRecordId);
+
+        // [3] 如果是入库操作
+        if (record.getType().equals(StockRecord.Type.IN)) {
+            // [3.1] 如果入库操作超过 1 个小时，则不允许删除
+            long createdAt = record.getCreatedAt().getTime();
+            long now = new Date().getTime();
+            double delta = (now - createdAt) / 3600_000.0; // 相差的小时
+            if (delta >= 1) {
+                return Result.fail("入库时间超过 1 小时，不允许删除");
+            }
+
+            // [3.2] 删除入库物料此次入库的数量
+            stockMapper.decreaseStock(record.getProductItemId(), record.getBatch(), record.getCount());
+        }
+
+        return Result.ok();
     }
 
     /**

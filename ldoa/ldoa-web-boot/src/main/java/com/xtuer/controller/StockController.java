@@ -116,6 +116,19 @@ public class StockController extends BaseController {
     }
 
     /**
+     * 删除入库操作记录及其入库数量，如果入库操作超过 1 个小时，则不允许删除
+     *
+     * 网址: http://localhost:8080/api/stocks/records/{recordId}
+     * 参数: 无
+     *
+     * @param recordId 库存操作记录 ID
+     */
+    @DeleteMapping(Urls.API_STOCKS_RECORDS_BY_ID)
+    public Result<Boolean> deleteStockRecord(@PathVariable long recordId) {
+        return stockService.deleteStockRecord(recordId);
+    }
+
+    /**
      * 出库申请
      *
      * 网址: http://localhost:8080/api/stocks/out/requests
