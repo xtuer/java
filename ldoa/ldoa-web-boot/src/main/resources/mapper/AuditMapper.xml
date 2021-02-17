@@ -169,4 +169,10 @@
         SET state = 1, auditor_id = #{auditorId}
         WHERE audit_id = #{auditId} AND step = #{step}
     </update>
+
+    <!-- 统计待传入的用户审批阶段数量 -->
+    <select id="countWaitingAuditStepsByUserId" resultType="int">
+        SELECT count(1) FROM audit_step
+        WHERE auditor_id = #{userId} AND state = 1
+    </select>
 </mapper>

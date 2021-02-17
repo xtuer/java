@@ -209,5 +209,17 @@ public class AuditController {
         return Result.ok(auditService.findAuditorsByTypeAndStep(type, step));
     }
 
-
+    /**
+     * 统计待传入的用户审批阶段数量
+     *
+     * 网址: http://localhost:8080API_WAITING_AUDIT_STEPS_COUNT_BY_USER_ID
+     * 参数: 无
+     *
+     * @param userId 用户 ID
+     * @return payload 为待审批阶段数量
+     */
+    @GetMapping(Urls.API_WAITING_AUDIT_STEPS_COUNT_BY_USER_ID)
+    public Result<Integer> countWaitingAuditStepsByUserId(@PathVariable long userId) {
+        return Result.ok(auditMapper.countWaitingAuditStepsByUserId(userId));
+    }
 }

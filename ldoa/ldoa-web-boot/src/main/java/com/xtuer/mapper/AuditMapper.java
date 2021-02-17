@@ -173,4 +173,12 @@ public interface AuditMapper {
      * @param auditorId 审批员 ID
      */
     void changeCurrentAuditStep(long auditId, int step, long auditorId);
+
+    /**
+     * 统计待传入的用户审批阶段数量
+     *
+     * @param userId 用户 ID
+     * @return 返回待审批阶段的数量
+     */
+    int countWaitingAuditStepsByUserId(long userId);
 }

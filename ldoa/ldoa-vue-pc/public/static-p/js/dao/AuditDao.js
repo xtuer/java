@@ -169,11 +169,26 @@ export default class AuditDao {
      *
      * @param type 审批类型
      * @param step 审批阶段
-     * @return payload 为审批员数组
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为审批员数组，reject 的参数为错误信息
      */
     static findAuditors(type, step) {
         return Rest.get(Urls.API_AUDITORS, { data: { type, step } }).then(({ data: auditors, success, message }) => {
             return Utils.response(auditors, success, message);
+        });
+    }
+
+    /**
+     * 统计待传入的用户审批阶段数量
+     *
+     * 网址: http://localhost:8080API_WAITING_AUDIT_STEPS_COUNT_BY_USER_ID
+     * 参数: 无
+     *
+     * @param {Long} userId 用户 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为待审批阶段数量，reject 的参数为错误信息
+     */
+    static countWaitingAuditStepsByUserId(userId) {
+        return Rest.get(Urls.API_WAITING_AUDIT_STEPS_COUNT_BY_USER_ID, { params: { userId } }).then(({ data: count, success, message }) => {
+            return Utils.response(count, success, message);
         });
     }
 }

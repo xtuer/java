@@ -52,6 +52,7 @@ const Urls = {
     API_AUDIT_STEPS_ACCEPT: '/api/audits/{auditId}/steps/{step}/accept', // 通过或拒绝审批阶段
     API_AUDIT_STEPS_RECALL: '/api/audits/{auditId}/steps/{step}/recall', // 撤销审批阶段
     API_AUDITORS          : '/api/auditors',                    // 审批员
+    API_WAITING_AUDIT_STEPS_COUNT_BY_USER_ID: '/api/users/{userId}/waiting-audit-steps-count', // 待审批阶段的数量
 
     // 库存
     API_STOCKS                   : '/api/stocks',              // 库存

@@ -3,6 +3,12 @@
     <div class="header">
         <div class="title"><slot></slot></div>
 
+        <!-- 消息 -->
+        <router-link :to="{ name: 'audit-received' }" class="message-count-wrapper margin-right-10">
+            <Icon type="ios-notifications-outline" size="30" style="color: #ddd" class="clickable"/>
+            <div class="message-count">{{ messageCount }}</div>
+        </router-link>
+
         <!-- 用户头像和菜单 -->
         <Dropdown>
             <a href="javascript:void(0)" class="user-info">
@@ -28,6 +34,9 @@ export default {
     computed: {
         user() {
             return this.$store.state.user;
+        },
+        messageCount() {
+            return this.$store.state.messageCount;
         }
     }
 };
@@ -70,6 +79,25 @@ export default {
                 display: block;
                 padding: 7px 16px;
             }
+        }
+    }
+
+    .message-count-wrapper {
+        position: relative;
+
+        .message-count {
+            position: absolute;
+            top: 0;
+            right: -3px;
+            font-size: 10px;
+            color: #eee;
+            background: $errorColor;
+            min-width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            border-radius: 100%;
+            padding: 0 1px;
         }
     }
 }

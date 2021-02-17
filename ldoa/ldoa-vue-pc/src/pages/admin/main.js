@@ -16,6 +16,9 @@ router.beforeEach((to, from, next) => {
         store.dispatch('loadCurrentUser').then(() => {
             next();
             LoadingBar.finish();
+
+            // 加载当前用户的消息数量
+            store.dispatch('loadCurrentUserMessageCount');
         }).catch(() => {
             LoadingBar.error();
         });
