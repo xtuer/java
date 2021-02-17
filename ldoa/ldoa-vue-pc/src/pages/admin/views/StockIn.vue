@@ -47,8 +47,8 @@
             <template slot-scope="{ row: record }" slot="date">
                 {{ record.createdAt | formatDate }}
             </template>
-            <template slot-scope="{ index }" slot="action">
-                <Button type="error" size="small" @click="deleteStockIn(index)">删除</Button>
+            <template slot-scope="{ row: record, index }" slot="action">
+                <Button type="error" size="small" :disabled="!canDelete(record.createdAt)" @click="deleteStockIn(index)">删除</Button>
             </template>
         </Table>
 
@@ -236,6 +236,18 @@ export default {
                     });
                 }
             });
+        },
+        // 是否可删除
+        canDelete(createdAt) {
+            const before  = dayjs(createdAt).unix();
+            const current = dayjs().unix();
+
+            // 大于 1 个小时不可删除
+            if ((current - before) / 3600 >= 1) {
+                return false;
+            } else {
+                return true;
+            }
         },
         // 新建搜索条件
         newFilter() {
