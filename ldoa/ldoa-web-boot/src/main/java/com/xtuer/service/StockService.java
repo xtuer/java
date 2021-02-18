@@ -172,8 +172,9 @@ public class StockService extends BaseService {
         // 2. 如果订单已经有出库申请，则不允许继续申请
         // 3. 创建出库请求
         // 4. 创建出库记录，物料的每个批次一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
-        // 5. 保存出库申请和其出库记录到数据库
-        // 6. 创建出库申请的审批，失败则不继续处理
+        // 5. 校验物料库存，库存不足则不允许出库
+        // 6. 保存出库申请和其出库记录到数据库
+        // 7. 创建出库申请的审批，失败则不继续处理
 
         // [1] 如果没有出库物料，则返回
         if (CollectionUtils.isEmpty(out.getBatchCounts())) {
@@ -207,7 +208,6 @@ public class StockService extends BaseService {
 
         // [4] 创建出库记录，物料的每个批次一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
         List<StockRecord> stockRecords = new LinkedList<>();
-
         for (BatchCount bc : out.getBatchCounts()) {
             StockRecord record = new StockRecord();
             record.setStockRecordId(super.nextId());
@@ -220,18 +220,26 @@ public class StockService extends BaseService {
             record.setBatch(bc.getBatch());
             record.setCount(bc.getCount());
             record.setComplete(false); // 标记为未完成
+            record.setProductItem(new ProductItem());
+            record.getProductItem().setName(bc.getProductItemName()); // 设置物料名字，库存不足时提示使用
 
             stockRecords.add(record);
         }
 
-        // [5] 保存出库申请和其出库记录到数据库
+        // [5] 校验物料库存，库存不足则不允许出库
+        Result<Boolean> validateResult = this.checkProductItemsStock(stockRecords);
+        if (!validateResult.isSuccess()) {
+            return Result.fail(validateResult.getMessage());
+        }
+
+        // [6] 保存出库申请和其出库记录到数据库
         stockMapper.insertStockRequest(request);
 
         for (StockRecord record : stockRecords) {
             stockMapper.insertStockRecord(record);
         }
 
-        // [6] 创建出库申请的审批，失败则不继续处理，抛异常是为了事务回滚
+        // [7] 创建出库申请的审批，失败则不继续处理，抛异常是为了事务回滚
         auditServiceHelper.insertStockRequestAudit(user, request);
 
         return Result.ok(request);
@@ -272,40 +280,33 @@ public class StockService extends BaseService {
     @Transactional(rollbackFor = Exception.class)
     public Result<Boolean> stockOut(long requestId) {
         // 1. 查询出库申请的物料出库记录
-        // 2. 查询出库记录相关的库存，放到出库记录里，方便操作
+        // 2. 校验物料库存，库存不足则不允许出库
         // 3. 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
-        // 4. 校验物料库存，库存不足则不允许出库
-        // 5. 出库: 更新库存，每个物料的库存减去对应的数量
-        // 6. 更新物料出库记录的状态为完成
-        // 7. 更新出库申请的状态为完成
+        // 4. 出库: 更新库存，每个物料的库存减去对应的数量
+        // 5. 更新物料出库记录的状态为完成
+        // 6. 更新出库申请的状态为完成
 
         // [1] 查询出库申请的物料出库记录
         List<StockRecord> records = stockMapper.findStockRecordsByStockRequestId(requestId);
 
-        // [2] 查询出库记录相关的库存，放到出库记录里，方便操作
-        for (StockRecord record : records) {
-            int count = stockMapper.findStockBatchCount(record.getProductItemId(), record.getBatch());
-            record.setStockBatchCount(count);
+        // [2] 校验物料库存，库存不足则不允许出库
+        Result<Boolean> validateResult = this.checkProductItemsStock(records);
+        if (!validateResult.isSuccess()) {
+            return Result.fail(validateResult.getMessage());
         }
 
         // [3] 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
         List<BatchCount> batchCounts = mergeToBatchCount(records);
 
-        // [4] 校验物料库存，库存不足则不允许出库
-        Result<Boolean> validateResult = this.checkProductItemsStock(batchCounts);
-        if (!validateResult.isSuccess()) {
-            return Result.fail(validateResult.getMessage());
-        }
-
-        // [5] 出库: 更新库存，每个物料批次的库存减去对应的数量
+        // [4] 出库: 更新库存，每个物料批次的库存减去对应的数量
         for (BatchCount bc : batchCounts) {
             stockMapper.decreaseStock(bc.getProductItemId(), bc.getBatch(), bc.getCount());
         }
 
-        // [6] 更新物料出库记录的状态为完成
+        // [5] 更新物料出库记录的状态为完成
         stockMapper.completeStockRecordByRequestId(requestId);
 
-        // [7] 更新出库申请的状态为完成
+        // [6] 更新出库申请的状态为完成
         stockMapper.updateStockRequestState(requestId, StockRequest.STATE_COMPLETE);
 
         return Result.ok();
@@ -354,11 +355,24 @@ public class StockService extends BaseService {
     /**
      * 检查库存是否足够
      *
-     * @param batchCounts 出库信息
+     * @param records 出库操作记录
      * @return 库存足够返回 true，否则返回 false
      */
-    private Result<Boolean> checkProductItemsStock(Collection<BatchCount> batchCounts) {
-        // 当所有物料的库存都满足条件时则返回 true，否则返回 false
+    private Result<Boolean> checkProductItemsStock(Collection<StockRecord> records) {
+        // 1. 查询出库记录相关的库存，放到出库记录里，方便操作
+        // 2. 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
+        // 3. 当所有物料的库存都满足条件时则返回 true，否则返回 false
+
+        // [1] 查询出库记录相关的库存，放到出库记录里，方便操作
+        for (StockRecord record : records) {
+            int count = stockMapper.findStockBatchCount(record.getProductItemId(), record.getBatch());
+            record.setStockBatchCount(count);
+        }
+
+        // [2] 把相同物料同一批次的出库合并到一起，count 为所有相同物料的 count 之和，stockBatchCount 为此批次的库存
+        List<BatchCount> batchCounts = mergeToBatchCount(records);
+
+        // [3] 当所有物料的库存都满足条件时则返回 true，否则返回 false
         for (BatchCount bc : batchCounts) {
             if (bc.getCount() > bc.getStockBatchCount()) {
                 return Result.fail("库存不足: 物料[{}]的库存为 {}，需要 {}",
