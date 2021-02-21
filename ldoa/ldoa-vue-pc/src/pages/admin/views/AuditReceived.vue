@@ -29,7 +29,7 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: auditItem }" slot="action">
-                <Button icon="md-cloud-done" type="primary" size="small" @click="audit(auditItem)">审批</Button>
+                <Button icon="md-cloud-done" type="primary" size="small" @click="showAudit(auditItem)">审批</Button>
             </template>
         </Table>
 
@@ -43,6 +43,9 @@
 
         <!-- 物料出库申请详情弹窗 -->
         <StockOutDetails v-model="stockRequestModal" :stock-request-id="stockRequestId"/>
+
+        <!-- 维保订单详情弹窗 -->
+        <MaintenanceOrderDetails v-model="maintenanceOrderModal" :maintenace-order-id="maintenanceOrderId"/>
     </div>
 </template>
 
@@ -50,9 +53,10 @@
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import OrderDetails from '@/components/OrderDetails.vue';
 import StockOutDetails from '@/components/StockOutDetails.vue';
+import MaintenanceOrderDetails from '@/components/MaintenanceOrderDetails.vue';
 
 export default {
-    components: { OrderDetails, StockOutDetails },
+    components: { OrderDetails, StockOutDetails, MaintenanceOrderDetails },
     data() {
         return {
             auditItems : [],
@@ -77,10 +81,13 @@ export default {
                 { slot: 'action',    title: '操作', width: 120, align: 'center', className: 'table-action' },
             ],
             orderId: '0', // 查看详情的订单 ID
-            orderModal: false, // 是否显示订单详情弹窗
+            orderModal: false, // 是否显示订单详情弹窗是否可见
 
             stockRequestId: '0',
             stockRequestModal: false,
+
+            maintenanceOrderId: '0',
+            maintenanceOrderModal: false, // 维保订单详情弹窗是否可见
         };
     },
     mounted() {
@@ -110,15 +117,19 @@ export default {
             });
         },
         // 审批
-        audit(auditItem) {
+        showAudit(auditItem) {
             switch (auditItem.type) {
-            case TYPE_ORDER:
+            case AUDIT_TYPE.ORDER:
                 this.orderId = auditItem.targetId;
                 this.orderModal = true;
                 break;
-            case TYPE_OUT_OF_STOCK:
+            case AUDIT_TYPE.OUT_OF_STOCK:
                 this.stockRequestId = auditItem.targetId;
                 this.stockRequestModal = true;
+                break;
+            case AUDIT_TYPE.MAINTENANCE_ORDER:
+                this.maintenanceOrderId = auditItem.targetId;
+                this.maintenanceOrderModal = true;
                 break;
             default:
             }

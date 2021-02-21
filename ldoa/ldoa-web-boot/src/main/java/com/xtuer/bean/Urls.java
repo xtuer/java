@@ -84,6 +84,7 @@ public interface Urls {
     // 维保订单
     String API_MAINTENANCE_ORDERS = "/api/maintenance-orders";
     String API_MAINTENANCE_ORDERS_BY_ID = "/api/maintenance-orders/{orderId}";
+    String API_MAINTENANCE_ORDERS_COMPLETE = "/api/maintenance-orders/{orderId}/complete"; // 完成订单
 
     // 审批
     String API_AUDITS                = "/api/audits";                               // 审批

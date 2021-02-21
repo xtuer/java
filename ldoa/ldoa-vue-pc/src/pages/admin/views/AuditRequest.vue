@@ -43,6 +43,9 @@
 
         <!-- 物料出库申请详情弹窗 -->
         <StockOutDetails v-model="stockRequestModal" :stock-request-id="stockRequestId"/>
+
+        <!-- 维保订单详情弹窗 -->
+        <MaintenanceOrderDetails v-model="maintenanceOrderModal" :maintenace-order-id="maintenanceOrderId"/>
     </div>
 </template>
 
@@ -50,9 +53,10 @@
 import AuditDao from '@/../public/static-p/js/dao/AuditDao';
 import OrderDetails from '@/components/OrderDetails.vue';
 import StockOutDetails from '@/components/StockOutDetails.vue';
+import MaintenanceOrderDetails from '@/components/MaintenanceOrderDetails.vue';
 
 export default {
-    components: { OrderDetails, StockOutDetails },
+    components: { OrderDetails, StockOutDetails, MaintenanceOrderDetails },
     data() {
         return {
             audits : [],
@@ -81,6 +85,9 @@ export default {
 
             stockRequestId: '0',
             stockRequestModal: false,
+
+            maintenanceOrderId: '0',
+            maintenanceOrderModal: false, // 维保订单详情弹窗是否可见
         };
     },
     mounted() {
@@ -110,15 +117,19 @@ export default {
             });
         },
         // 审批，参数为审批对象
-        showAudit(audit) {
-            switch (audit.type) {
-            case TYPE_ORDER:
-                this.orderId = audit.targetId;
+        showAudit(auditItem) {
+            switch (auditItem.type) {
+            case AUDIT_TYPE.ORDER:
+                this.orderId = auditItem.targetId;
                 this.orderModal = true;
                 break;
-            case TYPE_OUT_OF_STOCK:
-                this.stockRequestId = audit.targetId;
+            case AUDIT_TYPE.OUT_OF_STOCK:
+                this.stockRequestId = auditItem.targetId;
                 this.stockRequestModal = true;
+                break;
+            case AUDIT_TYPE.MAINTENANCE_ORDER:
+                this.maintenanceOrderId = auditItem.targetId;
+                this.maintenanceOrderModal = true;
                 break;
             default:
             }

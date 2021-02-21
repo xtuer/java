@@ -79,15 +79,19 @@
 
         <!-- 维保订单编辑弹窗 -->
         <MaintenanceOrderEdit v-model="editModal" :maintenace-order-id="maintenanceOrderId" @on-ok="orderSaved"/>
+
+        <!-- 维保订单详情弹窗 -->
+        <MaintenanceOrderDetails v-model="detailsModal" :maintenace-order-id="maintenanceOrderId" @on-ok="orderCompleted(maintenanceOrderId)"/>
     </div>
 </template>
 
 <script>
 import MaintenanceOrderDao from '@/../public/static-p/js/dao/MaintenanceOrderDao';
 import MaintenanceOrderEdit from '@/components/MaintenanceOrderEdit.vue';
+import MaintenanceOrderDetails from '@/components/MaintenanceOrderDetails.vue';
 
 export default {
-    components: { MaintenanceOrderEdit },
+    components: { MaintenanceOrderEdit, MaintenanceOrderDetails },
     data() {
         return {
             orders: [],
@@ -117,6 +121,7 @@ export default {
                 { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             editModal: false, // 编辑弹窗是否可见
+            detailsModal: false, // 维保订单详情弹窗是否可见
             maintenanceOrderId: '0', // 维保订单 ID
         };
     },
@@ -191,9 +196,19 @@ export default {
                 this.orders.insert(0, order);
             }
         },
+        // 完成订单
+        orderCompleted(maintenanceOrderId) {
+            const found = this.orders.find(o => o.maintenanceOrderId === maintenanceOrderId);
+
+            if (found) {
+                found.state = 4;
+                found.stateLabel = '完成';
+            }
+        },
         // 显示订单详情
         detailsOrder(order) {
-
+            this.maintenanceOrderId = order.maintenanceOrderId;
+            this.detailsModal = true;
         }
     }
 };

@@ -10,6 +10,7 @@ Slot: 无
 示例:
 <AuditItems auditor-id="1"/>
 
+@deprecated
 -->
 <template>
     <div class="audit-items-x list-page">

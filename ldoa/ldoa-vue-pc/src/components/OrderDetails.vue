@@ -6,7 +6,7 @@ visible: 是否可见，可使用 v-model 双向绑定
 order-id: 订单 ID
 
 事件:
-on-ok: 点击确定时触发，参数为订单 ID
+on-ok: 点击完成订单时触发，参数为订单 ID
 on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏时为 false
 
 案例:

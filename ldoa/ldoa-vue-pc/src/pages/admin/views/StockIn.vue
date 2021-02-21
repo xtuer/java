@@ -132,7 +132,7 @@ export default {
                 { key : 'username',        title: '操作员', width: 110 },
                 { key : 'manufacturer',    title: '生产厂家', width: 150 },
                 { key : 'comment',         title: '备主', minWidth: 250 },
-                { slot: 'action',          title: '操作', minWidth: 80, align: 'center', fixed: 'right' },
+                { slot: 'action',          title: '操作', minWidth: 80, align: 'center' },
             ],
             stockInModal: false,
             productItemModal: false,

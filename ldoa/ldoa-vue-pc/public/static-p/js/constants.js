@@ -53,10 +53,11 @@ window.AUDIT_TYPES = [
     { value: 'OUT_OF_STOCK', name: '物料出库' },
     { value: 'MAINTENANCE_ORDER', name: '维修 / 保养' },
 ];
-
-// 操作类型
-window.TYPE_ORDER = 'ORDER';               // 订单
-window.TYPE_OUT_OF_STOCK = 'OUT_OF_STOCK'; // 出库申请
+window.AUDIT_TYPE = {
+    ORDER: 'ORDER', // 订单
+    OUT_OF_STOCK: 'OUT_OF_STOCK', // 出库申请
+    MAINTENANCE_ORDER: 'MAINTENANCE_ORDER', // 维保订单
+};
 
 window.AUDIT_STATES = [
     { value: 1, label: '待审批' },

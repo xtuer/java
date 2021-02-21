@@ -5,6 +5,7 @@ import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.MaintenanceOrder;
+import com.xtuer.bean.order.Order;
 import com.xtuer.mapper.MaintenanceOrderMapper;
 import com.xtuer.service.MaintenanceOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,19 @@ public class MaintenanceOrderController extends BaseController {
     public Result<MaintenanceOrder> upsertMaintenanceOrder(MaintenanceOrder order) {
         User servicePerson = super.getCurrentUser();
         return orderService.upsertMaintenanceOrder(order, servicePerson);
+    }
+
+    /**
+     * 完成订单
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}/complete
+     * 参数: 无
+     *
+     * @param orderId 订单 ID
+     */
+    @PutMapping(Urls.API_MAINTENANCE_ORDERS_COMPLETE)
+    public Result<Boolean> completeOrder(@PathVariable long orderId) {
+        orderMapper.updateMaintenanceOrderState(orderId, MaintenanceOrder.STATE_COMPLETE);
+        return Result.ok();
     }
 }
