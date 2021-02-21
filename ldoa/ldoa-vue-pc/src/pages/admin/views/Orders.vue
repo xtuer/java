@@ -14,7 +14,7 @@
                     <span slot="prepend">产品名称</span>
                 </Input>
             </div>
-            <Button type="primary" icon="md-add" @click="editOrder()">创建订单</Button>
+            <Button type="primary" icon="md-add" @click="editOrder()">新建订单</Button>
         </div>
 
         <!-- 订单列表 -->
@@ -94,7 +94,7 @@ export default {
                 orderSn     : '',
                 productNames: '',
                 state       : -1,
-                pageSize    : 20,
+                pageSize    : 50,
                 pageNumber  : 1,
             },
             more      : false, // 是否还有更多订单

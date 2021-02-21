@@ -144,8 +144,8 @@ export default {
         return {
             order: {}, // 订单
             audit: {}, // 审批
-            loading  : false,
-            saving   : false,
+            loading: false,
+            saving : false,
         };
     },
     computed: {

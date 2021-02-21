@@ -57,9 +57,9 @@ public class AuditServiceHelper {
      */
     public Result<Audit> upsertMaintenanceOrderAudit(User applicant, MaintenanceOrder order) {
         Objects.requireNonNull(order, "维保订单不能为空");
-        String desc = String.format("维保订单: %s, 客户: %s", order.getMaintenanceOrderSn(), order.getCustomerName());
+        String desc = String.format("维保订单: %s, 客户: %s，销售: %s", order.getMaintenanceOrderSn(), order.getCustomerName(), order.getSalespersonName());
 
-        return auditService.upsertAudit(applicant, AuditType.MAINTENANCE_ORDER, order.getMaintenanceOrderId(), Utils.toJson(order), desc, 0);
+        return auditService.upsertAudit(applicant, AuditType.MAINTENANCE_ORDER, order.getMaintenanceOrderId(), Utils.toJson(order), desc, order.getCurrentAuditorId());
     }
 
     /**

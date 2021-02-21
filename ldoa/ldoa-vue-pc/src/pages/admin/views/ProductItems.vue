@@ -87,7 +87,7 @@ export default {
             filter: { // 搜索条件
                 name      : '',
                 code      : '',
-                pageSize  : 20,
+                pageSize  : 50,
                 pageNumber: 1,
             },
             more     : false, // 是否还有更多物料

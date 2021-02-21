@@ -62,17 +62,17 @@
 }
 
 /* 布局 */
-.two-column {
+.two-column, .column-two, .column-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
-.three-column {
+.three-column, .column-three, .column-3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.four-column {
+.four-column, .column-four, .column-4 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }

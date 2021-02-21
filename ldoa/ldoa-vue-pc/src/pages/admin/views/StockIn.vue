@@ -259,7 +259,7 @@ export default {
                 // manufacturer: '',
                 startAt   : '',
                 endAt     : '',
-                pageSize  : 20,
+                pageSize  : 50,
                 pageNumber: 1,
             };
         }

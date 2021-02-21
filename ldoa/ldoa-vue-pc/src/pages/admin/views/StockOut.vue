@@ -95,7 +95,7 @@ export default {
             requests: [],
             filter: { // 搜索条件
                 stockRequestSn: '',
-                pageSize  : 20,
+                pageSize  : 50,
                 pageNumber: 1,
                 type      : 'OUT',
                 state     : -1,

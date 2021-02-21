@@ -13,17 +13,18 @@
         mo.repairable,
         mo.salesperson_name,
         mo.received_date,
+        mo.product_code,
         mo.product_name,
-        mo.product_sn,
-        mo.model,
-        mo.product_item_code,
-        mo.batch,
-        mo.order_sn,
-        mo.count,
+        mo.product_model,
+        mo.product_item_name,
+        mo.product_item_batch,
+        mo.product_item_count,
         mo.accessories,
         mo.need_certificate,
         mo.problem,
-        mo.state
+        mo.order_sn,
+        mo.state,
+        mo.created_at
     </sql>
 
     <!-- 查询符合条件的维保订单 -->
@@ -31,24 +32,33 @@
         SELECT <include refid="maintenanceOrderColumns"/>
         FROM maintenance_order mo
             LEFT JOIN user ON user.user_id = mo.service_person_id
+        ORDER BY created_at DESC
         LIMIT ${offset}, ${count}
+    </select>
+
+    <!-- 查询指定 ID 的维保订单 -->
+    <select id="findMaintenanceOrderById" resultType="MaintenanceOrder">
+        SELECT <include refid="maintenanceOrderColumns"/>
+        FROM maintenance_order mo
+            LEFT JOIN user ON user.user_id = mo.service_person_id
+        WHERE maintenance_order_id = #{orderId}
     </select>
 
     <!-- 插入或者更新维保订单 -->
     <insert id="upsertMaintenanceOrder" parameterType="MaintenanceOrder">
         INSERT INTO maintenance_order(maintenance_order_id, maintenance_order_sn, service_person_id, customer_name,
-            maintainable, repairable, salesperson_name, received_date, product_name, product_sn,  model,
-            product_item_code, batch, order_sn, count, accessories, need_certificate, problem, state)
+            maintainable, repairable, salesperson_name, received_date, product_code, product_name, product_model,
+            product_item_name, product_item_batch, product_item_count, accessories, need_certificate, problem, order_sn, state)
         VALUES (#{maintenanceOrderId}, #{maintenanceOrderSn}, #{servicePersonId}, #{customerName},
-            #{maintainable}, #{repairable}, #{salespersonName}, #{receivedDate}, #{productName}, #{productSn},  #{model},
-            #{productItemCode}, #{batch}, #{orderSn}, #{count}, #{accessories}, #{needCertificate}, #{problem}, #{state})
+            #{maintainable}, #{repairable}, #{salespersonName}, #{receivedDate}, #{productCode}, #{productName}, #{productModel},
+            #{productItemName}, #{productItemBatch}, #{productItemCount}, #{accessories}, #{needCertificate}, #{problem}, #{orderSn}, #{state})
 
         ON DUPLICATE KEY
         UPDATE maintenance_order_sn = #{maintenanceOrderSn}, customer_name = #{customerName},
             maintainable = #{maintainable}, repairable = #{repairable}, salesperson_name = #{salespersonName},
-            received_date = #{receivedDate}, product_name = #{productName}, product_sn = #{productSn},  model = #{model},
-            product_item_code = #{productItemCode}, batch = #{batch}, order_sn = #{orderSn}, count = #{count},
-            accessories = #{accessories}, need_certificate = #{needCertificate}, problem = #{problem}
+            received_date = #{receivedDate}, product_code = #{productCode}, product_name = #{productName}, product_model = #{productModel},
+            product_item_name = #{productItemName}, product_item_batch = #{productItemBatch}, product_item_count = #{productItemCount},
+            accessories = #{accessories}, need_certificate = #{needCertificate}, problem = #{problem}, order_sn = #{orderSn}
     </insert>
 
     <!-- 修改维保订单的状态 -->

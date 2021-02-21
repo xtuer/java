@@ -32,6 +32,26 @@ const formatDate = function(date, pattern = 'YYYY-MM-DD HH:mm') {
 };
 
 /**
+ * 格式化时间，只有年月日
+ *
+ * @param {String}} date 时间对象
+ * @return {String} 返回日期的字符串
+ */
+const formatDateSimple = function(date) {
+    return formatDate(date, 'YYYY-MM-DD');
+};
+
+/**
+ * 格式化时间，有年月日时分秒
+ *
+ * @param {String}} date 时间对象
+ * @return {String} 返回日期的字符串
+ */
+const formatDateFull = function(date) {
+    return formatDate(date, 'YYYY-MM-DD HH:mm:ss');
+};
+
+/**
  * 返回角色对应的名字
  *
  * @param  {String} role 角色
@@ -109,6 +129,8 @@ const labelForValue = function(value, pairs) {
 
 export default {
     formatDate,
+    formatDateSimple,
+    formatDateFull,
     roleName,
     genderName,
     idCardName,

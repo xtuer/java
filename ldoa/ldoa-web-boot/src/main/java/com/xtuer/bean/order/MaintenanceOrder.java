@@ -69,39 +69,39 @@ public class MaintenanceOrder {
     private Date receivedDate;
 
     /**
+     * 创建日期
+     */
+    private Date createdAt;
+
+    /**
+     * 产品编码
+     */
+    private String productCode;
+
+    /**
      * 产品名称
      */
     private String productName;
 
     /**
-     * 产品序列号
-     */
-    private String productSn;
-
-    /**
      * 规格/型号
      */
-    private String model;
+    private String productModel;
 
     /**
-     * 物料编码
+     * 物料名称
      */
-    private String productItemCode;
+    private String productItemName;
 
     /**
      * 批次
      */
-    private String batch;
-
-    /**
-     * 订单号
-     */
-    private String orderSn;
+    private String productItemBatch;
 
     /**
      * 数量
      */
-    private int count;
+    private int productItemCount;
 
     /**
      * 配件
@@ -114,14 +114,24 @@ public class MaintenanceOrder {
     private boolean needCertificate;
 
     /**
-     * 客户反应的问题
+     * 客户反馈的问题
      */
     private String problem;
+
+    /**
+     * 订单号
+     */
+    private String orderSn;
 
     /**
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
     private int state;
+
+    /**
+     * 当前审批员 ID
+     */
+    private long currentAuditorId;
 
     /**
      * 获取订单状态 Label

@@ -29,21 +29,24 @@ public class MaintenanceOrderService extends BaseService {
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<MaintenanceOrder> upsertMaintenanceOrder(MaintenanceOrder order, User servicePerson) {
-        // 1. 参数校验: 产品名称、规格/型号、产品序列号不能为空
+        // 1. 参数校验: 客户名称、销售人员、收货日期、反馈的问题不能为空
         // 2. 如果 ID 无效，则是新创建，为其分配 ID 和 SN
         // 3. 设置维保订单的其他属性
         // 4. 保存维保订单到数据库
         // 5. 创建审批
 
-        // [1] 参数校验: 产品名称、规格/型号、产品序列号不能为空
-        if (StringUtils.isBlank(order.getProductName())) {
-            return Result.fail("产品名称不能为空");
+        // [1] 参数校验: 客户名称、销售人员、收货日期、反馈的问题不能为空
+        if (StringUtils.isBlank(order.getCustomerName())) {
+            return Result.fail("客户名称不能为空");
         }
-        if (StringUtils.isBlank(order.getModel())) {
-            return Result.fail("规格/型号不能为空");
+        if (StringUtils.isBlank(order.getSalespersonName())) {
+            return Result.fail("销售人员不能为空");
         }
-        if (StringUtils.isBlank(order.getProductSn())) {
-            return Result.fail("产品序列号不能为空");
+        if (order.getReceivedDate() == null) {
+            return Result.fail("收货日期不能为空");
+        }
+        if (StringUtils.isBlank(order.getProblem())) {
+            return Result.fail("反馈的问题不能为空");
         }
 
         // [2] 如果 ID 无效，则是新创建，为其分配 ID 和 SN
@@ -55,6 +58,7 @@ public class MaintenanceOrderService extends BaseService {
         // [3] 设置维保订单的其他属性
         order.setServicePersonId(servicePerson.getUserId());
         order.setServicePersonName(servicePerson.getNickname());
+        order.setState(MaintenanceOrder.STATE_AUDITING);
 
         // [4] 保存维保订单到数据库
         orderMapper.upsertMaintenanceOrder(order);

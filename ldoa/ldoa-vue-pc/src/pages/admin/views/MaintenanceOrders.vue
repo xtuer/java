@@ -4,7 +4,7 @@
 搜索维保订单、分页加载 (加载下一页的维保订单)
 -->
 <template>
-    <div class="orders list-page">
+    <div class="maintenance-orders list-page">
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <!-- 搜索条件 -->
@@ -35,11 +35,31 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" @click="editModal = true">添加维保订单</Button>
+            <Button type="primary" icon="md-add" @click="editOrder()">新建维保订单</Button>
         </div>
 
         <!-- 维保订单列表 -->
         <Table :data="orders" :columns="columns" :loading="reloading" border>
+            <!-- 订单号 -->
+            <template slot-scope="{ row: order }" slot="maintenanceOrderSn">
+                <a @click="detailsOrder(order)">{{ order.maintenanceOrderSn }}</a>
+            </template>
+
+            <!-- 类型 -->
+            <template slot-scope="{ row: order }" slot="type">
+                {{ orderType(order) }}
+            </template>
+
+            <!-- 收货日期 -->
+            <template slot-scope="{ row: order }" slot="receivedDate">
+                {{ order.receivedDate | formatDateSimple }}
+            </template>
+
+            <!-- 状态 -->
+            <template slot-scope="{ row: order }" slot="state">
+                <Tag :color="stateColor(order.state)" type="border">{{ order.stateLabel }}</Tag>
+            </template>
+
             <!-- 介绍信息 -->
             <template slot-scope="{ row: order }" slot="info">
                 {{ order.userId }}
@@ -47,7 +67,7 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
-                <Button type="primary" size="small">编辑</Button>
+                <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
                 <Button type="error" size="small">删除</Button>
             </template>
         </Table>
@@ -58,7 +78,7 @@
         </div>
 
         <!-- 维保订单编辑弹窗 -->
-        <MaintenanceOrderEdit v-model="editModal"/>
+        <MaintenanceOrderEdit v-model="editModal" :maintenace-order-id="maintenanceOrderId" @on-ok="orderSaved"/>
     </div>
 </template>
 
@@ -73,7 +93,7 @@ export default {
             orders: [],
             filter: { // 搜索条件
                 nickname  : '',
-                pageSize  : 2,
+                pageSize  : 50,
                 pageNumber: 1,
             },
             filterKey  : 'email',  // 搜索的 Key
@@ -84,11 +104,20 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'nickname', title: '名字', width: 150 },
-                { slot: 'info',   title: '介绍', minWidth: 500 },
+                { slot: 'maintenanceOrderSn', title: '订单号', width: 180 },
+                { key : 'customerName', title: '客户', width: 150 },
+                { key : 'salespersonName', title: '销售人员', width: 120 },
+                { slot: 'type',   title: '类型', width: 110 },
+                { key : 'productName', title: '产品名称', width: 150 },
+                { key : 'productItemName', title: '物料名称', width: 150 },
+                { slot: 'state', title: '状态', width: 110, align: 'center' },
+                { key : 'problem',   title: '反馈的问题', minWidth: 400 },
+                { key : 'servicePersonName', title: '售后服务人员', width: 130 },
+                { slot: 'receivedDate', title: '收货日期', width: 130, align: 'center' },
                 { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             editModal: false, // 编辑弹窗是否可见
+            maintenanceOrderId: '0', // 维保订单 ID
         };
     },
     mounted() {
@@ -97,7 +126,7 @@ export default {
     methods: {
         // 搜索维保订单
         searchOrders() {
-            this.orders             = [];
+            this.orders            = [];
             this.more              = false;
             this.reloading         = true;
             this.filter.pageNumber = 1;
@@ -126,6 +155,46 @@ export default {
                 this.filter.pageNumber++;
             });
         },
+        // 订单类型
+        orderType(order) {
+            const ns = [];
+
+            if (order.maintainable) {
+                ns.push('维修');
+            }
+            if (order.repairable) {
+                ns.push('保养');
+            }
+
+            return ns.join(', ');
+        },
+        // 编辑订单
+        editOrder(order) {
+            // 弹窗订单编辑窗口
+            // order 存在则是更新，不存在这是新建
+            if (order) {
+                this.maintenanceOrderId = order.maintenanceOrderId;
+            } else {
+                this.maintenanceOrderId = '0';
+            }
+
+            this.editModal = true;
+        },
+        // 订单保存成功
+        orderSaved(order) {
+            // 查找订单，如果存在则替换，否则插入都第一行
+            const index = this.orders.findIndex(o => o.maintenanceOrderId === order.maintenanceOrderId);
+
+            if (index >= 0) {
+                this.orders.replace(index, order);
+            } else {
+                this.orders.insert(0, order);
+            }
+        },
+        // 显示订单详情
+        detailsOrder(order) {
+
+        }
     }
 };
 </script>

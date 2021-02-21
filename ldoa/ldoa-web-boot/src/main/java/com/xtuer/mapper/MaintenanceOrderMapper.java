@@ -20,6 +20,14 @@ public interface MaintenanceOrderMapper {
     List<MaintenanceOrder> findMaintenanceOrders(Page page);
 
     /**
+     * 查询指定 ID 的维保订单
+     *
+     * @param orderId 维保订单 ID
+     * @return 返回查询到的维保订单，查询不到返回 null
+     */
+    MaintenanceOrder findMaintenanceOrderById(long orderId);
+
+    /**
      * 插入或者更新维保订单
      *
      * @param order 维保订单

@@ -61,7 +61,7 @@ export default {
                 name      : '',
                 state     : 1,
                 auditorId : this.currentUserId(),
-                pageSize  : 20,
+                pageSize  : 50,
                 pageNumber: 1,
             },
             more     : false, // 是否还有更多审批项
