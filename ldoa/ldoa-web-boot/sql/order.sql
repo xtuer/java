@@ -87,6 +87,6 @@ CREATE TABLE maintenance_order (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (maintenance_order_id) COMMENT '维保订单 ID 作为主键',
-    KEY idx_received_date (received_date) COMMENT '订单 ID 建立索引',
-    KEY idx_created_at (created_at) COMMENT '订单 ID 建立索引'
+    KEY idx_received_date (received_date) COMMENT '收货时间建立索引',
+    KEY idx_created_at (created_at) COMMENT '创建时间建立索引'
 ) ENGINE=InnoDB;
