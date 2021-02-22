@@ -32,8 +32,28 @@
         SELECT <include refid="maintenanceOrderColumns"/>
         FROM maintenance_order mo
             LEFT JOIN user ON user.user_id = mo.service_person_id
+        <where>
+            <if test="filter.state >= 0">
+                AND state = #{filter.state}
+            </if>
+            <if test="filter.maintenanceOrderSn!=null and filter.maintenanceOrderSn!='' ">
+                AND maintenance_order_sn LIKE CONCAT('%', #{filter.maintenanceOrderSn},'%')
+            </if>
+            <if test="filter.salespersonName!=null and filter.salespersonName!='' ">
+                AND salesperson_name LIKE CONCAT('%', #{filter.salespersonName},'%')
+            </if>
+            <if test="filter.customerName!=null and filter.customerName!='' ">
+                AND customer_name LIKE CONCAT('%', #{filter.customerName},'%')
+            </if>
+            <if test="filter.productName!=null and filter.productName!='' ">
+                AND product_name LIKE CONCAT('%', #{filter.productName},'%')
+            </if>
+            <if test="filter.receivedStartAt!=null and filter.receivedEndAt!=null">
+                AND (received_date BETWEEN #{filter.receivedStartAt} AND #{filter.receivedEndAt})
+            </if>
+        </where>
         ORDER BY created_at DESC
-        LIMIT ${offset}, ${count}
+        LIMIT ${page.offset}, ${page.count}
     </select>
 
     <!-- 查询指定 ID 的维保订单 -->

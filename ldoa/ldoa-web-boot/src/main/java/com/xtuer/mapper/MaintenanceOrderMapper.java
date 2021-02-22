@@ -2,6 +2,7 @@ package com.xtuer.mapper;
 
 import com.xtuer.bean.Page;
 import com.xtuer.bean.order.MaintenanceOrder;
+import com.xtuer.bean.order.MaintenanceOrderFilter;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -14,10 +15,11 @@ public interface MaintenanceOrderMapper {
     /**
      * 查询符合条件的维保订单
      *
+     * @param filter 过滤条件
      * @param page 分页
      * @return 返回维保订单的数组
      */
-    List<MaintenanceOrder> findMaintenanceOrders(Page page);
+    List<MaintenanceOrder> findMaintenanceOrders(MaintenanceOrderFilter filter, Page page);
 
     /**
      * 查询指定 ID 的维保订单

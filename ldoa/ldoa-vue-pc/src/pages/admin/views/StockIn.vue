@@ -156,10 +156,10 @@ export default {
     methods: {
         // 搜索入库记录
         searchStockRecords() {
-            this.stockRecords            = [];
-            this.more                    = false;
-            this.reloading               = true;
-            this.filter                  = this.newFilter();
+            this.stockRecords           = [];
+            this.more                   = false;
+            this.reloading              = true;
+            this.filter                 = this.newFilter();
             this.filter[this.filterKey] = this.filterValue;
 
             if (this.dateRange[0] && this.dateRange[1]) {

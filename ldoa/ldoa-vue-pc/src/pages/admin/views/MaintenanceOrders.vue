@@ -9,18 +9,22 @@
         <div class="list-page-toolbar-top">
             <!-- 搜索条件 -->
             <div class="filter">
-                <!-- 指定条件的搜索 -->
-                <Input v-model="filter.nickname" placeholder="请输入查询条件">
-                    <span slot="prepend">姓甚名谁</span>
-                </Input>
+                <!-- 状态 -->
+                <Select v-model="filter.state" data-prepend-label="状态" class="prepend-label" style="width: 100%; min-width: 150px" @on-change="searchOrders">
+                    <Option :value="-1">全部</Option>
+                    <Option :value="1">审批中</Option>
+                    <Option :value="2">审批拒绝</Option>
+                    <Option :value="3">审批通过</Option>
+                    <Option :value="4">完成</Option>
+                </Select>
 
                 <!-- 时间范围 -->
                 <DatePicker v-model="dateRange"
                             format="MM-dd"
                             separator=" 至 "
                             type="daterange"
-                            data-prepend="创建时间"
-                            class="date-picker"
+                            data-prepend-label="收货时间"
+                            class="prepend-label"
                             split-panels
                             placeholder="请选择创建时间范围">
                 </DatePicker>
@@ -28,8 +32,10 @@
                 <!-- 选择条件的搜索 -->
                 <Input v-model="filterValue" transfer placeholder="请输入查询条件" search enter-button @on-search="searchOrders">
                     <Select v-model="filterKey" slot="prepend">
-                        <Option value="email">邮件地址</Option>
-                        <Option value="phone">电话号码</Option>
+                        <Option value="maintenanceOrderSn">维保单号</Option>
+                        <Option value="salespersonName">销售人员</Option>
+                        <Option value="productName">产品名称</Option>
+                        <Option value="customerName">客户</Option>
                     </Select>
                 </Input>
             </div>
@@ -95,12 +101,8 @@ export default {
     data() {
         return {
             orders: [],
-            filter: { // 搜索条件
-                nickname  : '',
-                pageSize  : 50,
-                pageNumber: 1,
-            },
-            filterKey  : 'email',  // 搜索的 Key
+            filter: this.newFilter(),
+            filterKey  : 'maintenanceOrderSn', // 搜索的 Key
             filterValue: '',       // 搜索的 Value
             dateRange  : ['', ''], // 搜索的时间范围
             more     : false, // 是否还有更多维保订单
@@ -108,7 +110,7 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { slot: 'maintenanceOrderSn', title: '订单号', width: 180 },
+                { slot: 'maintenanceOrderSn', title: '维保单号', width: 180 },
                 { key : 'customerName', title: '客户', width: 150 },
                 { key : 'salespersonName', title: '销售人员', width: 120 },
                 { slot: 'type',   title: '类型', width: 110 },
@@ -131,18 +133,21 @@ export default {
     methods: {
         // 搜索维保订单
         searchOrders() {
-            this.orders            = [];
-            this.more              = false;
-            this.reloading         = true;
-            this.filter.pageNumber = 1;
+            const state                 = this.filter.state;
+            this.orders                 = [];
+            this.more                   = false;
+            this.reloading              = true;
+            this.filter                 = this.newFilter();
+            this.filter.state           = state;
+            this.filter[this.filterKey] = this.filterValue;
 
             // 如果不需要时间范围，则删除
             if (this.dateRange[0] && this.dateRange[1]) {
-                this.filter.startAt = this.dateRange[0].format('yyyy-MM-dd');
-                this.filter.endAt   = this.dateRange[1].format('yyyy-MM-dd');
+                this.filter.receivedStartAt = this.dateRange[0].format('yyyy-MM-dd');
+                this.filter.receivedEndAt   = this.dateRange[1].format('yyyy-MM-dd');
             } else {
-                this.filter.startAt = '';
-                this.filter.endAt   = '';
+                this.filter.receivedStartAt = '';
+                this.filter.receivedEndAt   = '';
             }
 
             this.fetchMoreOrders();
@@ -209,6 +214,20 @@ export default {
         detailsOrder(order) {
             this.maintenanceOrderId = order.maintenanceOrderId;
             this.detailsModal = true;
+        },
+        // 新建搜索条件
+        newFilter() {
+            return { // 搜索条件
+                // maintenanceOrderSn: '',
+                // salespersonName   : '',
+                // productName : '',
+                // customerName: '',
+                state          : -1,
+                receivedStartAt: '',
+                receivedEndAt  : '',
+                pageSize       : 50,
+                pageNumber     : 1,
+            };
         }
     }
 };

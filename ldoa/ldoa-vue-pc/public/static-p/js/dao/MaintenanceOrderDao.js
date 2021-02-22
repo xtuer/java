@@ -7,8 +7,15 @@ export default class {
      *
      * 网址: http://localhost:8080/api/maintenance-orders
      * 参数:
-     *      pageNumber [可选]: 页码
-     *      pageSize   [可选]: 数量
+     *      state              [可选]: 状态，为 -1 则查询所有
+     *      maintenanceOrderSn [可选]: 维保单号
+     *      salespersonName    [可选]: 销售人员
+     *      productName        [可选]: 产品名称
+     *      customerName       [可选]: 客户
+     *      receivedStartAt    [可选]: 收货开始时间
+     *      receivedEndAt      [可选]: 收货结束时间
+     *      pageNumber         [可选]: 页码
+     *      pageSize           [可选]: 数量
      *
      * @param {Json} filter 查询条件
      * @return {Promise} 返回 Promise 对象，resolve 的参数为维保订单的数组，reject 的参数为错误信息
