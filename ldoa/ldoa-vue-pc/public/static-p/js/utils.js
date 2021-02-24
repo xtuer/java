@@ -646,7 +646,7 @@ Utils.response = function(data, success, message, showSuccessMessage = false) {
     } else {
         Message.error({
             content: message,
-            duration: 10,
+            duration: 30,
             closable: true
         });
 

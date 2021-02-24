@@ -35,6 +35,7 @@
                         <Option value="maintenanceOrderSn">维保单号</Option>
                         <Option value="salespersonName">销售人员</Option>
                         <Option value="productName">产品名称</Option>
+                        <Option value="productCode">产品编码</Option>
                         <Option value="customerName">客户</Option>
                     </Select>
                 </Input>
@@ -66,15 +67,22 @@
                 <Tag :color="stateColor(order.state)" type="border">{{ order.stateLabel }}</Tag>
             </template>
 
-            <!-- 介绍信息 -->
-            <template slot-scope="{ row: order }" slot="info">
-                {{ order.userId }}
+            <!-- 进度 -->
+            <template slot-scope="{ row: order }" slot="progress">
+                <div v-show="progressEditedOrder !== order" class="progress-content">
+                    {{ order.progress }}
+                    <Icon type="md-create" class="clickable" @click="progressEditedOrder = order"/>
+                </div>
+                <Input v-show="progressEditedOrder === order" v-model="order.progress"
+                        @on-enter="saveProgress(order)"
+                        @on-keyup="keyupForProgress(order, $event)"
+                        @on-blur="cancelEditProgress(order)"/>
             </template>
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: order }" slot="action">
-                <Button type="primary" size="small" @click="editOrder(order)">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+                <Button :disabled="!canEditOrder(order)" type="primary" size="small" @click="editOrder(order)">编辑</Button>
+                <Button :disabled="!canEditOrder(order)" type="error" size="small" @click="deleteOrder(order)">删除</Button>
             </template>
         </Table>
 
@@ -112,19 +120,23 @@ export default {
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'maintenanceOrderSn', title: '维保单号', width: 180 },
                 { key : 'customerName', title: '客户', width: 150 },
-                { key : 'salespersonName', title: '销售人员', width: 120 },
                 { slot: 'type',   title: '类型', width: 110 },
                 { key : 'productName', title: '产品名称', width: 150 },
-                { key : 'productItemName', title: '物料名称', width: 150 },
+                { key : 'productCode', title: '产品编码', width: 110 },
+                { key : 'productModel', title: '型号/规格', width: 110 },
+                { key : 'productCount', title: '产品数量', width: 110 },
                 { slot: 'state', title: '状态', width: 110, align: 'center' },
                 { key : 'problem',   title: '反馈的问题', minWidth: 400 },
+                { slot: 'progress',   title: '处理进度', width: 200, className: 'order-progress' },
                 { key : 'servicePersonName', title: '售后服务人员', width: 130 },
+                { key : 'salespersonName', title: '销售人员', width: 120 },
                 { slot: 'receivedDate', title: '收货日期', width: 130, align: 'center' },
                 { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
             ],
             editModal: false, // 编辑弹窗是否可见
             detailsModal: false, // 维保订单详情弹窗是否可见
             maintenanceOrderId: '0', // 维保订单 ID
+            progressEditedOrder: {}, // 选中编辑进度的维保订单
         };
     },
     mounted() {
@@ -215,12 +227,81 @@ export default {
             this.maintenanceOrderId = order.maintenanceOrderId;
             this.detailsModal = true;
         },
+        // 判断订单是否可以编辑: 售后服务人员为当前用户，且审批拒绝的订单才能编辑
+        canEditOrder(order) {
+            if (this.isCurrentUser(order.servicePersonId) && order.state === 2) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        // 取消编辑进度
+        cancelEditProgress(order) {
+            const found = this.orders.find(o => o.maintenanceOrderId === order.maintenanceOrderId);
+
+            if (found) {
+                order.progress = found.progress;
+            }
+
+            this.progressEditedOrder = {};
+        },
+        // 保存进度
+        saveProgress(order) {
+            // 1. 在 orders 中查找表格中行的 order 对应的原始订单对象 found
+            // 2. 保存进度到服务器
+            // 3. 更新成功后更新 found 的进度
+            // 4. 重置选中的订单 progressEditedOrder，隐藏进度输入框
+
+            // [1] 在 orders 中查找表格中行的 order 对应的原始订单对象 found
+            const found = this.orders.find(o => o.maintenanceOrderId === order.maintenanceOrderId);
+
+            if (!found) {
+                return;
+            }
+
+            // [2] 保存进度到服务器
+            MaintenanceOrderDao.updateProgress(order.maintenanceOrderId, order.progress).then(() => {
+                // [3] 更新成功后更新 found 的进度
+                found.progress = order.progress;
+
+                // [4] 重置选中的订单 progressEditedOrder，隐藏进度输入框
+                this.progressEditedOrder = {};
+
+                this.$Message.success('进度保存成功');
+            });
+        },
+        // 进度的输入框键盘事件
+        keyupForProgress(order, event) {
+            if (event.keyCode === 27) {
+                this.cancelEditProgress(order);
+            }
+        },
+        // 删除维保订单
+        deleteOrder(order) {
+            // 1. 删除提示
+            // 2. 从服务器删除成功后才从本地删除
+            // 3. 提示删除成功
+
+            this.$Modal.confirm({
+                title: `确定删除维保订单 <font color="red">${order.maintenanceOrderSn}</font> 吗?`,
+                loading: true,
+                onOk: () => {
+                    MaintenanceOrderDao.deleteMaintenanceOrder(order.maintenanceOrderId).then(() => {
+                        const index = this.orders.findIndex(o => o.maintenanceOrderId === order.maintenanceOrderId); // 用户下标
+                        this.orders.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
+                        this.$Modal.remove();
+                        this.$Message.success('删除成功');
+                    });
+                }
+            });
+        },
         // 新建搜索条件
         newFilter() {
             return { // 搜索条件
                 // maintenanceOrderSn: '',
                 // salespersonName   : '',
                 // productName : '',
+                // productCode : '',
                 // customerName: '',
                 state          : -1,
                 receivedStartAt: '',
@@ -267,6 +348,17 @@ export default {
         display: grid;
         justify-content: center;
         align-items: center;
+    }
+
+    .order-progress .progress-content {
+        .ivu-icon {
+            display: none;
+        }
+    }
+    .order-progress:hover .progress-content {
+        .ivu-icon {
+            display: inline-block;
+        }
     }
 }
 </style>

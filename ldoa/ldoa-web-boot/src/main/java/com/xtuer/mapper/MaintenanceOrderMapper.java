@@ -43,4 +43,19 @@ public interface MaintenanceOrderMapper {
      * @param state   状态
      */
     void updateMaintenanceOrderState(long orderId, int state);
+
+    /**
+     * 更新订单的进度
+     *
+     * @param orderId  订单 ID
+     * @param progress 进度
+     */
+    void updateMaintenanceOrderProgress(long orderId, String progress);
+
+    /**
+     * 删除维保订单
+     *
+     * @param orderId 订单 ID
+     */
+    void deleteMaintenanceOrder(long orderId);
 }

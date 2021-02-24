@@ -89,6 +89,11 @@ public class MaintenanceOrder {
     private String productModel;
 
     /**
+     * 产品数量
+     */
+    private int productCount;
+
+    /**
      * 物料名称
      */
     private String productItemName;
@@ -99,7 +104,7 @@ public class MaintenanceOrder {
     private String productItemBatch;
 
     /**
-     * 数量
+     * 物料数量
      */
     private int productItemCount;
 
@@ -117,6 +122,11 @@ public class MaintenanceOrder {
      * 客户反馈的问题
      */
     private String problem;
+
+    /**
+     * 进度
+     */
+    private String progress;
 
     /**
      * 订单号

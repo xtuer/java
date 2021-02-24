@@ -44,7 +44,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </tr>
 
             <!-- 物料 -->
-            <tr>
+            <!-- <tr>
                 <td class="td-label text-color-gray">物料名称:</td>
                 <td class="td-rest">{{ order.productItemName }}</td>
 
@@ -53,10 +53,12 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
                 <td class="td-label text-color-gray">物料数量:</td>
                 <td class="td-rest">{{ order.productItemCount }}</td>
-            </tr>
+            </tr> -->
             <tr>
+                <td class="td-label text-color-gray">产品数量:</td>
+                <td class="td-rest">{{ order.productCount }}</td>
                 <td class="td-label text-color-gray">配件:</td>
-                <td class="td-rest" colspan="5">{{ order.accessories }}</td>
+                <td class="td-rest" colspan="3">{{ order.accessories }}</td>
             </tr>
 
             <!-- 其他 -->
@@ -78,6 +80,11 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                         {{ order.servicePersonName }} / {{ order.createdAt | formatDateSimple }}
                     </div>
                 </td>
+            </tr>
+            <!-- 进度 -->
+            <tr>
+                <td class="td-label text-color-gray">处理进度:</td>
+                <td class="td-rest" colspan="5">{{ order.progress }}</td>
             </tr>
 
             <tr>

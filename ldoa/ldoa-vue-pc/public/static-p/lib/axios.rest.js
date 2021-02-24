@@ -174,7 +174,7 @@ class Rest {
                 const d = response.data;
 
                 if (d.stack) {
-                    console.log(d.stack);
+                    console.error(d.stack);
                 }
 
                 resolve(d);

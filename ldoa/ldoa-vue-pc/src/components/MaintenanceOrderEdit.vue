@@ -44,7 +44,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                     <Input v-model="order.productModel" clearable placeholder="请输入规格/型号"/>
                 </FormItem>
             </div>
-            <div class="column-3">
+            <!-- <div class="column-3">
                 <FormItem label="物料名称:" prop="customerCompany">
                     <Input v-model="order.productItemName" clearable placeholder="请输入物料名称"/>
                 </FormItem>
@@ -54,8 +54,11 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <FormItem label="物料数量:" prop="customerCompany">
                     <InputNumber v-model="order.productItemCount" :min="0" placeholder="物料数量" style="width: 100%" @on-change="ensureInt(index, $event)"/>
                 </FormItem>
-            </div>
+            </div> -->
             <div class="column-3">
+                <FormItem label="产品数量:" prop="customerCompany">
+                    <InputNumber v-model="order.productCount" :min="0" placeholder="产品数量" style="width: 100%" @on-change="ensureInt(index, $event)"/>
+                </FormItem>
                 <FormItem label="配件:" prop="customerCompany">
                     <Input v-model="order.accessories" clearable placeholder="请输入配件信息"/>
                 </FormItem>
@@ -76,6 +79,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </div>
             <FormItem label="反馈的问题:" prop="problem">
                 <Input v-model="order.problem" type="textarea" :rows="5" placeholder="请输入客户反馈的问题"/>
+            </FormItem>
+            <FormItem label="处理进度:" prop="progress">
+                <Input v-model="order.progress" placeholder="请输入进度情况"/>
             </FormItem>
         </Form>
 
@@ -218,6 +224,7 @@ export default {
                 orderSn           : '',    // 订单号
                 needCertificate   : 0,     // 是否需要证书
                 problem           : '',    // 客户反馈的问题
+                progress          : '',    // 进度
                 currentAuditorId  : '0',   // 当前审批员 ID
             };
         },

@@ -11,6 +11,7 @@ export default class {
      *      maintenanceOrderSn [可选]: 维保单号
      *      salespersonName    [可选]: 销售人员
      *      productName        [可选]: 产品名称
+     *      productCode        [可选]: 产品编码
      *      customerName       [可选]: 客户
      *      receivedStartAt    [可选]: 收货开始时间
      *      receivedEndAt      [可选]: 收货结束时间
@@ -71,6 +72,36 @@ export default class {
      */
     static completeOrder(orderId) {
         return Rest.update(Urls.API_MAINTENANCE_ORDERS_COMPLETE, { params: { orderId } }).then(({ success, message }) => {
+            return Utils.response(null, success, message);
+        });
+    }
+
+    /**
+     * 更新订单的进度
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}/progress
+     * 参数: progress: 进度
+     *
+     * @param {Long} orderId  订单 ID
+     * @param {String} progress 进度
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static updateProgress(orderId, progress) {
+        return Rest.update(Urls.API_MAINTENANCE_ORDERS_PROGRESS, { params: { orderId }, data: { progress } }).then(({ success, message }) => {
+            return Utils.response(null, success, message);
+        });
+    }
+
+    /**
+     * 删除维保订单
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}
+     * 参数: 无
+     *
+     * @param orderId 订单 ID
+     */
+    static deleteMaintenanceOrder(orderId) {
+        return Rest.del(Urls.API_MAINTENANCE_ORDERS_BY_ID, { params: { orderId } }).then(({ success, message }) => {
             return Utils.response(null, success, message);
         });
     }

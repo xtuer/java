@@ -11,10 +11,7 @@ import com.xtuer.mapper.MaintenanceOrderMapper;
 import com.xtuer.service.MaintenanceOrderService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +36,7 @@ public class MaintenanceOrderController extends BaseController {
      *      salespersonName    [可选]: 销售人员
      *      customerName       [可选]: 客户
      *      productName        [可选]: 产品名称
+     *      productCode        [可选]: 产品编码
      *      receivedStartAt    [可选]: 收货开始时间
      *      receivedEndAt      [可选]: 收货结束时间
      *      pageNumber         [可选]: 页码
@@ -97,6 +95,35 @@ public class MaintenanceOrderController extends BaseController {
     @PutMapping(Urls.API_MAINTENANCE_ORDERS_COMPLETE)
     public Result<Boolean> completeOrder(@PathVariable long orderId) {
         orderMapper.updateMaintenanceOrderState(orderId, MaintenanceOrder.STATE_COMPLETE);
+        return Result.ok();
+    }
+
+    /**
+     * 更新订单的进度
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}/progress
+     * 参数: progress: 进度
+     *
+     * @param orderId  订单 ID
+     * @param progress 进度
+     */
+    @PutMapping(Urls.API_MAINTENANCE_ORDERS_PROGRESS)
+    public Result<Boolean> updateProgress(@PathVariable long orderId, @RequestParam String progress) {
+        orderMapper.updateMaintenanceOrderProgress(orderId, progress);
+        return Result.ok();
+    }
+
+    /**
+     * 删除维保订单
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}
+     * 参数: 无
+     *
+     * @param orderId 订单 ID
+     */
+    @DeleteMapping(Urls.API_MAINTENANCE_ORDERS_BY_ID)
+    public Result<Boolean> deleteMaintenanceOrder(@PathVariable long orderId) {
+        orderMapper.deleteMaintenanceOrder(orderId);
         return Result.ok();
     }
 }

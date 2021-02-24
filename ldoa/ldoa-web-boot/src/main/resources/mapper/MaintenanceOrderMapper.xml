@@ -16,12 +16,14 @@
         mo.product_code,
         mo.product_name,
         mo.product_model,
+        mo.product_count,
         mo.product_item_name,
         mo.product_item_batch,
         mo.product_item_count,
         mo.accessories,
         mo.need_certificate,
         mo.problem,
+        mo.progress,
         mo.order_sn,
         mo.state,
         mo.created_at
@@ -48,6 +50,9 @@
             <if test="filter.productName!=null and filter.productName!='' ">
                 AND product_name LIKE CONCAT('%', #{filter.productName},'%')
             </if>
+            <if test="filter.productCode!=null and filter.productCode!='' ">
+                AND product_code LIKE CONCAT('%', #{filter.productCode},'%')
+            </if>
             <if test="filter.receivedStartAt!=null and filter.receivedEndAt!=null">
                 AND (received_date BETWEEN #{filter.receivedStartAt} AND #{filter.receivedEndAt})
             </if>
@@ -67,22 +72,32 @@
     <!-- 插入或者更新维保订单 -->
     <insert id="upsertMaintenanceOrder" parameterType="MaintenanceOrder">
         INSERT INTO maintenance_order(maintenance_order_id, maintenance_order_sn, service_person_id, customer_name,
-            maintainable, repairable, salesperson_name, received_date, product_code, product_name, product_model,
-            product_item_name, product_item_batch, product_item_count, accessories, need_certificate, problem, order_sn, state)
+            maintainable, repairable, salesperson_name, received_date, product_code, product_name, product_model, product_count,
+            product_item_name, product_item_batch, product_item_count, accessories, need_certificate, problem, progress, order_sn, state)
         VALUES (#{maintenanceOrderId}, #{maintenanceOrderSn}, #{servicePersonId}, #{customerName},
-            #{maintainable}, #{repairable}, #{salespersonName}, #{receivedDate}, #{productCode}, #{productName}, #{productModel},
-            #{productItemName}, #{productItemBatch}, #{productItemCount}, #{accessories}, #{needCertificate}, #{problem}, #{orderSn}, #{state})
+            #{maintainable}, #{repairable}, #{salespersonName}, #{receivedDate}, #{productCode}, #{productName}, #{productModel}, #{productCount},
+            #{productItemName}, #{productItemBatch}, #{productItemCount}, #{accessories}, #{needCertificate}, #{problem}, #{progress}, #{orderSn}, #{state})
 
         ON DUPLICATE KEY
         UPDATE maintenance_order_sn = #{maintenanceOrderSn}, customer_name = #{customerName},
             maintainable = #{maintainable}, repairable = #{repairable}, salesperson_name = #{salespersonName},
-            received_date = #{receivedDate}, product_code = #{productCode}, product_name = #{productName}, product_model = #{productModel},
+            received_date = #{receivedDate}, product_code = #{productCode}, product_name = #{productName}, product_model = #{productModel}, product_count = #{productCount},
             product_item_name = #{productItemName}, product_item_batch = #{productItemBatch}, product_item_count = #{productItemCount},
-            accessories = #{accessories}, need_certificate = #{needCertificate}, problem = #{problem}, order_sn = #{orderSn}
+            accessories = #{accessories}, need_certificate = #{needCertificate}, problem = #{problem}, progress = #{progress}, order_sn = #{orderSn}, state = #{state}
     </insert>
 
     <!-- 修改维保订单的状态 -->
     <update id="updateMaintenanceOrderState">
         UPDATE maintenance_order SET state = #{state} WHERE maintenance_order_id = #{orderId}
     </update>
+
+    <!-- 更新订单的进度 -->
+    <update id="updateMaintenanceOrderProgress">
+        UPDATE maintenance_order SET progress = #{progress} WHERE maintenance_order_id = #{orderId}
+    </update>
+
+    <!-- 删除维保订单 -->
+    <delete id="deleteMaintenanceOrder">
+        DELETE FROM maintenance_order WHERE maintenance_order_id = #{orderId}
+    </delete>
 </mapper>
