@@ -50,3 +50,20 @@ CREATE TABLE disk (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (file_id) COMMENT '文件的 ID 作为主键'
 ) ENGINE=InnoDB;
+
+#-------------------------------------------
+# 表名：table_config
+# 作者：黄彪
+# 日期：2021-02-25
+# 版本：1.0
+# 描述：表格配置
+#------------------------------------------
+DROP TABLE IF EXISTS table_config;
+
+CREATE TABLE table_config (
+    table_name varchar(256) NOT NULL  COMMENT '表名',
+    user_id    bigint(20)   DEFAULT 0 COMMENT '用户 ID',
+    config     text                   COMMENT '表格配置，例如某个列的宽度',
+
+    PRIMARY KEY (table_name, user_id) COMMENT '用户的表格配置唯一'
+) ENGINE=InnoDB;
