@@ -66,6 +66,9 @@ const Urls = {
     API_STOCKS_OUT_REQUESTS_BY_ID: '/api/stocks/out/requests/{requestId}', // 指定 ID 的出库申请
     API_STOCKS_REQUESTS          : '/api/stocks/requests',     // 库存操作申请
     API_STOCKS_REQUESTS_BY_ID    : '/api/stocks/requests/{requestId}', // 指定 ID 的库存操作申请
+
+    // 表格配置
+    API_TABLE_CONFIG_BY_TABLE_NAME_AND_USER: '/api/tables/{tableName}/users/{userId}/config',
 };
 
 window.Urls = Urls;

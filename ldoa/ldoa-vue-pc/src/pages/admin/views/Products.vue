@@ -19,7 +19,9 @@
         </div>
 
         <!-- 产品列表 -->
-        <Table :data="products" :columns="productColumns" :loading="reloading" border>
+        <Table :data="products" :columns="productColumns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 操作按钮 -->
             <template slot-scope="{ row: product }" slot="action">
                 <Button type="primary" size="small" @click="editProduct(product)">编辑</Button>
@@ -99,6 +101,7 @@ export default {
             modal     : false, // 是否显示编辑对话框
             saving    : false, // 保存中
             itemSelect: false, // 物料选择弹窗是否可见
+            tableName : 'products-table', // 表名
             // 产品的列
             productColumns: [
                 {
@@ -112,11 +115,11 @@ export default {
                         });
                     }
                 },
-                { key : 'name',   title: '产品名称', width: 200 },
-                { key : 'code',   title: '产品编码', width: 130 },
-                { key : 'model',  title: '规格/型号', width: 130 },
+                { key : 'name',   title: '产品名称', width: 200, resizable: true },
+                { key : 'code',   title: '产品编码', width: 130, resizable: true },
+                { key : 'model',  title: '规格/型号', width: 130, resizable: true },
                 { key : 'desc',   title: '产品描述', minWidth: 150 },
-                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action', resizable: true },
             ],
             // 产品校验规则
             productRules: {
@@ -140,6 +143,7 @@ export default {
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.productColumns);
         this.searchProducts();
     },
     methods: {

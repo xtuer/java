@@ -1,7 +1,7 @@
 /* 滚动条样式，只支持 Webkit 内核浏览器，如 Chrome, Safari */
 ::-webkit-scrollbar {
-    width:  5px;
-    height: 5px;
+    width:  7px;
+    height: 7px;
 }
 ::-webkit-scrollbar-track {
     background: #ddd;

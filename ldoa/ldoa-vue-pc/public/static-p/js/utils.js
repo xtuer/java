@@ -628,15 +628,32 @@ Utils.uid = function() {
 };
 
 /**
+ * 限制 value 在 [min, max] 之间，
+ * value < min 返回 min, value > max 返回 max，在 min 和 max 之间返回 value
+ *
+ * @param {Number} min   最小值
+ * @param {Number} value 当前值
+ * @param {Number} max   最大值
+ * @return {Number} 返回限制后的值
+ */
+Utils.clamp = function(min, value, max) {
+    value = Math.max(value, min);
+    value = Math.min(value, max);
+
+    return value;
+};
+
+/**
  * 处理 Rest 请求的响应
  *
  * @param {JSON} data 数据
  * @param {Bool} success 是否成功
  * @param {String} message 信息
- * @param {Bool} showSuccessMessage 是否显示执行成功的消息
+ * @param {Bool} showSuccessMessage 是否显示执行成功的消息，默认不显示，调用端自己处理
+ * @param {Bool} showErrorMessage 是否显示执行错误的消息，默认显示
  * @return {Promise} 返回处理结果的 Promise 对象
  */
-Utils.response = function(data, success, message, showSuccessMessage = false) {
+Utils.response = function(data, success, message, showSuccessMessage = false, showErrorMessage = true) {
     if (success) {
         if (showSuccessMessage) {
             Message.success(message);
@@ -644,11 +661,13 @@ Utils.response = function(data, success, message, showSuccessMessage = false) {
 
         return Promise.resolve(data);
     } else {
-        Message.error({
-            content: message,
-            duration: 30,
-            closable: true
-        });
+        if (showErrorMessage) {
+            Message.error({
+                content: message,
+                duration: 0,
+                closable: true
+            });
+        }
 
         return Promise.reject(message);
     }

@@ -10,7 +10,9 @@
         </div>
 
         <!-- 用户列表 -->
-        <Table :data="users" :columns="columns" :loading="reloading" border>
+        <Table :data="users" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 介绍信息 -->
             <template slot-scope="{ row: user }" slot="roles">
                 <Tag v-for="roleValue in user.roles" :key="roleValue" color="cyan">{{ roleValue | roleName }}</Tag>
@@ -87,13 +89,14 @@ export default {
             more     : false, // 是否还有更多用户
             loading  : false, // 加载中
             reloading: false,
+            tableName: 'users-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'nickname', title: '姓名', width: 150 },
-                { key : 'username', title: '账号', width: 150, sortable: true },
-                { key : 'mobile',   title: '手机', width: 150 },
+                { key : 'nickname', title: '姓名', width: 150, resizable: true },
+                { key : 'username', title: '账号', width: 150, sortable: true, resizable: true },
+                { key : 'mobile',   title: '手机', width: 150, resizable: true },
                 { slot: 'roles',    title: '权限', sortable: true },
-                { slot: 'action',   title: '操作', width: 240, align: 'center', className: 'table-action' },
+                { slot: 'action',   title: '操作', width: 240, align: 'center', className: 'table-action', resizable: true },
             ],
 
             userClone: {},    // 用于编辑的用户
@@ -118,6 +121,7 @@ export default {
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchUsers();
     },
     methods: {

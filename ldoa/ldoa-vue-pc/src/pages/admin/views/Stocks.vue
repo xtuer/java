@@ -23,7 +23,9 @@
         </div>
 
         <!-- 物料列表 -->
-        <Table :data="items" :columns="columns" :loading="reloading" border>
+        <Table :data="items" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 数量 -->
             <template slot-scope="{ row: item }" slot="count">
                 <span :class="itemClass(item)">{{ item.count }}</span> {{item.unit}}
@@ -62,21 +64,23 @@ export default {
             reloading: false, // 重新加载中
             modal    : false, // 是否显示编辑对话框
             saving   : false, // 保存中
+            tableName: 'stocks-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'name',     title: '物料名称', width: 200 },
-                { key : 'code',     title: '物料编码', width: 110 },
-                { key : 'type',     title: '物料类型', width: 110 },
-                { key : 'model',    title: '规格/型号', width: 110 },
-                { key : 'standard', title: '标准/规范', width: 110 },
-                { key : 'material', title: '材质', width: 110 },
-                { slot: 'count',    title: '数量', width: 110, align: 'right' },
-                { slot: 'batch',    title: '批次', width: 110 },
+                { key : 'name',     title: '物料名称', width: 200, resizable: true },
+                { key : 'code',     title: '物料编码', width: 110, resizable: true },
+                { key : 'type',     title: '物料类型', width: 110, resizable: true },
+                { key : 'model',    title: '规格/型号', width: 110, resizable: true },
+                { key : 'standard', title: '标准/规范', width: 110, resizable: true },
+                { key : 'material', title: '材质', width: 110, resizable: true },
+                { slot: 'count',    title: '数量', width: 110, align: 'right', resizable: true },
+                { slot: 'batch',    title: '批次', width: 110, resizable: true },
                 { key : 'desc',     title: '物料描述', minWidth: 150 },
             ],
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchProductItems();
     },
     methods: {
@@ -104,7 +108,6 @@ export default {
             });
         },
         itemClass(item) {
-            console.log(item.count, item.warnCount);
             return {
                 'text-color-error': item.count <= item.warnCount
             };

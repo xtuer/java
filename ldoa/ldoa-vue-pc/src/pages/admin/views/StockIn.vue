@@ -31,7 +31,9 @@
         </div>
 
         <!-- 入库列表 -->
-        <Table :data="stockRecords" :columns="columns" :loading="reloading" border>
+        <Table :data="stockRecords" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <template slot-scope="{ row: record }" slot="name">
                 {{ record.productItem.name}}
             </template>
@@ -121,18 +123,19 @@ export default {
             loading  : false, // 加载中
             reloading: false,
             saving   : false, // 保存中
+            tableName: 'stock-in-table', // 表名
             columns  : [
-                { slot: 'name',            title: '物料名称', width: 180, fixed: 'left' },
-                { slot: 'code',            title: '物料编码', width: 150 },
-                { slot: 'model',           title: '规格/型号', width: 150 },
-                { key : 'batch',           title: '批次', width: 150 },
-                { key : 'productItemType', title: '类型', width: 110, align: 'center' },
-                { slot: 'count',           title: '数量', width: 110, align: 'right' },
-                { slot: 'date',            title: '日期', width: 150, align: 'center' },
-                { key : 'username',        title: '操作员', width: 110 },
-                { key : 'manufacturer',    title: '生产厂家', width: 150 },
+                { slot: 'name',            title: '物料名称', width: 180, fixed: 'left', resizable: true },
+                { slot: 'code',            title: '物料编码', width: 150, resizable: true },
+                { slot: 'model',           title: '规格/型号', width: 150, resizable: true },
+                { key : 'batch',           title: '批次', width: 150, resizable: true },
+                { key : 'productItemType', title: '类型', width: 110, align: 'center', resizable: true },
+                { slot: 'count',           title: '数量', width: 110, align: 'right', resizable: true },
+                { slot: 'date',            title: '日期', width: 150, align: 'center', resizable: true },
+                { key : 'username',        title: '操作员', width: 110, resizable: true },
+                { key : 'manufacturer',    title: '生产厂家', width: 150, resizable: true },
                 { key : 'comment',         title: '备主', minWidth: 250 },
-                { slot: 'action',          title: '操作', minWidth: 80, align: 'center' },
+                { slot: 'action',          title: '操作', width: 80, align: 'center', resizable: false },
             ],
             stockInModal: false,
             productItemModal: false,
@@ -151,6 +154,7 @@ export default {
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchStockRecords();
     },
     methods: {

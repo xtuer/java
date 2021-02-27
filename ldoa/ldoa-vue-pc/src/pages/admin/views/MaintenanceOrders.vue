@@ -46,7 +46,9 @@
         </div>
 
         <!-- 维保订单列表 -->
-        <Table :data="orders" :columns="columns" :loading="reloading" border>
+        <Table :data="orders" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 订单号 -->
             <template slot-scope="{ row: order }" slot="maintenanceOrderSn">
                 <a @click="detailsOrder(order)">{{ order.maintenanceOrderSn }}</a>
@@ -116,22 +118,23 @@ export default {
             more     : false, // 是否还有更多维保订单
             loading  : false, // 加载中
             reloading: false,
+            tableName: 'maintenance-orders-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { slot: 'maintenanceOrderSn', title: '维保单号', width: 180 },
-                { key : 'customerName', title: '客户', width: 150 },
-                { slot: 'type',   title: '类型', width: 110 },
-                { key : 'productName', title: '产品名称', width: 150 },
-                { key : 'productCode', title: '产品编码', width: 110 },
-                { key : 'productModel', title: '型号/规格', width: 110 },
-                { key : 'productCount', title: '产品数量', width: 110 },
-                { slot: 'state', title: '状态', width: 110, align: 'center' },
+                { slot: 'maintenanceOrderSn', title: '维保单号', width: 180, resizable: true },
+                { key : 'customerName', title: '客户', width: 150, resizable: true },
+                { slot: 'type',   title: '类型', width: 110, resizable: true },
+                { key : 'productName', title: '产品名称', width: 150, resizable: true },
+                { key : 'productCode', title: '产品编码', width: 110, resizable: true },
+                { key : 'productModel', title: '型号/规格', width: 110, resizable: true },
+                { key : 'productCount', title: '产品数量', width: 110, resizable: true },
+                { slot: 'state', title: '状态', width: 110, align: 'center', resizable: true },
                 { key : 'problem',   title: '反馈的问题', minWidth: 400 },
-                { slot: 'progress',   title: '处理进度', width: 200, className: 'order-progress' },
-                { key : 'servicePersonName', title: '售后服务人员', width: 130 },
-                { key : 'salespersonName', title: '销售人员', width: 120 },
-                { slot: 'receivedDate', title: '收货日期', width: 130, align: 'center' },
-                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'progress',   title: '处理进度', width: 200, className: 'order-progress', resizable: true },
+                { key : 'servicePersonName', title: '售后服务人员', width: 130, resizable: true },
+                { key : 'salespersonName', title: '销售人员', width: 120, resizable: true },
+                { slot: 'receivedDate', title: '收货日期', width: 130, align: 'center', resizable: true },
+                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action', resizable: true },
             ],
             editModal: false, // 编辑弹窗是否可见
             detailsModal: false, // 维保订单详情弹窗是否可见
@@ -140,6 +143,7 @@ export default {
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchOrders();
     },
     methods: {

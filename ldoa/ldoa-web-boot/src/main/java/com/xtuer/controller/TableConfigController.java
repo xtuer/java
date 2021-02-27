@@ -27,7 +27,7 @@ public class TableConfigController {
      */
     @GetMapping(Urls.API_TABLE_CONFIG_BY_TABLE_NAME_AND_USER)
     public Result<TableConfig> findTableConfig(@PathVariable String tableName, @PathVariable long userId) {
-        return Result.single(configMapper.findTableConfigByTableNameAndUserId(tableName, userId));
+        return Result.single(configMapper.findTableConfigByTableNameAndUserId(tableName, userId), "表格配置不存在: " + tableName);
     }
 
     /**

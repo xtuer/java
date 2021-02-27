@@ -1,3 +1,5 @@
+import TableUtils from '@/../public/static-p/js/utils/TableUtils';
+
 /**
  * 下载 url 指定的文件
  *
@@ -93,4 +95,6 @@ export default {
     isCurrentUser,
     currentUserId,
     stateColor,
+    restoreTableColumnWidths: TableUtils.restoreTableColumnWidths,
+    saveTableColumnWidths: TableUtils.saveTableColumnWidths,
 };

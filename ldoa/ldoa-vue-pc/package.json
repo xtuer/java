@@ -88,6 +88,7 @@
       "no-new": 0,
       "newline-per-chained-call": 0,
       "no-underscore-dangle": 0,
+      "no-use-before-define": 0,
       "yoda": 0
     },
     "parserOptions": {

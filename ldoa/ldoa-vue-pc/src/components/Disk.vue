@@ -33,7 +33,9 @@ Slot: 无
         </div>
 
         <!-- 文件列表 -->
-        <Table :data="files" :columns="columns" :loading="reloading" border>
+        <Table :data="files" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 介绍信息 -->
             <template slot-scope="{ row: file }" slot="createdAt">
                 {{ file.createdAt | formatDate('YYYY-MM-DD HH:mm') }}
@@ -74,16 +76,18 @@ export default {
             more     : false, // 是否还有更多文件
             loading  : false, // 加载中
             reloading: false,
+            tableName: 'disk-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'filename',  title: '文件名称', minWidth: 150 },
-                { key : 'nickname',  title: '上传用户', width: 150 },
-                { slot: 'createdAt', title: '上传时间', width: 150, align: 'center' },
-                { slot: 'action',    title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { key : 'nickname',  title: '上传用户', width: 150, resizable: true },
+                { slot: 'createdAt', title: '上传时间', width: 150, align: 'center', resizable: true },
+                { slot: 'action',    title: '操作', width: 150, align: 'center', className: 'table-action', resizable: true },
             ]
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchFiles();
     },
     computed: {

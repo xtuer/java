@@ -18,7 +18,9 @@
         </div>
 
         <!-- 订单列表 -->
-        <Table :data="orders" :columns="orderColumns" :loading="reloading" border>
+        <Table :data="orders" :columns="orderColumns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 订单编号 -->
             <template slot-scope="{ row: order }" slot="orderSn">
                 <a @click="detailsOrder(order)">{{ order.orderSn }}</a>
@@ -104,21 +106,23 @@ export default {
             editedOrderId : '0',   // 编辑的订单 ID
             orderDetailsModal: false, // 订单详情弹窗是否可见
             orderDetailsOrderId: '0', // 查看详情的订单
+            tableName: 'orders-table', // 表名
             orderColumns: [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { slot: 'orderSn',      title: '订单号', width: 180 },
+                { slot: 'orderSn',      title: '订单号', width: 180, resizable: true },
                 { slot: 'customer',     title: '客户单位', minWidth: 180, className: 'table-poptip' },
-                { key : 'productNames', title: '产品名称', width: 150, tooltip: true },
-                { slot: 'type',         title: '类型', width: 110, align: 'center' },
-                { slot: 'orderDate',    title: '订单日期', width: 110, align: 'center' },
-                { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center' },
-                { slot: 'salesperson',  title: '销售负责人', width: 110 },
-                { slot: 'state',         title: '状态', width: 110, align: 'center' },
-                { slot: 'action', title: '操作', width: 110, align: 'center', className: 'table-action' },
+                { key : 'productNames', title: '产品名称', width: 150, tooltip: true, resizable: true },
+                { slot: 'type',         title: '类型', width: 110, align: 'center', resizable: true },
+                { slot: 'orderDate',    title: '订单日期', width: 110, align: 'center', resizable: true },
+                { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center', resizable: true },
+                { slot: 'salesperson',  title: '销售负责人', width: 110, resizable: true },
+                { slot: 'state',        title: '状态', width: 110, align: 'center', resizable: true },
+                { slot: 'action', title: '操作', width: 110, align: 'center', className: 'table-action', resizable: true },
             ],
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.orderColumns);
         this.searchOrders();
     },
     methods: {

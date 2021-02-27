@@ -11,7 +11,9 @@
         </div>
 
         <!-- 审批项列表 -->
-        <Table :data="auditItems" :columns="columns" :loading="reloading" border>
+        <Table :data="auditItems" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 类型 -->
             <template slot-scope="{ row: auditItem }" slot="type">
                 {{ auditItem.type | auditTypeName }}
@@ -71,14 +73,15 @@ export default {
             more     : false, // 是否还有更多审批项
             loading  : false, // 加载中
             reloading: false,
+            tableName: 'audit-received-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'applicantNickname', title: '申请人', width: 150 },
-                { slot: 'type',      title: '类型', width: 150 },
+                { key : 'applicantNickname', title: '申请人', width: 150, resizable: true },
+                { slot: 'type',      title: '类型', width: 150, resizable: true },
                 { key : 'desc',      title: '说明', minWidth: 150 },
-                { slot: 'createdAt', title: '申请时间', width: 150, align: 'center' },
-                { slot: 'state',     title: '状态', width: 120, align: 'center' },
-                { slot: 'action',    title: '操作', width: 120, align: 'center', className: 'table-action' },
+                { slot: 'createdAt', title: '申请时间', width: 150, align: 'center', resizable: true },
+                { slot: 'state',     title: '状态', width: 120, align: 'center', resizable: true },
+                { slot: 'action',    title: '操作', width: 120, align: 'center', className: 'table-action', resizable: true },
             ],
             orderId: '0', // 查看详情的订单 ID
             orderModal: false, // 是否显示订单详情弹窗是否可见
@@ -91,6 +94,7 @@ export default {
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchAuditItems();
     },
     methods: {

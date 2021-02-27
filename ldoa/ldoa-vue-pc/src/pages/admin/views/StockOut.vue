@@ -51,7 +51,9 @@
         </div>
 
         <!-- 出库申请列表 -->
-        <Table :data="requests" :columns="columns" :loading="reloading" border>
+        <Table :data="requests" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 出库单号 -->
             <template slot-scope="{ row: request }" slot="requestSn">
                 <a @click="showStockRequest(request)">{{ request.stockRequestSn }}</a>
@@ -109,18 +111,20 @@ export default {
             stockRequestId: '0',
             stockRequestDetailsVisible: false,
 
+            tableName: 'stock-out-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { slot: 'requestSn',         title: '出库单号', width: 200 },
+                { slot: 'requestSn',         title: '出库单号', width: 200, resizable: true },
                 { key : 'desc',              title: '物料', minWidth: 300 },
-                { slot: 'type',              title: '类型', width: 120, align: 'center' },
-                { slot: 'state',             title: '状态', width: 120, align: 'center' },
-                { key : 'applicantUsername', title: '申请人', width: 120 },
-                { slot: 'createdAt',         title: '创建时间', width: 150, align: 'center' },
+                { slot: 'type',              title: '类型', width: 120, align: 'center', resizable: true },
+                { slot: 'state',             title: '状态', width: 120, align: 'center', resizable: true },
+                { key : 'applicantUsername', title: '申请人', width: 120, resizable: true },
+                { slot: 'createdAt',         title: '创建时间', width: 150, align: 'center', resizable: true },
             ],
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchRequests();
     },
     methods: {

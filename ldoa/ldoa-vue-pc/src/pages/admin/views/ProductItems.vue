@@ -19,7 +19,9 @@
         </div>
 
         <!-- 物料列表 -->
-        <Table :data="items" :columns="columns" :loading="reloading" border>
+        <Table :data="items" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+        >
             <!-- 库存告警 -->
             <template slot-scope="{ row: item }" slot="warnCount">
                 {{ item.warnCount }} {{ item.unit }}
@@ -95,17 +97,18 @@ export default {
             reloading: false, // 重新加载中
             modal    : false, // 是否显示编辑对话框
             saving   : false, // 保存中
+            tableName: 'product-items-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'name',      title: '物料名称', width: 200 },
-                { key : 'code',      title: '物料编码', width: 110 },
-                { key : 'type',      title: '物料类型', width: 110 },
-                { key : 'model',     title: '规格/型号', width: 110 },
-                { key : 'standard',  title: '标准/规范', width: 110 },
-                { key : 'material',  title: '材质', width: 110 },
-                { slot: 'warnCount', title: '库存告警', width: 110, align: 'right' },
+                { key : 'name',      title: '物料名称', width: 200, resizable: true },
+                { key : 'code',      title: '物料编码', width: 110, resizable: true },
+                { key : 'type',      title: '物料类型', width: 110, resizable: true },
+                { key : 'model',     title: '规格/型号', width: 110, resizable: true },
+                { key : 'standard',  title: '标准/规范', width: 110, resizable: true },
+                { key : 'material',  title: '材质', width: 110, resizable: true },
+                { slot: 'warnCount', title: '库存告警', width: 110, align: 'right', resizable: true },
                 { key : 'desc',      title: '物料描述', minWidth: 150 },
-                { slot: 'action',    title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'action',    title: '操作', width: 150, align: 'center', className: 'table-action', resizable: true },
             ],
             itemRules: {
                 code: [
@@ -130,6 +133,7 @@ export default {
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
         this.searchProductItems();
     },
     methods: {
