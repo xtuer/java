@@ -102,8 +102,9 @@
 .list-page-toolbar-top .filter > div {
     margin-right: 10px;
 }
-/* 下拉选择过滤条件的输入框 */
-.list-page-toolbar-top .filter .ivu-input-group-prepend .ivu-select {
+/* 下拉选择过滤条件的输入框，有 prepend append 的 Input */
+.list-page-toolbar-top .filter .ivu-input-group-prepend .ivu-select,
+.list-page-toolbar-top .filter .ivu-input-group {
     width: auto;
 }
 
