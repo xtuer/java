@@ -83,8 +83,6 @@
                     <InputNumber v-model="stockRecord.count"
                                 :min="1"
                                 :step="1"
-                                :formatter="value => `${value} ${stockRecord.unit}`"
-                                :parser="value => value.replace(`${stockRecord.unit}`, '')"
                                 placeholder="请输入入库数量"
                                 style="width: 100%">
                     </InputNumber>

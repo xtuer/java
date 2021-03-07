@@ -27,6 +27,21 @@ public class StockRequestFilter {
     private long applicantId;
 
     /**
+     * 申请者的名字
+     */
+    private String applicantUsername;
+
+    /**
+     * 物料名称
+     */
+    private String productItemName;
+
+    /**
+     * 物料规格型号
+     */
+    private String productItemModel;
+
+    /**
      * 状态, 为 -1 时表示查询所有的
      */
     private int state;

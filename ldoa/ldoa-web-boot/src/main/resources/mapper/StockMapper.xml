@@ -34,7 +34,9 @@
         request.desc         AS 'desc',
         request.created_at   AS created_at,
         request.applicant_id AS applicant_id,
-        user.nickname        AS applicant_username
+        user.nickname        AS applicant_username,
+        request.product_item_names  AS product_item_names,
+        request.product_item_models AS product_item_models
     </sql>
 
     <!-- 查询库存操作记录 -->
@@ -107,6 +109,15 @@
             <if test="filter.state >= 0">
                 AND request.state = #{filter.state}
             </if>
+            <if test="filter.applicantUsername!=null and filter.applicantUsername!='' ">
+                AND request.applicant_username LIKE CONCAT('%', #{filter.applicantUsername},'%')
+            </if>
+            <if test="filter.productItemName!=null and filter.productItemName!='' ">
+                AND request.product_item_names LIKE CONCAT('%', #{filter.productItemName},'%')
+            </if>
+            <if test="filter.productItemModel!=null and filter.productItemModel!='' ">
+                AND request.product_item_models LIKE CONCAT('%', #{filter.productItemModel},'%')
+            </if>
         </where>
         ORDER BY request.created_at DESC
         LIMIT ${page.offset}, ${page.count}
@@ -146,8 +157,10 @@
 
     <!-- 创建库存操作申请 -->
     <insert id="insertStockRequest">
-        INSERT INTO stock_request(stock_request_id, stock_request_sn, type, order_id, applicant_id, state, `desc`)
-        VALUES (#{stockRequestId}, #{stockRequestSn}, #{type}, #{orderId}, #{applicantId}, #{state}, #{desc})
+        INSERT INTO stock_request(stock_request_id, stock_request_sn, type, order_id, applicant_id, state, `desc`,
+            applicant_username, product_item_names, product_item_models)
+        VALUES (#{stockRequestId}, #{stockRequestSn}, #{type}, #{orderId}, #{applicantId}, #{state}, #{desc},
+            #{applicantUsername}, #{productItemNames}, #{productItemModels})
     </insert>
 
     <!-- 更新库存操作申请的状态 -->

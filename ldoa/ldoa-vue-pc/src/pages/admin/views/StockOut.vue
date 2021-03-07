@@ -35,8 +35,13 @@
                 </DatePicker>
 
                 <!-- 选择条件的搜索 -->
-                <Input v-model="filter.stockRequestSn" placeholder="请输入出库单号" search enter-button @on-search="searchRequests">
-                   <span slot="prepend">出库单号</span>
+                <Input v-model="filterValue" transfer placeholder="请输入查询条件" search enter-button @on-search="searchRequests">
+                    <Select v-model="filterKey" slot="prepend">
+                        <Option value="stockRequestSn">出库单号</Option>
+                        <Option value="productItemName">物料名称</Option>
+                        <Option value="productItemModel">规格型号</Option>
+                        <Option value="applicantUsername">申请人</Option>
+                    </Select>
                 </Input>
             </div>
 
@@ -95,14 +100,10 @@ export default {
     data() {
         return {
             requests: [],
-            filter: { // 搜索条件
-                stockRequestSn: '',
-                pageSize  : 50,
-                pageNumber: 1,
-                type      : 'OUT',
-                state     : -1,
-            },
-            dateRange: ['', ''], // 搜索的时间范围
+            filter: this.newFilter(),
+            filterKey   : 'stockRequestSn', // 过滤条件的键
+            filterValue : '',               // 过滤条件的值
+            dateRange: ['', ''],            // 搜索的时间范围
             more     : false, // 是否还有更多出库
             loading  : false, // 加载中
             reloading: false,
@@ -116,6 +117,7 @@ export default {
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'requestSn',         title: '出库单号', width: 200, resizable: true },
                 { key : 'desc',              title: '物料', minWidth: 300 },
+                { key : 'productItemModels', title: '规格/型号', width: 300, resizable: true },
                 { slot: 'type',              title: '类型', width: 120, align: 'center', resizable: true },
                 { slot: 'state',             title: '状态', width: 120, align: 'center', resizable: true },
                 { key : 'applicantUsername', title: '申请人', width: 120, resizable: true },
@@ -130,10 +132,13 @@ export default {
     methods: {
         // 搜索出库
         searchRequests() {
-            this.requests          = [];
-            this.more              = false;
-            this.reloading         = true;
-            this.filter.pageNumber = 1;
+            const state                 = this.filter.state;
+            this.requests               = [];
+            this.more                   = false;
+            this.reloading              = true;
+            this.filter                 = this.newFilter();
+            this.filter.state           = state;
+            this.filter[this.filterKey] = this.filterValue;
 
             // 如果不需要时间范围，则删除
             if (this.dateRange[0] && this.dateRange[1]) {
@@ -186,6 +191,21 @@ export default {
         showStockRequest(request) {
             this.stockRequestId = request.stockRequestId;
             this.stockRequestDetailsVisible = true;
+        },
+        // 新建搜索条件
+        newFilter() {
+            return { // 搜索条件
+                type      : 'OUT',
+                // stockRequestSn   : '',
+                // applicantUsername: '',
+                // productItemName  : '',
+                // productItemModel : '',
+                startAt   : '',
+                endAt     : '',
+                state     : -1,
+                pageSize  : 50,
+                pageNumber: 1,
+            };
         }
     }
 };

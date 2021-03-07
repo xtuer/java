@@ -25,6 +25,11 @@ public class BatchCount {
     private String productItemName;
 
     /**
+     * 物料的规格型号
+     */
+    private String productItemModel;
+
+    /**
      * 入库批次
      */
     private String batch;

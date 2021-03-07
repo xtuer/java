@@ -66,6 +66,10 @@ CREATE TABLE stock_request (
     state            int(11)    DEFAULT 0          COMMENT '状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)',
     `desc`           varchar(2048) DEFAULT ''      COMMENT '描述，展示时需要使用',
 
+    product_item_names  varchar(2048) DEFAULT ''    COMMENT '物料名称',
+    product_item_models varchar(2048) DEFAULT ''    COMMENT '物料规格型号',
+    applicant_username  varchar(256)  DEFAULT ''    COMMENT '申请者名字',
+
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 

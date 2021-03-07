@@ -192,6 +192,7 @@ public class StockService extends BaseService {
 
         // 出库描述: 物料名称拼接在一起
         String desc = out.getBatchCounts().stream().map(BatchCount::getProductItemName).collect(Collectors.joining(", "));
+        String models = out.getBatchCounts().stream().map(BatchCount::getProductItemModel).collect(Collectors.joining(", "));
 
         // [3] 创建出库请求
         StockRequest request = new StockRequest();
@@ -205,6 +206,8 @@ public class StockService extends BaseService {
         request.setDesc(desc);
         request.setCreatedAt(new Date());
         request.setCurrentAuditorId(out.getCurrentAuditorId());
+        request.setProductItemNames(desc);
+        request.setProductItemModels(models);
 
         // [4] 创建出库记录，物料的每个批次一个出库记录，但标记为未完成，等待审批通过后才能领取物料，从库存中减去相应的数量
         List<StockRecord> stockRecords = new LinkedList<>();

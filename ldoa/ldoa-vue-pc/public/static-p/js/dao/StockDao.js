@@ -32,14 +32,17 @@ export default class StockDao {
      *
      * 网址: http://localhost:8080/api/stocks/requests?type=OUT
      * 参数:
-     *      type           (必要): IN (入库)、OUT (出库)
-     *      applicantId    [可选]: 小于 1 时查询所有的，否则查询指定申请人的
-     *      stockRequestSn [可选]: 出库申请单号
-     *      state          [可选]: 状态, 为 -1 时表示查询所有的
-     *      startAt        [可选]: 开始时间
-     *      endAt          [可选]: 结束时间
-     *      pageNumber     [可选]: 页码
-     *      pageSize       [可选]: 数量
+     *      type              (必要): IN (入库)、OUT (出库)
+     *      applicantId       [可选]: 小于 1 时查询所有的，否则查询指定申请人的
+     *      applicantUsername [可选]: 申请人名字
+     *      productItemName   [可选]: 物料名称
+     *      productItemModel  [可选]: 物料规格型号
+     *      stockRequestSn    [可选]: 出库申请单号
+     *      state             [可选]: 状态, 为 -1 时表示查询所有的
+     *      startAt           [可选]: 开始时间
+     *      endAt             [可选]: 结束时间
+     *      pageNumber        [可选]: 页码
+     *      pageSize          [可选]: 数量
      *
      * @param {JSON} filter 过滤条件，参考上面的 '参数'
      * @return {Promise} 返回 Promise 对象，resolve 的参数为库存操作申请的数组，reject 的参数为错误信息
@@ -106,7 +109,7 @@ export default class StockDao {
      * 参数: 无
      * 请求体:
      *      orderId: 订单 ID
-     *      batchCounts: 物料出库的批次和数量，其结构为 { productId, productItemId, productItemName, batch, count }
+     *      batchCounts: 物料出库的批次和数量，其结构为 { productId, productItemId, productItemName, productItemModel, batch, count }
      *      currentAuditorId: 当前审批员 ID
      *
      * @param {JSON} stockOutData 出库信息

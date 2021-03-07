@@ -70,6 +70,16 @@ public class StockRequest {
     private String desc;
 
     /**
+     * 物料的名字
+     */
+    private String productItemNames;
+
+    /**
+     * 物理的规格型号
+     */
+    private String productItemModels;
+
+    /**
      * 申请时间
      */
     private Date createdAt;

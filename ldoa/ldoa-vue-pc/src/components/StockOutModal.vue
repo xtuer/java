@@ -214,6 +214,7 @@ export default {
                             productId: product.productId,
                             productItemId: item.productItemId,
                             productItemName: item.name,
+                            productItemModel: item.model,
                             batch: bc.batch,
                             count: bc.count,
                         });
