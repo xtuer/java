@@ -132,12 +132,10 @@ export default {
     methods: {
         // 搜索出库
         searchRequests() {
-            const state                 = this.filter.state;
             this.requests               = [];
             this.more                   = false;
             this.reloading              = true;
-            this.filter                 = this.newFilter();
-            this.filter.state           = state;
+            this.filter                 = { ...this.newFilter(), state: this.filter.state };
             this.filter[this.filterKey] = this.filterValue;
 
             // 如果不需要时间范围，则删除

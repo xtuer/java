@@ -144,12 +144,13 @@ public class StockService extends BaseService {
         // [3] 如果是入库操作
         if (record.getType().equals(StockRecord.Type.IN)) {
             // [3.1] 如果入库操作超过 1 个小时，则不允许删除
-            long createdAt = record.getCreatedAt().getTime();
-            long now = new Date().getTime();
-            double delta = (now - createdAt) / 3600_000.0; // 相差的小时
-            if (delta >= 1) {
-                return Result.fail("入库时间超过 1 小时，不允许删除");
-            }
+            // TODO: 去掉注释
+            // long createdAt = record.getCreatedAt().getTime();
+            // long now = new Date().getTime();
+            // double delta = (now - createdAt) / 3600_000.0; // 相差的小时
+            // if (delta >= 1) {
+            //     return Result.fail("入库时间超过 1 小时，不允许删除");
+            // }
 
             // [3.2] 删除入库物料此次入库的数量
             stockMapper.decreaseStock(record.getProductItemId(), record.getBatch(), record.getCount());

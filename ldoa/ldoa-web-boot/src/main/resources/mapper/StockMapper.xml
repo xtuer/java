@@ -206,6 +206,8 @@
                 AND stock.count <= #{filter.count}
             ]]></if>
         <where>
+            stock.count > 0
+
             <if test="filter.productItemId > 0">
                 AND pi.product_item_id = #{filter.productItemId}
             </if>

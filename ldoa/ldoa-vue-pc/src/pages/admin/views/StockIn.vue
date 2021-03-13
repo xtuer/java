@@ -241,15 +241,17 @@ export default {
         },
         // 是否可删除
         canDelete(createdAt) {
-            const before  = dayjs(createdAt).unix();
-            const current = dayjs().unix();
+            return true;
+            // TODO: 去掉注释
+            // const before  = dayjs(createdAt).unix();
+            // const current = dayjs().unix();
 
-            // 大于 1 个小时不可删除
-            if ((current - before) / 3600 >= 1) {
-                return false;
-            } else {
-                return true;
-            }
+            // // 大于 1 个小时不可删除
+            // if ((current - before) / 3600 >= 1) {
+            //     return false;
+            // } else {
+            //     return true;
+            // }
         },
         // 新建搜索条件
         newFilter() {
