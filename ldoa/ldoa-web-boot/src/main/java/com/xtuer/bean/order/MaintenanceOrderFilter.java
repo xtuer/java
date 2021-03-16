@@ -27,6 +27,11 @@ public class MaintenanceOrderFilter {
     private String salespersonName;
 
     /**
+     * 售后服务人员名字
+     */
+    private String servicePersonName;
+
+    /**
      * 客户
      */
     private String customerName;

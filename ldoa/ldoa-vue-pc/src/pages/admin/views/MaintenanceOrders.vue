@@ -34,6 +34,7 @@
                     <Select v-model="filterKey" slot="prepend">
                         <Option value="maintenanceOrderSn">维保单号</Option>
                         <Option value="salespersonName">销售人员</Option>
+                        <Option value="servicePersonName">售后人员</Option>
                         <Option value="productName">产品名称</Option>
                         <Option value="productCode">产品编码</Option>
                         <Option value="customerName">客户</Option>
@@ -149,12 +150,10 @@ export default {
     methods: {
         // 搜索维保订单
         searchOrders() {
-            const state                 = this.filter.state;
             this.orders                 = [];
             this.more                   = false;
             this.reloading              = true;
-            this.filter                 = this.newFilter();
-            this.filter.state           = state;
+            this.filter                 = { ...this.newFilter(), state: this.filter.state };
             this.filter[this.filterKey] = this.filterValue;
 
             // 如果不需要时间范围，则删除
@@ -304,6 +303,7 @@ export default {
             return { // 搜索条件
                 // maintenanceOrderSn: '',
                 // salespersonName   : '',
+                // servicePersonName : '',
                 // productName : '',
                 // productCode : '',
                 // customerName: '',
