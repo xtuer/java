@@ -5,23 +5,19 @@ import TableConfigDao from '@/../public/static-p/js/dao/TableConfigDao';
  */
 export default class TableUtils {
     /**
-     * 恢复表格的列宽度
-     *
-     * 调用案例:
-     *     1. 在 data() 中定义列 columns，可恢复宽度的列 resizable 为 true
-     *        columns: [{ key: 'name', title: '名称', width: 200, resizable: true }]
-     *     2. 在 mounted 中调用 this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns) 恢复列宽
+     * 恢复表格的列宽度。
+     * 注意: resizable 为 true，且 width 有值的列才会生效。
      *
      * @param {String} tableName 表名
      * @param {Long}   userId    用户 ID
      * @param {Array}  columns   表格的列
      */
     static restoreTableColumnWidths(tableName, userId, columns) {
-        // 1. 从 local storage 读取表格配置
+        // 1. 从 session storage 读取表格配置
         // 2. 配置已存在，则使用它进行恢复列宽
-        // 2. 配置不存在，则从服务器加载配置，并保存到 local storage，恢复列宽
+        // 2. 配置不存在，则从服务器加载配置，并保存到 session storage，恢复列宽
 
-        // [1] 从 local storage 读取表格配置
+        // [1] 从 session storage 读取表格配置
         try {
             const config = JSON.parse(sessionStorage.getItem(tableName));
 
@@ -34,9 +30,9 @@ export default class TableUtils {
             // eslint-disable-next-line no-empty
         }
 
-        console.log(`表 ${tableName} 的配置不存在或者无效，将从服务器加载`);
+        console.log(`表 ${tableName} 的配置在 session storage 中不存在或者无效，将从服务器加载`);
 
-        // [2] 配置不存在，则从服务器加载配置，并保存到 local storage，恢复列宽
+        // [2] 配置不存在，则从服务器加载配置，并保存到 session storage，恢复列宽
         TableConfigDao.findTableConfig(tableName, userId).then(configData => {
             const config = JSON.parse(configData.config);
 
@@ -51,7 +47,7 @@ export default class TableUtils {
     }
 
     /**
-     * 恢复表格的列宽
+     * 使用配置 config 的数据恢复表格的列宽
      *
      * @param {Array} columns 表格的列
      * @param {Array} config  表格配置
@@ -88,26 +84,23 @@ export default class TableUtils {
     }
 
     /**
-     * 保存列宽
-     *
-     * 调用案例: <Table :data="items" :columns="columns" @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)">
-     * 注意上面的 ...arguments 是为了获取 iView Table 回调的多个参数，是固定写法
+     * 保存表格的列宽
      *
      * @param {String} tableName 表名
      * @param {Long}   userId    用户 ID
      * @param {Int}    newWidth  新的宽度
      * @param {Int}    oldWidth  旧的宽度
-     * @param {Object} column    iView Table 组件的列对象
+     * @param {JSON}   column    iView Table 组件的列对象
      */
     static saveTableColumnWidths(tableName, userId, newWidth, oldWidth, column) {
-        // 1. 从 local storage 读取表格配置
-        // 2. 查找对应列的配置，不存在则创建，更新对应列的宽度，然后保存到 local storage
+        // 1. 从 session storage 读取表格配置
+        // 2. 查找对应列的配置，不存在则创建，更新对应列的宽度，然后保存到 session storage
         // 3. 保存表格配置到服务器
-        console.log(tableName, newWidth, oldWidth, column._index);
+        console.log('保存列宽: ', tableName, newWidth, oldWidth, column._index);
 
         let config = [];
 
-        // [1] 从 local storage 读取表格配置
+        // [1] 从 session storage 读取表格配置
         try {
             config = JSON.parse(sessionStorage.getItem(tableName));
 
@@ -118,7 +111,7 @@ export default class TableUtils {
             // eslint-disable-next-line no-empty
         }
 
-        // [2] 查找对应列的配置，不存在则创建，更新对应列的宽度，然后保存到 local storage
+        // [2] 查找对应列的配置，不存在则创建，更新对应列的宽度，然后保存到 session storage
         let found = config.find(c => c.index === column._index);
 
         if (!found) {
@@ -129,12 +122,11 @@ export default class TableUtils {
         found.index = column._index;
         found.width = parseInt(newWidth);
 
-        // 保存到 local storage
+        // 保存到 session storage
         const configJson = JSON.stringify(config);
         sessionStorage.setItem(tableName, configJson);
 
         // [3] 保存表格配置到服务器
-        // 提示: 不能使用 this.currentUserId()，因为这种调用方式 this 不是 Vue 实例
         TableConfigDao.upsertTableConfig(tableName, userId, configJson);
     }
 }

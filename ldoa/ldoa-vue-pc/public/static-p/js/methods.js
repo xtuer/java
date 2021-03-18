@@ -88,6 +88,38 @@ const stateColor = function(state) {
     }
 };
 
+/**
+ * 保存表的列
+ *
+ * 调用示例:
+ * 1. 在 data 中定义属性 tableName
+ * 2. <Table :data="stockRecords" :columns="columns" :loading="reloading" border
+ *        @on-column-width-resize="saveTableColumnWidths(arguments)"
+ *    >
+ *
+ * @param {JSON} args 数组 [newWidth, oldWidth, column]
+ */
+const saveTableColumnWidths = function(args) {
+    const newWidth = args[0];
+    const oldWidth = args[1];
+    const column   = args[2];
+
+    TableUtils.saveTableColumnWidths(this.tableName, this.currentUserId(), newWidth, oldWidth, column);
+};
+
+/**
+ * 恢复表格的列宽度
+ *
+ * 调用示例:
+ * 1. 在 data 中定义属性 tableName
+ * 2. 在 mounted 中调用 this.restoreTableColumnWidths(columns)
+ *
+ * @param {Array} columns 表格的列属性数组
+ */
+const restoreTableColumnWidths = function(columns) {
+    TableUtils.restoreTableColumnWidths(this.tableName, this.currentUserId(), columns);
+};
+
 export default {
     download,
     goBack,
@@ -95,6 +127,6 @@ export default {
     isCurrentUser,
     currentUserId,
     stateColor,
-    restoreTableColumnWidths: TableUtils.restoreTableColumnWidths,
-    saveTableColumnWidths: TableUtils.saveTableColumnWidths,
+    restoreTableColumnWidths,
+    saveTableColumnWidths,
 };

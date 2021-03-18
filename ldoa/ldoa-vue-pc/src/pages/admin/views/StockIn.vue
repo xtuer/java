@@ -32,7 +32,7 @@
 
         <!-- 入库列表 -->
         <Table :data="stockRecords" :columns="columns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <template slot-scope="{ row: record }" slot="name">
                 {{ record.productItem.name}}
@@ -152,7 +152,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
+        this.restoreTableColumnWidths(this.columns);
         this.searchStockRecords();
     },
     methods: {

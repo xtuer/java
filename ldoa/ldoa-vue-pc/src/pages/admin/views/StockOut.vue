@@ -57,7 +57,7 @@
 
         <!-- 出库申请列表 -->
         <Table :data="requests" :columns="columns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 出库单号 -->
             <template slot-scope="{ row: request }" slot="requestSn">
@@ -126,7 +126,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
+        this.restoreTableColumnWidths(this.columns);
         this.searchRequests();
     },
     methods: {

@@ -34,7 +34,7 @@ Slot: 无
 
         <!-- 文件列表 -->
         <Table :data="files" :columns="columns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 介绍信息 -->
             <template slot-scope="{ row: file }" slot="createdAt">
@@ -87,7 +87,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
+        this.restoreTableColumnWidths(this.columns);
         this.searchFiles();
     },
     computed: {

@@ -11,7 +11,7 @@
 
         <!-- 用户列表 -->
         <Table :data="users" :columns="columns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 介绍信息 -->
             <template slot-scope="{ row: user }" slot="roles">
@@ -121,7 +121,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
+        this.restoreTableColumnWidths(this.columns);
         this.searchUsers();
     },
     methods: {

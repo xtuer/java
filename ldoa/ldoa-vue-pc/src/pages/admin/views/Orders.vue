@@ -19,7 +19,7 @@
 
         <!-- 订单列表 -->
         <Table :data="orders" :columns="orderColumns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 订单编号 -->
             <template slot-scope="{ row: order }" slot="orderSn">
@@ -122,7 +122,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.orderColumns);
+        this.restoreTableColumnWidths(this.orderColumns);
         this.searchOrders();
     },
     methods: {

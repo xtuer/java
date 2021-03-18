@@ -48,7 +48,7 @@
 
         <!-- 维保订单列表 -->
         <Table :data="orders" :columns="columns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 订单号 -->
             <template slot-scope="{ row: order }" slot="maintenanceOrderSn">
@@ -144,7 +144,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
+        this.restoreTableColumnWidths(this.columns);
         this.searchOrders();
     },
     methods: {

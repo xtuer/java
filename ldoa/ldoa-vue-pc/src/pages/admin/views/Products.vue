@@ -20,7 +20,7 @@
 
         <!-- 产品列表 -->
         <Table :data="products" :columns="productColumns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 操作按钮 -->
             <template slot-scope="{ row: product }" slot="action">
@@ -143,7 +143,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.productColumns);
+        this.restoreTableColumnWidths(this.productColumns);
         this.searchProducts();
     },
     methods: {

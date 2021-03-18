@@ -12,7 +12,7 @@
 
         <!-- 审批项列表 -->
         <Table :data="auditItems" :columns="columns" :loading="reloading" border
-            @on-column-width-resize="saveTableColumnWidths(tableName, currentUserId(), ...arguments)"
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
             <!-- 类型 -->
             <template slot-scope="{ row: auditItem }" slot="type">
@@ -94,7 +94,7 @@ export default {
         };
     },
     mounted() {
-        this.restoreTableColumnWidths(this.tableName, this.currentUserId(), this.columns);
+        this.restoreTableColumnWidths(this.columns);
         this.searchAuditItems();
     },
     methods: {
