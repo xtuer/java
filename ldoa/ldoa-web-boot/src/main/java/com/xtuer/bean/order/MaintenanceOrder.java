@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 维保订单 (维修保养订单)
@@ -12,7 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class MaintenanceOrder {
-    public static final int STATE_INIT = 0;
+    public static final int STATE_INIT     = 0;
     public static final int STATE_AUDITING = 1;
     public static final int STATE_REJECTED = 2;
     public static final int STATE_ACCEPTED = 3;
@@ -142,6 +144,11 @@ public class MaintenanceOrder {
      * 当前审批员 ID
      */
     private long currentAuditorId;
+
+    /**
+     * 维保订单项
+     */
+    private List<MaintenanceOrderItem> items = new LinkedList<>();
 
     /**
      * 获取订单状态 Label

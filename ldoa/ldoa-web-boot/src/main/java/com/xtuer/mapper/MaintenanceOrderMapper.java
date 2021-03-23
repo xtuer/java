@@ -3,6 +3,7 @@ package com.xtuer.mapper;
 import com.xtuer.bean.Page;
 import com.xtuer.bean.order.MaintenanceOrder;
 import com.xtuer.bean.order.MaintenanceOrderFilter;
+import com.xtuer.bean.order.MaintenanceOrderItem;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -58,4 +59,25 @@ public interface MaintenanceOrderMapper {
      * @param orderId 订单 ID
      */
     void deleteMaintenanceOrder(long orderId);
+
+    /**
+     * 查询维保订单的订单项
+     *
+     * @param orderId 维保订单 ID
+     */
+    List<MaintenanceOrderItem> findMaintenanceOrderItemsByMaintenanceOrderId(long orderId);
+
+    /**
+     * 创建维保订单项
+     *
+     * @param item 维保订单项
+     */
+    void insertMaintenanceOrderItem(MaintenanceOrderItem item);
+
+    /**
+     * 删除维保订单的订单项
+     *
+     * @param orderId 维保订单 ID
+     */
+    void deleteMaintenanceOrderItemsByMaintenanceOrderId(long orderId);
 }

@@ -3,12 +3,15 @@ package com.xtuer.service;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.MaintenanceOrder;
+import com.xtuer.bean.order.MaintenanceOrderItem;
 import com.xtuer.mapper.MaintenanceOrderMapper;
 import com.xtuer.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 维保订单服务
@@ -22,6 +25,23 @@ public class MaintenanceOrderService extends BaseService {
     private AuditServiceHelper auditServiceHelper;
 
     /**
+     * 查询维保订单，同时查询出它的订单项
+     *
+     * @param orderId 维保订单 ID
+     * @return 返回查询到的维保订单，查询不到返回 null
+     */
+    public MaintenanceOrder findMaintenanceOrder(long orderId) {
+        MaintenanceOrder order = orderMapper.findMaintenanceOrderById(orderId);
+
+        if (order != null) {
+            List<MaintenanceOrderItem> items = orderMapper.findMaintenanceOrderItemsByMaintenanceOrderId(orderId);
+            order.setItems(items);
+        }
+
+        return order;
+    }
+
+    /**
      * 插入或者更新维保订单
      *
      * @param order         维保订单
@@ -33,7 +53,9 @@ public class MaintenanceOrderService extends BaseService {
         // 2. 如果 ID 无效，则是新创建，为其分配 ID 和 SN
         // 3. 设置维保订单的其他属性
         // 4. 保存维保订单到数据库
-        // 5. 创建审批
+        // 5. 删除已有维保订单项
+        // 6. 创建新的维保订单项
+        // 7. 创建审批
 
         // [1] 参数校验: 客户名称、销售人员、收货日期、反馈的问题不能为空
         if (StringUtils.isBlank(order.getCustomerName())) {
@@ -63,7 +85,17 @@ public class MaintenanceOrderService extends BaseService {
         // [4] 保存维保订单到数据库
         orderMapper.upsertMaintenanceOrder(order);
 
-        // [5] 创建审批
+        // [5] 删除已有维保订单项
+        orderMapper.deleteMaintenanceOrderItemsByMaintenanceOrderId(order.getMaintenanceOrderId());
+
+        // [6] 创建新的维保订单项
+        for (MaintenanceOrderItem item : order.getItems()) {
+            item.setMaintenanceOrderId(order.getMaintenanceOrderId());
+            item.setMaintenanceOrderItemId(super.nextId());
+            orderMapper.insertMaintenanceOrderItem(item);
+        }
+
+        // [7] 创建审批
         auditServiceHelper.upsertMaintenanceOrderAudit(servicePerson, order);
 
         return Result.ok(order);

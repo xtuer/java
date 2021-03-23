@@ -92,3 +92,42 @@ CREATE TABLE maintenance_order (
     KEY idx_received_date (received_date) COMMENT '收货时间建立索引',
     KEY idx_created_at (created_at) COMMENT '创建时间建立索引'
 ) ENGINE=InnoDB;
+
+#--------------------------------------------------------------------------------------
+# 表名: maintenance_order_item
+# 作者: 黄彪
+# 日期: 2021-03-09
+# 版本: 1.0
+# 描述: 维修保养订单项
+#--------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS maintenance_order_item;
+
+CREATE TABLE maintenance_order_item (
+    maintenance_order_id       bigint(20)   NOT NULL   COMMENT '维保订单 ID',
+    maintenance_order_item_id  bigint(20)   NOT NULL   COMMENT '维保订单项 ID',
+    product_name               varchar(256) DEFAULT '' COMMENT '产品名称',
+    product_code               varchar(64)  DEFAULT '' COMMENT '产品编码',
+    product_model              varchar(64)  DEFAULT '' COMMENT '规格/型号',
+    electric_quantity_before   double       DEFAULT 0  COMMENT '维修前电量',
+    software_version_before    varchar(256) DEFAULT '' COMMENT '维修前软件版本',
+    hardware_version_before    varchar(256) DEFAULT '' COMMENT '维修前硬件版本',
+    power_dissipation_before   double       DEFAULT 0  COMMENT '维修前功耗',
+    temperature_before         double       DEFAULT 0  COMMENT '维修前温度',
+    chip_code                  varchar(64)  DEFAULT '' COMMENT '芯片编号',
+    check_details              text                    COMMENT '检测问题明细',
+    maintenance_details        text                    COMMENT '检测问题明细',
+    probe_detector_code_before varchar(64)  DEFAULT '' COMMENT '探头换前编号',
+
+    electric_quantity_after    double       DEFAULT 0  COMMENT '维修后电量',
+    software_version_after     varchar(256) DEFAULT '' COMMENT '维修后软件版本',
+    hardware_version_after     varchar(256) DEFAULT '' COMMENT '维修后硬件版本',
+    power_dissipation_after    double       DEFAULT 0  COMMENT '维修后功耗',
+    probe_detector_code_after  varchar(64)  DEFAULT '' COMMENT '探头换后编号',
+
+    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+
+    PRIMARY KEY (maintenance_order_item_id) COMMENT '维保订单项 ID 作为主键',
+    KEY idx_maintenance_order (maintenance_order_id) COMMENT '以维保订单建立索引',
+    KEY idx_created_at (created_at) COMMENT '创建时间建立索引'
+) ENGINE=InnoDB;

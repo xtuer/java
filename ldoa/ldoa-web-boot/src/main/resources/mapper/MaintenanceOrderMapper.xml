@@ -103,4 +103,55 @@
     <delete id="deleteMaintenanceOrder">
         DELETE FROM maintenance_order WHERE maintenance_order_id = #{orderId}
     </delete>
+
+    <!-- 查询维保订单的订单项 -->
+    <select id="findMaintenanceOrderItemsByMaintenanceOrderId" resultType="MaintenanceOrderItem">
+        SELECT maintenance_order_id,
+            maintenance_order_item_id,
+            product_name,
+            product_code,
+            product_model,
+            electric_quantity_before,
+            software_version_before,
+            hardware_version_before,
+            power_dissipation_before,
+            temperature_before,
+            chip_code,
+            check_details,
+            maintenance_details,
+            probe_detector_code_before,
+            electric_quantity_after,
+            software_version_after,
+            hardware_version_after,
+            power_dissipation_after,
+            probe_detector_code_after
+        FROM maintenance_order_item
+        WHERE maintenance_order_id = #{orderId}
+    </select>
+
+    <!-- 创建维保订单项 -->
+    <insert id="insertMaintenanceOrderItem">
+        INSERT INTO maintenance_order_item (maintenance_order_id, maintenance_order_item_id,
+            product_name, product_code, product_model,
+            electric_quantity_before, software_version_before, hardware_version_before,
+            power_dissipation_before, temperature_before, chip_code, check_details,
+            maintenance_details, probe_detector_code_before,
+            electric_quantity_after, software_version_after, hardware_version_after,
+            power_dissipation_after, probe_detector_code_after
+        )
+        VALUES (#{maintenanceOrderId}, #{maintenanceOrderItemId},
+            #{productName}, #{productCode}, #{productModel},
+            #{electricQuantityBefore}, #{softwareVersionBefore}, #{hardwareVersionBefore},
+            #{powerDissipationBefore}, #{temperatureBefore}, #{chipCode}, #{checkDetails},
+            #{maintenanceDetails}, #{probeDetectorCodeBefore},
+            #{electricQuantityAfter}, #{softwareVersionAfter}, #{hardwareVersionAfter},
+            #{powerDissipationAfter}, #{probeDetectorCodeAfter}
+        )
+    </insert>
+
+    <!-- 删除维保订单的订单项 -->
+    <delete id="deleteMaintenanceOrderItemsByMaintenanceOrderId">
+        DELETE FROM maintenance_order_item
+        WHERE maintenance_order_id = #{orderId}
+    </delete>
 </mapper>
