@@ -77,6 +77,7 @@
                     <Icon type="md-create" class="clickable" @click="progressEditedOrder = order"/>
                 </div>
                 <Input v-show="progressEditedOrder === order" v-model="order.progress"
+                        v-focus="progressEditedOrder === order"
                         @on-enter="saveProgress(order)"
                         @on-keyup="keyupForProgress(order, $event)"
                         @on-blur="cancelEditProgress(order)"/>
@@ -313,6 +314,16 @@ export default {
                 pageSize       : 50,
                 pageNumber     : 1,
             };
+        }
+    },
+    directives: {
+        // 输入框获取焦点命令 (binding.value 为 v-focus="xxx" 的参数 xxx)
+        focus: function(el, binding) {
+            if (binding.value) {
+                setTimeout(() => {
+                    el.querySelector('input').focus();
+                }, 0);
+            }
         }
     }
 };
