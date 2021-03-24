@@ -78,7 +78,7 @@ public class MaintenanceOrderController extends BaseController {
      * @return payload 为更新后的维保订单
      */
     @PutMapping(Urls.API_MAINTENANCE_ORDERS_BY_ID)
-    public Result<MaintenanceOrder> upsertMaintenanceOrder(MaintenanceOrder order) {
+    public Result<MaintenanceOrder> upsertMaintenanceOrder(@RequestBody MaintenanceOrder order) {
         User servicePerson = super.getCurrentUser();
         return orderService.upsertMaintenanceOrder(order, servicePerson);
     }

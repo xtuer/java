@@ -97,7 +97,7 @@ public class MaintenanceOrderItem {
     /**
      * 维修后功耗
      */
-    private String powerDissipationAfter;
+    private double powerDissipationAfter;
 
     /**
      * 探头换后编号

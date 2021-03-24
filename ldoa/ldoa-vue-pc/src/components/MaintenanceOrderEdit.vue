@@ -15,8 +15,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
 <template>
     <Modal :value="visible" title="编辑维保订单" :mask-closable="false" :width="900" class="maintenance-order-edit-modal"
-            :styles="{ top: '40px', marginBottom: '40px' }"
-            @on-visible-change="showEvent">
+        :styles="{ top: '40px', marginBottom: '40px' }"
+        @on-visible-change="showEvent"
+    >
         <!-- 弹窗 Body -->
         <Form ref="orderForm" :model="order" :rules="rules" :label-width="100" class="relative">
             <Spin v-if="loading" fix size="large"></Spin>
@@ -85,6 +86,23 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </FormItem>
         </Form>
 
+        <!-- 维保订单列表 -->
+        <Table :data="order.items" :columns="orderItemColumns" border>
+            <!-- 操作按钮 -->
+            <template slot-scope="{ row: item }" slot="action">
+                <Icon type="md-create" size="16" class="clickable margin-right-5" @click="editOrderItem(item)"/>
+
+                <Poptip
+                    confirm
+                    transfer
+                    title="确定删除?"
+                    @on-ok="deleteOrderItem(item)">
+                    <Icon type="md-close" size="16" class="clickable"/>
+                </Poptip>
+            </template>
+        </Table>
+        <Button class="margin-top-10" icon="md-add" @click="editOrderItem()">添加维保订单项</Button>
+
         <!-- 底部工具栏 -->
         <div slot="footer" class="footer">
             <AuditorSelect v-model="order.currentAuditorId" :step="1" type="MAINTENANCE_ORDER"/>
@@ -95,6 +113,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
         <!-- 产品选择弹窗 -->
         <ProductSelect v-model="productSelectVisible" @on-ok="onProductSelected"/>
+
+        <!-- 维保订单项编辑弹窗 -->
+        <MaintenanceOrderItemEdit v-model="orderItemEditVisible" :order-item="orderItemClone" @on-ok="saveOrderItem"/>
     </Modal>
 </template>
 
@@ -102,6 +123,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 import MaintenanceOrderDao from '@/../public/static-p/js/dao/MaintenanceOrderDao';
 import ProductSelect from '@/components/ProductSelect.vue';
 import AuditorSelect from '@/components/AuditorSelect.vue';
+import MaintenanceOrderItemEdit from '@/components/MaintenanceOrderItemEdit.vue';
 
 export default {
     props: {
@@ -112,7 +134,7 @@ export default {
         prop : 'visible',
         event: 'on-visible-change',
     },
-    components: { ProductSelect, AuditorSelect },
+    components: { ProductSelect, AuditorSelect, MaintenanceOrderItemEdit },
     data() {
         return {
             order: this.newOrder(),
@@ -139,6 +161,29 @@ export default {
                     { required: true, type: 'date', message: '请选择收货时间', trigger: 'blur' }
                 ],
             },
+
+            orderItemClone: {},          // 用于编辑的维保订单项
+            orderItemEditVisible: false, // 维保订单项编辑弹窗是否可见
+            orderItemColumns: [          // 维保订单项表格的列
+                { key: 'productName', title: '产品名称', width: 150 },
+                { key: 'productCode', title: '产品编码', width: 150 },
+                { key: 'productModel', title: '规格型号', width: 150 },
+                { key: 'electricQuantityBefore', title: '维修前电量', width: 150 },
+                { key: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
+                { key: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },
+                { key: 'powerDissipationBefore', title: '维修前功耗', width: 150 },
+                { key: 'temperatureBefore', title: '维修前温度', width: 150 },
+                { key: 'chipCode', title: '芯片编号', width: 150 },
+                { key: 'checkDetails', title: '检测问题明细', width: 350 },
+                { key: 'maintenanceDetails', title: '维修明细', width: 350 },
+                { key: 'probeDetectorCodeBefore', title: '探头换前编号', width: 150 },
+                { key: 'electricQuantityAfter', title: '维修后电量', width: 150 },
+                { key: 'softwareVersionAfter', title: '维修后软件版本', width: 150 },
+                { key: 'hardwareVersionAfter', title: '维修后硬件版本', width: 150 },
+                { key: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
+                { key: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
+                { slot: 'action', title: '操作', width: 80, align: 'center', fixed: 'right', className: 'table-action' },
+            ],
         };
     },
     methods: {
@@ -226,8 +271,62 @@ export default {
                 problem           : '',    // 客户反馈的问题
                 progress          : '',    // 进度
                 currentAuditorId  : '0',   // 当前审批员 ID
+                items             : [],    // 维保订单项
             };
         },
+        // 新建维保订单项
+        newOrderItem() {
+            return {
+                maintenanceOrderItemId : Utils.nextId(), // 维保订单项 ID
+                productName            : '', // 产品名称
+                productCode            : '', // 产品编码
+                productModel           : '', // 规格型号
+                electricQuantityBefore : 0,  // 维修前电量
+                softwareVersionBefore  : '', // 维修前软件版本
+                hardwareVersionBefore  : '', // 维修前硬件版本
+                powerDissipationBefore : 0,  // 维修前功耗
+                temperatureBefore      : 0,  // 维修前温度
+                chipCode               : '', // 芯片编号
+                checkDetails           : '', // 检测问题明细
+                maintenanceDetails     : '', // 维修明细
+                probeDetectorCodeBefore: '', // 探头换前编号
+                electricQuantityAfter  : 0,  // 维修后电量
+                softwareVersionAfter   : '', // 维修后软件版本
+                hardwareVersionAfter   : '', // 维修后硬件版本
+                powerDissipationAfter  : 0,  // 维修后功耗
+                probeDetectorCodeAfter : '', // 探头换后编号
+            };
+        },
+        // 创建维保订单项
+        editOrderItem(item) {
+            // item 存在则编辑，否则为创建
+            if (item) {
+                this.orderItemClone = Utils.clone(item);
+            } else {
+                this.orderItemClone = this.newOrderItem();
+            }
+
+            this.orderItemEditVisible = true;
+        },
+        // 保存维保订单项
+        saveOrderItem(item) {
+            // 查找不到则添加，否则替换
+            const index = this.order.items.findIndex(i => i.maintenanceOrderItemId === item.maintenanceOrderItemId);
+
+            if (index >= 0) {
+                this.order.items.replace(index, item);
+            } else {
+                this.order.items.push(item);
+            }
+        },
+        // 删除维保订单项
+        deleteOrderItem(item) {
+            const index = this.order.items.findIndex(i => i.maintenanceOrderItemId === item.maintenanceOrderItemId);
+
+            if (index >= 0) {
+                this.order.items.remove(index);
+            }
+        }
     }
 };
 </script>

@@ -86,7 +86,25 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <td class="td-label text-color-gray">处理进度:</td>
                 <td class="td-rest" colspan="5">{{ order.progress }}</td>
             </tr>
+        </table>
 
+        <!-- 维保订单列表 -->
+        <Table :data="order.items" :columns="orderItemColumns" border>
+            <!-- 操作按钮 -->
+            <template slot-scope="{ row: item }" slot="action">
+                <Icon type="md-create" size="16" class="clickable margin-right-5" @click="editOrderItem(item)"/>
+
+                <Poptip
+                    confirm
+                    transfer
+                    title="确定删除?"
+                    @on-ok="deleteOrderItem(item)">
+                    <Icon type="md-close" size="16" class="clickable"/>
+                </Poptip>
+            </template>
+        </Table>
+
+        <table class="order-table relative margin-top-10">
             <tr>
                 <td colspan="6" class="text-align-center background-gray">审批</td>
             </tr>
@@ -127,6 +145,25 @@ export default {
             order: {}, // 维保订单
             loading: false, // 加载中
             saving : false,
+            orderItemColumns: [ // 维保订单项表格的列
+                { key: 'productName', title: '产品名称', width: 150 },
+                { key: 'productCode', title: '产品编码', width: 150 },
+                { key: 'productModel', title: '规格型号', width: 150 },
+                { key: 'electricQuantityBefore', title: '维修前电量', width: 150 },
+                { key: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
+                { key: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },
+                { key: 'powerDissipationBefore', title: '维修前功耗', width: 150 },
+                { key: 'temperatureBefore', title: '维修前温度', width: 150 },
+                { key: 'chipCode', title: '芯片编号', width: 150 },
+                { key: 'checkDetails', title: '检测问题明细', width: 350 },
+                { key: 'maintenanceDetails', title: '维修明细', width: 350 },
+                { key: 'probeDetectorCodeBefore', title: '探头换前编号', width: 150 },
+                { key: 'electricQuantityAfter', title: '维修后电量', width: 150 },
+                { key: 'softwareVersionAfter', title: '维修后软件版本', width: 150 },
+                { key: 'hardwareVersionAfter', title: '维修后硬件版本', width: 150 },
+                { key: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
+                { key: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
+            ],
         };
     },
     computed: {

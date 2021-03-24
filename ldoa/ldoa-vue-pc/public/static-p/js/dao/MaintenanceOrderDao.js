@@ -55,7 +55,7 @@ export default class {
     static upsertMaintenanceOrder(order) {
         return Rest.update(
             Urls.API_MAINTENANCE_ORDERS_BY_ID,
-            { params: { orderId: order.maintenanceOrderId }, data: order }
+            { params: { orderId: order.maintenanceOrderId }, data: order, json: true }
         ).then(({ data: newOrder, success, message }) => {
             return Utils.response(newOrder, success, message);
         });
