@@ -32,7 +32,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </tr>
 
             <!-- 产品 -->
-            <tr>
+            <!-- <tr>
                 <td class="td-label text-color-gray">产品名称:</td>
                 <td class="td-rest">{{ order.productName }}</td>
 
@@ -41,7 +41,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
                 <td class="td-label text-color-gray">规格/型号:</td>
                 <td class="td-rest">{{ order.productModel }}</td>
-            </tr>
+            </tr> -->
 
             <!-- 物料 -->
             <!-- <tr>
@@ -153,7 +153,7 @@ export default {
                 { key: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
                 { key: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },
                 { key: 'powerDissipationBefore', title: '维修前功耗', width: 150 },
-                { key: 'temperatureBefore', title: '维修前温度', width: 150 },
+                { key: 'temperatureBefore', title: '维修前高温次数', width: 150 },
                 { key: 'chipCode', title: '芯片编号', width: 150 },
                 { key: 'checkDetails', title: '检测问题明细', width: 350 },
                 { key: 'maintenanceDetails', title: '维修明细', width: 350 },
@@ -162,6 +162,7 @@ export default {
                 { key: 'softwareVersionAfter', title: '维修后软件版本', width: 150 },
                 { key: 'hardwareVersionAfter', title: '维修后硬件版本', width: 150 },
                 { key: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
+                { key: 'temperatureAfter', title: '维修前后温次数', width: 150 },
                 { key: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
             ],
         };

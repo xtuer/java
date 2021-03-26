@@ -55,7 +55,7 @@ public class MaintenanceOrderItem {
     private double powerDissipationBefore;
 
     /**
-     * 维修前温度
+     * 维修后高温次数
      */
     private double temperatureBefore;
 
@@ -98,6 +98,11 @@ public class MaintenanceOrderItem {
      * 维修后功耗
      */
     private double powerDissipationAfter;
+
+    /**
+     * 维修后高温次数
+     */
+    private double temperatureAfter;
 
     /**
      * 探头换后编号

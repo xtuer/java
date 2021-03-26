@@ -116,7 +116,7 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'requestSn',         title: '出库单号', width: 200, resizable: true },
-                { key : 'desc',              title: '物料', minWidth: 300 },
+                { key : 'desc',              title: '物料', width: 300, resizable: true },
                 { key : 'productItemModels', title: '规格/型号', width: 300, resizable: true },
                 { slot: 'type',              title: '类型', width: 120, align: 'center', resizable: true },
                 { slot: 'state',             title: '状态', width: 120, align: 'center', resizable: true },

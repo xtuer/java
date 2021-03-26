@@ -120,6 +120,21 @@ const restoreTableColumnWidths = function(columns) {
     TableUtils.restoreTableColumnWidths(this.tableName, this.currentUserId(), columns);
 };
 
+/**
+ * 设置 obj 的 field 属性为传入的参数 n 的整数值
+ * 使用案例: <InputNumber v-model="count" :min="0" @on-change="ensureInt(order, 'count', $event)"/>
+ *
+ * @param {Object} obj   要设置属性的对象
+ * @param {String} field 属性名
+ * @param {Number} n     数值
+ */
+const ensureInt = function(obj, field, n) {
+    this.$nextTick(() => {
+        n = parseInt(n) || 0;
+        this.$set(obj, field, n);
+    });
+};
+
 export default {
     download,
     goBack,
@@ -129,4 +144,5 @@ export default {
     stateColor,
     restoreTableColumnWidths,
     saveTableColumnWidths,
+    ensureInt,
 };

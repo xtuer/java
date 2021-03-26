@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 维保订单服务
@@ -49,6 +50,7 @@ public class MaintenanceOrderService extends BaseService {
      */
     @Transactional(rollbackFor = Exception.class)
     public Result<MaintenanceOrder> upsertMaintenanceOrder(MaintenanceOrder order, User servicePerson) {
+        // 0. 聚合产品名称、编码、型号
         // 1. 参数校验: 客户名称、销售人员、收货日期、反馈的问题不能为空
         // 2. 如果 ID 无效，则是新创建，为其分配 ID 和 SN
         // 3. 设置维保订单的其他属性
@@ -56,6 +58,14 @@ public class MaintenanceOrderService extends BaseService {
         // 5. 删除已有维保订单项
         // 6. 创建新的维保订单项
         // 7. 创建审批
+
+        // [0] 聚合产品名称、编码、型号
+        String productNames  = order.getItems().stream().map(MaintenanceOrderItem::getProductName).collect(Collectors.joining(", "));
+        String productCodes  = order.getItems().stream().map(MaintenanceOrderItem::getProductCode).collect(Collectors.joining(", "));
+        String productModels = order.getItems().stream().map(MaintenanceOrderItem::getProductModel).collect(Collectors.joining(", "));
+        order.setProductName(productNames);
+        order.setProductCode(productCodes);
+        order.setProductModel(productModels);
 
         // [1] 参数校验: 客户名称、销售人员、收货日期、反馈的问题不能为空
         if (StringUtils.isBlank(order.getCustomerName())) {

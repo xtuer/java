@@ -112,7 +112,7 @@ CREATE TABLE maintenance_order_item (
     software_version_before    varchar(256) DEFAULT '' COMMENT '维修前软件版本',
     hardware_version_before    varchar(256) DEFAULT '' COMMENT '维修前硬件版本',
     power_dissipation_before   double       DEFAULT 0  COMMENT '维修前功耗',
-    temperature_before         double       DEFAULT 0  COMMENT '维修前温度',
+    temperature_before         double       DEFAULT 0  COMMENT '维修前高温次数',
     chip_code                  varchar(64)  DEFAULT '' COMMENT '芯片编号',
     check_details              text                    COMMENT '检测问题明细',
     maintenance_details        text                    COMMENT '检测问题明细',
@@ -122,6 +122,7 @@ CREATE TABLE maintenance_order_item (
     software_version_after     varchar(256) DEFAULT '' COMMENT '维修后软件版本',
     hardware_version_after     varchar(256) DEFAULT '' COMMENT '维修后硬件版本',
     power_dissipation_after    double       DEFAULT 0  COMMENT '维修后功耗',
+    temperature_after          double       DEFAULT 0  COMMENT '维修后高温次数',
     probe_detector_code_after  varchar(64)  DEFAULT '' COMMENT '探头换后编号',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

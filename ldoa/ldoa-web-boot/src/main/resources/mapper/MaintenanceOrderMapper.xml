@@ -124,6 +124,7 @@
             software_version_after,
             hardware_version_after,
             power_dissipation_after,
+            temperature_after,
             probe_detector_code_after
         FROM maintenance_order_item
         WHERE maintenance_order_id = #{orderId}
@@ -137,7 +138,7 @@
             power_dissipation_before, temperature_before, chip_code, check_details,
             maintenance_details, probe_detector_code_before,
             electric_quantity_after, software_version_after, hardware_version_after,
-            power_dissipation_after, probe_detector_code_after
+            power_dissipation_after, temperature_after, probe_detector_code_after
         )
         VALUES (#{maintenanceOrderId}, #{maintenanceOrderItemId},
             #{productName}, #{productCode}, #{productModel},
@@ -145,7 +146,7 @@
             #{powerDissipationBefore}, #{temperatureBefore}, #{chipCode}, #{checkDetails},
             #{maintenanceDetails}, #{probeDetectorCodeBefore},
             #{electricQuantityAfter}, #{softwareVersionAfter}, #{hardwareVersionAfter},
-            #{powerDissipationAfter}, #{probeDetectorCodeAfter}
+            #{powerDissipationAfter}, #{temperatureAfter}, #{probeDetectorCodeAfter}
         )
     </insert>
 

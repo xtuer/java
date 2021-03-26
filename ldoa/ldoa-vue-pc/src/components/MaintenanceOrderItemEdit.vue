@@ -55,7 +55,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </div>
             <div class="column-3">
                 <FormItem label="芯片编号:" prop="chipCode">
-                    <Input v-model="orderItem.hardwareVersionBefore" clearable placeholder="请输入芯片编号"/>
+                    <Input v-model="orderItem.chipCode" clearable placeholder="请输入芯片编号"/>
                 </FormItem>
             </div>
             <FormItem label="检测问题明细:" prop="checkDetails">

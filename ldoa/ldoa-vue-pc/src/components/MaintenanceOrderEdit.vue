@@ -14,7 +14,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 -->
 
 <template>
-    <Modal :value="visible" title="编辑维保订单" :mask-closable="false" :width="900" class="maintenance-order-edit-modal"
+    <Modal :value="visible" title="编辑维保订单" :mask-closable="false" :width="1000" class="maintenance-order-edit-modal"
         :styles="{ top: '40px', marginBottom: '40px' }"
         @on-visible-change="showEvent"
     >
@@ -34,7 +34,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                     <Checkbox v-model="order.repairable">保养</Checkbox>
                 </FormItem>
             </div>
-            <div class="column-3">
+            <!-- <div class="column-3">
                 <FormItem label="产品名称:" prop="customerCompany">
                     <Input v-model="order.productName" search placeholder="请输入产品名称" @on-search="showProductSelect"/>
                 </FormItem>
@@ -44,7 +44,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <FormItem label="规格/型号:" prop="customerCompany">
                     <Input v-model="order.productModel" clearable placeholder="请输入规格/型号"/>
                 </FormItem>
-            </div>
+            </div> -->
             <!-- <div class="column-3">
                 <FormItem label="物料名称:" prop="customerCompany">
                     <Input v-model="order.productItemName" clearable placeholder="请输入物料名称"/>
@@ -58,7 +58,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </div> -->
             <div class="column-3">
                 <FormItem label="产品数量:" prop="customerCompany">
-                    <InputNumber v-model="order.productCount" :min="0" placeholder="产品数量" style="width: 100%" @on-change="ensureInt(index, $event)"/>
+                    <InputNumber v-model="order.productCount" :min="0" placeholder="产品数量" style="width: 100%" @on-change="ensureInt(order, 'productCount', $event)"/>
                 </FormItem>
                 <FormItem label="配件:" prop="customerCompany">
                     <Input v-model="order.accessories" clearable placeholder="请输入配件信息"/>
@@ -88,9 +88,68 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
         <!-- 维保订单列表 -->
         <Table :data="order.items" :columns="orderItemColumns" border>
+            <template slot-scope="{ index }" slot="productName">
+                <Input v-model="order.items[index].productName" clearable placeholder="请输入产品名称"/>
+            </template>
+            <template slot-scope="{ index }" slot="productCode">
+                <Input v-model="order.items[index].productCode" clearable placeholder="请输入产品编码"/>
+            </template>
+            <template slot-scope="{ index }" slot="productModel">
+                <Input v-model="order.items[index].productModel" clearable placeholder="请输入规格型号"/>
+            </template>
+            <template slot-scope="{ index }" slot="electricQuantityBefore">
+                <InputNumber v-model="order.items[index].electricQuantityBefore" clearable placeholder="请输入维修前电量"/>
+            </template>
+            <template slot-scope="{ index }" slot="softwareVersionBefore">
+                <Input v-model="order.items[index].softwareVersionBefore" clearable placeholder="请输入维修前软件版本"/>
+            </template>
+            <template slot-scope="{ index }" slot="hardwareVersionBefore">
+                <Input v-model="order.items[index].hardwareVersionBefore" clearable placeholder="请输入维修前硬件版本"/>
+            </template>
+            <template slot-scope="{ index }" slot="powerDissipationBefore">
+                <InputNumber v-model="order.items[index].powerDissipationBefore" clearable placeholder="请输入维修前功耗"/>
+            </template>
+            <template slot-scope="{ index }" slot="probeDetectorCodeBefore">
+                <Input v-model="order.items[index].probeDetectorCodeBefore" clearable placeholder="请输入探头换前编号"/>
+            </template>
+            <template slot-scope="{ index }" slot="temperatureBefore">
+                <InputNumber v-model="order.items[index].temperatureBefore" :min="0" clearable placeholder="请输入维修前高温次数"
+                    @on-change="ensureInt(order.items[index], 'temperatureBefore', $event)"
+                />
+            </template>
+            <template slot-scope="{ index }" slot="chipCode">
+                <Input v-model="order.items[index].chipCode" clearable placeholder="请输入芯片编号"/>
+            </template>
+            <template slot-scope="{ index }" slot="checkDetails">
+                <Input v-model="order.items[index].checkDetails" clearable placeholder="请输入检测问题明细"/>
+            </template>
+            <template slot-scope="{ index }" slot="maintenanceDetails">
+                <Input v-model="order.items[index].maintenanceDetails" clearable placeholder="请输入维修明细"/>
+            </template>
+            <template slot-scope="{ index }" slot="electricQuantityAfter">
+                <InputNumber v-model="order.items[index].electricQuantityAfter" clearable placeholder="请输入维修后电量"/>
+            </template>
+            <template slot-scope="{ index }" slot="softwareVersionAfter">
+                <Input v-model="order.items[index].softwareVersionAfter" clearable placeholder="请输入维修后软件版本"/>
+            </template>
+            <template slot-scope="{ index }" slot="hardwareVersionAfter">
+                <Input v-model="order.items[index].hardwareVersionAfter" clearable placeholder="请输入维修后硬件版本"/>
+            </template>
+            <template slot-scope="{ index }" slot="powerDissipationAfter">
+                <InputNumber v-model="order.items[index].powerDissipationAfter" clearable placeholder="请输入维修后功耗"/>
+            </template>
+            <template slot-scope="{ index }" slot="probeDetectorCodeAfter">
+                <Input v-model="order.items[index].probeDetectorCodeAfter" clearable placeholder="请输入探头换后编号"/>
+            </template>
+            <template slot-scope="{ index }" slot="temperatureAfter">
+                <InputNumber v-model="order.items[index].temperatureAfter" :min="0" clearable placeholder="请输入维修后高温次数"
+                    @on-change="ensureInt(order.items[index], 'temperatureAfter', $event)"
+                />
+            </template>
+
             <!-- 操作按钮 -->
             <template slot-scope="{ row: item }" slot="action">
-                <Icon type="md-create" size="16" class="clickable margin-right-5" @click="editOrderItem(item)"/>
+                <!-- <Icon type="md-create" size="16" class="clickable margin-right-5" @click="editOrderItem(item)"/> -->
 
                 <Poptip
                     confirm
@@ -101,7 +160,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 </Poptip>
             </template>
         </Table>
-        <Button class="margin-top-10" icon="md-add" @click="editOrderItem()">添加维保订单项</Button>
+        <Button class="margin-top-10" icon="md-add" @click="editOrderItem()">新建维修信息项</Button>
 
         <!-- 底部工具栏 -->
         <div slot="footer" class="footer">
@@ -165,24 +224,25 @@ export default {
             orderItemClone: {},          // 用于编辑的维保订单项
             orderItemEditVisible: false, // 维保订单项编辑弹窗是否可见
             orderItemColumns: [          // 维保订单项表格的列
-                { key: 'productName', title: '产品名称', width: 150 },
-                { key: 'productCode', title: '产品编码', width: 150 },
-                { key: 'productModel', title: '规格型号', width: 150 },
-                { key: 'electricQuantityBefore', title: '维修前电量', width: 150 },
-                { key: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
-                { key: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },
-                { key: 'powerDissipationBefore', title: '维修前功耗', width: 150 },
-                { key: 'temperatureBefore', title: '维修前温度', width: 150 },
-                { key: 'chipCode', title: '芯片编号', width: 150 },
-                { key: 'checkDetails', title: '检测问题明细', width: 350 },
-                { key: 'maintenanceDetails', title: '维修明细', width: 350 },
-                { key: 'probeDetectorCodeBefore', title: '探头换前编号', width: 150 },
-                { key: 'electricQuantityAfter', title: '维修后电量', width: 150 },
-                { key: 'softwareVersionAfter', title: '维修后软件版本', width: 150 },
-                { key: 'hardwareVersionAfter', title: '维修后硬件版本', width: 150 },
-                { key: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
-                { key: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
-                { slot: 'action', title: '操作', width: 80, align: 'center', fixed: 'right', className: 'table-action' },
+                { slot: 'productName', title: '产品名称', width: 150 },
+                { slot: 'productCode', title: '产品编码', width: 150 },
+                { slot: 'productModel', title: '规格型号', width: 150 },
+                { slot: 'electricQuantityBefore', title: '维修前电量', width: 150 },
+                { slot: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
+                { slot: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },
+                { slot: 'powerDissipationBefore', title: '维修前功耗', width: 150 },
+                { slot: 'temperatureBefore', title: '维修前高温次数', width: 150 },
+                { slot: 'chipCode', title: '芯片编号', width: 150 },
+                { slot: 'checkDetails', title: '检测问题明细', width: 350 },
+                { slot: 'maintenanceDetails', title: '维修明细', width: 350 },
+                { slot: 'probeDetectorCodeBefore', title: '探头换前编号', width: 150 },
+                { slot: 'electricQuantityAfter', title: '维修后电量', width: 150 },
+                { slot: 'softwareVersionAfter', title: '维修后软件版本', width: 150 },
+                { slot: 'hardwareVersionAfter', title: '维修后硬件版本', width: 150 },
+                { slot: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
+                { slot: 'temperatureAfter', title: '维修后高温次数', width: 150 },
+                { slot: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
+                { slot: 'action', title: '', width: 50, align: 'center', fixed: 'right', className: 'table-action' },
             ],
         };
     },
@@ -218,12 +278,6 @@ export default {
             this.order.productName  = product.name;
             this.order.productCode  = product.code;
             this.order.productModel = product.model;
-        },
-        // 确保是整数
-        ensureInt(index, count) {
-            this.$nextTick(() => {
-                this.order.productItemCount = parseInt(count) || 0;
-            });
         },
         // 保存维保订单
         save() {
@@ -285,7 +339,7 @@ export default {
                 softwareVersionBefore  : '', // 维修前软件版本
                 hardwareVersionBefore  : '', // 维修前硬件版本
                 powerDissipationBefore : 0,  // 维修前功耗
-                temperatureBefore      : 0,  // 维修前温度
+                temperatureBefore      : 0,  // 维修前高温次数
                 chipCode               : '', // 芯片编号
                 checkDetails           : '', // 检测问题明细
                 maintenanceDetails     : '', // 维修明细
@@ -294,6 +348,7 @@ export default {
                 softwareVersionAfter   : '', // 维修后软件版本
                 hardwareVersionAfter   : '', // 维修后硬件版本
                 powerDissipationAfter  : 0,  // 维修后功耗
+                temperatureAfter       : 0,  // 维修后高温次数
                 probeDetectorCodeAfter : '', // 探头换后编号
             };
         },
@@ -306,7 +361,8 @@ export default {
                 this.orderItemClone = this.newOrderItem();
             }
 
-            this.orderItemEditVisible = true;
+            // this.orderItemEditVisible = true;
+            this.saveOrderItem(this.orderItemClone);
         },
         // 保存维保订单项
         saveOrderItem(item) {
@@ -339,6 +395,10 @@ export default {
         .auditor-select {
             width: 100px;
         }
+    }
+
+    .ivu-input-number {
+        width: 100%;
     }
 }
 </style>
