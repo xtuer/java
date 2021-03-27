@@ -90,6 +90,34 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
         <!-- 维保订单列表 -->
         <Table :data="order.items" :columns="orderItemColumns" border>
+            <!-- 维修信息明细 -->
+            <template slot-scope="{ row: item }" slot="details">
+                <Poptip trigger="hover" placement="right" width="450" transfer>
+                    <Icon type="md-search" class="clickable"/>
+
+                    <div slot="content" class="maintenance-details-content">
+                        <span>产品名称:</span> <span>{{ item.productName }}</span>
+                        <span>产品编码:</span> <span>{{ item.productCode }}</span>
+                        <span>规格型号:</span> <span>{{ item.productModel }}</span>
+                        <span>维修前电量:</span> <span>{{ item.electricQuantityBefore }}</span>
+                        <span>维修前软件版本:</span> <span>{{ item.softwareVersionBefore }}</span>
+                        <span>维修前硬件版本:</span> <span>{{ item.hardwareVersionBefore }}</span>
+                        <span>维修前功耗:</span> <span>{{ item.powerDissipationBefore }}</span>
+                        <span>维修前高温次数:</span> <span>{{ item.temperatureBefore }}</span>
+                        <span>芯片编号:</span> <span>{{ item.chipCode }}</span>
+                        <span>检测问题明细:</span> <span>{{ item.checkDetails }}</span>
+                        <span>维修明细:</span> <span>{{ item.maintenanceDetails }}</span>
+                        <span>探头换前编号:</span> <span>{{ item.probeDetectorCodeBefore }}</span>
+                        <span>维修后电量:</span> <span>{{ item.electricQuantityAfter }}</span>
+                        <span>维修后软件版本:</span> <span>{{ item.softwareVersionAfter }}</span>
+                        <span>维修后硬件版本:</span> <span>{{ item.hardwareVersionAfter }}</span>
+                        <span>维修后功耗:</span> <span>{{ item.powerDissipationAfter }}</span>
+                        <span>维修前后温次数:</span> <span>{{ item.temperatureAfter }}</span>
+                        <span>探头换后编号:</span> <span>{{ item.probeDetectorCodeAfter }}</span>
+                    </div>
+                </Poptip>
+            </template>
+
             <!-- 操作按钮 -->
             <template slot-scope="{ row: item }" slot="action">
                 <Icon type="md-create" size="16" class="clickable margin-right-5" @click="editOrderItem(item)"/>
@@ -146,6 +174,7 @@ export default {
             loading: false, // 加载中
             saving : false,
             orderItemColumns: [ // 维保订单项表格的列
+                { slot: 'details', width: 50, fixed: 'left' },
                 { key: 'productName', title: '产品名称', width: 150 },
                 { key: 'productCode', title: '产品编码', width: 150 },
                 { key: 'productModel', title: '规格型号', width: 150 },
@@ -282,6 +311,17 @@ export default {
         .audit-item .ivu-input-group {
             border-collapse: collapse;
         }
+    }
+}
+
+.maintenance-details-content {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-gap: 3px 10px;
+
+    span:nth-child(odd) {
+        text-align: right;
+        color: $iconColor;
     }
 }
 </style>

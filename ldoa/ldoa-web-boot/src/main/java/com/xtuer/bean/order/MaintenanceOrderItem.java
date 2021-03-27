@@ -37,7 +37,7 @@ public class MaintenanceOrderItem {
     /**
      * 维修前电量
      */
-    private double electricQuantityBefore;
+    private String electricQuantityBefore;
 
     /**
      * 维修前软件版本
@@ -82,7 +82,7 @@ public class MaintenanceOrderItem {
     /**
      * 维修后电量
      */
-    private double electricQuantityAfter;
+    private String electricQuantityAfter;
 
     /**
      * 维修后软件版本

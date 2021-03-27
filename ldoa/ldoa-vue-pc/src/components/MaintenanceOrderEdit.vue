@@ -98,7 +98,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <Input v-model="order.items[index].productModel" clearable placeholder="请输入规格型号"/>
             </template>
             <template slot-scope="{ index }" slot="electricQuantityBefore">
-                <InputNumber v-model="order.items[index].electricQuantityBefore" clearable placeholder="请输入维修前电量"/>
+                <Input v-model="order.items[index].electricQuantityBefore" clearable placeholder="请输入维修前电量"/>
             </template>
             <template slot-scope="{ index }" slot="softwareVersionBefore">
                 <Input v-model="order.items[index].softwareVersionBefore" clearable placeholder="请输入维修前软件版本"/>
@@ -127,7 +127,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <Input v-model="order.items[index].maintenanceDetails" clearable placeholder="请输入维修明细"/>
             </template>
             <template slot-scope="{ index }" slot="electricQuantityAfter">
-                <InputNumber v-model="order.items[index].electricQuantityAfter" clearable placeholder="请输入维修后电量"/>
+                <Input v-model="order.items[index].electricQuantityAfter" clearable placeholder="请输入维修后电量"/>
             </template>
             <template slot-scope="{ index }" slot="softwareVersionAfter">
                 <Input v-model="order.items[index].softwareVersionAfter" clearable placeholder="请输入维修后软件版本"/>

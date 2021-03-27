@@ -108,7 +108,7 @@ CREATE TABLE maintenance_order_item (
     product_name               varchar(256) DEFAULT '' COMMENT '产品名称',
     product_code               varchar(64)  DEFAULT '' COMMENT '产品编码',
     product_model              varchar(64)  DEFAULT '' COMMENT '规格/型号',
-    electric_quantity_before   double       DEFAULT 0  COMMENT '维修前电量',
+    electric_quantity_before   varchar(256) DEFAULT '' COMMENT '维修前电量',
     software_version_before    varchar(256) DEFAULT '' COMMENT '维修前软件版本',
     hardware_version_before    varchar(256) DEFAULT '' COMMENT '维修前硬件版本',
     power_dissipation_before   double       DEFAULT 0  COMMENT '维修前功耗',
@@ -118,7 +118,7 @@ CREATE TABLE maintenance_order_item (
     maintenance_details        text                    COMMENT '检测问题明细',
     probe_detector_code_before varchar(64)  DEFAULT '' COMMENT '探头换前编号',
 
-    electric_quantity_after    double       DEFAULT 0  COMMENT '维修后电量',
+    electric_quantity_after    varchar(256) DEFAULT '' COMMENT '维修后电量',
     software_version_after     varchar(256) DEFAULT '' COMMENT '维修后软件版本',
     hardware_version_after     varchar(256) DEFAULT '' COMMENT '维修后硬件版本',
     power_dissipation_after    double       DEFAULT 0  COMMENT '维修后功耗',
