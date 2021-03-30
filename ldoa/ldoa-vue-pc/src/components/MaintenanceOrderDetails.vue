@@ -92,7 +92,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <Table :data="order.items" :columns="orderItemColumns" border>
             <!-- 维修信息明细 -->
             <template slot-scope="{ row: item }" slot="details">
-                <Poptip trigger="hover" placement="right" width="450" transfer>
+                <Poptip trigger="hover" placement="left" width="450" transfer>
                     <Icon type="md-search" class="clickable"/>
 
                     <div slot="content" class="maintenance-details-content">
@@ -174,7 +174,6 @@ export default {
             loading: false, // 加载中
             saving : false,
             orderItemColumns: [ // 维保订单项表格的列
-                { slot: 'details', width: 50, fixed: 'left' },
                 { key: 'productName', title: '产品名称', width: 150 },
                 { key: 'productCode', title: '产品编码', width: 150 },
                 { key: 'productModel', title: '规格型号', width: 150 },
@@ -193,6 +192,7 @@ export default {
                 { key: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
                 { key: 'temperatureAfter', title: '维修前后温次数', width: 150 },
                 { key: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
+                { slot: 'details', width: 50, align: 'center', fixed: 'right' },
             ],
         };
     },

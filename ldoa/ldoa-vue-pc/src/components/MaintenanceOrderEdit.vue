@@ -107,15 +107,13 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <Input v-model="order.items[index].hardwareVersionBefore" clearable placeholder="请输入维修前硬件版本"/>
             </template>
             <template slot-scope="{ index }" slot="powerDissipationBefore">
-                <InputNumber v-model="order.items[index].powerDissipationBefore" clearable placeholder="请输入维修前功耗"/>
+                <Input v-model="order.items[index].powerDissipationBefore" clearable placeholder="请输入维修前功耗"/>
             </template>
             <template slot-scope="{ index }" slot="probeDetectorCodeBefore">
                 <Input v-model="order.items[index].probeDetectorCodeBefore" clearable placeholder="请输入探头换前编号"/>
             </template>
             <template slot-scope="{ index }" slot="temperatureBefore">
-                <InputNumber v-model="order.items[index].temperatureBefore" :min="0" clearable placeholder="请输入维修前高温次数"
-                    @on-change="ensureInt(order.items[index], 'temperatureBefore', $event)"
-                />
+                <Input v-model="order.items[index].temperatureBefore" :min="0" clearable placeholder="请输入维修前高温次数"/>
             </template>
             <template slot-scope="{ index }" slot="chipCode">
                 <Input v-model="order.items[index].chipCode" clearable placeholder="请输入芯片编号"/>
@@ -136,15 +134,13 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <Input v-model="order.items[index].hardwareVersionAfter" clearable placeholder="请输入维修后硬件版本"/>
             </template>
             <template slot-scope="{ index }" slot="powerDissipationAfter">
-                <InputNumber v-model="order.items[index].powerDissipationAfter" clearable placeholder="请输入维修后功耗"/>
+                <Input v-model="order.items[index].powerDissipationAfter" clearable placeholder="请输入维修后功耗"/>
             </template>
             <template slot-scope="{ index }" slot="probeDetectorCodeAfter">
                 <Input v-model="order.items[index].probeDetectorCodeAfter" clearable placeholder="请输入探头换后编号"/>
             </template>
             <template slot-scope="{ index }" slot="temperatureAfter">
-                <InputNumber v-model="order.items[index].temperatureAfter" :min="0" clearable placeholder="请输入维修后高温次数"
-                    @on-change="ensureInt(order.items[index], 'temperatureAfter', $event)"
-                />
+                <Input v-model="order.items[index].temperatureAfter" :min="0" clearable placeholder="请输入维修后高温次数"/>
             </template>
 
             <!-- 操作按钮 -->
@@ -335,20 +331,20 @@ export default {
                 productName            : '', // 产品名称
                 productCode            : '', // 产品编码
                 productModel           : '', // 规格型号
-                electricQuantityBefore : 0,  // 维修前电量
+                electricQuantityBefore : '',  // 维修前电量
                 softwareVersionBefore  : '', // 维修前软件版本
                 hardwareVersionBefore  : '', // 维修前硬件版本
-                powerDissipationBefore : 0,  // 维修前功耗
-                temperatureBefore      : 0,  // 维修前高温次数
+                powerDissipationBefore : '',  // 维修前功耗
+                temperatureBefore      : '',  // 维修前高温次数
                 chipCode               : '', // 芯片编号
                 checkDetails           : '', // 检测问题明细
                 maintenanceDetails     : '', // 维修明细
                 probeDetectorCodeBefore: '', // 探头换前编号
-                electricQuantityAfter  : 0,  // 维修后电量
+                electricQuantityAfter  : '',  // 维修后电量
                 softwareVersionAfter   : '', // 维修后软件版本
                 hardwareVersionAfter   : '', // 维修后硬件版本
-                powerDissipationAfter  : 0,  // 维修后功耗
-                temperatureAfter       : 0,  // 维修后高温次数
+                powerDissipationAfter  : '',  // 维修后功耗
+                temperatureAfter       : '',  // 维修后高温次数
                 probeDetectorCodeAfter : '', // 探头换后编号
             };
         },

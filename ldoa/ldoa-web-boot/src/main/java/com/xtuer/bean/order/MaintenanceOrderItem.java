@@ -52,12 +52,12 @@ public class MaintenanceOrderItem {
     /**
      * 维修前功耗
      */
-    private double powerDissipationBefore;
+    private String powerDissipationBefore;
 
     /**
      * 维修后高温次数
      */
-    private double temperatureBefore;
+    private String temperatureBefore;
 
     /**
      * 芯片编号
@@ -97,12 +97,12 @@ public class MaintenanceOrderItem {
     /**
      * 维修后功耗
      */
-    private double powerDissipationAfter;
+    private String powerDissipationAfter;
 
     /**
      * 维修后高温次数
      */
-    private double temperatureAfter;
+    private String temperatureAfter;
 
     /**
      * 探头换后编号
