@@ -6,6 +6,7 @@ import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.MaintenanceOrder;
 import com.xtuer.bean.order.MaintenanceOrderFilter;
+import com.xtuer.bean.order.MaintenanceOrderItem;
 import com.xtuer.mapper.MaintenanceOrderMapper;
 import com.xtuer.service.MaintenanceOrderService;
 import com.xtuer.util.Utils;
@@ -66,6 +67,20 @@ public class MaintenanceOrderController extends BaseController {
     @GetMapping(Urls.API_MAINTENANCE_ORDERS_BY_ID)
     public Result<MaintenanceOrder> findMaintenanceOrderById(@PathVariable long orderId) {
         return Result.single(orderService.findMaintenanceOrder(orderId), "维保订单不存在");
+    }
+
+    /**
+     * 查询维保订单的订单项
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}/items
+     * 参数: 无
+     *
+     * @param orderId 维保订单 ID
+     * @return payload 为维保订单项数组
+     */
+    @GetMapping(Urls.API_MAINTENANCE_ORDER_ITEMS)
+    public Result<List<MaintenanceOrderItem>> findMaintenanceOrderItems(@PathVariable long orderId) {
+        return Result.ok(orderMapper.findMaintenanceOrderItemsByMaintenanceOrderId(orderId));
     }
 
     /**

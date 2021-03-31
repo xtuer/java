@@ -92,7 +92,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <Table :data="order.items" :columns="orderItemColumns" border>
             <!-- 维修信息明细 -->
             <template slot-scope="{ row: item }" slot="details">
-                <Poptip trigger="hover" placement="left" width="450" transfer>
+                <Poptip trigger="click" placement="left" width="450" transfer>
                     <Icon type="md-search" class="clickable"/>
 
                     <div slot="content" class="maintenance-details-content">

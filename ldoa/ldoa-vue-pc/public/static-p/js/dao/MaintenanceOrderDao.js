@@ -44,6 +44,21 @@ export default class {
     }
 
     /**
+     * 查询维保订单的订单项
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders/{orderId}/items
+     * 参数: 无
+     *
+     * @param orderId 维保订单 ID
+     * @return payload 为维保订单项数组
+     */
+    static findMaintenanceOrderItems(orderId) {
+        return Rest.get(Urls.API_MAINTENANCE_ORDER_ITEMS, { params: { orderId } }).then(({ data: items, success, message }) => {
+            return Utils.response(items, success, message);
+        });
+    }
+
+    /**
      * 插入或者更新维保订单
      *
      * 网址: http://localhost:8080/api/maintenance-orders/{orderId}

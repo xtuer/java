@@ -88,6 +88,41 @@
                 <Button :disabled="!canEditOrder(order)" type="primary" size="small" @click="editOrder(order)">编辑</Button>
                 <Button :disabled="!canEditOrder(order)" type="error" size="small" @click="deleteOrder(order)">删除</Button>
             </template>
+
+            <!-- 维修信息明细 -->
+            <template slot-scope="{ row: order }" slot="details">
+                <Poptip trigger="click" placement="left" width="450" transfer @on-popper-show="findMaintenanceOrderItems(order.maintenanceOrderId)">
+                    <Icon type="md-search" class="clickable"/>
+
+                    <div slot="content" class="maintenance-details-content-wrapper">
+                        <Spin v-if="currentOrderItemsLoading" fix size="large"></Spin>
+
+                        <div v-for="item in currentOrderItems" :key="item.maintenanceOrderItemId" class="maintenance-details-content">
+                            <span>产品名称:</span> <span>{{ item.productName }}</span>
+                            <span>产品编码:</span> <span>{{ item.productCode }}</span>
+                            <span>规格型号:</span> <span>{{ item.productModel }}</span>
+                            <span>维修前电量:</span> <span>{{ item.electricQuantityBefore }}</span>
+                            <span>维修前软件版本:</span> <span>{{ item.softwareVersionBefore }}</span>
+                            <span>维修前硬件版本:</span> <span>{{ item.hardwareVersionBefore }}</span>
+                            <span>维修前功耗:</span> <span>{{ item.powerDissipationBefore }}</span>
+                            <span>维修前高温次数:</span> <span>{{ item.temperatureBefore }}</span>
+                            <span>芯片编号:</span> <span>{{ item.chipCode }}</span>
+                            <span>检测问题明细:</span> <span>{{ item.checkDetails }}</span>
+                            <span>维修明细:</span> <span>{{ item.maintenanceDetails }}</span>
+                            <span>探头换前编号:</span> <span>{{ item.probeDetectorCodeBefore }}</span>
+                            <span>维修后电量:</span> <span>{{ item.electricQuantityAfter }}</span>
+                            <span>维修后软件版本:</span> <span>{{ item.softwareVersionAfter }}</span>
+                            <span>维修后硬件版本:</span> <span>{{ item.hardwareVersionAfter }}</span>
+                            <span>维修后功耗:</span> <span>{{ item.powerDissipationAfter }}</span>
+                            <span>维修前后温次数:</span> <span>{{ item.temperatureAfter }}</span>
+                            <span>探头换后编号:</span> <span>{{ item.probeDetectorCodeAfter }}</span>
+                        </div>
+                        <div v-if="currentOrderItems.length === 0" style="text-align: center">
+                            无数据
+                        </div>
+                    </div>
+                </Poptip>
+            </template>
         </Table>
 
         <!-- 底部工具栏 -->
@@ -137,11 +172,15 @@ export default {
                 { key : 'salespersonName', title: '销售人员', width: 120, resizable: true },
                 { slot: 'receivedDate', title: '收货日期', width: 130, align: 'center', resizable: true },
                 { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action', resizable: true },
+                { slot: 'details', width: 50, align: 'center', fixed: 'right' },
             ],
             editModal: false, // 编辑弹窗是否可见
             detailsModal: false, // 维保订单详情弹窗是否可见
             maintenanceOrderId: '0', // 维保订单 ID
             progressEditedOrder: {}, // 选中编辑进度的维保订单
+
+            currentOrderItems: [], // 当前点击选中的维保订单的项目
+            currentOrderItemsLoading: false,
         };
     },
     mounted() {
@@ -314,6 +353,15 @@ export default {
                 pageSize       : 50,
                 pageNumber     : 1,
             };
+        },
+        // 查询维保订单项
+        findMaintenanceOrderItems(orderId) {
+            this.currentOrderItems = [];
+            this.currentOrderItemsLoading = true;
+            MaintenanceOrderDao.findMaintenanceOrderItems(orderId).then(items => {
+                this.currentOrderItems = items;
+                this.currentOrderItemsLoading = false;
+            });
         }
     },
     directives: {
@@ -373,6 +421,29 @@ export default {
     .order-progress:hover .progress-content {
         .ivu-icon {
             display: inline-block;
+        }
+    }
+}
+
+.maintenance-details-content-wrapper {
+    position: relative;
+    height: 400px;
+    overflow: auto;
+
+    .maintenance-details-content {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        grid-gap: 3px 10px;
+
+        span:nth-child(odd) {
+            text-align: right;
+            color: $iconColor;
+        }
+
+        &:not(:first-child) {
+            border-top: 1px solid $borderColor;
+            margin-top: 20px;
+            padding-top: 20px;
         }
     }
 }

@@ -44,6 +44,7 @@ const Urls = {
     API_MAINTENANCE_ORDERS_BY_ID: '/api/maintenance-orders/{orderId}',
     API_MAINTENANCE_ORDERS_COMPLETE: '/api/maintenance-orders/{orderId}/complete', // 完成订单
     API_MAINTENANCE_ORDERS_PROGRESS: '/api/maintenance-orders/{orderId}/progress', // 订单的进度
+    API_MAINTENANCE_ORDER_ITEMS    : '/api/maintenance-orders/{orderId}/items',    // 维保订单项
 
     // 审批
     API_AUDITS            : '/api/audits',                      // 审批
