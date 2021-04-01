@@ -26,6 +26,7 @@
         mo.progress,
         mo.order_sn,
         mo.state,
+        mo.committed,
         mo.created_at
     </sql>
 
@@ -103,6 +104,11 @@
     <delete id="deleteMaintenanceOrder">
         DELETE FROM maintenance_order WHERE maintenance_order_id = #{orderId}
     </delete>
+
+    <!-- 提交维保订单 -->
+    <update id="commitMaintenanceOrder">
+        UPDATE maintenance_order SET committed = 1 WHERE maintenance_order_id = #{orderId};
+    </update>
 
     <!-- 查询维保订单的订单项 -->
     <select id="findMaintenanceOrderItemsByMaintenanceOrderId" resultType="MaintenanceOrderItem">

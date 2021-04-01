@@ -39,6 +39,7 @@ export default class {
     static findMaintenanceOrderById(orderId) {
         return Rest.get(Urls.API_MAINTENANCE_ORDERS_BY_ID, { params: { orderId } }).then(({ data: order, success, message }) => {
             order.needCertificate = order.needCertificate ? 1 : 0; // 解决 iView Radio 多个选项时不能使用 bool 的问题
+            order.receivedDate = dayjs(order.receivedDate).toDate(); // 转为日期对象
             return Utils.response(order, success, message);
         });
     }

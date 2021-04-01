@@ -84,6 +84,7 @@ CREATE TABLE maintenance_order (
     progress             varchar(2048)           COMMENT '进度情况',
     order_sn             varchar(64)  DEFAULT '' COMMENT '订单号',
     state                int(11)      DEFAULT 0  COMMENT '状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)',
+    committed            tinyint(4)   DEFAULT 0  COMMENT '是否提交了，0 为否，1 为是',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

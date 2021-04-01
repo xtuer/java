@@ -132,7 +132,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </template>
         </Table>
 
-        <table class="order-table relative margin-top-10">
+        <table v-if="audit" class="order-table relative margin-top-10">
             <tr>
                 <td colspan="6" class="text-align-center background-gray">审批</td>
             </tr>
@@ -247,17 +247,34 @@ export default {
             }
             this.loading = true;
 
-            Promise.all([
-                MaintenanceOrderDao.findMaintenanceOrderById(this.maintenaceOrderId),
-                AuditDao.findAuditOfTarget(this.maintenaceOrderId)
-            ]).then(([order, audit]) => {
+            // 1. 查询维保订单
+            // 2. 如果维保订单已经提交，则查询它的审批
+
+            MaintenanceOrderDao.findMaintenanceOrderById(this.maintenaceOrderId).then(order => {
                 this.order = order;
+
+                if (order.committed) {
+                    return AuditDao.findAuditOfTarget(this.maintenaceOrderId);
+                }
+            }).then(audit => {
                 this.audit = audit;
                 this.loading = false;
             }).catch(error => {
                 this.loading = false;
                 console.error(error);
             });
+
+            // Promise.all([
+            //     MaintenanceOrderDao.findMaintenanceOrderById(this.maintenaceOrderId),
+            //     AuditDao.findAuditOfTarget(this.maintenaceOrderId)
+            // ]).then(([order, audit]) => {
+            //     this.order = order;
+            //     this.audit = audit;
+            //     this.loading = false;
+            // }).catch(error => {
+            //     this.loading = false;
+            //     console.error(error);
+            // });
         },
         // 完成订单
         completeOrder() {

@@ -270,9 +270,9 @@ export default {
             this.maintenanceOrderId = order.maintenanceOrderId;
             this.detailsModal = true;
         },
-        // 判断订单是否可以编辑: 售后服务人员为当前用户，且审批拒绝的订单才能编辑
+        // 判断订单是否可以编辑: 售后服务人员为当前用户，且初始化或者审批拒绝的订单才能编辑
         canEditOrder(order) {
-            if (this.isCurrentUser(order.servicePersonId) && order.state === 2) {
+            if (this.isCurrentUser(order.servicePersonId) && (order.state === 0 || order.state === 2)) {
                 return true;
             } else {
                 return false;

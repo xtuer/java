@@ -151,6 +151,11 @@ public class MaintenanceOrder {
     private List<MaintenanceOrderItem> items = new LinkedList<>();
 
     /**
+     * 是否提交，为 false 表示暂存，不创建审批
+     */
+    private boolean committed;
+
+    /**
      * 获取订单状态 Label
      *
      * @return 返回订单状态的 Label

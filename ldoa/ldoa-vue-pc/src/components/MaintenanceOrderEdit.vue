@@ -163,7 +163,8 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             <AuditorSelect v-model="order.currentAuditorId" :step="1" type="MAINTENANCE_ORDER"/>
             <span class="stretch"></span>
             <Button type="text" @click="showEvent(false)">取消</Button>
-            <Button type="primary" :loading="saving" @click="save">确定</Button>
+            <Button type="default" :loading="saving" @click="uncommittedSave">暂存</Button>
+            <Button type="primary" :loading="saving" @click="committedSave">确定</Button>
         </div>
 
         <!-- 产品选择弹窗 -->
@@ -275,10 +276,18 @@ export default {
             this.order.productCode  = product.code;
             this.order.productModel = product.model;
         },
+        committedSave() {
+            this.order.committed = true;
+            this.save();
+        },
+        uncommittedSave() {
+            this.order.committed = false;
+            this.save();
+        },
         // 保存维保订单
         save() {
             // 审批员不能为空
-            if (!Utils.isValidId(this.order.currentAuditorId)) {
+            if (this.order.committed && !Utils.isValidId(this.order.currentAuditorId)) {
                 this.$Message.error('请选择审批员');
                 return;
             }
@@ -322,6 +331,7 @@ export default {
                 progress          : '',    // 进度
                 currentAuditorId  : '0',   // 当前审批员 ID
                 items             : [],    // 维保订单项
+                committed         : false, // 是否提交
             };
         },
         // 新建维保订单项

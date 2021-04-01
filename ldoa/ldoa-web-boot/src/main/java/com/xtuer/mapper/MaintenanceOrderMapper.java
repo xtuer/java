@@ -61,6 +61,13 @@ public interface MaintenanceOrderMapper {
     void deleteMaintenanceOrder(long orderId);
 
     /**
+     * 提交维保订单
+     *
+     * @param orderId 订单 ID
+     */
+    void commitMaintenanceOrder(long orderId);
+
+    /**
      * 查询维保订单的订单项
      *
      * @param orderId 维保订单 ID

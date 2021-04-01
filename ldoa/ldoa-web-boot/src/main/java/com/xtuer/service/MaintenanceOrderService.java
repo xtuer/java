@@ -90,7 +90,21 @@ public class MaintenanceOrderService extends BaseService {
         // [3] 设置维保订单的其他属性
         order.setServicePersonId(servicePerson.getUserId());
         order.setServicePersonName(servicePerson.getNickname());
-        order.setState(MaintenanceOrder.STATE_AUDITING);
+
+        // [New]
+        // 提交时，修改订单状态为审批中
+        // 暂存时，如果订单已经存在，则不修改它的状态，否则状态为初始化
+        if (order.isCommitted()) {
+            order.setState(MaintenanceOrder.STATE_AUDITING);
+        } else {
+            MaintenanceOrder exitsOrder = orderMapper.findMaintenanceOrderById(order.getMaintenanceOrderId());
+
+            if (exitsOrder != null) {
+                order.setState(exitsOrder.getState());
+            } else {
+                order.setState(MaintenanceOrder.STATE_INIT);
+            }
+        }
 
         // [4] 保存维保订单到数据库
         orderMapper.upsertMaintenanceOrder(order);
@@ -106,7 +120,10 @@ public class MaintenanceOrderService extends BaseService {
         }
 
         // [7] 创建审批
-        auditServiceHelper.upsertMaintenanceOrderAudit(servicePerson, order);
+        if (order.isCommitted()) {
+            orderMapper.commitMaintenanceOrder(order.getMaintenanceOrderId());
+            auditServiceHelper.upsertMaintenanceOrderAudit(servicePerson, order);
+        }
 
         return Result.ok(order);
     }
