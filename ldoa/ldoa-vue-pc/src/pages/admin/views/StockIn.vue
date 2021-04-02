@@ -87,8 +87,8 @@
                                 style="width: 100%">
                     </InputNumber>
                 </FormItem>
-                <FormItem label="备主:">
-                    <Input v-model="stockRecord.comment" placeholder="请输入备主"/>
+                <FormItem label="备注:">
+                    <Input v-model="stockRecord.comment" placeholder="请输入备注"/>
                 </FormItem>
             </Form>
 
@@ -132,7 +132,7 @@ export default {
                 { slot: 'date',            title: '日期', width: 150, align: 'center', resizable: true },
                 { key : 'username',        title: '操作员', width: 110, resizable: true },
                 { key : 'manufacturer',    title: '生产厂家', width: 150, resizable: true },
-                { key : 'comment',         title: '备主', minWidth: 250 },
+                { key : 'comment',         title: '备注', minWidth: 250 },
                 { slot: 'action',          title: '操作', width: 80, align: 'center', resizable: false },
             ],
             stockInModal: false,

@@ -114,7 +114,7 @@
                             <span>维修后软件版本:</span> <span>{{ item.softwareVersionAfter }}</span>
                             <span>维修后硬件版本:</span> <span>{{ item.hardwareVersionAfter }}</span>
                             <span>维修后功耗:</span> <span>{{ item.powerDissipationAfter }}</span>
-                            <span>维修前后温次数:</span> <span>{{ item.temperatureAfter }}</span>
+                            <span>维修后高温次数:</span> <span>{{ item.temperatureAfter }}</span>
                             <span>探头换后编号:</span> <span>{{ item.probeDetectorCodeAfter }}</span>
                         </div>
                         <div v-if="currentOrderItems.length === 0" style="text-align: center">

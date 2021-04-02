@@ -112,7 +112,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                         <span>维修后软件版本:</span> <span>{{ item.softwareVersionAfter }}</span>
                         <span>维修后硬件版本:</span> <span>{{ item.hardwareVersionAfter }}</span>
                         <span>维修后功耗:</span> <span>{{ item.powerDissipationAfter }}</span>
-                        <span>维修前后温次数:</span> <span>{{ item.temperatureAfter }}</span>
+                        <span>维修后高温次数:</span> <span>{{ item.temperatureAfter }}</span>
                         <span>探头换后编号:</span> <span>{{ item.probeDetectorCodeAfter }}</span>
                     </div>
                 </Poptip>
@@ -190,7 +190,7 @@ export default {
                 { key: 'softwareVersionAfter', title: '维修后软件版本', width: 150 },
                 { key: 'hardwareVersionAfter', title: '维修后硬件版本', width: 150 },
                 { key: 'powerDissipationAfter', title: '维修后功耗', width: 150 },
-                { key: 'temperatureAfter', title: '维修前后温次数', width: 150 },
+                { key: 'temperatureAfter', title: '维修后高温次数', width: 150 },
                 { key: 'probeDetectorCodeAfter', title: '探头换后编号', width: 150 },
                 { slot: 'details', width: 50, align: 'center', fixed: 'right' },
             ],
@@ -255,6 +255,8 @@ export default {
 
                 if (order.committed) {
                     return AuditDao.findAuditOfTarget(this.maintenaceOrderId);
+                } else {
+                    return null;
                 }
             }).then(audit => {
                 this.audit = audit;
