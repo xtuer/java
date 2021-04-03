@@ -33,7 +33,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 </FormItem>
                 <FormItem label="订单类型:" style="width: 300px">
                     <Select v-model="orderClone.type">
-                        <Option :value="0">销售订单</Option>
+                        <Option :value="0">生产订单</Option>
                         <Option :value="1">样品订单</Option>
                     </Select>
                 </FormItem>
@@ -239,7 +239,7 @@ export default {
             return {
                 orderId        : '0',   // 订单 ID
                 orderSn        : '',    // 订单编号
-                type           : 0,     // 订单类型: 0 (销售订单)、1 (样品订单)
+                type           : 0,     // 订单类型: 0 (生产订单)、1 (样品订单)
                 customerCompany: '',    // 客户单位
                 customerContact: '',    // 客户联系人
                 customerAddress: '',    // 客户收件地址

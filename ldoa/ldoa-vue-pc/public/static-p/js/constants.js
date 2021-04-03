@@ -49,7 +49,7 @@ window.ROLES = [
 
 // 审批类型
 window.AUDIT_TYPES = [
-    { value: 'ORDER', name: '销售订单' },
+    { value: 'ORDER', name: '生产订单' },
     { value: 'OUT_OF_STOCK', name: '物料出库' },
     { value: 'MAINTENANCE_ORDER', name: '维修 / 保养' },
 ];
@@ -76,7 +76,7 @@ window.AUDIT_ITEM_STATES = [
 
 // 订单类型
 window.ORDER_TYPES = [
-    { value: 0, label: '销售订单' },
+    { value: 0, label: '生产订单' },
     { value: 1, label: '样品订单' },
 ];
 
