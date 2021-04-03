@@ -23,7 +23,7 @@
             </ButtonGroup>
 
             <!-- 保存按钮 -->
-            <Button type="primary" @click="save()">保存</Button>
+            <Button type="primary" :disabled="!hasPermissionOfSuperAdmin()" @click="save()">保存</Button>
         </div>
 
 

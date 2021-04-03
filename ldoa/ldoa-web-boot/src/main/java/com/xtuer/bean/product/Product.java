@@ -44,6 +44,11 @@ public class Product {
     private String desc;
 
     /**
+     * 创建产品的用户 ID
+     */
+    private long userId;
+
+    /**
      * 产品项
      */
     private List<ProductItem> items = new LinkedList<>();

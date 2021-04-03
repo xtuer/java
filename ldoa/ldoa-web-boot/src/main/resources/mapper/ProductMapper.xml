@@ -6,11 +6,11 @@
     <!-- 产品的列 -->
     <sql id="productColumns">
         p.product_id AS product_id, p.name AS product_name, p.code AS product_code,
-        p.desc AS product_desc, p.model AS product_model,
+        p.desc AS product_desc, p.model AS product_model, p.user_id,
 
         pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
         pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
-        pi.material AS item_material, pi.unit AS item_unit,
+        pi.material AS item_material, pi.unit AS item_unit, pi.user_id AS item_user_id,
         pwi.product_item_count AS item_count
     </sql>
 
@@ -18,7 +18,8 @@
     <sql id="productItemColumns">
         pi.product_item_id AS item_id, pi.name AS item_name, pi.code AS item_code, pi.type AS item_type,
         pi.desc AS item_desc, pi.model AS item_model, pi.standard AS item_standard,
-        pi.material AS item_material, pi.unit AS item_unit, pi.count AS item_count, pi.warn_count AS item_warn_count
+        pi.material AS item_material, pi.unit AS item_unit, pi.count AS item_count, pi.warn_count AS item_warn_count,
+        pi.user_id AS item_user_id
     </sql>
 
     <!-- 查询指定 ID 的产品 -->
@@ -69,8 +70,8 @@
 
     <!-- 创建或者更新产品 -->
     <update id="upsertProduct">
-        INSERT INTO product (product_id, name, code, `desc`, model)
-        VALUES (#{productId}, #{name}, #{code}, #{desc}, #{model})
+        INSERT INTO product (product_id, name, code, `desc`, model, user_id)
+        VALUES (#{productId}, #{name}, #{code}, #{desc}, #{model}, #{userId})
 
         ON DUPLICATE KEY
         UPDATE name = #{name}, code = #{code}, `desc` = #{desc}, model = #{model}
@@ -133,8 +134,8 @@
 
     <!-- 创建或者更新产品项 -->
     <insert id="upsertProductItem">
-        INSERT INTO product_item (product_item_id, name, code, type, `desc`, model, standard, material, unit)
-        VALUES (#{productItemId}, #{name}, #{code}, #{type}, #{desc}, #{model}, #{standard}, #{material}, #{unit})
+        INSERT INTO product_item (product_item_id, name, code, type, `desc`, model, standard, material, unit, user_id)
+        VALUES (#{productItemId}, #{name}, #{code}, #{type}, #{desc}, #{model}, #{standard}, #{material}, #{unit}, #{userId})
 
         ON DUPLICATE KEY
         UPDATE product_item_id = #{productItemId}, name = #{name}, code = #{code},
@@ -154,11 +155,12 @@
 
     <!-- 产品的结果映射 -->
     <resultMap id="productMap" type="Product">
-        <id property="productId" column="product_id"/>
-        <result property="name"  column="product_name"/>
-        <result property="code"  column="product_code"/>
-        <result property="desc"  column="product_desc"/>
-        <result property="model" column="product_model"/>
+        <id property="productId"  column="product_id"/>
+        <result property="name"   column="product_name"/>
+        <result property="code"   column="product_code"/>
+        <result property="desc"   column="product_desc"/>
+        <result property="model"  column="product_model"/>
+        <result property="userId" column="user_id"/>
 
         <collection property="items" ofType="ProductItem" resultMap="productItemMap"/>
     </resultMap>
@@ -177,5 +179,6 @@
         <result property="unit"      column="item_unit"/>
         <result property="count"     column="item_count"/>
         <result property="warnCount" column="item_warn_count"/>
+        <result property="userId"    column="item_user_id"/>
     </resultMap>
 </mapper>

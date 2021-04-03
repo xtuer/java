@@ -6,7 +6,7 @@
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <Input v-model="filter.nickname" search enter-button placeholder="请输入姓名" @on-search="searchUsers"/>
-            <Button type="primary" icon="md-add" @click="editUser()">添加用户</Button>
+            <Button type="primary" icon="md-add" :disabled="!hasPermissionOfSuperAdmin()" @click="editUser()">添加用户</Button>
         </div>
 
         <!-- 用户列表 -->
@@ -21,9 +21,9 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: user }" slot="action">
                 <template v-if="!isSystemAdmin(user)">
-                    <Button type="primary" size="small" @click="showChangeRoleModal(user)">修改权限</Button>
-                    <Button type="primary" size="small" @click="resetPassword(user)">重置密码</Button>
-                    <Button type="error" size="small" @click="deleteUser(user)">删除</Button>
+                    <Button type="primary" size="small" :disabled="!hasPermissionOfSuperAdmin()" @click="showChangeRoleModal(user)">修改权限</Button>
+                    <Button type="primary" size="small" :disabled="!hasPermissionOfSuperAdmin()" @click="resetPassword(user)">重置密码</Button>
+                    <Button type="error" size="small" :disabled="!hasPermissionOfSuperAdmin()" @click="deleteUser(user)">删除</Button>
                 </template>
             </template>
         </Table>

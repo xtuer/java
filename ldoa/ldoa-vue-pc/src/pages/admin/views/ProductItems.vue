@@ -28,8 +28,8 @@
             </template>
             <!-- 操作按钮 -->
             <template slot-scope="{ row: item }" slot="action">
-                <Button type="primary" size="small" @click="editItem(item)">编辑</Button>
-                <Button type="error" size="small" @click="deleteItem(item)">删除</Button>
+                <Button type="primary" size="small" :disabled="!canEdit(item)" @click="editItem(item)">编辑</Button>
+                <Button type="error" size="small" :disabled="!canEdit(item)" @click="deleteItem(item)">删除</Button>
             </template>
         </Table>
 
@@ -194,14 +194,14 @@ export default {
                 const item  = Utils.clone(this.itemClone);  // 重要: 克隆被编辑的对象
                 const index = this.items.findIndex(i => i.productItemId === item.productItemId); // 物料下标
 
-                ProductDao.upsertProductItem(item).then(() => {
+                ProductDao.upsertProductItem(item).then((newItem) => {
                     // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
                     if (index >= 0) {
                         // 更新: 替换已有对象
-                        this.items.replace(index, item);
+                        this.items.replace(index, newItem);
                     } else {
                         // 创建: 添加到最前面
-                        this.items.insert(0, item);
+                        this.items.insert(0, newItem);
                     }
 
                     // [5] 提示保存成功，隐藏编辑对话框
@@ -231,6 +231,10 @@ export default {
                     });
                 }
             });
+        },
+        // 判断是否有编辑权限
+        canEdit(item) {
+            return this.isCurrentUser(item.userId);
         },
         // 新物料
         newItem() {

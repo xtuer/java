@@ -13,6 +13,7 @@ CREATE TABLE product (
     code     varchar(128) DEFAULT '' COMMENT '产品编码',
     `desc`   varchar(512) DEFAULT '' COMMENT '产品描述',
     model    varchar(128) DEFAULT '' COMMENT '产品规格/型号',
+    user_id  bigint(20)   unsigned DEFAULT 0 COMMENT '创建产品的用户 ID',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -40,6 +41,7 @@ CREATE TABLE product_item (
     unit     varchar(128) DEFAULT '' COMMENT '单位',
     count    int(11)      DEFAULT 0  COMMENT '数量',
     warn_count int(11)    DEFAULT 10 COMMENT '库存告警数量',
+    user_id  bigint(20)   unsigned DEFAULT 0 COMMENT '创建物料的用户 ID',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

@@ -43,7 +43,7 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" @click="editOrder()">新建维保订单</Button>
+            <Button type="primary" icon="md-add" :disabled="!this.hasPermissionForMaintenance()" @click="editOrder()">新建维保订单</Button>
         </div>
 
         <!-- 维保订单列表 -->
@@ -74,7 +74,7 @@
             <template slot-scope="{ row: order }" slot="progress">
                 <div v-show="progressEditedOrder !== order" class="progress-content">
                     {{ order.progress }}
-                    <Icon type="md-create" class="clickable" @click="progressEditedOrder = order"/>
+                    <Icon v-show="canEditProgress(order)" type="md-create" class="clickable" @click="progressEditedOrder = order"/>
                 </div>
                 <Input v-show="progressEditedOrder === order" v-model="order.progress"
                         v-focus="progressEditedOrder === order"
@@ -277,6 +277,10 @@ export default {
             } else {
                 return false;
             }
+        },
+        // 判断是否可以编辑进度: 售后服务人员为当前用户
+        canEditProgress(order) {
+            return this.isCurrentUser(order.servicePersonId);
         },
         // 取消编辑进度
         cancelEditProgress(order) {

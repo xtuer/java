@@ -55,6 +55,7 @@ public class ProductService extends BaseService {
         }
 
         // [5] 保存产品到数据库
+        product.setUserId(user.getUserId());
         productMapper.upsertProduct(product);
 
         return Result.ok(product);
@@ -95,6 +96,7 @@ public class ProductService extends BaseService {
         }
 
         // [3] 保存产品项到数据库
+        item.setUserId(user.getUserId());
         productMapper.upsertProductItem(item);
 
         return Result.ok(item);

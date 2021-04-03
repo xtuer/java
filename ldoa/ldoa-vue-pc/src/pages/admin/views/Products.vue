@@ -24,8 +24,8 @@
         >
             <!-- 操作按钮 -->
             <template slot-scope="{ row: product }" slot="action">
-                <Button type="primary" size="small" @click="editProduct(product)">编辑</Button>
-                <Button type="error" size="small" @click="deleteProduct(product)">删除</Button>
+                <Button type="primary" size="small" :disabled="!canEdit(product)" @click="editProduct(product)">编辑</Button>
+                <Button type="error" size="small" :disabled="!canEdit(product)" @click="deleteProduct(product)">删除</Button>
             </template>
         </Table>
 
@@ -208,10 +208,10 @@ export default {
                     // [4] 保存成功后如果是更新则替换已有对象，创建则添加到最前面
                     if (index >= 0) {
                         // 更新: 替换已有对象
-                        this.products.replace(index, product);
+                        this.products.replace(index, newProduct);
                     } else {
                         // 创建: 添加到最前面
-                        this.products.insert(0, product);
+                        this.products.insert(0, newProduct);
                     }
 
                     // [5] 提示保存成功，隐藏编辑对话框
@@ -252,6 +252,10 @@ export default {
             } else {
                 this.productClone.items.push(productItem);
             }
+        },
+        // 判断是否有编辑权限
+        canEdit(product) {
+            return this.isCurrentUser(product.userId);
         },
         // 新产品
         newProduct() {

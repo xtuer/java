@@ -83,4 +83,9 @@ public class ProductItem {
      * 批次 (出库查询时使用)
      */
     private String batch;
+
+    /**
+     * 创建物料的用户 ID
+     */
+    private long userId;
 }

@@ -27,7 +27,7 @@
                     </Select>
                 </Input>
             </div>
-            <Button type="primary" icon="md-arrow-down" @click="productItemModal = true">物料入库</Button>
+            <Button type="primary" icon="md-arrow-down" :disabled="!hasPermissionForStockIn()" @click="productItemModal = true">物料入库</Button>
         </div>
 
         <!-- 入库列表 -->
@@ -50,7 +50,9 @@
                 {{ record.createdAt | formatDate }}
             </template>
             <template slot-scope="{ row: record, index }" slot="action">
-                <Button type="error" size="small" :disabled="!canDelete(record.createdAt)" @click="deleteStockIn(index)">删除</Button>
+                <Tooltip content="只能删除 24 小时内的入库" placement="left">
+                    <Button type="error" size="small" :disabled="!canDelete(record)" @click="deleteStockIn(index)">删除</Button>
+                </Tooltip>
             </template>
         </Table>
 
@@ -240,8 +242,13 @@ export default {
             });
         },
         // 是否可删除
-        canDelete(createdAt) {
-            const before  = dayjs(createdAt).unix();
+        canDelete(reord) {
+            // 不是自己不可删除
+            if (!this.isCurrentUser(reord.userId)) {
+                return false;
+            }
+
+            const before  = dayjs(reord.createdAt).unix();
             const current = dayjs().unix();
 
             // 大于 24 个小时不可删除
