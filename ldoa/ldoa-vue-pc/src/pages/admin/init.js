@@ -11,10 +11,14 @@ import '@/../public/static-p/css/global.css';
 
 import filters from '@/../public/static-p/js/filters';
 import methods from '@/../public/static-p/js/methods';
+import permissions from '@/../public/static-p/js/permissions';
 
 // [1] 注册 Vue 的原型函数
 Object.keys(methods).forEach((key) => {
     Vue.prototype[key] = methods[key];
+});
+Object.keys(permissions).forEach((key) => {
+    Vue.prototype[key] = permissions[key];
 });
 
 // [2] 注册全局过滤器
