@@ -25,7 +25,7 @@
  */
 const hasPermissionForMaintenance = function() {
     const roles = this.$store.getters.roles;
-    return roles.indexOf('ROLE_PRODUCE_MAINTENANCE') > -1;
+    return roles.indexOf('ROLE_PRODUCE_MAINTENANCE') > -1 || roles.indexOf('ROLE_PRODUCE_SCHEDULE') > -1;
 };
 
 /**

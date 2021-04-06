@@ -35,13 +35,13 @@ window.ROLES = [
     { value: 'ROLE_ADMIN',        name: '管理者' },
 
     { value: 'ROLE_SALE_SALESPERSON', name: '销售部销售' },
-    { value: 'ROLE_SALE_SUPPORT', name: '销售部技术支持' },
-    { value: 'ROLE_SALE_GUARANTEE', name: '销售部综合保证' },
+    { value: 'ROLE_SALE_SUPPORT',     name: '销售部技术支持' },
+    { value: 'ROLE_SALE_GUARANTEE',   name: '销售部综合保证' },
 
     { value: 'ROLE_PRODUCE_MAINTENANCE', name: '生产部生产维保' },
-    { value: 'ROLE_PRODUCE_QUALITY', name: '生产部质量保证' },
-    { value: 'ROLE_PRODUCE_SCHEDULE', name: '生产部计划调度' },
-    { value: 'ROLE_PRODUCE_TEST', name: '生产部检验测试' },
+    { value: 'ROLE_PRODUCE_QUALITY',     name: '生产部质量保证' },
+    { value: 'ROLE_PRODUCE_SCHEDULE',    name: '生产部计划调度' },
+    { value: 'ROLE_PRODUCE_TEST',        name: '生产部检验测试' },
 
     { value: 'ROLE_TECHNIQUE_HARDWARE', name: '技术部硬件技术' },
     { value: 'ROLE_TECHNIQUE_SOFTWARE', name: '技术部软件技术' },
