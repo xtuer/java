@@ -142,6 +142,9 @@
 .table-action button:not(:first-child) {
     margin-left: 8px;
 }
+.table-index .ivu-table-cell {
+    padding: 2px;
+}
 
 /* 使用 Table 作为 body 的 Card，去掉 padding 效果好一些: <Card class="card-with-table-body" dis-hover> */
 .card-with-table-body .ivu-card-body {

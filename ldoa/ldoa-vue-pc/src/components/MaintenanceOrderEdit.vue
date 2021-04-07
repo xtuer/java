@@ -15,7 +15,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
 <template>
     <Modal :value="visible" title="编辑维保订单" :mask-closable="false" :width="1000" class="maintenance-order-edit-modal"
-        :styles="{ top: '40px', marginBottom: '40px' }"
+        :styles="{ top: '40px', marginBottom: '80px' }"
         @on-visible-change="showEvent"
     >
         <!-- 弹窗 Body -->
@@ -171,7 +171,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <ProductSelect v-model="productSelectVisible" @on-ok="onProductSelected"/>
 
         <!-- 维保订单项编辑弹窗 -->
-        <MaintenanceOrderItemEdit v-model="orderItemEditVisible" :order-item="orderItemClone" @on-ok="saveOrderItem"/>
+        <!-- <MaintenanceOrderItemEdit v-model="orderItemEditVisible" :order-item="orderItemClone" @on-ok="saveOrderItem"/> -->
     </Modal>
 </template>
 
@@ -179,7 +179,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 import MaintenanceOrderDao from '@/../public/static-p/js/dao/MaintenanceOrderDao';
 import ProductSelect from '@/components/ProductSelect.vue';
 import AuditorSelect from '@/components/AuditorSelect.vue';
-import MaintenanceOrderItemEdit from '@/components/MaintenanceOrderItemEdit.vue';
+// import MaintenanceOrderItemEdit from '@/components/MaintenanceOrderItemEdit.vue';
 
 export default {
     props: {
@@ -190,7 +190,7 @@ export default {
         prop : 'visible',
         event: 'on-visible-change',
     },
-    components: { ProductSelect, AuditorSelect, MaintenanceOrderItemEdit },
+    components: { ProductSelect, AuditorSelect, },
     data() {
         return {
             order: this.newOrder(),
@@ -221,6 +221,7 @@ export default {
             orderItemClone: {},          // 用于编辑的维保订单项
             orderItemEditVisible: false, // 维保订单项编辑弹窗是否可见
             orderItemColumns: [          // 维保订单项表格的列
+                { type: 'index', width: 50, align: 'center', className: 'table-index' },
                 { slot: 'productName', title: '产品名称', width: 150 },
                 { slot: 'productCode', title: '产品编码', width: 150 },
                 { slot: 'productModel', title: '规格型号', width: 150 },
