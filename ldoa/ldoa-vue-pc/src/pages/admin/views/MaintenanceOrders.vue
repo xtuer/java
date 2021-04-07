@@ -60,6 +60,16 @@
                 {{ orderType(order) }}
             </template>
 
+            <template slot-scope="{ row: order }" slot="productName">
+                <span v-html="commaToNewLine(order.productName)"></span>
+            </template>
+            <template slot-scope="{ row: order }" slot="productCode">
+                <span v-html="commaToNewLine(order.productCode)"></span>
+            </template>
+            <template slot-scope="{ row: order }" slot="productModel">
+                <span v-html="commaToNewLine(order.productModel)"></span>
+            </template>
+
             <!-- 收货日期 -->
             <template slot-scope="{ row: order }" slot="receivedDate">
                 {{ order.receivedDate | formatDateSimple }}
@@ -161,9 +171,9 @@ export default {
                 { slot: 'maintenanceOrderSn', title: '维保单号', width: 180, resizable: true },
                 { key : 'customerName', title: '客户', width: 150, resizable: true },
                 { slot: 'type',   title: '类型', width: 110, resizable: true },
-                { key : 'productName', title: '产品名称', width: 150, resizable: true },
-                { key : 'productCode', title: '产品编码', width: 110, resizable: true },
-                { key : 'productModel', title: '型号/规格', width: 110, resizable: true },
+                { slot: 'productName', title: '产品名称', width: 150, resizable: true },
+                { slot: 'productCode', title: '产品编码', width: 110, resizable: true },
+                { slot: 'productModel', title: '型号/规格', width: 110, resizable: true },
                 { key : 'productCount', title: '产品数量', width: 110, resizable: true },
                 { slot: 'state', title: '状态', width: 110, align: 'center', resizable: true },
                 { key : 'problem',   title: '反馈的问题', minWidth: 400 },
@@ -366,7 +376,11 @@ export default {
                 this.currentOrderItems = items;
                 this.currentOrderItemsLoading = false;
             });
-        }
+        },
+        // 逗号替换为回车
+        commaToNewLine(str) {
+            return str.replace(/,/g, ',<br>');
+        },
     },
     directives: {
         // 输入框获取焦点命令 (binding.value 为 v-focus="xxx" 的参数 xxx)
@@ -377,7 +391,7 @@ export default {
                 }, 0);
             }
         }
-    }
+    },
 };
 </script>
 
