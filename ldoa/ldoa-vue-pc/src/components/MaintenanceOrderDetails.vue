@@ -17,9 +17,8 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
     <Modal :value="visible" :title="title" class="maintenance-order-details-modal" width="900"
            :styles="{ top: '40px', marginBottom: '80px' }" @on-visible-change="showEvent">
         <!-- 弹窗 Body -->
+        <Spin v-if="loading" fix size="large"></Spin>
         <table class="order-table relative">
-            <Spin v-if="loading" fix size="large"></Spin>
-
             <tr>
                 <td class="td-label text-color-gray">客户:</td>
                 <td class="td-rest">{{ order.customerName }}</td>
@@ -89,7 +88,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         </table>
 
         <!-- 维保订单列表 -->
-        <Table :data="order.items" :columns="orderItemColumns" border>
+        <Table :data="order.items" :columns="orderItemColumns" :max-height="350" border>
             <!-- 维修信息明细 -->
             <template slot-scope="{ row: item }" slot="details">
                 <Poptip trigger="click" placement="left" width="450" transfer>
@@ -99,6 +98,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                         <span>产品名称:</span> <span>{{ item.productName }}</span>
                         <span>产品编码:</span> <span>{{ item.productCode }}</span>
                         <span>规格型号:</span> <span>{{ item.productModel }}</span>
+                        <span>出厂时间:</span> <span>{{ item.productionDate }}</span>
                         <span>维修前电量:</span> <span>{{ item.electricQuantityBefore }}</span>
                         <span>维修前软件版本:</span> <span>{{ item.softwareVersionBefore }}</span>
                         <span>维修前硬件版本:</span> <span>{{ item.hardwareVersionBefore }}</span>
@@ -174,9 +174,11 @@ export default {
             loading: false, // 加载中
             saving : false,
             orderItemColumns: [ // 维保订单项表格的列
+                { type: 'index', width: 50, align: 'center', className: 'table-index' },
                 { key: 'productName', title: '产品名称', width: 150 },
                 { key: 'productCode', title: '产品编码', width: 150 },
                 { key: 'productModel', title: '规格型号', width: 150 },
+                { key: 'productionDate', title: '出厂时间', width: 150 },
                 { key: 'electricQuantityBefore', title: '维修前电量', width: 150 },
                 { key: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
                 { key: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },

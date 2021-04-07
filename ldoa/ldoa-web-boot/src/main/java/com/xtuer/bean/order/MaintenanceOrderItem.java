@@ -108,4 +108,9 @@ public class MaintenanceOrderItem {
      * 探头换后编号
      */
     private String probeDetectorCodeAfter;
+
+    /**
+     * 出厂时间
+     */
+    private String productionDate;
 }

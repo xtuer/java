@@ -19,9 +19,8 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         @on-visible-change="showEvent"
     >
         <!-- 弹窗 Body -->
+        <Spin v-if="loading" fix size="large"></Spin>
         <Form ref="orderForm" :model="order" :rules="rules" :label-width="100" class="relative">
-            <Spin v-if="loading" fix size="large"></Spin>
-
             <div class="column-3">
                 <FormItem label="客户:" prop="customerName">
                     <Input v-model="order.customerName" clearable placeholder="请输入客户"/>
@@ -87,7 +86,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         </Form>
 
         <!-- 维保订单列表 -->
-        <Table :data="order.items" :columns="orderItemColumns" border>
+        <Table :data="order.items" :columns="orderItemColumns" :max-height="350" border>
             <template slot-scope="{ index }" slot="productName">
                 <Input v-model="order.items[index].productName" clearable placeholder="请输入产品名称"/>
             </template>
@@ -96,6 +95,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             </template>
             <template slot-scope="{ index }" slot="productModel">
                 <Input v-model="order.items[index].productModel" clearable placeholder="请输入规格型号"/>
+            </template>
+            <template slot-scope="{ index }" slot="productionDate">
+                <Input v-model="order.items[index].productionDate" clearable placeholder="请输入出厂时间"/>
             </template>
             <template slot-scope="{ index }" slot="electricQuantityBefore">
                 <Input v-model="order.items[index].electricQuantityBefore" clearable placeholder="请输入维修前电量"/>
@@ -225,6 +227,7 @@ export default {
                 { slot: 'productName', title: '产品名称', width: 150 },
                 { slot: 'productCode', title: '产品编码', width: 150 },
                 { slot: 'productModel', title: '规格型号', width: 150 },
+                { slot: 'productionDate', title: '出厂时间', width: 150 },
                 { slot: 'electricQuantityBefore', title: '维修前电量', width: 150 },
                 { slot: 'softwareVersionBefore', title: '维修前软件版本', width: 150 },
                 { slot: 'hardwareVersionBefore', title: '维修前硬件版本', width: 150 },
@@ -342,6 +345,7 @@ export default {
                 productName            : '', // 产品名称
                 productCode            : '', // 产品编码
                 productModel           : '', // 规格型号
+                productionDate         : '', // 出厂时间
                 electricQuantityBefore : '',  // 维修前电量
                 softwareVersionBefore  : '', // 维修前软件版本
                 hardwareVersionBefore  : '', // 维修前硬件版本

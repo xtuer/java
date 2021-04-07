@@ -125,6 +125,7 @@ CREATE TABLE maintenance_order_item (
     power_dissipation_after    varchar(64)  DEFAULT 0  COMMENT '维修后功耗',
     temperature_after          varchar(64)  DEFAULT 0  COMMENT '维修后高温次数',
     probe_detector_code_after  varchar(64)  DEFAULT '' COMMENT '探头换后编号',
+    production_date            varchar(256) DEFAULT '' COMMENT '出厂时间',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

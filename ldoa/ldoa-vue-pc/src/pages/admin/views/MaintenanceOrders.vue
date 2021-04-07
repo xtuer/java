@@ -61,13 +61,19 @@
             </template>
 
             <template slot-scope="{ row: order }" slot="productName">
-                <span v-html="commaToNewLine(order.productName)"></span>
+                <Tooltip :content="order.productName" max-width="300" transfer placement="top-start">
+                    <div v-html="commaToNewLine(order.productName)" class="long-text-block"></div>
+                </Tooltip>
             </template>
             <template slot-scope="{ row: order }" slot="productCode">
-                <span v-html="commaToNewLine(order.productCode)"></span>
+                <Tooltip :content="order.productCode" max-width="300" transfer placement="top-start">
+                    <div v-html="commaToNewLine(order.productCode)" class="long-text-block"></div>
+                </Tooltip>
             </template>
             <template slot-scope="{ row: order }" slot="productModel">
-                <span v-html="commaToNewLine(order.productModel)"></span>
+                <Tooltip :content="order.productModel" max-width="300" transfer placement="top-start">
+                    <div v-html="commaToNewLine(order.productModel)" class="long-text-block"></div>
+                </Tooltip>
             </template>
 
             <!-- 收货日期 -->
@@ -111,6 +117,7 @@
                             <span>产品名称:</span> <span>{{ item.productName }}</span>
                             <span>产品编码:</span> <span>{{ item.productCode }}</span>
                             <span>规格型号:</span> <span>{{ item.productModel }}</span>
+                            <span>出厂时间:</span> <span>{{ item.productionDate }}</span>
                             <span>维修前电量:</span> <span>{{ item.electricQuantityBefore }}</span>
                             <span>维修前软件版本:</span> <span>{{ item.softwareVersionBefore }}</span>
                             <span>维修前硬件版本:</span> <span>{{ item.hardwareVersionBefore }}</span>
@@ -463,6 +470,14 @@ export default {
             margin-top: 20px;
             padding-top: 20px;
         }
+    }
+}
+
+.maintenance-orders {
+    .long-text-block {
+        max-height: 200px;
+        overflow: hidden;
+        cursor: default;
     }
 }
 </style>
