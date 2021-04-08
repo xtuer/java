@@ -288,17 +288,17 @@ public class AuditService extends BaseService {
         int nextStep = step + 1;
 
         if (currentStep == null) {
-            log.warn("[结束] 审批审批阶段: 审批 [{}], 阶段 [{}]，阶段不存在", auditId, step);
+            log.warn("[错误] 处理审批阶段: 审批 [{}], 阶段 [{}]，阶段不存在", auditId, step);
             return;
         }
 
         // 当前阶段的状态为待审批状态 1 才能继续处
         if (currentStep.getState() != AuditStep.STATE_WAIT) {
-            log.warn("[结束] 审批审批阶段: 审批 [{}], 阶段 [{}]，状态不为待审批", auditId, step);
+            log.warn("[错误] 处理审批阶段: 审批 [{}], 阶段 [{}]，状态不为待审批", auditId, step);
             return;
         }
 
-        log.info("[开始] 审批审批阶段: 审批 [{}], 阶段 [{}]", auditId, step);
+        log.info("[开始] 处理审批阶段: 审批 [{}], 阶段 [{}]", auditId, step);
 
         // [2] 移动附件的临时文件到文件仓库
         repoFileService.moveTempFileToRepo(attachmentId);
@@ -307,38 +307,38 @@ public class AuditService extends BaseService {
             // [3] 如果审批通过
             // [3.1] 更新当前审批项的状态为通过
             auditMapper.acceptOrRejectAuditStep(auditId, step, AuditStep.STATE_ACCEPTED, comment, attachmentId);
-            log.info("[通过] 审批审批阶段，通过: 审批 [{}], 阶段 [{}]", auditId, step);
+            log.info("[通过] 处理审批阶段，通过: 审批 [{}], 阶段 [{}]", auditId, step);
 
             if (step == maxStep) {
                 // [3.2] 如果是最后一阶段，则审批通过
                 auditMapper.updateAuditState(auditId, Audit.STATUS_ACCEPTED);
                 helper.acceptTarget(auditId, currentStep.getTargetId(), currentStep.getType());
-                log.info("[通过] 审批审批阶段，通过审批: 审批 [{}]", auditId);
+                log.info("[通过] 处理审批阶段，通过审批: 审批 [{}]", auditId);
             } else {
                 // [3.3] 如果不是最后一阶段，则修改下一阶段的状态为待审批，且设置其审批员
                 auditMapper.updateAuditStepState(auditId, nextStep, AuditStep.STATE_WAIT);
                 auditMapper.updateAuditStepAuditor(auditId, nextStep, nextStepAuditorId);
-                log.info("[通过] 审批审批阶段，下一阶段状态修改为待审批: 审批 [{}], 阶段 [{}]", auditId, nextStep);
+                log.info("[通过] 处理审批阶段，下一阶段状态修改为待审批: 审批 [{}], 阶段 [{}]", auditId, nextStep);
             }
         } else {
             // [4] 如果审批被拒绝
             // [4.1] 更新当前审批项的状态为拒绝
             auditMapper.acceptOrRejectAuditStep(auditId, step, AuditStep.STATE_REJECTED, comment, attachmentId);
-            log.info("[通过] 审批审批阶段，拒绝: 审批 [{}], 阶段 [{}]", auditId, step);
+            log.info("[拒绝] 处理审批阶段，拒绝: 审批 [{}], 阶段 [{}]", auditId, step);
 
             if (step == 1) {
                 // [4.2] 如果是第一阶段，则审批不通过
                 auditMapper.updateAuditState(auditId, Audit.STATUS_REJECTED);
                 helper.rejectTarget(auditId, currentStep.getTargetId(), currentStep.getType());
-                log.info("[拒绝] 审批审批阶段，通过审批: 审批 [{}]", auditId);
+                log.info("[拒绝] 处理审批阶段，拒绝审批: 审批 [{}]", auditId);
             } else {
                 // [4.3] 如果不是第一阶段，则修改上一阶段审批项的状态为待审批
                 auditMapper.updateAuditStepState(auditId, prevStep, AuditStep.STATE_WAIT);
-                log.info("[拒绝] 审批审批项，前一阶段审批项状态修改为待审批: 审批 [{}], 阶段 [{}]，前一阶段: [{}]", auditId, step, prevStep);
+                log.info("[拒绝] 处理审批阶段，前一阶段审批项状态修改为待审批: 审批 [{}], 阶段 [{}]，前一阶段: [{}]", auditId, step, prevStep);
             }
         }
 
-        log.info("[结束] 审批审批项: 审批 [{}], 阶段 [{}]", auditId, step);
+        log.info("[结束] 处理审批阶段: 审批 [{}], 阶段 [{}]", auditId, step);
     }
 
     /**
