@@ -48,6 +48,9 @@
 .ivu-modal-wrap .ivu-modal {
     margin-bottom: 40px;
 }
+.ivu-modal-body {
+    position: relative;
+}
 
 /* block 的 Poptip: <Poptip trigger="hover" transfer width="500" class="poptip-block"> */
 .ivu-poptip.poptip-block, .ivu-poptip.poptip-block .ivu-poptip-rel {
