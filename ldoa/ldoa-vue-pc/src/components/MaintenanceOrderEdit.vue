@@ -87,125 +87,123 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
         <!-- 维修信息项列表 -->
         <Table :data="order.items" :columns="orderItemColumns" :max-height="350" border>
-            <template slot-scope="{ index }" slot="productName">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].productName }}
+            <template slot-scope="{ index, row: item }" slot="productName">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.productName }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].productName" clearable placeholder="请输入产品名称"/>
+                <Input v-else v-model="editedItem.productName" clearable placeholder="请输入产品名称"/>
             </template>
-            <template slot-scope="{ index }" slot="productCode">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].productCode }}
+            <template slot-scope="{ index, row: item }" slot="productCode">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.productCode }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].productCode" clearable placeholder="请输入产品编码"/>
+                <Input v-else v-model="editedItem.productCode" clearable placeholder="请输入产品编码"/>
             </template>
-            <template slot-scope="{ index }" slot="productModel">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].productModel }}
+            <template slot-scope="{ index, row: item }" slot="productModel">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.productModel }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].productModel" clearable placeholder="请输入规格型号"/>
+                <Input v-else v-model="editedItem.productModel" clearable placeholder="请输入规格型号"/>
             </template>
-            <template slot-scope="{ index }" slot="productionDate">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].productionDate }}
+            <template slot-scope="{ index, row: item }" slot="productionDate">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.productionDate }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].productionDate" clearable placeholder="请输入出厂时间"/>
+                <Input v-else v-model="editedItem.productionDate" clearable placeholder="请输入出厂时间"/>
             </template>
-            <template slot-scope="{ index }" slot="electricQuantityBefore">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].electricQuantityBefore }}
+            <template slot-scope="{ index, row: item }" slot="electricQuantityBefore">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.electricQuantityBefore }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].electricQuantityBefore" clearable placeholder="请输入维修前电量"/>
+                <Input v-else v-model="editedItem.electricQuantityBefore" clearable placeholder="请输入维修前电量"/>
             </template>
-            <template slot-scope="{ index }" slot="softwareVersionBefore">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].softwareVersionBefore }}
+            <template slot-scope="{ index, row: item }" slot="softwareVersionBefore">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.softwareVersionBefore }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].softwareVersionBefore" clearable placeholder="请输入维修前软件版本"/>
+                <Input v-else v-model="editedItem.softwareVersionBefore" clearable placeholder="请输入维修前软件版本"/>
             </template>
-            <template slot-scope="{ index }" slot="hardwareVersionBefore">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].hardwareVersionBefore }}
+            <template slot-scope="{ index, row: item }" slot="hardwareVersionBefore">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.hardwareVersionBefore }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].hardwareVersionBefore" clearable placeholder="请输入维修前硬件版本"/>
+                <Input v-else v-model="editedItem.hardwareVersionBefore" clearable placeholder="请输入维修前硬件版本"/>
             </template>
-            <template slot-scope="{ index }" slot="powerDissipationBefore">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].powerDissipationBefore }}
+            <template slot-scope="{ index, row: item }" slot="powerDissipationBefore">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.powerDissipationBefore }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].powerDissipationBefore" clearable placeholder="请输入维修前功耗"/>
+                <Input v-else v-model="editedItem.powerDissipationBefore" clearable placeholder="请输入维修前功耗"/>
             </template>
-            <template slot-scope="{ index }" slot="probeDetectorCodeBefore">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].probeDetectorCodeBefore }}
+            <template slot-scope="{ index, row: item }" slot="probeDetectorCodeBefore">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.probeDetectorCodeBefore }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].probeDetectorCodeBefore" clearable placeholder="请输入探头换前编号"/>
+                <Input v-else v-model="editedItem.probeDetectorCodeBefore" clearable placeholder="请输入探头换前编号"/>
             </template>
-            <template slot-scope="{ index }" slot="temperatureBefore">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].temperatureBefore }}
+            <template slot-scope="{ index, row: item }" slot="temperatureBefore">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.temperatureBefore }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].temperatureBefore" :min="0" clearable placeholder="请输入维修前高温次数"/>
+                <Input v-else v-model="editedItem.temperatureBefore" :min="0" clearable placeholder="请输入维修前高温次数"/>
             </template>
-            <template slot-scope="{ index }" slot="chipCode">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].chipCode }}
+            <template slot-scope="{ index, row: item }" slot="chipCode">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.chipCode }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].chipCode" clearable placeholder="请输入芯片编号"/>
+                <Input v-else v-model="editedItem.chipCode" clearable placeholder="请输入芯片编号"/>
             </template>
-            <template slot-scope="{ index }" slot="checkDetails">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].checkDetails }}
+            <template slot-scope="{ index, row: item }" slot="checkDetails">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.checkDetails }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].checkDetails" clearable placeholder="请输入检测问题明细"/>
+                <Input v-else v-model="editedItem.checkDetails" clearable placeholder="请输入检测问题明细"/>
             </template>
-            <template slot-scope="{ index }" slot="maintenanceDetails">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].maintenanceDetails }}
+            <template slot-scope="{ index, row: item }" slot="maintenanceDetails">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.maintenanceDetails }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].maintenanceDetails" clearable placeholder="请输入维修明细"/>
+                <Input v-else v-model="editedItem.maintenanceDetails" clearable placeholder="请输入维修明细"/>
             </template>
-            <template slot-scope="{ index }" slot="electricQuantityAfter">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].electricQuantityAfter }}
+            <template slot-scope="{ index, row: item }" slot="electricQuantityAfter">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.electricQuantityAfter }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].electricQuantityAfter" clearable placeholder="请输入维修后电量"/>
+                <Input v-else v-model="editedItem.electricQuantityAfter" clearable placeholder="请输入维修后电量"/>
             </template>
-            <template slot-scope="{ index }" slot="softwareVersionAfter">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].softwareVersionAfter }}
+            <template slot-scope="{ index, row: item }" slot="softwareVersionAfter">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.softwareVersionAfter }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].softwareVersionAfter" clearable placeholder="请输入维修后软件版本"/>
+                <Input v-else v-model="editedItem.softwareVersionAfter" clearable placeholder="请输入维修后软件版本"/>
             </template>
-            <template slot-scope="{ index }" slot="hardwareVersionAfter">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].hardwareVersionAfter }}
+            <template slot-scope="{ index, row: item }" slot="hardwareVersionAfter">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.hardwareVersionAfter }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].hardwareVersionAfter" clearable placeholder="请输入维修后硬件版本"/>
+                <Input v-else v-model="editedItem.hardwareVersionAfter" clearable placeholder="请输入维修后硬件版本"/>
             </template>
-            <template slot-scope="{ index }" slot="powerDissipationAfter">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].powerDissipationAfter }}
+            <template slot-scope="{ index, row: item }" slot="powerDissipationAfter">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.powerDissipationAfter }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].powerDissipationAfter" clearable placeholder="请输入维修后功耗"/>
+                <Input v-else v-model="editedItem.powerDissipationAfter" clearable placeholder="请输入维修后功耗"/>
             </template>
-            <template slot-scope="{ index }" slot="probeDetectorCodeAfter">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].probeDetectorCodeAfter }}
+            <template slot-scope="{ index, row: item }" slot="probeDetectorCodeAfter">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.probeDetectorCodeAfter }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].probeDetectorCodeAfter" clearable placeholder="请输入探头换后编号"/>
+                <Input v-else v-model="editedItem.probeDetectorCodeAfter" clearable placeholder="请输入探头换后编号"/>
             </template>
-            <template slot-scope="{ index }" slot="temperatureAfter">
-                <div v-show="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
-                    {{ order.items[index].temperatureAfter }}
+            <template slot-scope="{ index, row: item }" slot="temperatureAfter">
+                <div v-if="!showItemEdit(index)" @click="selectEditedItem(index)" class="item-content">
+                    {{ item.temperatureAfter }}
                 </div>
-                <Input v-if="showItemEdit(index)" v-model="order.items[index].temperatureAfter" :min="0" clearable placeholder="请输入维修后高温次数"/>
+                <Input v-else v-model="editedItem.temperatureAfter" :min="0" clearable placeholder="请输入维修后高温次数"/>
             </template>
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: item }" slot="action">
-                <!-- <Icon type="md-create" size="16" class="clickable margin-right-5" @click="editOrderItem(item)"/> -->
-
                 <Poptip
                     confirm
                     transfer
@@ -253,7 +251,7 @@ export default {
     data() {
         return {
             order: this.newOrder(),
-            selectedItem: {}, // 选择编辑的维保信息项
+            editedItem: {}, // 选择编辑的维保信息项
             productSelectVisible: false, // 产品选择弹窗是否可见
             saving: false, // 是否保存中
             loading: false,
@@ -340,14 +338,14 @@ export default {
         },
         committedSave() {
             this.order.committed = true;
-            this.save();
+            this.saveOrder();
         },
         uncommittedSave() {
             this.order.committed = false;
-            this.save();
+            this.saveOrder();
         },
         // 保存维保订单
-        save() {
+        saveOrder() {
             // 审批员不能为空
             if (this.order.committed && !Utils.isValidId(this.order.currentAuditorId)) {
                 this.$Message.error('请选择审批员');
@@ -357,6 +355,9 @@ export default {
             // 表单验证
             this.$refs.orderForm.validate(valid => {
                 if (!valid) { return; }
+
+                // 选择一个不存在的 item，保存最后一次被编辑的 item
+                this.selectEditedItem(10000);
 
                 // 提交表单
                 this.saving = true;
@@ -430,8 +431,8 @@ export default {
                 this.orderItemClone = this.newOrderItem();
             }
 
-            // this.orderItemEditVisible = true;
             this.saveOrderItem(this.orderItemClone);
+            this.selectEditedItem(this.order.items.length - 1); // 选择新添加的 item 进行编辑
         },
         // 保存维保订单项
         saveOrderItem(item) {
@@ -454,11 +455,24 @@ export default {
         },
         // 选择要被编辑的维保信息项
         selectEditedItem(index) {
-            this.selectedItem = this.order.items[index];
+            // 1. 替换上一次被选择的 item
+            // 2. 选择 item
+            const pos = this.order.items.findIndex(i => i.maintenanceOrderItemId === this.editedItem.maintenanceOrderItemId);
+            if (pos >= 0) {
+                this.order.items.replace(pos, this.editedItem);
+            }
+
+            if (this.order.items[index]) {
+                this.editedItem = Utils.clone(this.order.items[index]);
+            }
         },
         // 是否显示维保信息项的编辑组件
         showItemEdit(index) {
-            return this.order.items[index] === this.selectedItem;
+            if (this.order.items[index]) {
+                return this.editedItem.maintenanceOrderItemId === this.order.items[index].maintenanceOrderItemId;
+            } else {
+                return false;
+            }
         }
     }
 };
@@ -483,6 +497,7 @@ export default {
         border: 1px dashed transparent;
         border-radius: 2px;
         transition: .6s border;
+        cursor: pointer;
 
         &:hover {
             border: 1px dashed gray;
