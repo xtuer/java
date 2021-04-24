@@ -24,6 +24,7 @@ ext.versions = [
         redis      : '2.9.0',
         jsoup      : '1.12.1',
         uid        : '1.0.2.RELEASE',
+        easypoi    : '4.3.0',
 ]
 
 dependencies {
@@ -41,7 +42,8 @@ dependencies {
             "com.alicp.jetcache:jetcache-starter-redis:${versions.jetcache}",
             "redis.clients:jedis:${versions.redis}",
             "org.jsoup:jsoup:${versions.jsoup}",
-            "com.github.wujun234:uid-generator-spring-boot-starter:${versions.uid}"
+            "com.github.wujun234:uid-generator-spring-boot-starter:${versions.uid}",
+            "cn.afterturn:easypoi-base:${versions.easypoi}"
     )
 
     runtimeOnly("mysql:mysql-connector-java:${versions.mysql}")

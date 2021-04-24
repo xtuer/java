@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xtuer.mapper.CustomerMapper">
+    <!-- 插入或者更新客户 -->
+    <insert id="upsertCustomer">
+        INSERT INTO customer(customer_id, customer_sn, name, business, region, type, phone, level, importance, status)
+        VALUES (#{customerId}, #{customerSn}, #{name}, #{business}, #{region}, #{type}, #{phone}, #{level}, #{importance}, #{status})
+
+        ON DUPLICATE KEY
+        UPDATE name = #{name}, business = #{business}, region = #{region}, type = #{type},
+            phone = #{phone}, level = #{level}, importance = #{importance}, status = #{status}
+    </insert>
+</mapper>
