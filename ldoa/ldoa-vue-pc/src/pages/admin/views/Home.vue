@@ -62,7 +62,7 @@ export default {
                 },
                 { label: '销售系统', icon: 'logo-euro', menuItems:
                     [
-                        { label: '客户管理', name: 'customers' },
+                        { label: '客户中心', name: 'customers' },
                     ]
                 },
                 { label: '共享文件', icon: 'md-photos', menuItems:

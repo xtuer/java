@@ -19,6 +19,10 @@ CREATE TABLE customer (
     importance  varchar(128)          COMMENT '重要程度',
     status      varchar(128)          COMMENT '状态',
 
+    address     varchar(999)          COMMENT '地址',
+    owner       varchar(256)          COMMENT '负责人',
+    remark      text                  COMMENT '备注',
+
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 

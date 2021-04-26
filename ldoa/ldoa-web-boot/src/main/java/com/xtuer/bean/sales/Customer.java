@@ -1,4 +1,4 @@
-package com.xtuer.bean;
+package com.xtuer.bean.sales;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Getter;
@@ -50,6 +50,21 @@ public class Customer {
      */
     @Excel(name = "电话")
     private String phone;
+
+    /**
+     * 地址
+     */
+    private String address;
+
+    /**
+     * 负责人
+     */
+    private String owner;
+
+    /**
+     * 备注
+     */
+    private String remark;
 
     /**
      * 关系等级

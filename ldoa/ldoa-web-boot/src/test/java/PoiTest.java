@@ -1,7 +1,7 @@
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.xtuer.Application;
-import com.xtuer.bean.Customer;
+import com.xtuer.bean.sales.Customer;
 import com.xtuer.service.CustomerService;
 import com.xtuer.util.Utils;
 import org.apache.commons.lang.StringUtils;

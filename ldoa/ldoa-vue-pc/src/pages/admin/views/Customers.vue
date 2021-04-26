@@ -10,26 +10,15 @@
             <!-- 搜索条件 -->
             <div class="filter">
                 <!-- 指定条件的搜索 -->
-                <Input v-model="filter.nickname" placeholder="请输入查询条件">
-                    <span slot="prepend">姓甚名谁</span>
+                <Input v-model="filter.name" placeholder="请输入查询条件">
+                    <span slot="prepend">客户名称</span>
                 </Input>
-
-                <!-- 时间范围 -->
-                <DatePicker v-model="dateRange"
-                            format="MM-dd"
-                            separator=" 至 "
-                            type="daterange"
-                            data-prepend="创建时间"
-                            class="date-picker"
-                            split-panels
-                            placeholder="请选择创建时间范围">
-                </DatePicker>
 
                 <!-- 选择条件的搜索 -->
                 <Input v-model="filterValue" transfer placeholder="请输入查询条件" search enter-button @on-search="searchCustomers">
                     <Select v-model="filterKey" slot="prepend">
-                        <Option value="email">邮件地址</Option>
-                        <Option value="phone">电话号码</Option>
+                        <Option value="customerSn">编号</Option>
+                        <Option value="business">行业</Option>
                     </Select>
                 </Input>
             </div>
@@ -42,12 +31,7 @@
         </div>
 
         <!-- 客户列表 -->
-        <Table :data="customers" :columns="columns" :loading="reloading" border>
-            <!-- 介绍信息 -->
-            <template slot-scope="{ row: customer }" slot="info">
-                {{ customer.userId }}
-            </template>
-
+        <Table :data="customers" :columns="columns" :loading="reloading" border @on-column-width-resize="saveTableColumnWidths(arguments)">
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
                 <Button type="primary" size="small">编辑</Button>
@@ -71,44 +55,38 @@ export default {
     data() {
         return {
             customers : [],
-            filter: { // 搜索条件
-                nickname  : '',
-                pageSize  : 2,
-                pageNumber: 1,
-            },
-            filterKey  : 'email',  // 搜索的 Key
-            filterValue: '',       // 搜索的 Value
-            dateRange  : ['', ''], // 搜索的时间范围
+            filter: this.newFilter(),
+            filterKey  : 'customerSn', // 搜索的 Key
+            filterValue: '',           // 搜索的 Value
             more     : false, // 是否还有更多客户
             loading  : false, // 加载中
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'nickname', title: '名字', width: 150 },
-                { slot: 'info',   title: '介绍', minWidth: 500 },
-                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { key : 'customerSn', title: '客户编号', width: 150, resizable: true },
+                { key : 'name',       title: '客户名称', width: 150, resizable: true },
+                { key : 'business',   title: '行业', width: 150, resizable: true },
+                { key : 'region',     title: '区域', width: 150, resizable: true },
+                { key : 'phone',      title: '电话', width: 150, resizable: true },
+                { key : 'address',    title: '地址', width: 150, resizable: true },
+                { key : 'owner',      title: '负责人', width: 150, resizable: true },
+                { key : 'remark',     title: '备注', width: 150, resizable: true },
+                { slot: 'action',     title: '操作', width: 150, align: 'center', className: 'table-action' },
             ]
         };
     },
     mounted() {
-        // this.searchCustomers();
+        this.restoreTableColumnWidths(this.columns);
+        this.searchCustomers();
     },
     methods: {
         // 搜索客户
         searchCustomers() {
-            this.customers             = [];
-            this.more              = false;
-            this.reloading         = true;
-            this.filter.pageNumber = 1;
-
-            // 如果不需要时间范围，则删除
-            if (this.dateRange[0] && this.dateRange[1]) {
-                this.filter.startAt = this.dateRange[0].format('yyyy-MM-dd');
-                this.filter.endAt   = this.dateRange[1].format('yyyy-MM-dd');
-            } else {
-                this.filter.startAt = '';
-                this.filter.endAt   = '';
-            }
+            this.customers              = [];
+            this.more                   = false;
+            this.reloading              = true;
+            this.filter                 = { ...this.newFilter(), name: this.filter.name };
+            this.filter[this.filterKey] = this.filterValue;
 
             this.fetchMoreCustomers();
         },
@@ -116,7 +94,7 @@ export default {
         fetchMoreCustomers() {
             this.loading = true;
 
-            UserDao.findCustomers(this.filter).then(customers => {
+            SalesDao.findCustomers(this.filter).then(customers => {
                 this.customers.push(...customers);
 
                 this.more      = customers.length >= this.filter.pageSize;
@@ -129,8 +107,19 @@ export default {
         exportCustomers(file) {
             SalesDao.importCustomers(file.url).then(() => {
                 this.$Message.success('导入成功');
+                this.searchCustomers();
             });
-        }
+        },
+        // 新建搜索条件
+        newFilter() {
+            return { // 搜索条件
+                // customerSn : '',
+                // business: '',
+                name      : '',
+                pageSize  : 50,
+                pageNumber: 1,
+            };
+        },
     }
 };
 </script>

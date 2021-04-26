@@ -2,7 +2,7 @@ package com.xtuer.service;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
-import com.xtuer.bean.Customer;
+import com.xtuer.bean.sales.Customer;
 import com.xtuer.mapper.CustomerMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

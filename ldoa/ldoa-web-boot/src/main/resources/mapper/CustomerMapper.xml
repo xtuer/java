@@ -2,13 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtuer.mapper.CustomerMapper">
+    <!-- 客户的列 -->
+    <sql id="customerColumns">
+        customer_id, customer_sn, name, business, region, type, phone, level, importance, status
+    </sql>
+
+    <!-- 查询符合条件的客户 -->
+    <select id="findCustomers" resultType="Customer">
+        SELECT <include refid="customerColumns"/>
+        FROM customer
+        <where>
+            <if test="filter.name!=null and filter.name!='' ">
+                AND name LIKE CONCAT('%', #{filter.name},'%')
+            </if>
+            <if test="filter.customerSn!=null and filter.customerSn!='' ">
+                AND customer_sn LIKE CONCAT('%', #{filter.customerSn},'%')
+            </if>
+            <if test="filter.business!=null and filter.business!='' ">
+                AND business LIKE CONCAT('%', #{filter.business},'%')
+            </if>
+        </where>
+        LIMIT ${page.offset}, ${page.count}
+    </select>
+
     <!-- 插入或者更新客户 -->
     <insert id="upsertCustomer">
-        INSERT INTO customer(customer_id, customer_sn, name, business, region, type, phone, level, importance, status)
-        VALUES (#{customerId}, #{customerSn}, #{name}, #{business}, #{region}, #{type}, #{phone}, #{level}, #{importance}, #{status})
+        INSERT INTO customer(customer_id, customer_sn, name, business, region, type, phone,
+            level, importance, status, address, owner, remark)
+        VALUES (#{customerId}, #{customerSn}, #{name}, #{business}, #{region}, #{type}, #{phone},
+            #{level}, #{importance}, #{status}, #{address}, #{owner}, #{remark})
 
         ON DUPLICATE KEY
         UPDATE name = #{name}, business = #{business}, region = #{region}, type = #{type},
-            phone = #{phone}, level = #{level}, importance = #{importance}, status = #{status}
+            phone = #{phone}, level = #{level}, importance = #{importance}, status = #{status},
+            address = #{address}, owner = #{owner}, remark = #{remark}
     </insert>
 </mapper>
