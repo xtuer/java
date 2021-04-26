@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 客户的服务
@@ -24,10 +23,10 @@ public class CustomerService extends BaseService {
     /**
      * 从 Excel 中导入客户信息
      *
-     * @param excelPath 客户信息的 Excel 文件路径
+     * @param excel 客户信息的 Excel 文件
      */
     @Transactional(rollbackFor = Exception.class)
-    public void importCustomers(String excelPath) {
+    public void importCustomers(File excel) {
         // 1. 导入得到客户对象
         // 2. 过滤掉无效的客户对象
         // 3. 保存客户到数据库
@@ -36,7 +35,7 @@ public class CustomerService extends BaseService {
         params.setHeadRows(1);
 
         // [1] 导入得到客户对象
-        List<Customer> customers = ExcelImportUtil.importExcel(new File(excelPath), Customer.class, params);
+        List<Customer> customers = ExcelImportUtil.importExcel(excel, Customer.class, params);
 
         // [2] 过滤掉无效的客户对象
         // [3] 保存客户到数据库

@@ -111,6 +111,9 @@ public interface Urls {
     String API_STOCKS_REQUESTS           = "/api/stocks/requests";     // 库存操作申请
     String API_STOCKS_REQUESTS_BY_ID     = "/api/stocks/requests/{requestId}"; // 指定 ID 的库存操作申请
 
+    // 销售
+    String API_SALES_CUSTOMERS = "/api/sales/customers"; // 客户
+
     // 表格配置
     String API_TABLE_CONFIG_BY_TABLE_NAME_AND_USER = "/api/tables/{tableName}/users/{userId}/config";
 }

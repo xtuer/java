@@ -37,7 +37,7 @@ export default {
     data() {
         return {
             activeMenuItemName: '', // 当前菜单项名字
-            openSubMenuIndexes: [0, 1, 2], // 展开的子菜单下标
+            openSubMenuIndexes: [0, 1, 2, 3], // 展开的子菜单下标
 
             // 所有菜单项，每个菜单项有不同的权限
             subMenus: [
@@ -60,13 +60,18 @@ export default {
                         { label: '物料出库', name: 'stock-out' },
                     ]
                 },
+                { label: '销售系统', icon: 'logo-euro', menuItems:
+                    [
+                        { label: '客户管理', name: 'customers' },
+                    ]
+                },
                 { label: '共享文件', icon: 'md-photos', menuItems:
                     [
                         { label: '所有文件', name: 'disk-all' },
                         { label: '我的文件', name: 'disk-my' },
                     ]
                 },
-                { label: '个人中心', icon: 'ios-people', menuItems:
+                { label: '个人中心', icon: 'ios-contact', menuItems:
                     [
                         { label: '我的信息',   name: 'user-info' },
                         { label: '收到的审批', name: 'audit-received' },
