@@ -37,4 +37,9 @@
             phone = #{phone}, level = #{level}, importance = #{importance}, status = #{status},
             address = #{address}, owner = #{owner}, remark = #{remark}
     </insert>
+
+    <!-- 删除指定 ID 的客户 -->
+    <delete id="deleteCustomer">
+        DELETE FROM customer WHERE customer_id = #{customerId}
+    </delete>
 </mapper>

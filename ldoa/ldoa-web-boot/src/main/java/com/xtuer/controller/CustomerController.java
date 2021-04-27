@@ -8,19 +8,16 @@ import com.xtuer.bean.sales.CustomerFilter;
 import com.xtuer.mapper.CustomerMapper;
 import com.xtuer.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
 
 /**
- * 销售管理的控制器
+ * 客户的控制器
  */
 @RestController
-public class SalesController extends BaseController {
+public class CustomerController extends BaseController {
     @Autowired
     private CustomerService customerService;
 
@@ -43,16 +40,30 @@ public class SalesController extends BaseController {
     /**
      * 导入客户
      *
-     * 网址: http://localhost:8080/api/sales/customers
+     * 网址: http://localhost:8080/api/sales/customers/import
      * 参数: tempFileUrl 客户信息临时文件的 URL
      *
      * @param tempFileUrl 客户信息临时文件的 URL
      */
-    @PutMapping(Urls.API_SALES_CUSTOMERS)
+    @PutMapping(Urls.API_SALES_CUSTOMERS_IMPORT)
     public Result<Boolean> importCustomers(@RequestParam String tempFileUrl) {
         File tempFile = super.tempFileService.getTempFileByUrl(tempFileUrl);
         customerService.importCustomers(tempFile);
 
+        return Result.ok();
+    }
+
+    /**
+     * 删除指定 ID 的客户
+     *
+     * 网址: http://localhost:8080/api/sales/customers/{customerId}
+     * 参数: 无
+     *
+     * @param customerId 客户 ID
+     */
+    @DeleteMapping(Urls.API_SALES_CUSTOMERS_BY_ID)
+    public Result<Boolean> deleteCustomer(@PathVariable long customerId) {
+        customerMapper.deleteCustomer(customerId);
         return Result.ok();
     }
 }

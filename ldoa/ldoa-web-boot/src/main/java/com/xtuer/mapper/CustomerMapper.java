@@ -25,4 +25,11 @@ public interface CustomerMapper {
      * @param customer 客户对象
      */
     void upsertCustomer(Customer customer);
+
+    /**
+     * 删除指定 ID 的客户
+     *
+     * @param customerId 客户 ID
+     */
+    void deleteCustomer(long customerId);
 }

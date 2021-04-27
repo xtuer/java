@@ -35,7 +35,7 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
                 <Button type="primary" size="small">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+                <Button type="error" size="small" @click="deleteCustomer(customer)">删除</Button>
             </template>
         </Table>
 
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import SalesDao from '@/../public/static-p/js/dao/SalesDao';
+import CustomerDao from '@/../public/static-p/js/dao/CustomerDao';
 import FileUpload from '@/components/FileUpload.vue';
 
 export default {
@@ -94,7 +94,7 @@ export default {
         fetchMoreCustomers() {
             this.loading = true;
 
-            SalesDao.findCustomers(this.filter).then(customers => {
+            CustomerDao.findCustomers(this.filter).then(customers => {
                 this.customers.push(...customers);
 
                 this.more      = customers.length >= this.filter.pageSize;
@@ -105,9 +105,28 @@ export default {
         },
         // 导入客户
         exportCustomers(file) {
-            SalesDao.importCustomers(file.url).then(() => {
+            CustomerDao.importCustomers(file.url).then(() => {
                 this.$Message.success('导入成功');
                 this.searchCustomers();
+            });
+        },
+        // 删除客户
+        deleteCustomer(customer) {
+            // 1. 删除提示
+            // 2. 从服务器删除成功后才从本地删除
+            // 3. 提示删除成功
+
+            this.$Modal.confirm({
+                title: `确定删除客户 <font color="red">${customer.name}</font> 吗?`,
+                loading: true,
+                onOk: () => {
+                    CustomerDao.deleteCustomer(customer.customerId).then(() => {
+                        const index = this.customers.findIndex(c => c.customerId === customer.customerId); // 客户下标
+                        this.customers.splice(index, 1); // [2] 从服务器删除成功后才从本地删除
+                        this.$Modal.remove();
+                        this.$Message.success('删除成功');
+                    });
+                }
             });
         },
         // 新建搜索条件
