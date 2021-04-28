@@ -26,12 +26,17 @@
             <!-- 其他按钮 -->
             <div>
                 <Button type="default" icon="md-add" @click="editCustomer()">添加客户</Button>
-                <FileUpload class="margin-left-10" excel @on-success="exportCustomers">导入客户</FileUpload>
+                <FileUpload class="margin-left-10" excel @on-success="importCustomers">导入客户</FileUpload>
             </div>
         </div>
 
         <!-- 客户列表 -->
         <Table :data="customers" :columns="columns" :loading="reloading" border @on-column-width-resize="saveTableColumnWidths(arguments)">
+            <!-- 联系人 -->
+            <template slot-scope="{ row: customer }" slot="contacts">
+                <span v-html="contactsToString(customer.contacts)"></span>
+            </template>
+
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
                 <Button type="primary" size="small" @click="editCustomer(customer)">编辑</Button>
@@ -45,7 +50,7 @@
         </div>
 
         <!-- 客户编辑弹窗 -->
-        <CustomerEdit v-model="editCustomerModal" :customer-id="editCustomerId"/>
+        <CustomerEdit v-model="editCustomerModal" :customer-id="editCustomerId" @on-ok="customerSaved"/>
     </div>
 </template>
 
@@ -75,7 +80,8 @@ export default {
                 { key : 'address',    title: '地址', width: 150, resizable: true },
                 { key : 'owner',      title: '负责人', width: 150, resizable: true },
                 { key : 'remark',     title: '备注', width: 150, resizable: true },
-                { slot: 'action',     title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { slot: 'contacts',   title: '联系人', width: 150, resizable: true },
+                { slot: 'action',     title: '操作', width: 130, align: 'center', className: 'table-action' },
             ],
             editCustomerId   : '0',
             editCustomerModal: false,
@@ -110,7 +116,7 @@ export default {
             });
         },
         // 导入客户
-        exportCustomers(file) {
+        importCustomers(file) {
             CustomerDao.importCustomers(file.url).then(() => {
                 this.$Message.success('导入成功');
                 this.searchCustomers();
@@ -132,6 +138,16 @@ export default {
 
             this.editCustomerModal = true;
         },
+        // 客户保存成功
+        customerSaved(customer) {
+            const index = this.customers.findIndex(c => c.customerId === customer.customerId);
+
+            if (index >= 0) {
+                this.customers.replace(index, customer);
+            } else {
+                this.customers.insert(0, customer);
+            }
+        },
         // 删除客户
         deleteCustomer(customer) {
             // 1. 删除提示
@@ -151,6 +167,15 @@ export default {
                 }
             });
         },
+        // 客户联系人转为字符串
+        contactsToString(contacts) {
+            let text = '';
+            for (let c of contacts) {
+                text += `<div class="customer-contact">${c.name}-${c.department}-${c.phone}</div>`;
+            }
+
+            return text;
+        },
         // 新建搜索条件
         newFilter() {
             return { // 搜索条件
@@ -166,4 +191,15 @@ export default {
 </script>
 
 <style lang="scss">
+.customers {
+    .customer-contact {
+        color: $iconColor;
+        border: 1px solid $borderColor;
+        border-radius: 4px;
+
+        &:not(:first-child) {
+            margin-top: 5px;
+        }
+    }
+}
 </style>

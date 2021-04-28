@@ -81,7 +81,7 @@ public class CustomerController extends BaseController {
      * @param customer 客户
      */
     @PutMapping(Urls.API_SALES_CUSTOMERS_BY_ID)
-    public Result<Customer> upsertCustomer(@Valid Customer customer, BindingResult bindingResult) {
+    public Result<Customer> upsertCustomer(@RequestBody @Valid Customer customer, BindingResult bindingResult) {
         // 如果校验失败，返回失败信息给前端
         if(bindingResult.hasErrors()){
             return Result.fail(Utils.getBindingMessage(bindingResult));

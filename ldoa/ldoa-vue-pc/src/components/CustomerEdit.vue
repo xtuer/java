@@ -15,42 +15,73 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
 <template>
     <Modal :value="visible" title="客户编辑" :mask-closable="false" class="edit-customer-modal relative"
-        :width="700" :styles="{ top: '60px', marginBottom: '40px' }"
+        :width="700" :styles="{ top: '40px', marginBottom: '80px' }"
         @on-visible-change="showEvent">
         <!-- 弹窗 Body -->
         <Spin v-if="loading" fix size="large"></Spin>
 
-        <Form ref="form" :model="customer" :rules="customerRules" :key="customer.customerId" :label-width="80" class="column-2">
-            <FormItem label="名字:" prop="name">
-                <Input v-model="customer.name" placeholder="请输入名称"/>
-            </FormItem>
-            <FormItem label="编号:" prop="customerSn">
-                <Input v-model="customer.customerSn" placeholder="请输入编号"/>
-            </FormItem>
-            <FormItem label="行业:" prop="business">
-                <Input v-model="customer.business" placeholder="请输入行业"/>
-            </FormItem>
-            <FormItem label="区域:" prop="region">
-                <Input v-model="customer.region" placeholder="请输入区域"/>
-            </FormItem>
-            <FormItem label="电话:" prop="phone">
-                <Input v-model="customer.phone" placeholder="请输入电话"/>
-            </FormItem>
-            <FormItem label="负责人:" prop="owner">
-                <Input v-model="customer.owner" placeholder="请输入负责人"/>
-            </FormItem>
-            <FormItem label="地址:" prop="address" class="grid-span-2">
-                <Input v-model="customer.address" placeholder="请输入地址"/>
-            </FormItem>
-            <FormItem label="备注:" prop="remark" class="grid-span-2">
-                <Input v-model="customer.remark" placeholder="请输入备注"/>
-            </FormItem>
-        </Form>
+        <div class="box">
+            <div class="title">基本信息</div>
+            <div class="content" style="padding-left: 0; padding-right: 0">
+                <Form ref="customerForm" :model="customer" :rules="customerRules" :key="customer.customerId" :label-width="80" class="column-2">
+                    <FormItem label="名字:" prop="name">
+                        <Input v-model="customer.name" placeholder="请输入名称"/>
+                    </FormItem>
+                    <FormItem label="编号:" prop="customerSn">
+                        <Input v-model="customer.customerSn" placeholder="请输入编号"/>
+                    </FormItem>
+                    <FormItem label="行业:" prop="business">
+                        <Input v-model="customer.business" placeholder="请输入行业"/>
+                    </FormItem>
+                    <FormItem label="区域:" prop="region">
+                        <Input v-model="customer.region" placeholder="请输入区域"/>
+                    </FormItem>
+                    <FormItem label="电话:" prop="phone">
+                        <Input v-model="customer.phone" placeholder="请输入电话"/>
+                    </FormItem>
+                    <FormItem label="负责人:" prop="owner">
+                        <Input v-model="customer.owner" placeholder="请输入负责人"/>
+                    </FormItem>
+                    <FormItem label="地址:" prop="address" class="grid-span-2">
+                        <Input v-model="customer.address" placeholder="请输入地址"/>
+                    </FormItem>
+                    <FormItem label="备注:" prop="remark" class="grid-span-2">
+                        <Input v-model="customer.remark" placeholder="请输入备注"/>
+                    </FormItem>
+                </Form>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="title">
+                联系人
+                <Icon type="md-add-circle" class="clickable" size="18" @click="addContact"/>
+            </div>
+            <div class="content">
+                <Form ref="contactsForm" :key="customer.customerId" :label-width="80" class="contact">
+                    <template v-for="(contact, index) in customer.contacts">
+                        <FormItem label="姓名:" prop="name" :key="contact.id + '-1'">
+                            <Input v-model="contact.name" placeholder="请输入姓名"/>
+                        </FormItem>
+                        <FormItem label="部门:" prop="department" :key="contact.id + '-2'">
+                            <Input v-model="contact.department" placeholder="请输入部门"/>
+                        </FormItem>
+                        <FormItem label="手机号:" prop="phone" :key="contact.id + '-3'">
+                            <Input v-model="contact.phone" placeholder="请输入手机号"/>
+                        </FormItem>
+
+                        <FormItem :key="contact.id + '-5'" class="form-item-icon">
+                            <Icon type="md-close" class="clickable" size="16" @click="removeContact(index)"/>
+                        </FormItem>
+                    </template>
+                </Form>
+            </div>
+        </div>
 
         <!-- 底部工具栏 -->
         <div slot="footer">
             <Button type="text" @click="showEvent(false)">取消</Button>
-            <Button type="primary" @click="ok">确定</Button>
+            <Button type="primary" :loading="saving" @click="save(customer)">确定</Button>
         </div>
     </Modal>
 </template>
@@ -70,7 +101,6 @@ export default {
     data() {
         return {
             customer     : this.newCustomer(), // 用于编辑的客户
-            modal        : false,
             saving       : false,
             loading      : false,
             customerRules: {
@@ -93,11 +123,6 @@ export default {
                 this.init();
             }
         },
-        // 点击确定按钮的回调函数
-        ok() {
-            this.$emit('on-ok', []);
-            this.showEvent(false); // 关闭弹窗
-        },
         // 初始化
         init() {
             // 例如从服务器加载数据
@@ -111,7 +136,31 @@ export default {
                 });
             }
 
-            this.$refs.form.resetFields();
+            this.$refs.customerForm.resetFields();
+        },
+        // 添加新联系人
+        addContact() {
+            this.customer.contacts.push(this.newContact());
+        },
+        // 删除联系人
+        removeContact(index) {
+            this.customer.contacts.remove(index);
+        },
+        // 保存客户
+        save(customer) {
+            // 表单验证
+            this.$refs.customerForm.validate(valid => {
+                if (!valid) { return; }
+
+                this.saving = true;
+                CustomerDao.upsertCustomer(customer).then((newCustomer) => {
+                    this.$emit('on-ok', newCustomer);
+                    this.showEvent(false); // 关闭弹窗
+                    this.saving = false;
+                }).catch(() => {
+                    this.saving = false;
+                });
+            });
         },
         // 新客户
         newCustomer() {
@@ -125,14 +174,35 @@ export default {
                 address   : '', // 地址
                 owner     : '', // 负责人
                 remark    : '', // 备注
+                contacts  : [this.newContact()], // 联系人
             };
         },
+        // 新客户联系人
+        newContact() {
+            return { id: Utils.nextId(), name: '', department: '', phone: '' };
+        }
     }
 };
 </script>
 
 <style lang="scss">
 .edit-customer-modal {
+    .box {
+        border: none;
 
+        .content {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    .contact {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 30px;
+    }
+
+    .form-item-icon .ivu-form-item-content {
+        margin-left: 10px !important;
+    }
 }
 </style>

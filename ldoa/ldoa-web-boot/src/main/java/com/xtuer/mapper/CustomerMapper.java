@@ -44,8 +44,9 @@ public interface CustomerMapper {
     /**
      * 判断客户编号是否被使用过
      *
+     * @param customerId 客户 ID
      * @param customerSn 客户编号
      * @return 被使用过返回 true，否则返回 false
      */
-    boolean isCustomerSnUsed(String customerSn);
+    boolean isCustomerSnUsed(long customerId, String customerSn);
 }

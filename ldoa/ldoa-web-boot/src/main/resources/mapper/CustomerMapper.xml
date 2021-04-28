@@ -4,7 +4,7 @@
 <mapper namespace="com.xtuer.mapper.CustomerMapper">
     <!-- 客户的列 -->
     <sql id="customerColumns">
-        customer_id, customer_sn, name, business, region, type, phone, level, importance, status
+        customer_id, customer_sn, name, business, region, type, phone, level, importance, status, contacts_json
     </sql>
 
     <!-- 查询指定 ID 的客户 -->
@@ -29,20 +29,21 @@
                 AND business LIKE CONCAT('%', #{filter.business},'%')
             </if>
         </where>
+        ORDER BY created_at DESC
         LIMIT ${page.offset}, ${page.count}
     </select>
 
     <!-- 插入或者更新客户 -->
     <insert id="upsertCustomer">
         INSERT INTO customer(customer_id, customer_sn, name, business, region, type, phone,
-            level, importance, status, address, owner, remark)
+            level, importance, status, address, owner, remark, contacts_json)
         VALUES (#{customerId}, #{customerSn}, #{name}, #{business}, #{region}, #{type}, #{phone},
-            #{level}, #{importance}, #{status}, #{address}, #{owner}, #{remark})
+            #{level}, #{importance}, #{status}, #{address}, #{owner}, #{remark}, #{contactsJson})
 
         ON DUPLICATE KEY
         UPDATE name = #{name}, business = #{business}, region = #{region}, type = #{type},
             phone = #{phone}, level = #{level}, importance = #{importance}, status = #{status},
-            address = #{address}, owner = #{owner}, remark = #{remark}
+            address = #{address}, owner = #{owner}, remark = #{remark}, contacts_json = #{contactsJson}
     </insert>
 
     <!-- 删除指定 ID 的客户 -->
@@ -51,9 +52,15 @@
     </delete>
 
     <!-- 判断客户编号是否被使用过 -->
-    <select id="isCustomerSnUsed" resultType="bool">
+    <select id="isCustomerSnUsed" resultType="boolean">
         SELECT EXISTS (
-            SELECT 1 FROM customer WHERE customer_sn=#{customer_sn}
+            SELECT 1 FROM customer WHERE
+            <if test="customerId == 0">
+                customer_sn=#{customerSn}
+            </if>
+            <if test="customerId > 0">
+                customer_sn=#{customerSn} AND customer_id != #{customerId}
+            </if>
         )
     </select>
 </mapper>

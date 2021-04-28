@@ -22,10 +22,12 @@ CREATE TABLE customer (
     address     varchar(999)          COMMENT '地址',
     owner       varchar(256)          COMMENT '负责人',
     remark      text                  COMMENT '备注',
+    contacts_json text                COMMENT '客户联系人 JSON',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     PRIMARY KEY (customer_id) COMMENT '机构 ID 作为主键',
-    UNIQUE  KEY index_sn (customer_sn) COMMENT '机构域名唯一'
+    UNIQUE  KEY index_sn (customer_sn) COMMENT '机构域名唯一',
+    KEY idx_created_at (created_at) COMMENT '创建时间建立索引'
 ) ENGINE=InnoDB;

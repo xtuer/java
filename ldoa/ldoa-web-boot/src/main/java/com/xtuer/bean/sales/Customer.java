@@ -1,16 +1,22 @@
 package com.xtuer.bean.sales;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 客户
  */
 @Getter
 @Setter
+@JsonIgnoreProperties({"contactsJson"})
 public class Customer {
     /**
      * 客户 ID
@@ -87,4 +93,23 @@ public class Customer {
      */
     @Excel(name = "状态")
     private String status;
+
+    /**
+     * 客户联系人
+     */
+    private List<CustomerContact> contacts = new LinkedList<>();
+
+    /**
+     * 客户联系人 JSON
+     */
+    private String contactsJson;
+
+    private String getContactsJson() {
+        return Utils.toJson(contacts);
+    }
+
+    private void setContactsJson(String contactsJson) {new LinkedList<>();
+        this.contacts = Utils.fromJson(contactsJson, new TypeReference<LinkedList<CustomerContact>>() {});
+        this.contacts = this.contacts != null ? this.contacts : new LinkedList<>();
+    }
 }

@@ -26,14 +26,15 @@ public class CustomerService extends BaseService {
         // 2. 如果是新建的客户，编码不能为使用过
         // 3. 保存到数据库
 
+        // [1] 数据校验
+        // 客户编号没有使用过
+        String customerSn = customer.getCustomerSn();
+        if (customerMapper.isCustomerSnUsed(customer.getCustomerId(), customerSn)) {
+            return Result.fail("客户编号 {} 已经被使用，请换一个新的!", customerSn);
+        }
+
         // [2] 如果是新建的客户，编码不能为使用过
         if (customer.getCustomerId() == 0) {
-            String customerSn = customer.getCustomerSn();
-
-            if (customerMapper.isCustomerSnUsed(customerSn)) {
-                return Result.fail("客户编号 {} 已经被使用，请换一个新的!", customerSn);
-            }
-
             customer.setCustomerId(super.nextId());
         }
 

@@ -64,7 +64,7 @@ export default class CustomerDao {
     static upsertCustomer(customer) {
         return Rest.update(
             Urls.API_SALES_CUSTOMERS_BY_ID,
-            { params: { customerId: customer.customerId, data: customer } }
+            { params: { customerId: customer.customerId }, data: customer, json: true }
         ).then(({ data: newCustomer, success, message }) => {
             return Utils.response(newCustomer, success, message);
         });
