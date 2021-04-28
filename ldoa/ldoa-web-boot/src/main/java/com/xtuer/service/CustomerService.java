@@ -2,6 +2,7 @@ package com.xtuer.service;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import com.xtuer.bean.Result;
 import com.xtuer.bean.sales.Customer;
 import com.xtuer.mapper.CustomerMapper;
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +20,28 @@ import java.util.List;
 public class CustomerService extends BaseService {
     @Autowired
     private CustomerMapper customerMapper;
+
+    public Result<Customer> upsertCustomer(Customer customer) {
+        // 1. 数据校验
+        // 2. 如果是新建的客户，编码不能为使用过
+        // 3. 保存到数据库
+
+        // [2] 如果是新建的客户，编码不能为使用过
+        if (customer.getCustomerId() == 0) {
+            String customerSn = customer.getCustomerSn();
+
+            if (customerMapper.isCustomerSnUsed(customerSn)) {
+                return Result.fail("客户编号 {} 已经被使用，请换一个新的!", customerSn);
+            }
+
+            customer.setCustomerId(super.nextId());
+        }
+
+        // [3] 保存到数据库
+        customerMapper.upsertCustomer(customer);
+
+        return Result.ok(customer);
+    }
 
     /**
      * 从 Excel 中导入客户信息

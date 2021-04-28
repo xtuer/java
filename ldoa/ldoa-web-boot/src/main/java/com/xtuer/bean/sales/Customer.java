@@ -4,6 +4,8 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 客户
  */
@@ -19,12 +21,14 @@ public class Customer {
      * 客户编码: 唯一
      */
     @Excel(name = "编号")
+    @NotBlank(message = "客户编号不能为空")
     private String customerSn;
 
     /**
      * 客户名称
      */
     @Excel(name = "名称")
+    @NotBlank(message = "客户名称不能为空")
     private String name;
 
     /**

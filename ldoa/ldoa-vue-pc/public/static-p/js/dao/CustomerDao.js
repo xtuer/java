@@ -3,6 +3,21 @@
  */
 export default class CustomerDao {
     /**
+     * 查找指定 ID 的客户
+     *
+     * 网址: http://localhost:8080/api/sales/customers/{customerId}
+     * 参数: 无
+     *
+     * @param customerId 客户 ID
+     * @return payload 为查询到的客户，查询不到为 null
+     */
+    static findCustomerById(customerId) {
+        return Rest.get(Urls.API_SALES_CUSTOMERS_BY_ID, { params: { customerId } }).then(({ data: customer, success, message }) => {
+            return Utils.response(customer, success, message);
+        });
+    }
+
+    /**
      * 查询客户
      *
      * 网址: http://localhost:8080/api/sales/customers
@@ -34,6 +49,24 @@ export default class CustomerDao {
     static importCustomers(tempFileUrl) {
         return Rest.update(Urls.API_SALES_CUSTOMERS_IMPORT, { data: { tempFileUrl } }).then(({ success, message }) => {
             return Utils.response(null, success, message);
+        });
+    }
+
+    /**
+     * 更新或者插入指定 ID 的客户
+     *
+     * 网址: http://localhost:8080/api/sales/customers/{customerId}
+     * 参数:
+     *      name:
+     *      customerSn:
+     * @param customer 客户
+     */
+    static upsertCustomer(customer) {
+        return Rest.update(
+            Urls.API_SALES_CUSTOMERS_BY_ID,
+            { params: { customerId: customer.customerId, data: customer } }
+        ).then(({ data: newCustomer, success, message }) => {
+            return Utils.response(newCustomer, success, message);
         });
     }
 

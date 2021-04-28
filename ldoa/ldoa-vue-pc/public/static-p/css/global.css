@@ -81,6 +81,10 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
+.grid-span-2 {
+    grid-column: span 2;
+}
+
 /* 有搜索、分页、列表的页面的布局 */
 .list-page {
     display: grid;

@@ -7,6 +7,13 @@
         customer_id, customer_sn, name, business, region, type, phone, level, importance, status
     </sql>
 
+    <!-- 查询指定 ID 的客户 -->
+    <select id="findCustomerById" resultType="Customer">
+        SELECT <include refid="customerColumns"/>
+        FROM customer
+        WHERE customer_id = #{customerId}
+    </select>
+
     <!-- 查询符合条件的客户 -->
     <select id="findCustomers" resultType="Customer">
         SELECT <include refid="customerColumns"/>
@@ -42,4 +49,11 @@
     <delete id="deleteCustomer">
         DELETE FROM customer WHERE customer_id = #{customerId}
     </delete>
+
+    <!-- 判断客户编号是否被使用过 -->
+    <select id="isCustomerSnUsed" resultType="bool">
+        SELECT EXISTS (
+            SELECT 1 FROM customer WHERE customer_sn=#{customer_sn}
+        )
+    </select>
 </mapper>

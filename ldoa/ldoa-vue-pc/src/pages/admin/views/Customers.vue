@@ -25,7 +25,7 @@
 
             <!-- 其他按钮 -->
             <div>
-                <Button type="default" icon="md-add">添加客户</Button>
+                <Button type="default" icon="md-add" @click="editCustomer()">添加客户</Button>
                 <FileUpload class="margin-left-10" excel @on-success="exportCustomers">导入客户</FileUpload>
             </div>
         </div>
@@ -34,7 +34,7 @@
         <Table :data="customers" :columns="columns" :loading="reloading" border @on-column-width-resize="saveTableColumnWidths(arguments)">
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
-                <Button type="primary" size="small">编辑</Button>
+                <Button type="primary" size="small" @click="editCustomer(customer)">编辑</Button>
                 <Button type="error" size="small" @click="deleteCustomer(customer)">删除</Button>
             </template>
         </Table>
@@ -43,15 +43,19 @@
         <div class="list-page-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreCustomers">更多...</Button>
         </div>
+
+        <!-- 客户编辑弹窗 -->
+        <CustomerEdit v-model="editCustomerModal" :customer-id="editCustomerId"/>
     </div>
 </template>
 
 <script>
 import CustomerDao from '@/../public/static-p/js/dao/CustomerDao';
 import FileUpload from '@/components/FileUpload.vue';
+import CustomerEdit from '@/components/CustomerEdit.vue';
 
 export default {
-    components: { FileUpload },
+    components: { FileUpload, CustomerEdit },
     data() {
         return {
             customers : [],
@@ -72,7 +76,9 @@ export default {
                 { key : 'owner',      title: '负责人', width: 150, resizable: true },
                 { key : 'remark',     title: '备注', width: 150, resizable: true },
                 { slot: 'action',     title: '操作', width: 150, align: 'center', className: 'table-action' },
-            ]
+            ],
+            editCustomerId   : '0',
+            editCustomerModal: false,
         };
     },
     mounted() {
@@ -109,6 +115,22 @@ export default {
                 this.$Message.success('导入成功');
                 this.searchCustomers();
             });
+        },
+        // 编辑客户: customer 为 undefined 表示创建，否则表示更新
+        editCustomer(customer) {
+            // 1. 重置表单，避免上一次的验证信息影响到本次编辑
+            // 2. 生成编辑对象的副本
+            // 3. 显示编辑对话框
+
+            if (customer) {
+                // 更新
+                this.editCustomerId = customer.customerId;
+            } else {
+                // 创建
+                this.editCustomerId = '0';
+            }
+
+            this.editCustomerModal = true;
         },
         // 删除客户
         deleteCustomer(customer) {
