@@ -39,10 +39,16 @@
         </div>
 
         <!-- 销售订单列表 -->
-        <Table :data="salesOrders" :columns="columns" :loading="reloading" border>
-            <!-- 介绍信息 -->
-            <template slot-scope="{ row: salesOrder }" slot="info">
-                {{ salesOrder.userId }}
+        <Table :data="salesOrders" :columns="columns" :loading="reloading" border
+            @on-column-width-resize="saveTableColumnWidths(arguments)"
+        >
+            <!-- 签约日期 -->
+            <template slot-scope="{ row: salesOrder }" slot="agreementDate">
+                {{ salesOrder.agreementDate | formatDateSimple }}
+            </template>
+            <!-- 交货日期 -->
+            <template slot-scope="{ row: salesOrder }" slot="deliveryDate">
+                {{ salesOrder.deliveryDate | formatDateSimple }}
             </template>
 
             <!-- 操作按钮 -->
@@ -81,15 +87,24 @@ export default {
             reloading: false,
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'nickname', title: '名字', width: 150 },
-                { slot: 'info',   title: '介绍', minWidth: 500 },
-                { slot: 'action', title: '操作', width: 150, align: 'center', className: 'table-action' },
+                { key : 'salesOrderSn', title: '订单编号', width: 150, resizable: true },
+                { key : 'topic', title: '主题', width: 150, resizable: true },
+                { key : 'ownerName', title: '负责人', width: 150, resizable: true },
+                { key : 'customerName', title: '客户', width: 150, resizable: true },
+                { key : 'business', title: '行业', width: 150, resizable: true },
+                { key : 'workUnit', title: '执行单位', width: 150, resizable: true },
+                { key : 'customerContact', title: '联系人', width: 150, resizable: true },
+                { slot: 'agreementDate', title: '签约日期', width: 110, align: 'center' },
+                { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center' },
+                { key : 'remark', title: '备注', minWidth: 250 },
+                { slot: 'action', title: '操作', width: 130, align: 'center', className: 'table-action' },
             ],
             salesOrderId  : '0',
             salesOrderEdit: false,
         };
     },
     mounted() {
+        this.restoreTableColumnWidths(this.columns);
         this.searchSalesOrders();
     },
     methods: {
@@ -110,13 +125,14 @@ export default {
                 this.filter.endAt   = '';
             }
 
-            // this.fetchMoreSalesOrders();
+            this.fetchMoreSalesOrders();
         },
         // 点击更多按钮加载下一页的销售订单
         fetchMoreSalesOrders() {
             this.loading = true;
 
             SalesOrderDao.findSalesOrders(this.filter).then(salesOrders => {
+                console.log(salesOrders);
                 this.salesOrders.push(...salesOrders);
 
                 this.more      = salesOrders.length >= this.filter.pageSize;

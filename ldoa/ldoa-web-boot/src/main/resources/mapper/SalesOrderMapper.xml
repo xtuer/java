@@ -3,6 +3,22 @@
 
 <!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
 <mapper namespace="com.xtuer.mapper.SalesOrderMapper">
+    <!-- 销售订单的列 -->
+    <sql id="salesOrderColumns">
+        so.sales_order_id, so.sales_order_sn, so.topic, so.agreement_date, so.delivery_date,
+        so.owner_id, so.customer_id, so.customer_contact, so.business, so.work_unit, so.remark, so.produce_order_id
+    </sql>
+
+    <!-- 查询符合条件的销售订单 -->
+    <select id="findSalesOrders" resultType="SalesOrder">
+        SELECT <include refid="salesOrderColumns"/>,
+            user.nickname AS owner_name, c.name AS customer_name
+        FROM sales_order so
+            LEFT JOIN user ON user.user_id = so.owner_id
+            LEFT JOIN customer c ON c.customer_id = so.customer_id
+        ORDER BY so.created_at DESC
+    </select>
+
     <!-- 更新或者插入销售订单 -->
     <insert id="upsertSalesOrder">
         INSERT INTO sales_order (sales_order_id, sales_order_sn, topic, agreement_date, delivery_date,

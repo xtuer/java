@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 销售订单的服务
  */
@@ -28,6 +30,15 @@ public class SalesOrderService extends BaseService {
 
     @Autowired
     private SalesOrderMapper salesOrderMapper;
+
+    /**
+     * 查询符合条件的销售订单
+     *
+     * @return 返回销售订单的数组
+     */
+    public List<SalesOrder> findSalesOrders() {
+        return salesOrderMapper.findSalesOrders();
+    }
 
     /**
      * 更新或者插入销售订单
