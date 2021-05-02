@@ -53,8 +53,9 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: salesOrder }" slot="action">
-                <Button type="primary" size="small">编辑</Button>
-                <Button type="error" size="small">删除</Button>
+                <a>编辑</a>
+                <span class="action-seperator"></span>
+                <a class="delete">删除</a>
             </template>
         </Table>
 
@@ -85,6 +86,7 @@ export default {
             more     : false, // 是否还有更多销售订单
             loading  : false, // 加载中
             reloading: false,
+            tableName: 'sales-orders-table',
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'salesOrderSn', title: '订单编号', width: 150, resizable: true },
@@ -97,7 +99,7 @@ export default {
                 { slot: 'agreementDate', title: '签约日期', width: 110, align: 'center' },
                 { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center' },
                 { key : 'remark', title: '备注', minWidth: 250 },
-                { slot: 'action', title: '操作', width: 130, align: 'center', className: 'table-action' },
+                { slot: 'action', title: '操作', width: 110, align: 'center', className: 'table-action' },
             ],
             salesOrderId  : '0',
             salesOrderEdit: false,

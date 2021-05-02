@@ -150,6 +150,27 @@
 .table-action button:not(:first-child) {
     margin-left: 8px;
 }
+.table-action .ivu-table-cell-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-action a:hover, .table-action a.delete:hover {
+    color: black;
+    transition: color .8s;
+}
+.table-action a.delete {
+    color: #ed4014;
+}
+.table-action .action-seperator {
+    margin: 0 5px;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    height: 14px;
+}
+
 .table-index .ivu-table-cell {
     padding: 2px;
 }
