@@ -9,7 +9,7 @@
         o.order_date, o.delivery_date, o.salesperson_id, o.calibrated, o.calibration_info,
         o.requirement, o.state, o.attachment_id, o.product_codes, o.product_names, o.created_at,
 
-        oi.order_item_id, oi.count, oi.comment,
+        oi.order_item_id, oi.count, oi.comment, oi.price, oi.cost_price, oi.consultation_fee,
 
         p.product_id AS product_id, p.name AS product_name, p.code AS product_code, p.model AS product_model,
 
@@ -77,10 +77,13 @@
 
     <!-- 插入订单项 -->
     <insert id="insertOrderItems">
-        INSERT INTO order_item (order_id, order_item_id, product_id, count, comment)
+        INSERT INTO order_item (order_id, order_item_id, product_id, count, comment, price, cost_price, consultation_fee)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.orderId}, #{item.orderItemId}, #{item.productId}, #{item.count}, #{item.comment})
+            (
+                #{item.orderId}, #{item.orderItemId}, #{item.productId}, #{item.count}, #{item.comment},
+                #{item.price}, #{item.costPrice}, #{item.consultationFee}
+            )
         </foreach>
     </insert>
 
@@ -125,6 +128,9 @@
         <result property="productId" column="product_id"/>
         <result property="count"     column="count"/>
         <result property="comment"   column="comment"/>
+        <result property="price"     column="price"/>
+        <result property="costPrice" column="cost_price"/>
+        <result property="consultationFee" column="consultation_fee"/>
 
         <association property="product" resultMap="com.xtuer.mapper.ProductMapper.productMap"/>
     </resultMap>

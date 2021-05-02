@@ -38,6 +38,21 @@ public class OrderItem {
     private String comment;
 
     /**
+     * 单价
+     */
+    private double price;
+
+    /**
+     * 成本价
+     */
+    private double costPrice;
+
+    /**
+     * 咨询费
+     */
+    private double consultationFee;
+
+    /**
      * 订单项的产品，每个产品项对应一个产品
      */
     private Product product;

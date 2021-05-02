@@ -9,6 +9,16 @@
         so.owner_id, so.customer_id, so.customer_contact, so.business, so.work_unit, so.remark, so.produce_order_id
     </sql>
 
+    <!-- 查询指定 ID 的销售订单 -->
+    <select id="findSalesOrderById" resultType="SalesOrder">
+        SELECT <include refid="salesOrderColumns"/>,
+        user.nickname AS owner_name, c.name AS customer_name
+        FROM sales_order so
+        LEFT JOIN user ON user.user_id = so.owner_id
+        LEFT JOIN customer c ON c.customer_id = so.customer_id
+        WHERE sales_order_id = #{orderId}
+    </select>
+
     <!-- 查询符合条件的销售订单 -->
     <select id="findSalesOrders" resultType="SalesOrder">
         SELECT <include refid="salesOrderColumns"/>,

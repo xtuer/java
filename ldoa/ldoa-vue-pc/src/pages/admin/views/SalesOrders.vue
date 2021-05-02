@@ -53,7 +53,7 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: salesOrder }" slot="action">
-                <a>编辑</a>
+                <a @click="editSalesOrder(salesOrder.salesOrderId)">编辑</a>
                 <span class="action-seperator"></span>
                 <a class="delete">删除</a>
             </template>
@@ -65,7 +65,7 @@
         </div>
 
         <!-- 销售订单编辑弹窗 -->
-        <SalesOrderEdit v-model="salesOrderEdit" :sales-order-id="salesOrderId"/>
+        <SalesOrderEdit v-model="salesOrderEdit" :sales-order-id="salesOrderId" @on-ok="salesOrderSaved"/>
     </div>
 </template>
 
@@ -78,7 +78,7 @@ export default {
     components: { SalesOrderEdit },
     data() {
         return {
-            salesOrders   : [],
+            salesOrders: [],
             filter     : this.newFilter(), // 搜索条件
             filterKey  : 'email',  // 搜索的 Key
             filterValue: '',       // 搜索的 Value
@@ -142,6 +142,21 @@ export default {
                 this.reloading = false;
                 this.filter.pageNumber++;
             });
+        },
+        // 编辑销售订单
+        editSalesOrder(salesOrderId) {
+            this.salesOrderId = salesOrderId;
+            this.salesOrderEdit = true;
+        },
+        // 销售订单保存成功
+        salesOrderSaved(salesOrder) {
+            const index = this.salesOrders.findIndex(o => o.salesOrderId === salesOrder.salesOrderId);
+
+            if (index >= 0) {
+                this.salesOrders.replace(index, salesOrder);
+            } else {
+                this.salesOrders.insert(0, salesOrder);
+            }
         },
         // 新建搜索条件
         newFilter() {

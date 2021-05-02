@@ -23,7 +23,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div class="box">
             <div class="title">基本信息</div>
             <div class="content" style="padding-left: 0">
-                <Form ref="salesOrderForm" :model="salesOrder" :rules="salesOrderRules" :key="salesOrder.salesOrderId" :label-width="85" class="column-3">
+                <Form ref="salesOrderForm" :model="salesOrder" :rules="salesOrderRules" :key="salesOrder.salesOrderId" :label-width="90" class="column-3">
                     <FormItem label="主题:" prop="topic">
                         <Input v-model="salesOrder.topic" placeholder="请输入主题"/>
                     </FormItem>
@@ -191,11 +191,17 @@ export default {
         // 初始化
         init() {
             // 例如从服务器加载数据
+            this.$refs.salesOrderForm.resetFields();
+
             if (this.salesOrderId === '0') {
                 this.salesOrder = this.newSalesOrder();
+            } else {
+                this.loading = true;
+                SalesOrderDao.findSalesOrder(this.salesOrderId).then(salesOrder => {
+                    this.salesOrder = salesOrder;
+                    this.loading = false;
+                });
             }
-
-            this.$refs.salesOrderForm.resetFields();
         },
         // 负责人选择完成
         ownerSelected(owner) {
@@ -231,28 +237,40 @@ export default {
         saveSalesOrder() {
             // 表单验证
             this.$refs.salesOrderForm.validate(valid => {
+                // 1. 使用规则校验
+                // 2. 过滤掉没有选择产品的生产订单项
+                // 3. 生产订单至少选择一个产品
+                // 4. 新创建的生产订单项的 ID 设置为 0
+                // 5. 提交到服务器，成功则关闭弹窗
+
+                // [1] 使用规则校验
                 if (!valid) { return; }
 
                 // 生产订单至少选择一个产品
                 const salesOrder = Utils.clone(this.salesOrder);
+
+                // [2] 过滤掉没有选择产品的生产订单项
                 salesOrder.produceOrder.items = salesOrder.produceOrder.items.filter(item => {
                     return Utils.isValidId(item.product.productId);
                 });
+
+                // [3] 生产订单至少选择一个产品
                 if (salesOrder.produceOrder.items.length === 0) {
                     this.$Message.error('请选择产品');
                     return;
                 }
 
-                // 新创建的生产订单项的 ID 设置为 0
+                // [4] 新创建的生产订单项的 ID 设置为 0
                 salesOrder.produceOrder.items.forEach(item => {
                     if (item.neu) {
                         item.orderItemId = '0';
                     }
                 });
 
+                // [5] 提交到服务器，成功则关闭弹窗
                 this.saving = true;
-                SalesOrderDao.upsertSalesOrder(salesOrder).then(newOrder => {
-                    this.$emit('on-ok', newOrder);
+                SalesOrderDao.upsertSalesOrder(salesOrder).then(modifiedSalesOrder => {
+                    this.$emit('on-ok', modifiedSalesOrder);
                     this.showEvent(false); // 关闭弹窗
                     this.saving = false;
                 }).catch(() => {

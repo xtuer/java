@@ -47,6 +47,9 @@ CREATE TABLE order_item (
     product_id    bigint(20) NOT NULL COMMENT '产品 ID',
     count         int(11) DEFAULT 0   COMMENT '产品数量',
     comment       text                COMMENT '备注',
+    price         double  DEFAULT 0   COMMENT '单价',
+    cost_price    double  DEFAULT 0   COMMENT '成本价',
+    consultation_fee double DEFAULT 0 COMMENT '咨询费',
 
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (order_item_id) COMMENT '订单项 ID 作为主键',

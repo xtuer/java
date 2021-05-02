@@ -9,10 +9,7 @@ import com.xtuer.service.SalesOrderService;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,6 +24,20 @@ public class SalesOrderController extends BaseController {
 
     @Autowired
     private SalesOrderMapper salesOrderMapper;
+
+    /**
+     * 查询指定 ID 的销售订单
+     *
+     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}
+     * 参数: 无
+     *
+     * @param salesOrderId 销售订单 ID
+     * @return payload 为销售订单，查询不到时为 null
+     */
+    @GetMapping(Urls.API_SALES_ORDERS_BY_ID)
+    public Result<SalesOrder> findSalesOrder(@PathVariable long salesOrderId) {
+        return Result.single(salesOrderService.findSalesOrder(salesOrderId));
+    }
 
     /**
      * 查询符合条件的销售订单

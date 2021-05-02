@@ -39,8 +39,11 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
-                <Button type="primary" size="small" @click="editCustomer(customer)">编辑</Button>
-                <Button type="error" size="small" @click="deleteCustomer(customer)">删除</Button>
+                <a @click="editCustomer(customer)">编辑</a>
+                <span class="action-seperator"></span>
+                <a class="delete" @click="deleteCustomer(customer)">删除</a>
+                <!-- <Button type="primary" size="small" @click="editCustomer(customer)">编辑</Button>
+                <Button type="error" size="small" @click="deleteCustomer(customer)">删除</Button> -->
             </template>
         </Table>
 
@@ -81,7 +84,7 @@ export default {
                 { key : 'owner',      title: '负责人', width: 150, resizable: true },
                 { key : 'remark',     title: '备注', width: 150, resizable: true },
                 { slot: 'contacts',   title: '联系人', width: 150, resizable: true },
-                { slot: 'action',     title: '操作', width: 130, align: 'center', className: 'table-action' },
+                { slot: 'action',     title: '操作', width: 110, align: 'center', className: 'table-action' },
             ],
             editCustomerId   : '0',
             editCustomerModal: false,

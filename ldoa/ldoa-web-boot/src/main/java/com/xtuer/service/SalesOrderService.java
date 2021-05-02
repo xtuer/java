@@ -32,6 +32,30 @@ public class SalesOrderService extends BaseService {
     private SalesOrderMapper salesOrderMapper;
 
     /**
+     * 查询指定 ID 的销售订单
+     *
+     * @param salesOrderId 销售订单 ID
+     * @return 返回查询到的销售订单，查询不到返回 null
+     */
+    public SalesOrder findSalesOrder(long salesOrderId) {
+        // 1. 查询销售订单
+        // 2. 查询生产订单
+
+        // [1] 查询销售订单
+        SalesOrder salesOrder = salesOrderMapper.findSalesOrderById(salesOrderId);
+
+        if (salesOrder == null) {
+            return null;
+        }
+
+        // [2] 查询生产订单
+        Order produceOrder = orderService.findOrder(salesOrder.getProduceOrderId());
+        salesOrder.setProduceOrder(produceOrder);
+
+        return salesOrder;
+    }
+
+    /**
      * 查询符合条件的销售订单
      *
      * @return 返回销售订单的数组

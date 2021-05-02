@@ -11,6 +11,14 @@ import java.util.List;
 @Mapper
 public interface SalesOrderMapper {
     /**
+     * 查询指定 ID 的销售订单
+     *
+     * @param orderId 订单 ID
+     * @return 返回查询到的销售订单，查询不到返回 null
+     */
+    SalesOrder findSalesOrderById(long orderId);
+
+    /**
      * 查询符合条件的销售订单
      *
      * @return 返回销售订单的数组
