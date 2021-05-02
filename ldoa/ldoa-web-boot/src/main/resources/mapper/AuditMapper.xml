@@ -105,9 +105,11 @@
         SELECT <include refid="auditStepColumns"/>,
             uf.id AS 'attachment.id',
             uf.filename AS 'attachment.filename',
-            uf.url AS 'attachment.url'
+            uf.url AS 'attachment.url',
+            u.nickname AS applicant_nickname
         FROM audit_step ai
             LEFT JOIN uploaded_file uf ON uf.id = ai.attachment_id
+            LEFT JOIN user u ON u.user_id = ai.applicant_id
         WHERE audit_id = #{auditId}
     </select>
 

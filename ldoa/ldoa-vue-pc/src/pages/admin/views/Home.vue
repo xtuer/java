@@ -63,6 +63,7 @@ export default {
                 { label: '销售系统', icon: 'logo-euro', menuItems:
                     [
                         { label: '客户中心', name: 'customers' },
+                        { label: '销售订单', name: 'sales-orders' },
                     ]
                 },
                 { label: '共享文件', icon: 'md-photos', menuItems:

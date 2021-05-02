@@ -1,5 +1,6 @@
 package com.xtuer.service;
 
+import com.xtuer.bean.Const;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.audit.*;
@@ -375,6 +376,21 @@ public class AuditService extends BaseService {
             auditMapper.updateAuditStepAuditor(auditId, nextStep.getStep(), 0L);
 
             log.info("[结束] 撤回审批: 审批 [{}], 阶段 [{}]", auditId, step);
+        }
+    }
+
+    /**
+     * 自动通过审批
+     *
+     * @param targetId 审批目标 ID
+     * @param remark   自动通过审批的备注
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void autoPassAudit(long targetId, String remark) {
+        Audit audit = findAuditOfTarget(targetId);
+
+        for (AuditStep step : audit.getSteps()) {
+            acceptAuditStep(audit.getAuditId(), step.getStep(), true, remark, 0, Const.DEFAULT_PASS_AUDITOR_ID);
         }
     }
 }

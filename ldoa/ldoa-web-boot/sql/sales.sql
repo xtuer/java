@@ -31,3 +31,33 @@ CREATE TABLE customer (
     UNIQUE  KEY index_sn (customer_sn) COMMENT '机构域名唯一',
     KEY idx_created_at (created_at) COMMENT '创建时间建立索引'
 ) ENGINE=InnoDB;
+
+#--------------------------------------------------------------------------------------
+# 表名: sales_order
+# 作者: 黄彪
+# 日期: 2021-05-02
+# 版本: 1.0
+# 描述: 销售订单
+#--------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS sales_order;
+
+CREATE TABLE sales_order (
+    sales_order_Id   bigint(20)   NOT NULL COMMENT '销售订单 ID',
+    produce_order_Id bigint(20)   NOT NULL COMMENT '生产订单 ID',
+    sales_order_sn   varchar(128) NOT NULL COMMENT '销售订单编号',
+    topic            varchar(128) NOT NULL COMMENT '主题',
+    agreement_date   datetime     NOT NULL COMMENT '签约日期',
+    delivery_date    datetime     NOT NULL COMMENT '交货日期',
+    owner_Id         bigint(20)   NOT NULL COMMENT '负责人 ID',
+    customer_id      bigint(20)   NOT NULL COMMENT '客户 ID',
+    customer_contact varchar(256)          COMMENT '客户联系人',
+    business         varchar(128)          COMMENT '行业',
+    work_unit        varchar(128)          COMMENT '执行单位',
+    remark           text                  COMMENT '备注',
+
+    created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+
+    PRIMARY KEY (sales_order_Id) COMMENT '销售订单 ID 作为主键',
+    KEY idx_created_at (created_at) COMMENT '创建时间建立索引'
+) ENGINE=InnoDB;

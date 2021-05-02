@@ -115,6 +115,7 @@ public interface Urls {
     String API_SALES_CUSTOMERS = "/api/sales/customers"; // 客户
     String API_SALES_CUSTOMERS_BY_ID = "/api/sales/customers/{customerId}"; // 指定 ID 的客户
     String API_SALES_CUSTOMERS_IMPORT = "/api/sales/customers/import"; // 导入客户
+    String API_SALES_ORDERS_BY_ID = "/api/sales/salesOrders/{salesOrderId}"; // 指定 ID 的销售订单
 
     // 表格配置
     String API_TABLE_CONFIG_BY_TABLE_NAME_AND_USER = "/api/tables/{tableName}/users/{userId}/config";

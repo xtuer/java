@@ -13,7 +13,7 @@
         <Table :data="users" :columns="columns" :loading="reloading" border
             @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
-            <!-- 介绍信息 -->
+            <!-- 用户角色 -->
             <template slot-scope="{ row: user }" slot="roles">
                 <Tag v-for="roleValue in user.roles" :key="roleValue" color="cyan">{{ roleValue | roleName }}</Tag>
             </template>

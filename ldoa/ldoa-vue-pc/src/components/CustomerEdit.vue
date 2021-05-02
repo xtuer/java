@@ -55,7 +55,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div class="box">
             <div class="title">
                 联系人
-                <Icon type="md-add-circle" class="clickable" size="18" @click="addContact"/>
+                <Icon type="md-add-circle" class="clickable margin-left-10" size="18" @click="addContact"/>
             </div>
             <div class="content">
                 <Form ref="contactsForm" :key="customer.customerId" :label-width="80" class="contact">
@@ -189,6 +189,11 @@ export default {
 .edit-customer-modal {
     .box {
         border: none;
+
+        .title {
+            display: flex;
+            align-items: center;
+        }
 
         .content {
             padding-left: 0;

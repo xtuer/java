@@ -42,10 +42,11 @@ public interface UserMapper {
      * 查询用户，nickname 不为空时使用 LIKE 匹配，为空时返回所有用户
      *
      * @param nickname 姓名
+     * @param username 账号
      * @param page     分页
      * @return 返回用户列表
      */
-    List<User> findUsersLikeNickname(String nickname, Page page);
+    List<User> findUsersLikeNickname(String nickname, String username, Page page);
 
     /**
      * 插入或更新用户: 如果 ID 存在或者 school_id + username 的组合存在则进行更新

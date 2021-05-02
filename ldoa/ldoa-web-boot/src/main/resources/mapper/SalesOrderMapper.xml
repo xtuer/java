@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 非常重要：必须是 Mapper 类的全路径 -->
+<mapper namespace="com.xtuer.mapper.SalesOrderMapper">
+    <!-- 更新或者插入销售订单 -->
+    <insert id="upsertSalesOrder">
+        INSERT INTO sales_order (sales_order_id, sales_order_sn, topic, agreement_date, delivery_date,
+            owner_id, customer_id, customer_contact, business, work_unit, remark, produce_order_id)
+        VALUES(#{salesOrderId}, #{salesOrderSn}, #{topic}, #{agreementDate}, #{deliveryDate},
+            #{ownerId}, #{customerId}, #{customerContact}, #{business}, #{workUnit}, #{remark}, #{produceOrderId})
+
+        ON DUPLICATE KEY
+        UPDATE topic = #{topic}, agreement_date = #{agreementDate}, delivery_date = #{deliveryDate},
+            owner_id = #{ownerId}, customer_id = #{customerId}, customer_contact = #{customerContact},
+            business = #{business}, work_unit = #{workUnit}, remark = #{remark}
+    </insert>
+</mapper>
