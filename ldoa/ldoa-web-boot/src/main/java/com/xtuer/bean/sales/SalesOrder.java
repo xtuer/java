@@ -86,6 +86,21 @@ public class SalesOrder {
     private String remark;
 
     /**
+     * 订单单价
+     */
+    private double totalPrice;
+
+    /**
+     * 订单成本价
+     */
+    private double totalCostPrice;
+
+    /**
+     * 订单咨询费
+     */
+    private double totalConsultationFee;
+
+    /**
      * 生产订单 ID
      */
     private long produceOrderId;

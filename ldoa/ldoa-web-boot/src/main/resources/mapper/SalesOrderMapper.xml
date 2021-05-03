@@ -6,7 +6,8 @@
     <!-- 销售订单的列 -->
     <sql id="salesOrderColumns">
         so.sales_order_id, so.sales_order_sn, so.topic, so.agreement_date, so.delivery_date,
-        so.owner_id, so.customer_id, so.customer_contact, so.business, so.work_unit, so.remark, so.produce_order_id
+        so.owner_id, so.customer_id, so.customer_contact, so.business, so.work_unit, so.remark, so.produce_order_id,
+        so.total_price, so.total_cost_price, so.total_consultation_fee
     </sql>
 
     <!-- 查询指定 ID 的销售订单 -->
@@ -32,13 +33,16 @@
     <!-- 更新或者插入销售订单 -->
     <insert id="upsertSalesOrder">
         INSERT INTO sales_order (sales_order_id, sales_order_sn, topic, agreement_date, delivery_date,
-            owner_id, customer_id, customer_contact, business, work_unit, remark, produce_order_id)
+            owner_id, customer_id, customer_contact, business, work_unit, remark, produce_order_id,
+            total_price, total_cost_price, total_consultation_fee)
         VALUES(#{salesOrderId}, #{salesOrderSn}, #{topic}, #{agreementDate}, #{deliveryDate},
-            #{ownerId}, #{customerId}, #{customerContact}, #{business}, #{workUnit}, #{remark}, #{produceOrderId})
+            #{ownerId}, #{customerId}, #{customerContact}, #{business}, #{workUnit}, #{remark}, #{produceOrderId},
+            #{totalPrice}, #{totalCostPrice}, #{totalConsultationFee})
 
-        ON DUPLICATE KEY
-        UPDATE topic = #{topic}, agreement_date = #{agreementDate}, delivery_date = #{deliveryDate},
+    ON DUPLICATE KEY
+    UPDATE topic = #{topic}, agreement_date = #{agreementDate}, delivery_date = #{deliveryDate},
             owner_id = #{ownerId}, customer_id = #{customerId}, customer_contact = #{customerContact},
-            business = #{business}, work_unit = #{workUnit}, remark = #{remark}
+            business = #{business}, work_unit = #{workUnit}, remark = #{remark},
+            total_price = #{totalPrice}, total_cost_price = #{totalCostPrice}, total_consultation_fee = #{totalConsultationFee}
     </insert>
 </mapper>

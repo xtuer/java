@@ -4,6 +4,7 @@ import com.xtuer.bean.Const;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.Order;
+import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.sales.SalesOrder;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.mapper.SalesOrderMapper;
@@ -75,7 +76,8 @@ public class SalesOrderService extends BaseService {
         // 2. 生成 ID 和编号，如果不存在
         // 3. 生成生产订单
         // 4. 自动通过生产订单的审批
-        // 5. 保存销售订单到数据库
+        // 5. 计算销售订单的单价、咨询费等
+        // 6. 保存销售订单到数据库
 
         // [2] 生成 ID 和编号，如果不存在
         if (!Utils.isValidId(salesOrder.getSalesOrderId())) {
@@ -106,7 +108,20 @@ public class SalesOrderService extends BaseService {
         // [4] 自动通过生产订单的审批
         auditService.autoPassAudit(salesOrder.getProduceOrderId(), "销售订单生成的生产订单，自动审批通过");
 
-        // [5] 保存销售订单到数据库
+        // [5] 计算销售订单的单价、咨询费等
+        double totalPrice = 0;
+        double totalCostPrice = 0;
+        double totalConsultationFee = 0;
+        for (OrderItem item : salesOrder.getProduceOrder().getItems()) {
+            totalPrice += item.getPrice();
+            totalCostPrice += item.getCostPrice();
+            totalConsultationFee += item.getConsultationFee();
+        }
+        salesOrder.setTotalPrice(totalPrice);
+        salesOrder.setTotalCostPrice(totalCostPrice);
+        salesOrder.setTotalConsultationFee(totalConsultationFee);
+
+        // [6] 保存销售订单到数据库
         salesOrderMapper.upsertSalesOrder(salesOrder);
 
         return Result.ok(salesOrder);

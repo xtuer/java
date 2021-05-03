@@ -35,13 +35,18 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" @click="salesOrderEdit = true">创建销售订单</Button>
+            <Button type="primary" icon="md-add" @click="editSalesOrder('0')">创建销售订单</Button>
         </div>
 
         <!-- 销售订单列表 -->
         <Table :data="salesOrders" :columns="columns" :loading="reloading" border
             @on-column-width-resize="saveTableColumnWidths(arguments)"
         >
+            <!-- 订单编号 -->
+            <template slot-scope="{ row: salesOrder }" slot="salesOrderSn">
+                <a @click="showSalesOrderDetails(salesOrder)">{{ salesOrder.salesOrderSn }}</a>
+            </template>
+
             <!-- 签约日期 -->
             <template slot-scope="{ row: salesOrder }" slot="agreementDate">
                 {{ salesOrder.agreementDate | formatDateSimple }}
@@ -66,16 +71,19 @@
 
         <!-- 销售订单编辑弹窗 -->
         <SalesOrderEdit v-model="salesOrderEdit" :sales-order-id="salesOrderId" @on-ok="salesOrderSaved"/>
+
+        <!-- 销售订单详情弹窗 -->
+        <SalesOrderDetails v-model="salesOrderDetails" :sales-order-id="salesOrderId"/>
     </div>
 </template>
 
 <script>
 import SalesOrderDao from '@/../public/static-p/js/dao/SalesOrderDao';
 import SalesOrderEdit from '@/components/SalesOrderEdit.vue';
-
+import SalesOrderDetails from '@/components/SalesOrderDetails.vue';
 
 export default {
-    components: { SalesOrderEdit },
+    components: { SalesOrderEdit, SalesOrderDetails },
     data() {
         return {
             salesOrders: [],
@@ -89,7 +97,7 @@ export default {
             tableName: 'sales-orders-table',
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
-                { key : 'salesOrderSn', title: '订单编号', width: 150, resizable: true },
+                { slot: 'salesOrderSn', title: '订单编号', width: 150, resizable: true },
                 { key : 'topic', title: '主题', width: 150, resizable: true },
                 { key : 'ownerName', title: '负责人', width: 150, resizable: true },
                 { key : 'customerName', title: '客户', width: 150, resizable: true },
@@ -98,11 +106,15 @@ export default {
                 { key : 'customerContact', title: '联系人', width: 150, resizable: true },
                 { slot: 'agreementDate', title: '签约日期', width: 110, align: 'center' },
                 { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center' },
+                { key : 'totalPrice', title: '单价', width: 110 },
+                { key : 'totalCostPrice', title: '成本价', width: 110 },
+                { key : 'totalConsultationFee', title: '咨询费', width: 110 },
                 { key : 'remark', title: '备注', minWidth: 250 },
                 { slot: 'action', title: '操作', width: 110, align: 'center', className: 'table-action' },
             ],
             salesOrderId  : '0',
             salesOrderEdit: false,
+            salesOrderDetails: false,
         };
     },
     mounted() {
@@ -134,7 +146,6 @@ export default {
             this.loading = true;
 
             SalesOrderDao.findSalesOrders(this.filter).then(salesOrders => {
-                console.log(salesOrders);
                 this.salesOrders.push(...salesOrders);
 
                 this.more      = salesOrders.length >= this.filter.pageSize;
@@ -157,6 +168,11 @@ export default {
             } else {
                 this.salesOrders.insert(0, salesOrder);
             }
+        },
+        // 显示销售订单详情
+        showSalesOrderDetails(salesOrder) {
+            this.salesOrderId = salesOrder.salesOrderId;
+            this.salesOrderDetails = true;
         },
         // 新建搜索条件
         newFilter() {
