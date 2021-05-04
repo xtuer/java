@@ -5,7 +5,7 @@
     <div class="audit-step-received list-page">
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
-            <RadioGroup v-model="filter.state" type="button" @on-change="searchAuditItems">
+            <RadioGroup v-model="filter.state" type="button" button-style="solid" @on-change="searchAuditItems">
                 <Radio v-for="s in window.AUDIT_ITEM_STATES" :key="s.value" :label="s.value">{{ s.label }}</Radio>
             </RadioGroup>
         </div>

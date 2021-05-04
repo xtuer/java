@@ -75,6 +75,12 @@ export default new Router({
                     name: 'sales-orders',
                     component: () => import(/* webpackChunkName: "product" */ './views/SalesOrders.vue'),
                 },
+                // 销售订单收款情况
+                {
+                    path: '/sales-order-payment',
+                    name: 'sales-order-payment',
+                    component: () => import(/* webpackChunkName: "product" */ './views/SalesOrderPayment.vue'),
+                },
                 // =====================================================================================
                 //                                         共享文件
                 // =====================================================================================
