@@ -46,7 +46,6 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: salesOrder }" slot="action">
                 <a @click="editSalesOrder(salesOrder.salesOrderId)">编辑</a>
-                <span class="action-seperator"></span>
                 <a class="delete">删除</a>
             </template>
         </Table>

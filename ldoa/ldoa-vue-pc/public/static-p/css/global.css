@@ -163,12 +163,31 @@
 .table-action a.delete {
     color: #ed4014;
 }
-.table-action .action-seperator {
+/* .table-action .action-seperator {
     margin: 0 5px;
     width: 1px;
     background: rgba(0, 0, 0, 0.15);
     display: inline-block;
     height: 14px;
+} */
+
+.table-action a {
+    color: blue;
+    position: relative;
+    margin-right: 9px;
+}
+.table-action a:after {
+    content: "|";
+    width: 1px;
+    position: absolute;
+    right: -4px;
+    top: -1px;
+}
+.table-action a:last-child {
+    margin-right: 0;
+}
+.table-action a:last-child:after {
+    display: none;
 }
 
 .table-index .ivu-table-cell {

@@ -40,7 +40,6 @@
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
                 <a @click="editCustomer(customer)">编辑</a>
-                <span class="action-seperator"></span>
                 <a class="delete" @click="deleteCustomer(customer)">删除</a>
                 <!-- <Button type="primary" size="small" @click="editCustomer(customer)">编辑</Button>
                 <Button type="error" size="small" @click="deleteCustomer(customer)">删除</Button> -->
