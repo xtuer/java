@@ -27,7 +27,19 @@
         FROM sales_order so
             LEFT JOIN user ON user.user_id = so.owner_id
             LEFT JOIN customer c ON c.customer_id = so.customer_id
+        <where>
+            <if test="filter.topic!=null and filter.topic!='' ">
+                AND topic LIKE CONCAT('%', #{filter.topic},'%')
+            </if>
+            <if test="filter.business!=null and filter.business!='' ">
+                AND business LIKE CONCAT('%', #{filter.business},'%')
+            </if>
+            <if test="filter.customerName!=null and filter.customerName!='' ">
+                AND so.customer_id IN (SELECT customer_id FROM customer WHERE name LIKE CONCAT('%', #{filter.customerName},'%'))
+            </if>
+        </where>
         ORDER BY so.created_at DESC
+        LIMIT ${page.offset}, ${page.count}
     </select>
 
     <!-- 更新或者插入销售订单 -->

@@ -10,27 +10,14 @@
             <!-- 搜索条件 -->
             <div class="filter">
                 <!-- 指定条件的搜索 -->
-                <Input v-model="filter.nickname" placeholder="请输入查询条件">
-                    <span slot="prepend">姓甚名谁</span>
+                <Input v-model="filter.customerName" placeholder="请输入查询条件" @on-enter="searchSalesOrders">
+                    <span slot="prepend">客户</span>
                 </Input>
-
-                <!-- 时间范围 -->
-                <DatePicker v-model="dateRange"
-                            format="MM-dd"
-                            separator=" 至 "
-                            type="daterange"
-                            data-prepend="创建时间"
-                            class="date-picker"
-                            split-panels
-                            placeholder="请选择创建时间范围">
-                </DatePicker>
-
-                <!-- 选择条件的搜索 -->
-                <Input v-model="filterValue" transfer placeholder="请输入查询条件" search enter-button @on-search="searchSalesOrders">
-                    <Select v-model="filterKey" slot="prepend">
-                        <Option value="email">邮件地址</Option>
-                        <Option value="phone">电话号码</Option>
-                    </Select>
+                <Input v-model="filter.business" placeholder="请输入查询条件" @on-enter="searchSalesOrders">
+                    <span slot="prepend">行业</span>
+                </Input>
+                <Input v-model="filter.topic" placeholder="请输入查询条件" search enter-button @on-search="searchSalesOrders">
+                    <span slot="prepend">主题</span>
                 </Input>
             </div>
 
@@ -127,17 +114,22 @@ export default {
             this.salesOrders               = [];
             this.more                   = false;
             this.reloading              = true;
-            this.filter                 = { ...this.newFilter(), name: this.filter.nickname };
+            this.filter                 = {
+                ...this.newFilter(),
+                customerName: this.filter.customerName,
+                topic:  this.filter.topic,
+                business: this.filter.business
+            };
             this.filter[this.filterKey] = this.filterValue;
 
             // 如果不需要时间范围，则删除
-            if (this.dateRange[0] && this.dateRange[1]) {
-                this.filter.startAt = this.dateRange[0].format('yyyy-MM-dd');
-                this.filter.endAt   = this.dateRange[1].format('yyyy-MM-dd');
-            } else {
-                this.filter.startAt = '';
-                this.filter.endAt   = '';
-            }
+            // if (this.dateRange[0] && this.dateRange[1]) {
+            //     this.filter.startAt = this.dateRange[0].format('yyyy-MM-dd');
+            //     this.filter.endAt   = this.dateRange[1].format('yyyy-MM-dd');
+            // } else {
+            //     this.filter.startAt = '';
+            //     this.filter.endAt   = '';
+            // }
 
             this.fetchMoreSalesOrders();
         },
@@ -177,11 +169,11 @@ export default {
         // 新建搜索条件
         newFilter() {
             return { // 搜索条件
-                // customerSn : '',
-                // business: '',
-                nickname  : '',
-                pageSize  : 50,
-                pageNumber: 1,
+                topic       : '',
+                customerName: '',
+                business    : '',
+                pageSize    : 50,
+                pageNumber  : 1,
             };
         },
     }

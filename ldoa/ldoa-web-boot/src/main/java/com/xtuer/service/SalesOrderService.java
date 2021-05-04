@@ -1,11 +1,13 @@
 package com.xtuer.service;
 
 import com.xtuer.bean.Const;
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.sales.SalesOrder;
+import com.xtuer.bean.sales.SalesOrderFilter;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.mapper.SalesOrderMapper;
 import com.xtuer.util.Utils;
@@ -61,8 +63,8 @@ public class SalesOrderService extends BaseService {
      *
      * @return 返回销售订单的数组
      */
-    public List<SalesOrder> findSalesOrders() {
-        return salesOrderMapper.findSalesOrders();
+    public List<SalesOrder> findSalesOrders(SalesOrderFilter filter, Page page) {
+        return salesOrderMapper.findSalesOrders(filter, page);
     }
 
     /**

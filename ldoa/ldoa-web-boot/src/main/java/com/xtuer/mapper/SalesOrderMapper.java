@@ -1,6 +1,8 @@
 package com.xtuer.mapper;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.sales.SalesOrder;
+import com.xtuer.bean.sales.SalesOrderFilter;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public interface SalesOrderMapper {
      *
      * @return 返回销售订单的数组
      */
-    List<SalesOrder> findSalesOrders();
+    List<SalesOrder> findSalesOrders(SalesOrderFilter filter, Page page);
 
     /**
      * 更新或者插入销售订单

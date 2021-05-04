@@ -1,9 +1,11 @@
 package com.xtuer.controller;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
 import com.xtuer.bean.sales.SalesOrder;
+import com.xtuer.bean.sales.SalesOrderFilter;
 import com.xtuer.mapper.SalesOrderMapper;
 import com.xtuer.service.SalesOrderService;
 import com.xtuer.util.Utils;
@@ -43,13 +45,18 @@ public class SalesOrderController extends BaseController {
      * 查询符合条件的销售订单
      *
      * 网址: http://localhohst:8080/api/sales/salesOrders
-     * 参数: 无
+     * 参数:
+     *      customerName [可选]: 客户
+     *      business     [可选]: 行业
+     *      topic        [可选]: 主题
+     *      pageNumber   [可选]: 页码
+     *      pageSize     [可选]: 数量
      *
      * @return payload 为销售订单数组
      */
     @GetMapping(Urls.API_SALES_ORDERS)
-    public Result<List<SalesOrder>> findSalesOrders() {
-        return Result.ok(salesOrderService.findSalesOrders());
+    public Result<List<SalesOrder>> findSalesOrders(SalesOrderFilter filter, Page page) {
+        return Result.ok(salesOrderService.findSalesOrders(filter, page));
     }
 
     /**
