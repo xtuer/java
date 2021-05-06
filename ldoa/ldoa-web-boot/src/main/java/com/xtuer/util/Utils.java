@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xtuer.bean.Mime;
 import com.xtuer.bean.User;
 import com.xtuer.converter.JacksonHttpMessageConverter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -192,7 +193,7 @@ public final class Utils {
      * @param date 日期
      * @return 返回 date 这一天的开始时间
      */
-    public static Date startOfDay(Date date) {
+    public static Date dayStart(Date date) {
         if (date == null) {
             return null;
         }
@@ -213,7 +214,7 @@ public final class Utils {
      * @param date 日期
      * @return 返回 date 这一天的最后时间
      */
-    public static Date endOfDay(Date date) {
+    public static Date dayEnd(Date date) {
         if (date == null) {
             return null;
         }
@@ -224,6 +225,92 @@ public final class Utils {
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取 date 所属年的开始时间
+     *
+     * @param date 日期
+     * @return 返回 date 所属年的开始时间
+     */
+    @SneakyThrows
+    public static Date yearStart(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(year + "-01-01 00:00:00");
+    }
+
+    /**
+     * 获取 date 所属年的结束时间
+     *
+     * @param date 日期
+     * @return 返回 date 所属年的结束时间
+     */
+    @SneakyThrows
+    public static Date yearEnd(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(year + "-12-31 23:59:59.999");
+    }
+
+    /**
+     * 获取 date 所属月的开始时间
+     *
+     * @param date 日期
+     * @return 返回 date 所属月的开始时间
+     */
+    public static Date monthStart(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取 date 所属月的结束时间
+     *
+     * @param date 日期
+     * @return 返回 date 所属月的结束时间
+     */
+    public static Date monthEnd(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // 下个月的第一天开始时间减 1 毫秒
+        calendar.add(Calendar.MONTH, 1);
+        calendar.add(Calendar.MILLISECOND, -1);
 
         return calendar.getTime();
     }

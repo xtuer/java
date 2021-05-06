@@ -39,7 +39,7 @@ public class CommonTest {
      */
     @Test
     public void testDate() {
-        System.out.println(Utils.startOfDay(new Date()));
-        System.out.println(Utils.endOfDay(new Date()));
+        System.out.println(Utils.dayStart(new Date()));
+        System.out.println(Utils.dayEnd(new Date()));
     }
 }

@@ -49,8 +49,8 @@ public class StockController extends BaseController {
     @GetMapping(Urls.API_STOCKS_RECORDS)
     public Result<List<StockRecord>> findStockRecords(StockRecordFilter filter, Page page) {
         // 设置查询时间范围
-        filter.setStartAt(Utils.startOfDay(filter.getStartAt()));
-        filter.setEndAt(Utils.endOfDay(filter.getEndAt()));
+        filter.setStartAt(Utils.dayStart(filter.getStartAt()));
+        filter.setEndAt(Utils.dayEnd(filter.getEndAt()));
 
         return Result.ok(stockMapper.findStockRecords(filter, page));
     }
@@ -79,8 +79,8 @@ public class StockController extends BaseController {
     @GetMapping(Urls.API_STOCKS_REQUESTS)
     public Result<List<StockRequest>> findStockRequests(StockRequestFilter filter, Page page) {
         // 设置查询时间范围
-        filter.setStartAt(Utils.startOfDay(filter.getStartAt()));
-        filter.setEndAt(Utils.endOfDay(filter.getEndAt()));
+        filter.setStartAt(Utils.dayStart(filter.getStartAt()));
+        filter.setEndAt(Utils.dayEnd(filter.getEndAt()));
 
         return Result.ok(stockMapper.findStockRequests(filter, page));
     }

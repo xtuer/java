@@ -49,8 +49,8 @@ public class MaintenanceOrderController extends BaseController {
     @GetMapping(Urls.API_MAINTENANCE_ORDERS)
     public Result<List<MaintenanceOrder>> findMaintenanceOrders(MaintenanceOrderFilter filter, Page page) {
         // 设置查询时间范围
-        filter.setReceivedStartAt(Utils.startOfDay(filter.getReceivedStartAt()));
-        filter.setReceivedEndAt(Utils.endOfDay(filter.getReceivedEndAt()));
+        filter.setReceivedStartAt(Utils.dayStart(filter.getReceivedStartAt()));
+        filter.setReceivedEndAt(Utils.dayEnd(filter.getReceivedEndAt()));
 
         return Result.ok(orderMapper.findMaintenanceOrders(filter, page));
     }
