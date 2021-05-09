@@ -1,3 +1,5 @@
+<!-- eslint-disable vue/no-parsing-error -->
+
 <!-- 订单收款情况 -->
 <template>
     <div class="sales-order-payment list-page">
@@ -9,6 +11,29 @@
                 <Radio :label="2">本月已收款</Radio>
                 <Radio :label="3">本年已收款</Radio>
             </RadioGroup>
+
+            <div class="filter">
+                <!-- 时间范围 -->
+                <DatePicker v-if="filter.searchType === 0 || filter.searchType === 1"
+                            v-model="dateRange"
+                            format="MM-dd"
+                            separator=" 至 "
+                            type="daterange"
+                            data-prepend-label="签约时间"
+                            class="prepend-label"
+                            split-panels
+                            placeholder="请选择签约时间范围">
+                </DatePicker>
+
+                <!-- 选择条件的搜索 -->
+                <Input v-model="filterValue" transfer placeholder="请输入查询条件" search enter-button @on-search="searchSalesOrders">
+                    <Select v-model="filterKey" slot="prepend">
+                        <Option value="customerName">客户</Option>
+                        <Option value="business">行业</Option>
+                        <Option value="topic">主题</Option>
+                    </Select>
+                </Input>
+            </div>
         </div>
 
         <!-- 销售订单列表 -->
@@ -46,7 +71,7 @@ export default {
         return {
             salesOrders: [],
             filter     : this.newFilter(), // 搜索条件
-            filterKey  : 'email',  // 搜索的 Key
+            filterKey  : 'customerName',   // 搜索的 Key
             filterValue: '',       // 搜索的 Value
             dateRange  : ['', ''], // 搜索的时间范围
             more     : false, // 是否还有更多销售订单
@@ -79,23 +104,17 @@ export default {
             this.salesOrders = [];
             this.more        = false;
             this.reloading   = true;
-            this.filter      = {
-                ...this.newFilter(),
-                searchType: this.filter.searchType,
-                customerName: this.filter.customerName,
-                topic:  this.filter.topic,
-                business: this.filter.business
-            };
+            this.filter      = { ...this.newFilter(), searchType: this.filter.searchType };
             this.filter[this.filterKey] = this.filterValue;
 
             // 如果不需要时间范围，则删除
-            // if (this.dateRange[0] && this.dateRange[1]) {
-            //     this.filter.startAt = this.dateRange[0].format('yyyy-MM-dd');
-            //     this.filter.endAt   = this.dateRange[1].format('yyyy-MM-dd');
-            // } else {
-            //     this.filter.startAt = '';
-            //     this.filter.endAt   = '';
-            // }
+            if (this.dateRange[0] && this.dateRange[1]) {
+                this.filter.agreementStart = this.dateRange[0].format('yyyy-MM-dd');
+                this.filter.agreementEnd   = this.dateRange[1].format('yyyy-MM-dd');
+            } else {
+                this.filter.agreementStart = '';
+                this.filter.agreementEnd   = '';
+            }
 
             this.fetchMoreSalesOrders();
         },
@@ -128,7 +147,4 @@ export default {
 </script>
 
 <style lang="scss">
-.sales-order-payment {
-
-}
 </style>

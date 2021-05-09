@@ -43,8 +43,11 @@
             <if test="filter.paidAtStart != null and filter.paidAtEnd != null">
                 AND (so.paid_at BETWEEN #{filter.paidAtStart} AND #{filter.paidAtEnd})
             </if>
+            <if test="filter.agreementStart != null and filter.agreementEnd != null">
+                AND (so.agreement_date BETWEEN #{filter.agreementStart} AND #{filter.agreementEnd})
+            </if>
         </where>
-        ORDER BY so.created_at DESC
+        ORDER BY so.agreement_date DESC
         LIMIT ${page.offset}, ${page.count}
     </select>
 

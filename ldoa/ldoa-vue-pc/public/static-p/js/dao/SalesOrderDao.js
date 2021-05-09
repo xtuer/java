@@ -30,11 +30,16 @@ export default class SalesOrderDao {
      *
      * 网址: http://localhohst:8080/api/sales/salesOrders
      * 参数:
-     *      customerName [可选]: 客户
-     *      business     [可选]: 行业
-     *      topic        [可选]: 主题
-     *      pageNumber   [可选]: 页码
-     *      pageSize     [可选]: 数量
+     *      customerName   [可选]: 客户
+     *      business       [可选]: 行业
+     *      topic          [可选]: 主题
+     *      searchType     [可选]: 搜索类型: 0 (所有订单)、1 (应收款订单)、2 (本月已收款订单)、3 (本年已收款订单)
+     *      paidAtStart    [可选]: 开始支付时间: 搜索类型为 2 或者 3 时使用
+     *      paidAtEnd      [可选]: 结束支付时间: 搜索类型为 2 或者 3 时使用
+     *      agreementStart [可选]: 开始签约时间: 搜索类型非 2 或者 3 时使用
+     *      agreementEnd   [可选]: 结束签约时间: 搜索类型非 2 或者 3 时使用
+     *      pageNumber     [可选]: 页码
+     *      pageSize       [可选]: 数量
      *
      * @param {JSON} filter
      * @return {Promise} 返回 Promise 对象，resolve 的参数为销售订单数组，reject 的参数为错误信息

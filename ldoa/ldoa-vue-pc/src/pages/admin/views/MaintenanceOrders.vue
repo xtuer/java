@@ -26,7 +26,7 @@
                             data-prepend-label="收货时间"
                             class="prepend-label"
                             split-panels
-                            placeholder="请选择创建时间范围">
+                            placeholder="请选择收货时间范围">
                 </DatePicker>
 
                 <!-- 选择条件的搜索 -->

@@ -47,12 +47,16 @@ public class SalesOrderController extends BaseController {
      *
      * 网址: http://localhohst:8080/api/sales/salesOrders
      * 参数:
-     *      customerName [可选]: 客户
-     *      business     [可选]: 行业
-     *      topic        [可选]: 主题
-     *      searchType   [可选]: 搜索类型: 0 (所有订单)、1 (应收款订单)、2 (本月已收款订单)、3 (本年已收款订单)
-     *      pageNumber   [可选]: 页码
-     *      pageSize     [可选]: 数量
+     *      customerName   [可选]: 客户
+     *      business       [可选]: 行业
+     *      topic          [可选]: 主题
+     *      searchType     [可选]: 搜索类型: 0 (所有订单)、1 (应收款订单)、2 (本月已收款订单)、3 (本年已收款订单)
+     *      paidAtStart    [可选]: 开始支付时间: 搜索类型为 2 或者 3 时使用
+     *      paidAtEnd      [可选]: 结束支付时间: 搜索类型为 2 或者 3 时使用
+     *      agreementStart [可选]: 开始签约时间: 搜索类型非 2 或者 3 时使用
+     *      agreementEnd   [可选]: 结束签约时间: 搜索类型非 2 或者 3 时使用
+     *      pageNumber     [可选]: 页码
+     *      pageSize       [可选]: 数量
      *
      * @return payload 为销售订单数组
      */
@@ -74,6 +78,15 @@ public class SalesOrderController extends BaseController {
         else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_YEAR) {
             filter.setPaidAtStart(Utils.yearStart(current));
             filter.setPaidAtEnd(Utils.yearEnd(current));
+        }
+
+        // 搜索所有订单或者应收款订单时设置签约时间，否则删除签约时间
+        if (searchType == SalesOrderFilter.SEARCH_TYPE_ALL || searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
+            filter.setAgreementStart(Utils.dayStart(filter.getAgreementStart()));
+            filter.setAgreementEnd(Utils.dayEnd(filter.getAgreementEnd()));
+        } else {
+            filter.setAgreementStart(null);
+            filter.setAgreementEnd(null);
         }
 
         return Result.ok(salesOrderService.findSalesOrders(filter, page));
