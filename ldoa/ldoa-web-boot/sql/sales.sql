@@ -58,6 +58,9 @@ CREATE TABLE sales_order (
     total_price            double DEFAULT 0 COMMENT '订单单价',
     total_cost_price       double DEFAULT 0 COMMENT '订单成本价',
     total_consultation_fee double DEFAULT 0 COMMENT '订单咨询费',
+    should_pay_amount      double DEFAULT 0 COMMENT '应收金额',
+    paid_amount            double DEFAULT 0 COMMENT '已收金额',
+    state                  int    DEFAULT 0  COMMENT '状态: 0 (初始化), 1 (待支付), 2 (已支付), 3 (完成)',
 
     created_at datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

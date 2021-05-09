@@ -122,6 +122,7 @@ public class SalesOrderService extends BaseService {
         salesOrder.setTotalPrice(totalPrice);
         salesOrder.setTotalCostPrice(totalCostPrice);
         salesOrder.setTotalConsultationFee(totalConsultationFee);
+        salesOrder.setState(SalesOrder.STATE_WAIT_PAY);
 
         // [6] 保存销售订单到数据库
         salesOrderMapper.upsertSalesOrder(salesOrder);

@@ -75,7 +75,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
                     <!-- 单价 -->
                     <template slot-scope="{ index }" slot="price">
-                        <InputNumber v-model="salesOrder.produceOrder.items[index].price"/>
+                        <InputNumber v-model="salesOrder.produceOrder.items[index].price" @on-change="calculatePayment"/>
                     </template>
 
                     <!-- 成本价 -->
@@ -85,12 +85,12 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
                     <!-- 数量 -->
                     <template slot-scope="{ index }" slot="count">
-                        <InputNumber v-model="salesOrder.produceOrder.items[index].count" :min="0" @on-change="ensureInt(salesOrder.produceOrder.items[index], 'count', $event)"/>
+                        <InputNumber v-model="salesOrder.produceOrder.items[index].count" :min="0" @on-change="onProductCountChanged(index)"/>
                     </template>
 
                     <!-- 咨询费用 -->
                     <template slot-scope="{ index }" slot="consultationFee">
-                        <InputNumber v-model="salesOrder.produceOrder.items[index].consultationFee"/>
+                        <InputNumber v-model="salesOrder.produceOrder.items[index].consultationFee" @on-change="calculatePayment"/>
                     </template>
 
                     <!-- 操作按钮 -->
@@ -104,6 +104,12 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                         </Poptip>
                     </template>
                 </Table>
+
+                <!-- 应收金额 -->
+                <div class="payment-info">
+                    <div class="text-color-gray margin-right-20">总成交金额: {{ salesOrder.totalDealAmount }}</div>
+                    <div class="text-color-gray">应收金额:</div> <InputNumber v-model="salesOrder.shouldPayAmount" :min="0"/>
+                </div>
             </div>
         </div>
 
@@ -232,6 +238,7 @@ export default {
         // 删除生产订单项
         deleteProduceOrderItem(index) {
             this.salesOrder.produceOrder.items.remove(index);
+            this.calculatePayment();
         },
         // 保存销售订单
         saveSalesOrder() {
@@ -278,6 +285,24 @@ export default {
                 });
             });
         },
+        // 产品的数量变化
+        onProductCountChanged(index) {
+            // 1. 确保数量是整数
+            // 2. 计算应收金额
+            this.$nextTick(() => {
+                let count = this.salesOrder.produceOrder.items[index].count;
+                count = parseInt(count) || 0;
+                this.salesOrder.produceOrder.items[index].count = count;
+                this.calculatePayment();
+            });
+        },
+        // 计算总成交金额
+        calculatePayment() {
+            SalesOrderDao.calculatePayment(this.salesOrder);
+
+            // 应收金额默认为总成交金额
+            this.salesOrder.shouldPayAmount = this.salesOrder.totalDealAmount;
+        },
         // 创建销售订单，每个销售订单带有一个生产订单
         newSalesOrder() {
             return {
@@ -295,6 +320,9 @@ export default {
                 workUnit       : '', // 执行单位
                 remark         : '', // 备注
                 produceOrder   : this.newProduceOrder(), // 生产订单
+                shouldPayAmount: 0,  // 应收金额
+                totalDealAmount: 0,  // 总成交金额
+                costDealAmount : 0,  // 净销售额
             };
         },
         // 创建生产订单
@@ -319,7 +347,7 @@ export default {
     computed: {
         title() {
             return this.salesOrder.salesOrderSn ? `销售订单: ${this.salesOrder.salesOrderSn}` : '销售订单';
-        }
+        },
     }
 };
 </script>
@@ -335,6 +363,14 @@ export default {
         .ivu-input-number {
             width: 100%;
         }
+    }
+
+    .payment-info {
+        display: grid;
+        grid-template-columns: max-content  max-content 120px;
+        grid-gap: 10px;
+        margin-top: 10px;
+        align-items: center;
     }
 }
 </style>

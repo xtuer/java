@@ -1,6 +1,7 @@
 package com.xtuer.bean.sales;
 
 import com.xtuer.bean.order.Order;
+import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,16 @@ import java.util.Date;
 @Getter
 @Setter
 public class SalesOrder {
+    public static final int STATE_INIT     = 0;
+    public static final int STATE_WAIT_PAY = 1;
+    public static final int STATE_PAID     = 2;
+    public static final int STATE_COMPLETE = 3;
+
+    /**
+     * 状态值与对应的 Label: 数组的下标为状态值，对应的数组元素值为状态的 Label
+     */
+    private static final String[] STATE_LABELS = { "初始化", "待支付", "已支付", "完成" };
+
     /**
      * 订单 ID
      */
@@ -101,6 +112,16 @@ public class SalesOrder {
     private double totalConsultationFee;
 
     /**
+     * 应收金额
+     */
+    private double shouldPayAmount;
+
+    /**
+     * 已收金额
+     */
+    private double paidAmount;
+
+    /**
      * 生产订单 ID
      */
     private long produceOrderId;
@@ -109,4 +130,18 @@ public class SalesOrder {
      * 生产订单
      */
     private Order produceOrder = new Order();
+
+    /**
+     * 状态: 0 (初始化), 1 (待支付), 2 (已支付), 3 (完成)
+     */
+    private int state;
+
+    /**
+     * 获取订单状态 Label
+     *
+     * @return 返回订单状态的 Label
+     */
+    public String getStateLabel() {
+        return Utils.getStateLabel(STATE_LABELS, state);
+    }
 }
