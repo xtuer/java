@@ -132,6 +132,7 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
 <script>
 import SalesOrderDao from '@/../public/static-p/js/dao/SalesOrderDao';
+import CustomerDao from '@/../public/static-p/js/dao/CustomerDao';
 import UserSelect from '@/components/UserSelect.vue';
 import CustomerSelect from '@/components/CustomerSelect.vue';
 import ProductSelect from '@/components/ProductSelect.vue';
@@ -202,10 +203,19 @@ export default {
             if (this.salesOrderId === '0') {
                 this.salesOrder = this.newSalesOrder();
             } else {
+                // 1. 查询销售订单
+                // 2. 查询客户的联系人
                 this.loading = true;
+
+                // [1] 查询销售订单
                 SalesOrderDao.findSalesOrder(this.salesOrderId).then(salesOrder => {
                     this.salesOrder = salesOrder;
-                    this.loading = false;
+
+                    // [2] 查询客户的联系人
+                    CustomerDao.findCustomerById(salesOrder.customerId).then(customer => {
+                        this.customerContacts = customer.contacts;
+                        this.loading = false;
+                    });
                 });
             }
         },
