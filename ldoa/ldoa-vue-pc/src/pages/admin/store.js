@@ -44,6 +44,10 @@ export default new Vuex.Store({
         currentUserId(state) {
             return state.user.userId;
         },
+        // 当前登陆用户名
+        currentUsername(state) {
+            return state.user.nickname;
+        },
         // 用户的权限
         roles(state) {
             return state.user.roles || [];

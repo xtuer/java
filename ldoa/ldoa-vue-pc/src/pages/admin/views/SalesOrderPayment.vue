@@ -20,6 +20,11 @@
                 <a @click="showSalesOrderDetails(salesOrder)">{{ salesOrder.salesOrderSn }}</a>
             </template>
 
+            <!-- 签约日期 -->
+            <template slot-scope="{ row: salesOrder }" slot="agreementDate">
+                {{ salesOrder.agreementDate | formatDateSimple }}
+            </template>
+
             <!-- 订单状态 -->
             <template slot-scope="{ row: salesOrder }" slot="state">
                 <Tag :color="salesOrder.state | colorForValue(window.SALES_ORDER_TYPES)" type="border">{{ salesOrder.state | labelForValue(window.SALES_ORDER_TYPES) }}</Tag>
@@ -55,8 +60,8 @@ export default {
                 { key : 'topic', title: '主题', width: 150, resizable: true },
                 { key : 'business', title: '行业', width: 150, resizable: true },
                 { key : 'ownerName', title: '负责人', width: 150, resizable: true },
+                { slot: 'agreementDate', title: '签约日期', width: 110, align: 'center' },
                 { key : 'costDealAmount', title: '净销售额', width: 120, resizable: false },
-                { key : 'consultationFee', title: '咨询费', width: 120, resizable: false },
                 { key : 'dealAmount', title: '总成交金额', width: 120, resizable: false },
                 { key : 'shouldPayAmount', title: '应收金额', width: 120, resizable: false },
                 { slot: 'state', title: '状态', width: 100, resizable: true, align: 'center' },

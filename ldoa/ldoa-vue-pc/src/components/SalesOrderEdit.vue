@@ -336,8 +336,8 @@ export default {
                 topic          : '', // 主题
                 agreementDate  : '', // 签约日期
                 deliveryDate   : '', // 交货日期
-                ownerName      : '', // 负责人
-                ownerId        : '', // 负责人 ID
+                ownerName      : this.$store.getters.currentUsername, // 负责人
+                ownerId        : this.$store.getters.currentUserId,   // 负责人 ID
                 customerId     : '0', // 客户 ID
                 customerName   : '', // 客户
                 customerContact: '', // 联系人
