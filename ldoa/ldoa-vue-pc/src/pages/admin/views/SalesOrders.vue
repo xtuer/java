@@ -84,17 +84,18 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { slot: 'salesOrderSn', title: '订单编号', width: 150, resizable: true },
+                { key : 'customerName', title: '客户', width: 150, resizable: true },
                 { key : 'topic', title: '主题', width: 150, resizable: true },
                 { key : 'ownerName', title: '负责人', width: 150, resizable: true },
-                { key : 'customerName', title: '客户', width: 150, resizable: true },
                 { key : 'business', title: '行业', width: 150, resizable: true },
                 { key : 'workUnit', title: '执行单位', width: 150, resizable: true },
                 { key : 'customerContact', title: '联系人', width: 150, resizable: true },
                 { slot: 'agreementDate', title: '签约日期', width: 110, align: 'center' },
                 { slot: 'deliveryDate', title: '交货日期', width: 110, align: 'center' },
-                { key : 'totalPrice', title: '单价', width: 110 },
-                { key : 'totalCostPrice', title: '成本价', width: 110 },
-                { key : 'totalConsultationFee', title: '咨询费', width: 110 },
+                { key : 'costDealAmount', title: '净销售额', width: 120 },
+                { key : 'consultationFee', title: '咨询费', width: 120 },
+                { key : 'dealAmount', title: '总成交金额', width: 120 },
+                { key : 'shouldPayAmount', title: '应收金额', width: 120 },
                 { key : 'remark', title: '备注', minWidth: 250 },
                 { slot: 'action', title: '操作', width: 110, align: 'center', className: 'table-action' },
             ],
@@ -110,10 +111,10 @@ export default {
     methods: {
         // 搜索销售订单
         searchSalesOrders() {
-            this.salesOrders               = [];
-            this.more                   = false;
-            this.reloading              = true;
-            this.filter                 = {
+            this.salesOrders = [];
+            this.more        = false;
+            this.reloading   = true;
+            this.filter      = {
                 ...this.newFilter(),
                 customerName: this.filter.customerName,
                 topic:  this.filter.topic,

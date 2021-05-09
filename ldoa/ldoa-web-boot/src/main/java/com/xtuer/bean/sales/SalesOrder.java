@@ -97,19 +97,19 @@ public class SalesOrder {
     private String remark;
 
     /**
-     * 订单单价
+     * 总成交金额
      */
-    private double totalPrice;
+    private double dealAmount;
 
     /**
-     * 订单成本价
+     * 净销售额
      */
-    private double totalCostPrice;
+    private double costDealAmount;
 
     /**
      * 订单咨询费
      */
-    private double totalConsultationFee;
+    private double consultationFee;
 
     /**
      * 应收金额
@@ -120,6 +120,11 @@ public class SalesOrder {
      * 已收金额
      */
     private double paidAmount;
+
+    /**
+     * 收款时间
+     */
+    private Date paidAt;
 
     /**
      * 生产订单 ID

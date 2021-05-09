@@ -80,6 +80,14 @@ window.ORDER_TYPES = [
     { value: 1, label: '样品订单' },
 ];
 
+// 销售订单类型
+window.SALES_ORDER_TYPES = [
+    { value: 0, label: '初始化', color: 'default' },
+    { value: 1, label: '待支付', color: 'cyan' },
+    { value: 2, label: '已支付', color: 'primary' },
+    { value: 3, label: '完成', color: 'success' },
+];
+
 // 性别
 window.GENDERS = [
     { value: 0, name: '未选' },

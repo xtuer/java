@@ -19,14 +19,14 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
         <div class="box">
             <div class="title">基本信息</div>
             <div class="content base-info padding-10">
+                <div class="text-align-right text-color-gray">客户:</div>
+                <div>{{ salesOrder.customerName }}</div>
+
                 <div class="text-align-right text-color-gray">主题:</div>
                 <div>{{ salesOrder.topic }}</div>
 
                 <div class="text-align-right text-color-gray">负责人:</div>
                 <div>{{ salesOrder.ownerName }}</div>
-
-                <div class="text-align-right text-color-gray">客户:</div>
-                <div>{{ salesOrder.customerName }}</div>
 
                 <div class="text-align-right text-color-gray">行业:</div>
                 <div>{{ salesOrder.business }}</div>
@@ -52,12 +52,20 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
             <div class="title">销售订单明细</div>
             <div class="content padding-0" style="padding-top: 10px !important">
                 <!-- 订单项列表 -->
-                <Table :data="salesOrder.produceOrder.items" :columns="produceOrderItemColumns" border show-summary>
+                <Table :data="salesOrder.produceOrder.items" :columns="produceOrderItemColumns" border>
                     <!-- 产品名称 -->
                     <template slot-scope="{ row: item }" slot="name">
                         {{ item.product.name }}
                     </template>
                 </Table>
+
+                <!-- 应收金额 -->
+                <div class="payment-info">
+                    <div class="text-color-gray">净销售金额: {{ salesOrder.costDealAmount }}</div>
+                    <div class="text-color-gray">咨询费: {{ salesOrder.consultationFee }}</div>
+                    <div class="text-color-gray">总成交金额: {{ salesOrder.dealAmount }}</div>
+                    <div class="text-color-gray">应收金额: {{ salesOrder.shouldPayAmount }}</div>
+                </div>
             </div>
         </div>
 
@@ -171,6 +179,16 @@ export default {
         display: grid;
         grid-template-columns: max-content 1fr max-content 1fr;
         grid-gap: 10px 5px;
+    }
+
+    .payment-info {
+        display: grid;
+        grid-template-columns: repeat(3, max-content) 200px;
+        align-items: center;
+        grid-gap: 30px;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-bottom: 10px;
     }
 }
 </style>

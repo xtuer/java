@@ -8,18 +8,6 @@ export default class SalesOrderDao {
         salesOrder.deliveryDate = dayjs(salesOrder.deliveryDate).toDate();
     }
 
-    // 计算支付信息
-    static calculatePayment(salesOrder) {
-        // 总成交金额: 所有产品的数量*单价 + 咨询费
-        // 净销售额: 所有产品的数量*单价
-
-        salesOrder.totalDealAmount = 0;
-        for (let item of salesOrder.produceOrder.items) {
-            salesOrder.totalDealAmount += item.price * item.count + item.consultationFee;
-            salesOrder.costDealAmount += item.price * item.count;
-        }
-    }
-
     /**
      * 查询指定 ID 的销售订单
      *
@@ -32,7 +20,6 @@ export default class SalesOrderDao {
     static findSalesOrder(salesOrderId) {
         return Rest.get(Urls.API_SALES_ORDERS_BY_ID, { params: { salesOrderId } }).then(({ data: order, success, message }) => {
             SalesOrderDao.handleDate(order);
-            SalesOrderDao.calculatePayment(order);
 
             return Utils.response(order, success, message);
         });
@@ -56,7 +43,6 @@ export default class SalesOrderDao {
         return Rest.get(Urls.API_SALES_ORDERS, { data: filter }).then(({ data: orders, success, message }) => {
             for (let order of orders) {
                 SalesOrderDao.handleDate(order);
-                SalesOrderDao.calculatePayment(order);
             }
 
             return Utils.response(orders, success, message);

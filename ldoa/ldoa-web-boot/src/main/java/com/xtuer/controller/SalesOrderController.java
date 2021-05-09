@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,6 +50,7 @@ public class SalesOrderController extends BaseController {
      *      customerName [可选]: 客户
      *      business     [可选]: 行业
      *      topic        [可选]: 主题
+     *      searchType   [可选]: 搜索类型: 0 (所有订单)、1 (应收款订单)、2 (本月已收款订单)、3 (本年已收款订单)
      *      pageNumber   [可选]: 页码
      *      pageSize     [可选]: 数量
      *
@@ -56,6 +58,24 @@ public class SalesOrderController extends BaseController {
      */
     @GetMapping(Urls.API_SALES_ORDERS)
     public Result<List<SalesOrder>> findSalesOrders(SalesOrderFilter filter, Page page) {
+        final int searchType = filter.getSearchType();
+        final Date current = new Date();
+
+        // 待支付订单
+        if (searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
+            filter.setState(SalesOrder.STATE_WAIT_PAY);
+        }
+        // 本月已收款订单
+        else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_MONTH) {
+            filter.setPaidAtStart(Utils.monthStart(current));
+            filter.setPaidAtEnd(Utils.monthEnd(current));
+        }
+        // 本年已收款订单
+        else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_YEAR) {
+            filter.setPaidAtStart(Utils.yearStart(current));
+            filter.setPaidAtEnd(Utils.yearEnd(current));
+        }
+
         return Result.ok(salesOrderService.findSalesOrders(filter, page));
     }
 

@@ -107,8 +107,12 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
                 <!-- 应收金额 -->
                 <div class="payment-info">
-                    <div class="text-color-gray margin-right-20">总成交金额: {{ salesOrder.totalDealAmount }}</div>
-                    <div class="text-color-gray">应收金额:</div> <InputNumber v-model="salesOrder.shouldPayAmount" :min="0"/>
+                    <div class="text-color-gray">净销售金额: {{ salesOrder.costDealAmount }}</div>
+                    <div class="text-color-gray">咨询费: {{ salesOrder.consultationFee }}</div>
+                    <div class="text-color-gray">总成交金额: {{ salesOrder.dealAmount }}</div>
+                    <div class="text-color-gray should_pay">
+                        应收金额: <InputNumber v-model="salesOrder.shouldPayAmount" :min="0"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -306,12 +310,23 @@ export default {
                 this.calculatePayment();
             });
         },
-        // 计算总成交金额
+        // 计算支付金额
         calculatePayment() {
-            SalesOrderDao.calculatePayment(this.salesOrder);
+            // 总成交金额: 所有产品的数量*单价 + 咨询费
+            // 净销售额: 所有产品的数量*单价
+
+            this.salesOrder.dealAmount = 0;
+            this.salesOrder.costDealAmount = 0;
+            this.salesOrder.consultationFee = 0;
+
+            for (let item of this.salesOrder.produceOrder.items) {
+                this.salesOrder.dealAmount += item.price * item.count + item.consultationFee;
+                this.salesOrder.costDealAmount += item.costPrice * item.count;
+                this.salesOrder.consultationFee += item.consultationFee;
+            }
 
             // 应收金额默认为总成交金额
-            this.salesOrder.shouldPayAmount = this.salesOrder.totalDealAmount;
+            this.salesOrder.shouldPayAmount = this.salesOrder.dealAmount;
         },
         // 创建销售订单，每个销售订单带有一个生产订单
         newSalesOrder() {
@@ -330,9 +345,11 @@ export default {
                 workUnit       : '', // 执行单位
                 remark         : '', // 备注
                 produceOrder   : this.newProduceOrder(), // 生产订单
-                shouldPayAmount: 0,  // 应收金额
-                totalDealAmount: 0,  // 总成交金额
+
+                dealAmount     : 0,  // 总成交金额
                 costDealAmount : 0,  // 净销售额
+                consultationFee: 0,  // 订单咨询费
+                shouldPayAmount: 0,  // 应收金额
             };
         },
         // 创建生产订单
@@ -377,10 +394,18 @@ export default {
 
     .payment-info {
         display: grid;
-        grid-template-columns: max-content  max-content 120px;
-        grid-gap: 10px;
-        margin-top: 10px;
+        grid-template-columns: repeat(3, max-content) 200px;
         align-items: center;
+        grid-gap: 30px;
+        margin-top: 10px;
+        margin-left: 10px;
+
+        .should_pay {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            align-items: center;
+            grid-gap: 5px;
+        }
     }
 }
 </style>

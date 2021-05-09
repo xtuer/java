@@ -110,18 +110,18 @@ public class SalesOrderService extends BaseService {
         // [4] 自动通过生产订单的审批
         auditService.autoPassAudit(salesOrder.getProduceOrderId(), "销售订单生成的生产订单，自动审批通过");
 
-        // [5] 计算销售订单的单价、咨询费等
-        double totalPrice = 0;
-        double totalCostPrice = 0;
-        double totalConsultationFee = 0;
+        // [5] 计算销售订单的咨询费、应收金额、净销售额
+        double dealAmount = 0;
+        double costDealAmount = 0;
+        double orderConsultationFee = 0;
         for (OrderItem item : salesOrder.getProduceOrder().getItems()) {
-            totalPrice += item.getPrice();
-            totalCostPrice += item.getCostPrice();
-            totalConsultationFee += item.getConsultationFee();
+            dealAmount += item.getPrice() * item.getCount() + item.getConsultationFee();
+            costDealAmount += item.getCostPrice() * item.getCount();
+            orderConsultationFee += item.getConsultationFee();
         }
-        salesOrder.setTotalPrice(totalPrice);
-        salesOrder.setTotalCostPrice(totalCostPrice);
-        salesOrder.setTotalConsultationFee(totalConsultationFee);
+        salesOrder.setDealAmount(dealAmount);
+        salesOrder.setCostDealAmount(costDealAmount);
+        salesOrder.setConsultationFee(orderConsultationFee);
         salesOrder.setState(SalesOrder.STATE_WAIT_PAY);
 
         // [6] 保存销售订单到数据库

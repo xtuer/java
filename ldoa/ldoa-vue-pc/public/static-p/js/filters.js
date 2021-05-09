@@ -127,6 +127,18 @@ const labelForValue = function(value, pairs) {
     return pairs.filter(p => p.value === value).map(p => p.label).join('') || '未知';
 };
 
+/**
+ * 获取 value 对应的 color
+ *
+ * @param {Int} value 值
+ * @param {Array} pairs value/color 对的数组
+ * @return {String} 返回 color 的字符串
+ */
+const colorForValue = function(value, pairs) {
+    return pairs.filter(p => p.value === value).map(p => p.color).join('') || 'default';
+};
+
+
 export default {
     formatDate,
     formatDateSimple,
@@ -138,4 +150,5 @@ export default {
     trim,
     auditTypeName,
     labelForValue,
+    colorForValue,
 };
