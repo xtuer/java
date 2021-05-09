@@ -2,7 +2,7 @@
 
 <!-- 订单收款情况 -->
 <template>
-    <div class="sales-order-payment list-page">
+    <div class="sales-order-payments list-page">
         <!-- 顶部工具栏 -->
         <div class="list-page-toolbar-top">
             <RadioGroup v-model="filter.searchType" type="button" button-style="solid" @on-change="searchSalesOrders">
