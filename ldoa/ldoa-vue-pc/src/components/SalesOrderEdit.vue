@@ -22,16 +22,18 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
         <div class="box">
             <div class="title">基本信息</div>
-            <div class="content" style="padding-left: 0">
+            <div class="content padding-left-0 padding-bottom-0">
                 <Form ref="salesOrderForm" :model="salesOrder" :rules="salesOrderRules" :key="salesOrder.salesOrderId" :label-width="90" class="column-3">
                     <FormItem label="主题:" prop="topic">
                         <Input v-model="salesOrder.topic" placeholder="请输入主题"/>
                     </FormItem>
-                    <FormItem label="负责人:" prop="ownerName">
-                        <Input v-model="salesOrder.ownerName" readonly search placeholder="请选择负责人" @on-search="userSelect = true"/>
-                    </FormItem>
                     <FormItem label="客户:" prop="customerName">
                         <Input v-model="salesOrder.customerName" readonly search placeholder="请选择客户" @on-search="customerSelect = true"/>
+                    </FormItem>
+                    <FormItem label="联系人:" prop="customerContact">
+                        <Select v-model="salesOrder.customerContact" placeholder="请选择联系人">
+                            <Option v-for="contact in customerContacts" :value="contact.name" :key="contact.name">{{ contact.name }}</Option>
+                        </Select>
                     </FormItem>
                     <FormItem label="行业:" prop="business">
                         <Input v-model="salesOrder.business" placeholder="请输入行业"/>
@@ -39,10 +41,8 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                     <FormItem label="执行单位:" prop="workUnit">
                         <Input v-model="salesOrder.workUnit" placeholder="请输入执行单位"/>
                     </FormItem>
-                    <FormItem label="联系人:" prop="customerContact">
-                        <Select v-model="salesOrder.customerContact" placeholder="请选择联系人">
-                            <Option v-for="contact in customerContacts" :value="contact.name" :key="contact.name">{{ contact.name }}</Option>
-                        </Select>
+                    <FormItem label="负责人:" prop="ownerName">
+                        <Input v-model="salesOrder.ownerName" readonly search placeholder="请选择负责人" @on-search="userSelect = true"/>
                     </FormItem>
                     <FormItem label="签约日期:" prop="agreementDate">
                         <DatePicker v-model="salesOrder.agreementDate" type="date" placeholder="请选择签约日期" style="width: 100%"/>

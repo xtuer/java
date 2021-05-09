@@ -25,9 +25,6 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
                 <div class="text-align-right text-color-gray">主题:</div>
                 <div>{{ salesOrder.topic }}</div>
 
-                <div class="text-align-right text-color-gray">负责人:</div>
-                <div>{{ salesOrder.ownerName }}</div>
-
                 <div class="text-align-right text-color-gray">行业:</div>
                 <div>{{ salesOrder.business }}</div>
 
@@ -36,6 +33,9 @@ on-visible-change: 显示或隐藏时触发，显示时参数为 true，隐藏�
 
                 <div class="text-align-right text-color-gray">联系人:</div>
                 <div>{{ salesOrder.customerContact }}</div>
+
+                <div class="text-align-right text-color-gray">负责人:</div>
+                <div>{{ salesOrder.ownerName }}</div>
 
                 <div class="text-align-right text-color-gray">签约日期:</div>
                 <div>{{ salesOrder.agreementDate | formatDateSimple }}</div>
