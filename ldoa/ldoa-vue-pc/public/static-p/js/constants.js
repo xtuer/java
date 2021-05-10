@@ -81,12 +81,18 @@ window.ORDER_TYPES = [
 ];
 
 // 销售订单类型
-window.SALES_ORDER_TYPES = [
+window.SALES_ORDER_STATES = [
     { value: 0, label: '初始化', color: 'default' },
     { value: 1, label: '待支付', color: 'cyan' },
     { value: 2, label: '已支付', color: 'primary' },
     { value: 3, label: '完成', color: 'success' },
 ];
+window.SALES_ORDER_STATE = {
+    STATE_INIT    : 0,
+    STATE_WAIT_PAY: 1,
+    STATE_PAID    : 2,
+    STATE_COMPLETE: 3,
+};
 
 // 性别
 window.GENDERS = [

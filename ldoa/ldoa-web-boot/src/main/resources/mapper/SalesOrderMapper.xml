@@ -40,6 +40,9 @@
             <if test="filter.state > 0">
                 AND so.state = #{filter.state}
             </if>
+            <if test="filter.searchType == 1">
+                AND (so.state = 1 OR so.state = 2)
+            </if>
             <if test="filter.paidAtStart != null and filter.paidAtEnd != null">
                 AND (so.paid_at BETWEEN #{filter.paidAtStart} AND #{filter.paidAtEnd})
             </if>
@@ -47,7 +50,7 @@
                 AND (so.agreement_date BETWEEN #{filter.agreementStart} AND #{filter.agreementEnd})
             </if>
         </where>
-        ORDER BY so.agreement_date DESC
+        ORDER BY so.agreement_date DESC, so.created_at DESC
         LIMIT ${page.offset}, ${page.count}
     </select>
 
@@ -66,4 +69,18 @@
             business = #{business}, work_unit = #{workUnit}, remark = #{remark},
             deal_amount = #{dealAmount}, cost_deal_amount = #{costDealAmount}, consultation_fee = #{consultationFee}, should_pay_amount = #{shouldPayAmount}
     </insert>
+
+    <!-- 订单收款 -->
+    <update id="pay">
+        UPDATE sales_order
+        SET paid_amount = #{paidAmount}, paid_at = now(), state = 2
+        WHERE sales_order_id = #{orderId}
+    </update>
+
+    <!-- 完成订单 -->
+    <update id="completeSalesOrder">
+        UPDATE sales_order
+        SET state = 3
+        WHERE sales_order_id = #{orderId}
+    </update>
 </mapper>

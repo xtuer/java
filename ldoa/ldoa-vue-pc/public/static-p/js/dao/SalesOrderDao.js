@@ -15,7 +15,7 @@ export default class SalesOrderDao {
      * 参数: 无
      *
      * @param salesOrderId 销售订单 ID
-     * @return payload 为销售订单，查询不到时为 null
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为销售订单，reject 的参数为错误信息
      */
     static findSalesOrder(salesOrderId) {
         return Rest.get(Urls.API_SALES_ORDERS_BY_ID, { params: { salesOrderId } }).then(({ data: order, success, message }) => {
@@ -70,6 +70,40 @@ export default class SalesOrderDao {
             { params: { salesOrderId: salesOrder.salesOrderId }, data: salesOrder, json: true }
         ).then(({ data: newOrder, success, message }) => {
             return Utils.response(newOrder, success, message);
+        });
+    }
+
+    /**
+     * 订单收款
+     *
+     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/payments
+     * 参数: paidAmount: 收款金额
+     *
+     * @param {Long} salesOrderId 销售订单 ID
+     * @param {Double} paidAmount 收款金额
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static pay(salesOrderId, paidAmount) {
+        return Rest.update(
+            Urls.API_SALES_ORDERS_PAYMENTS,
+            { params: { salesOrderId }, data: { paidAmount } }
+        ).then(({ success, message }) => {
+            return Utils.response(null, success, message);
+        });
+    }
+
+    /**
+     * 完成订单
+     *
+     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/complete
+     * 参数: 无
+     *
+     * @param {Long} salesOrderId 销售订单 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为无，reject 的参数为错误信息
+     */
+    static completeSalesOrder(salesOrderId) {
+        return Rest.update(Urls.API_SALES_ORDERS_COMPLETE, { params: { salesOrderId } }).then(({ success, message }) => {
+            return Utils.response(null, success, message);
         });
     }
 }

@@ -33,4 +33,19 @@ public interface SalesOrderMapper {
      * @param order 销售订单
      */
     void upsertSalesOrder(SalesOrder order);
+
+    /**
+     * 订单收款
+     *
+     * @param orderId    销售订单 ID
+     * @param paidAmount 收款金额
+     */
+    void pay(long orderId, double paidAmount);
+
+    /**
+     * 完成订单
+     *
+     * @param orderId 销售订单 ID
+     */
+    void completeSalesOrder(long orderId);
 }

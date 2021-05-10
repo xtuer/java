@@ -67,7 +67,7 @@ public class SalesOrderController extends BaseController {
 
         // 待支付订单
         if (searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
-            filter.setState(SalesOrder.STATE_WAIT_PAY);
+            filter.setState(-1);
         }
         // 本月已收款订单
         else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_MONTH) {
@@ -112,5 +112,34 @@ public class SalesOrderController extends BaseController {
 
         User salesperson = super.getCurrentUser();
         return salesOrderService.upsertSalesOrder(salesOrder, salesperson);
+    }
+
+    /**
+     * 订单收款
+     *
+     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/payments
+     * 参数: paidAmount: 收款金额
+     *
+     * @param salesOrderId 销售订单 ID
+     * @param paidAmount   收款金额
+     */
+    @PutMapping(Urls.API_SALES_ORDERS_PAYMENTS)
+    public Result<Boolean> pay(@PathVariable long salesOrderId, @RequestParam double paidAmount) {
+        salesOrderMapper.pay(salesOrderId, paidAmount);
+        return Result.ok();
+    }
+
+    /**
+     * 完成订单
+     *
+     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/complete
+     * 参数: 无
+     *
+     * @param salesOrderId 销售订单 ID
+     */
+    @PutMapping(Urls.API_SALES_ORDERS_COMPLETE)
+    public Result<Boolean> completeSalesOrder(@PathVariable long salesOrderId) {
+        salesOrderMapper.completeSalesOrder(salesOrderId);
+        return Result.ok();
     }
 }

@@ -50,9 +50,15 @@
                 {{ salesOrder.agreementDate | formatDateSimple }}
             </template>
 
+            <!-- 收款日期 -->
+            <template slot-scope="{ row: salesOrder }" slot="paidAt">
+                {{ salesOrder.paidAt | formatDateSimple }}
+            </template>
+
             <!-- 订单状态 -->
             <template slot-scope="{ row: salesOrder }" slot="state">
-                <Tag :color="salesOrder.state | colorForValue(window.SALES_ORDER_TYPES)" type="border">{{ salesOrder.state | labelForValue(window.SALES_ORDER_TYPES) }}</Tag>
+                <Button v-if="shouldPay(salesOrder)" type="primary" size="small" @click="showPay(salesOrder)">点击支付</Button>
+                <Tag v-else :color="salesOrder.state | colorForValue(window.SALES_ORDER_STATES)" type="border">{{ salesOrder.state | labelForValue(window.SALES_ORDER_STATES) }}</Tag>
             </template>
         </Table>
 
@@ -60,6 +66,20 @@
         <div class="list-page-toolbar-bottom">
             <Button v-show="more" :loading="loading" shape="circle" icon="md-boat" @click="fetchMoreSalesOrders">更多...</Button>
         </div>
+
+        <!-- 支付弹窗 -->
+        <Modal v-model="payModal" :title="`订单收款: ${salesOrderToPay.salesOrderSn}`" width="400" class="sales-order-pay-modal">
+            <div class="body-wrapper">
+                <div class="text-color-gray">总成交金额:</div> {{ salesOrderToPay.dealAmount }}
+                <div class="text-color-gray">应收金额:</div> {{ salesOrderToPay.shouldPayAmount }}
+                <div class="text-color-gray">收款金额:</div> <InputNumber v-model="salesOrderToPay.paidAmount" :min="0"/>
+            </div>
+            <div slot="footer">
+                <Button type="text" size="small" @click="payModal = false">取消</Button>
+                <Button type="primary" size="small" :loading="paying" @click="pay(salesOrderToPay)">收款</Button>
+                <Button v-if="canComplete(salesOrderToPay)" type="success" size="small" :loading="completing" @click="completeSalesOrder(salesOrderToPay)">完成</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -77,6 +97,10 @@ export default {
             more     : false, // 是否还有更多销售订单
             loading  : false, // 加载中
             reloading: false,
+            salesOrderToPay: {},    // 当前支付的销售订单
+            payModal       : false, // 支付弹窗是否可见
+            paying         : false, // 支付中
+            completing     : false, // 完成订单中
 
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
@@ -84,12 +108,14 @@ export default {
                 { key : 'customerName', title: '客户', width: 150, resizable: true },
                 { key : 'topic', title: '主题', width: 150, resizable: true },
                 { key : 'business', title: '行业', width: 150, resizable: true },
-                { key : 'ownerName', title: '负责人', width: 150, resizable: true },
                 { slot: 'agreementDate', title: '签约日期', width: 110, align: 'center' },
-                { key : 'costDealAmount', title: '净销售额', width: 120, resizable: false },
-                { key : 'dealAmount', title: '总成交金额', width: 120, resizable: false },
-                { key : 'shouldPayAmount', title: '应收金额', width: 120, resizable: false },
-                { slot: 'state', title: '状态', width: 100, resizable: true, align: 'center' },
+                { key : 'costDealAmount', title: '净销售额', width: 110, resizable: false },
+                { key : 'dealAmount', title: '总成交金额', width: 110, resizable: false },
+                { key : 'shouldPayAmount', title: '应收金额', width: 110, resizable: false },
+                { key : 'paidAmount', title: '已收金额', width: 110, resizable: false },
+                { slot: 'paidAt', title: '收款日期', width: 110, align: 'center' },
+                { slot: 'state', title: '状态', width: 100, resizable: true, align: 'center', fixed: 'right' },
+                { key : 'ownerName', title: '负责人', width: 150, resizable: true },
             ],
             tableName: 'sales-orders-payment-table',
         };
@@ -131,6 +157,58 @@ export default {
                 this.filter.pageNumber++;
             });
         },
+        // 应支付
+        shouldPay(salesOrder) {
+            return salesOrder.state === SALES_ORDER_STATE.STATE_WAIT_PAY || salesOrder.state === SALES_ORDER_STATE.STATE_PAID;
+        },
+        // 显示支付弹窗
+        showPay(salesOrder) {
+            this.payModal = true;
+            this.salesOrderToPay = Utils.clone(salesOrder);
+            this.salesOrderToPay.paidAmountBefore = this.salesOrderToPay.paidAmount; // 本次支付前的已收金额
+        },
+        // 订单收款
+        pay(salesOrder) {
+            // 1. 支付
+            // 2. 判断是否能够显示完成订单按钮
+            // 3. 更新表格中的已收金额和收款日期
+
+            // [1] 支付
+            this.paying = true;
+            SalesOrderDao.pay(salesOrder.salesOrderId, salesOrder.paidAmount).then(() => {
+                // [2] 判断是否能够显示完成订单按钮
+                salesOrder.paidAmountBefore = salesOrder.paidAmount;
+
+                // [3] 更新表格中的已收金额和收款日期
+                const found = this.salesOrders.find(o => o.salesOrderId === salesOrder.salesOrderId);
+                if (found) {
+                    found.paidAmount = salesOrder.paidAmount;
+                    found.paidAt = new Date();
+                }
+
+                this.$Message.success('收款成功');
+                this.paying = false;
+            });
+        },
+        // 判断订单是否可完成
+        canComplete(salesOrder) {
+            // 已收金额大于等于应收金额才可以完成订单
+            return salesOrder.paidAmountBefore >= salesOrder.shouldPayAmount;
+        },
+        // 完成订单
+        completeSalesOrder(salesOrder) {
+            this.completing = true;
+            SalesOrderDao.completeSalesOrder(salesOrder.salesOrderId).then(() => {
+                const found = this.salesOrders.find(o => o.salesOrderId === salesOrder.salesOrderId);
+                if (found) {
+                    found.state = window.SALES_ORDER_STATE.STATE_COMPLETE;
+                }
+
+                this.$Message.success('订单完成');
+                this.completing = false;
+                this.payModal = false;
+            });
+        },
         // 新建搜索条件
         newFilter() {
             return { // 搜索条件
@@ -138,7 +216,7 @@ export default {
                 topic       : '',
                 customerName: '',
                 business    : '',
-                pageSize    : 5,
+                pageSize    : 50,
                 pageNumber  : 1,
             };
         },
@@ -147,4 +225,20 @@ export default {
 </script>
 
 <style lang="scss">
+.sales-order-pay-modal {
+    .body-wrapper {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        grid-gap: 20px 5px;
+        align-items: center;
+
+        .ivu-input-number {
+            width: 150px;
+        }
+    }
+
+    .ivu-modal-footer button {
+        min-width: 70px;
+    }
+}
 </style>
