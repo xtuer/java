@@ -57,7 +57,7 @@
 
             <!-- 订单状态 -->
             <template slot-scope="{ row: salesOrder }" slot="state">
-                <Button v-if="shouldPay(salesOrder)" type="primary" size="small" @click="showPay(salesOrder)">点击支付</Button>
+                <Button v-if="shouldPay(salesOrder)" type="primary" size="small" @click="showPay(salesOrder)">点击收款</Button>
                 <Tag v-else :color="salesOrder.state | colorForValue(window.SALES_ORDER_STATES)" type="border">{{ salesOrder.state | labelForValue(window.SALES_ORDER_STATES) }}</Tag>
             </template>
         </Table>
@@ -77,7 +77,9 @@
             <div slot="footer">
                 <Button type="text" size="small" @click="payModal = false">取消</Button>
                 <Button type="primary" size="small" :loading="paying" @click="pay(salesOrderToPay)">收款</Button>
-                <Button v-if="canComplete(salesOrderToPay)" type="success" size="small" :loading="completing" @click="completeSalesOrder(salesOrderToPay)">完成</Button>
+                <Poptip v-if="canComplete(salesOrderToPay)" confirm transfer title="确定完成关闭订单?" @on-ok="completeSalesOrder(salesOrderToPay)">
+                    <Button type="success" size="small" :loading="completing">完成</Button>
+                </Poptip>
             </div>
         </Modal>
     </div>
@@ -237,8 +239,14 @@ export default {
         }
     }
 
-    .ivu-modal-footer button {
-        min-width: 70px;
+    .ivu-modal-footer {
+        button {
+            min-width: 70px;
+        }
+
+        .ivu-poptip {
+            margin-left: 8px;
+        }
     }
 }
 </style>
