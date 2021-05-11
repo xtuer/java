@@ -1,6 +1,7 @@
 package com.xtuer.mapper;
 
 import com.xtuer.bean.Page;
+import com.xtuer.bean.sales.CustomerFinance;
 import com.xtuer.bean.sales.SalesOrder;
 import com.xtuer.bean.sales.SalesOrderFilter;
 import org.apache.ibatis.annotations.Mapper;
@@ -48,4 +49,12 @@ public interface SalesOrderMapper {
      * @param orderId 销售订单 ID
      */
     void completeSalesOrder(long orderId);
+
+    /**
+     * 查询客户的财务信息: 累计订单金额、累计应收款、累计已收款
+     *
+     * @param customerId 客户 ID
+     * @return 返回交易的财务信息
+     */
+    CustomerFinance findFinanceByCustomerId(long customerId);
 }

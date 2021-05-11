@@ -69,13 +69,14 @@ const Urls = {
     API_STOCKS_REQUESTS_BY_ID    : '/api/stocks/requests/{requestId}', // 指定 ID 的库存操作申请
 
     // 销售
-    API_SALES_CUSTOMERS: '/api/sales/customers', // 客户
-    API_SALES_CUSTOMERS_BY_ID : '/api/sales/customers/{customerId}', // 指定 ID 的客户
-    API_SALES_CUSTOMERS_IMPORT: '/api/sales/customers/import', // 导入客户
-    API_SALES_ORDERS          : '/api/sales/salesOrders', // 销售订单
-    API_SALES_ORDERS_BY_ID    : '/api/sales/salesOrders/{salesOrderId}', // 指定 ID 的销售订单
-    API_SALES_ORDERS_PAYMENTS : '/api/sales/salesOrders/{salesOrderId}/payments', // 订单收款
-    API_SALES_ORDERS_COMPLETE : '/api/sales/salesOrders/{salesOrderId}/complete', // 完成订单
+    API_SALES_CUSTOMERS        : '/api/sales/customers', // 客户
+    API_SALES_CUSTOMERS_BY_ID  : '/api/sales/customers/{customerId}', // 指定 ID 的客户
+    API_SALES_CUSTOMERS_FINANCE: '/api/sales/customers/{customerId}/finance', // 指定 ID 的客户财务信息
+    API_SALES_CUSTOMERS_IMPORT : '/api/sales/customers/import', // 导入客户
+    API_SALES_ORDERS           : '/api/sales/salesOrders', // 销售订单
+    API_SALES_ORDERS_BY_ID     : '/api/sales/salesOrders/{salesOrderId}', // 指定 ID 的销售订单
+    API_SALES_ORDERS_PAYMENTS  : '/api/sales/salesOrders/{salesOrderId}/payments', // 订单收款
+    API_SALES_ORDERS_COMPLETE  : '/api/sales/salesOrders/{salesOrderId}/complete', // 完成订单
 
     // 表格配置
     API_TABLE_CONFIG_BY_TABLE_NAME_AND_USER: '/api/tables/{tableName}/users/{userId}/config',

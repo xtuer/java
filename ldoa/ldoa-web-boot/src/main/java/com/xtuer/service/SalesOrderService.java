@@ -6,6 +6,7 @@ import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.Order;
 import com.xtuer.bean.order.OrderItem;
+import com.xtuer.bean.sales.CustomerFinance;
 import com.xtuer.bean.sales.SalesOrder;
 import com.xtuer.bean.sales.SalesOrderFilter;
 import com.xtuer.mapper.AuditMapper;
@@ -167,5 +168,26 @@ public class SalesOrderService extends BaseService {
         } else {
             return Result.fail("已收金额大于等于应收金额才能完成订单");
         }
+    }
+
+    /**
+     * 查询客户的财务信息: 累计订单金额、累计应收款、累计已收款
+     *
+     * @param customerId 客户 ID
+     * @return 返回交易的财务信息
+     */
+    public CustomerFinance findCustomerFinance(long customerId) {
+        // 1. 查询客户的财务信息
+        // 2. 如果不存在，则创建默认的才需信息
+
+        CustomerFinance finance = salesOrderMapper.findFinanceByCustomerId(customerId);
+
+        // [2] 如果不存在，则创建默认的才需信息
+        if (finance == null) {
+            finance = new CustomerFinance();
+            finance.setCustomerId(customerId);
+        }
+
+        return finance;
     }
 }

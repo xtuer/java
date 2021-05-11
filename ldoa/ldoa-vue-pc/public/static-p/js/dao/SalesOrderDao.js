@@ -11,7 +11,7 @@ export default class SalesOrderDao {
     /**
      * 查询指定 ID 的销售订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}
      * 参数: 无
      *
      * @param salesOrderId 销售订单 ID
@@ -28,7 +28,7 @@ export default class SalesOrderDao {
     /**
      * 查询符合条件的销售订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders
+     * 网址: http://localhost:8080/api/sales/salesOrders
      * 参数:
      *      customerName   [可选]: 客户
      *      business       [可选]: 行业
@@ -57,7 +57,7 @@ export default class SalesOrderDao {
     /**
      * 更新或者插入销售订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}
      * 参数: 无
      * 请求体: 参数 SalesOrder 的属性
      *
@@ -76,7 +76,7 @@ export default class SalesOrderDao {
     /**
      * 订单收款
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/payments
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}/payments
      * 参数: paidAmount: 收款金额
      *
      * @param {Long} salesOrderId 销售订单 ID
@@ -95,7 +95,7 @@ export default class SalesOrderDao {
     /**
      * 完成订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/complete
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}/complete
      * 参数: 无
      *
      * @param {Long} salesOrderId 销售订单 ID
@@ -104,6 +104,21 @@ export default class SalesOrderDao {
     static completeSalesOrder(salesOrderId) {
         return Rest.update(Urls.API_SALES_ORDERS_COMPLETE, { params: { salesOrderId } }).then(({ success, message }) => {
             return Utils.response(null, success, message);
+        });
+    }
+
+    /**
+     * 查询客户的财务信息: 累计订单金额、累计应收款、累计已收款
+     *
+     * 网址: http://localhost:8080/api/sales/customers/{customerId}/finance
+     * 参数: 无
+     *
+     * @param {Long} customerId 客户 ID
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为客户的财务信息，reject 的参数为错误信息
+     */
+    static findCustomerFinance(customerId) {
+        return Rest.get(Urls.API_SALES_CUSTOMERS_FINANCE, { params: { customerId } }).then(({ data: finance, success, message }) => {
+            return Utils.response(finance, success, message);
         });
     }
 }

@@ -32,6 +32,11 @@
 
         <!-- 客户列表 -->
         <Table :data="customers" :columns="columns" :loading="reloading" border @on-column-width-resize="saveTableColumnWidths(arguments)">
+            <!-- 客户名称 -->
+            <template slot-scope="{ row: customer }" slot="name">
+                <a @click="showCustomerDetails(customer)">{{ customer.name }}</a>
+            </template>
+
             <!-- 联系人 -->
             <template slot-scope="{ row: customer }" slot="contacts">
                 <!-- <span v-html="contactsToString(customer.contacts)"></span> -->
@@ -63,6 +68,9 @@
 
         <!-- 客户编辑弹窗 -->
         <CustomerEdit v-model="editCustomerModal" :customer-id="editCustomerId" @on-ok="customerSaved"/>
+
+        <!-- 客户详情弹窗 -->
+        <CustomerDetails v-model="customerDetailsModal" :customer-id="customerIdForDetails"/>
     </div>
 </template>
 
@@ -70,9 +78,10 @@
 import CustomerDao from '@/../public/static-p/js/dao/CustomerDao';
 import FileUpload from '@/components/FileUpload.vue';
 import CustomerEdit from '@/components/CustomerEdit.vue';
+import CustomerDetails from '@/components/CustomerDetails.vue';
 
 export default {
-    components: { FileUpload, CustomerEdit },
+    components: { FileUpload, CustomerEdit, CustomerDetails },
     data() {
         return {
             customers : [],
@@ -85,7 +94,7 @@ export default {
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'customerSn', title: '客户编号', width: 150, resizable: true },
-                { key : 'name',       title: '客户名称', width: 150, resizable: true },
+                { slot: 'name',       title: '客户名称', width: 150, resizable: true },
                 { key : 'business',   title: '行业', width: 150, resizable: true },
                 { key : 'region',     title: '区域', width: 150, resizable: true },
                 { key : 'phone',      title: '电话', width: 150, resizable: true },
@@ -97,6 +106,8 @@ export default {
             ],
             editCustomerId   : '0',
             editCustomerModal: false,
+            customerIdForDetails: '0',   // 客户 ID，用于显示客户详情
+            customerDetailsModal: false, // 客户详情弹窗是否可见
         };
     },
     mounted() {
@@ -187,6 +198,11 @@ export default {
             }
 
             return text;
+        },
+        // 显示客户详情弹窗
+        showCustomerDetails(customer) {
+            this.customerIdForDetails = customer.customerId;
+            this.customerDetailsModal = true;
         },
         // 新建搜索条件
         newFilter() {

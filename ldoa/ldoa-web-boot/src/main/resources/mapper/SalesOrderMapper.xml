@@ -83,4 +83,14 @@
         SET state = 3
         WHERE sales_order_id = #{orderId}
     </update>
+
+    <!-- 查询客户的财务信息: 累计订单金额、累计应收款、累计已收款 -->
+    <select id="findFinanceByCustomerId" resultType="CustomerFinance">
+        SELECT customer_id,
+            SUM(deal_amount) AS total_deal_amount,
+            SUM(should_pay_amount) AS total_should_pay_amount,
+            SUM(paid_amount) AS total_paid_amount
+        FROM sales_order
+        WHERE customer_id = #{customerId}
+    </select>
 </mapper>

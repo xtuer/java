@@ -4,6 +4,7 @@ import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.Urls;
 import com.xtuer.bean.User;
+import com.xtuer.bean.sales.CustomerFinance;
 import com.xtuer.bean.sales.SalesOrder;
 import com.xtuer.bean.sales.SalesOrderFilter;
 import com.xtuer.mapper.SalesOrderMapper;
@@ -31,7 +32,7 @@ public class SalesOrderController extends BaseController {
     /**
      * 查询指定 ID 的销售订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}
      * 参数: 无
      *
      * @param salesOrderId 销售订单 ID
@@ -45,7 +46,7 @@ public class SalesOrderController extends BaseController {
     /**
      * 查询符合条件的销售订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders
+     * 网址: http://localhost:8080/api/sales/salesOrders
      * 参数:
      *      customerName   [可选]: 客户
      *      business       [可选]: 行业
@@ -95,7 +96,7 @@ public class SalesOrderController extends BaseController {
     /**
      * 更新或者插入销售订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}
      * 参数: 无
      * 请求体: 参数 SalesOrder 的属性
      *
@@ -117,7 +118,7 @@ public class SalesOrderController extends BaseController {
     /**
      * 订单收款
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/payments
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}/payments
      * 参数: paidAmount: 收款金额
      *
      * @param salesOrderId 销售订单 ID
@@ -132,7 +133,7 @@ public class SalesOrderController extends BaseController {
     /**
      * 完成订单
      *
-     * 网址: http://localhohst:8080/api/sales/salesOrders/{salesOrderId}/complete
+     * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}/complete
      * 参数: 无
      *
      * @param salesOrderId 销售订单 ID
@@ -140,5 +141,19 @@ public class SalesOrderController extends BaseController {
     @PutMapping(Urls.API_SALES_ORDERS_COMPLETE)
     public Result<Boolean> completeSalesOrder(@PathVariable long salesOrderId) {
         return salesOrderService.completeSalesOrder(salesOrderId);
+    }
+
+    /**
+     * 查询客户的财务信息: 累计订单金额、累计应收款、累计已收款
+     *
+     * 网址: http://localhost:8080/api/sales/customers/{customerId}/finance
+     * 参数: 无
+     *
+     * @param customerId 客户 ID
+     * @return payload 为客户的财务信息
+     */
+    @GetMapping(Urls.API_SALES_CUSTOMERS_FINANCE)
+    public Result<CustomerFinance> findCustomerFinance(@PathVariable long customerId) {
+        return Result.ok(salesOrderService.findCustomerFinance(customerId));
     }
 }

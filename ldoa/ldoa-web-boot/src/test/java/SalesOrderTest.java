@@ -1,7 +1,10 @@
 import com.xtuer.Application;
 import com.xtuer.bean.User;
+import com.xtuer.bean.sales.CustomerFinance;
 import com.xtuer.bean.sales.SalesOrder;
+import com.xtuer.mapper.SalesOrderMapper;
 import com.xtuer.service.SalesOrderService;
+import com.xtuer.util.Utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +15,9 @@ import java.util.Date;
 public class SalesOrderTest {
     @Autowired
     private SalesOrderService orderService;
+
+    @Autowired
+    private SalesOrderMapper oderMapper;
 
     @Test
     public void createOrder() {
@@ -28,5 +34,11 @@ public class SalesOrderTest {
         order.setRemark("测试备注");
 
         orderService.upsertSalesOrder(order, new User());
+    }
+
+    @Test
+    public void findFinance() {
+        CustomerFinance finance = oderMapper.findFinanceByCustomerId(579003341602820L);
+        Utils.dump(finance);
     }
 }

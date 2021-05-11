@@ -133,6 +133,9 @@ export default {
                 CustomerDao.findCustomerById(this.customerId).then(customer => {
                     this.customer = customer;
                     this.loading = false;
+
+                    // 给联系人增加临时 id，避免在 :key 绑定时出错
+                    customer.contacts.forEach(c => { c.id = Utils.nextId(); });
                 });
             }
 

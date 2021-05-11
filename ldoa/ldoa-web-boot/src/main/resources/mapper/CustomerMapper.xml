@@ -4,7 +4,8 @@
 <mapper namespace="com.xtuer.mapper.CustomerMapper">
     <!-- 客户的列 -->
     <sql id="customerColumns">
-        customer_id, customer_sn, name, business, region, type, phone, level, importance, status, contacts_json
+        customer_id, customer_sn, name, business, region, type, phone, address, owner, remark,
+        level, importance, status, contacts_json
     </sql>
 
     <!-- 查询指定 ID 的客户 -->
