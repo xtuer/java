@@ -199,6 +199,12 @@
     padding: 0;
 }
 
+.ivu-table-fixed-right {
+    box-shadow: -2px 0 6px -2px rgb(0 0 0 / 10%);
+}
+.ivu-table-fixed {
+    box-shadow: -2px 0 6px -2px rgb(0 0 0 / 10%);
+}
 /*
 Box 布局
 <div class="box">
