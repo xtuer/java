@@ -34,15 +34,25 @@
         <Table :data="customers" :columns="columns" :loading="reloading" border @on-column-width-resize="saveTableColumnWidths(arguments)">
             <!-- 联系人 -->
             <template slot-scope="{ row: customer }" slot="contacts">
-                <span v-html="contactsToString(customer.contacts)"></span>
+                <!-- <span v-html="contactsToString(customer.contacts)"></span> -->
+                <Dropdown transfer>
+                    <a href="javascript:void(0)">
+                        <Icon type="ios-people" size="20"/>
+                        <Icon type="ios-arrow-down"/>
+                    </a>
+                    <DropdownMenu slot="list">
+                        <DropdownItem v-for="(c, i) in customer.contacts" :key="i">
+                            {{ c.name }} - {{ c.department }} - {{ c.phone }}
+                        </DropdownItem>
+                        <DropdownItem v-if="customer.contacts.length === 0">无</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
             </template>
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: customer }" slot="action">
                 <a @click="editCustomer(customer)">编辑</a>
                 <a class="delete" @click="deleteCustomer(customer)">删除</a>
-                <!-- <Button type="primary" size="small" @click="editCustomer(customer)">编辑</Button>
-                <Button type="error" size="small" @click="deleteCustomer(customer)">删除</Button> -->
             </template>
         </Table>
 
@@ -82,7 +92,7 @@ export default {
                 { key : 'address',    title: '地址', width: 150, resizable: true },
                 { key : 'owner',      title: '负责人', width: 150, resizable: true },
                 { key : 'remark',     title: '备注', width: 150, resizable: true },
-                { slot: 'contacts',   title: '联系人', width: 150, resizable: true },
+                { slot: 'contacts',   title: '联系人', width: 80, resizable: false },
                 { slot: 'action',     title: '操作', width: 110, align: 'center', className: 'table-action' },
             ],
             editCustomerId   : '0',

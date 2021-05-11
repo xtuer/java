@@ -176,8 +176,9 @@
     margin-right: 9px;
 }
 .table-action a:after {
-    content: "|";
-    width: 1px;
+    content: "·";
+    /* font-weight: bold; */
+    width: 2px;
     position: absolute;
     right: -4px;
     top: -1px;
