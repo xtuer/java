@@ -11,6 +11,7 @@ import com.xtuer.bean.sales.SalesOrderFilter;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.mapper.SalesOrderMapper;
 import com.xtuer.util.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.List;
  * 销售订单的服务
  */
 @Service
+@Slf4j
 public class SalesOrderService extends BaseService {
     @Autowired
     private OrderService orderService;
@@ -138,5 +140,32 @@ public class SalesOrderService extends BaseService {
     public String nextSalesOrderSn() {
         // XC 不动, 20200806 为年月日，根据日期自动生成, 0001 为流水号 (0001,0002,003……)，每年再从 0001 开始
         return super.nextSnByYear(Const.SN_PREFIX_SALES_ORDER);
+    }
+
+    /**
+     * 完成订单
+     *
+     * @param salesOrderId 销售订单 ID
+     * @return 订单完成 result 的 success 为 true，否则为 false
+     */
+    public Result<Boolean> completeSalesOrder(long salesOrderId) {
+        // 1. 查询订单
+        // 2. 订单的已收金额大于等于应收金额则可以完成，否则提示错误
+
+        // [1] 查询订单
+        SalesOrder order = salesOrderMapper.findSalesOrderById(salesOrderId);
+
+        if (order == null) {
+            return Result.fail("订单不存在");
+        }
+
+        // [2] 订单的已收金额大于等于应收金额则可以完成，否则提示错误
+        if (order.getPaidAmount() >= order.getShouldPayAmount()) {
+            salesOrderMapper.completeSalesOrder(salesOrderId);
+            log.info("[完成订单] 订单 [{}], 应收金额 [{}], 已收金额 [{}]", salesOrderId, order.getShouldPayAmount(), order.getPaidAmount());
+            return Result.ok();
+        } else {
+            return Result.fail("已收金额大于等于应收金额才能完成订单");
+        }
     }
 }

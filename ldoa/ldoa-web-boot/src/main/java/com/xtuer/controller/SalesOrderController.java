@@ -139,7 +139,6 @@ public class SalesOrderController extends BaseController {
      */
     @PutMapping(Urls.API_SALES_ORDERS_COMPLETE)
     public Result<Boolean> completeSalesOrder(@PathVariable long salesOrderId) {
-        salesOrderMapper.completeSalesOrder(salesOrderId);
-        return Result.ok();
+        return salesOrderService.completeSalesOrder(salesOrderId);
     }
 }
