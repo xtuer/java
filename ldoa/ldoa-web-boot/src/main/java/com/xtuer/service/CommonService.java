@@ -20,10 +20,19 @@ public class CommonService {
      * @return 返回下一个序列号
      */
     @Transactional(rollbackFor = Exception.class)
-    synchronized public int nextSequence(String sequenceName) {
-        // 1. 序列号增加 1
-        // 2. 获取最新的序列号
-        commonMapper.increaseSequenceByName(sequenceName);
-        return commonMapper.findSequenceByName(sequenceName);
+    public int nextSequence(String sequenceName) {
+        // 1. 获得序列化的锁
+        // 2. 序列号不存在则创建，否则自增 1
+        // 3. 返回序列号
+
+        Integer sn = commonMapper.lockSequenceByName(sequenceName);
+
+        if (sn == null) {
+            commonMapper.createSequence(sequenceName, 1);
+            return 1;
+        } else {
+            commonMapper.increaseSequenceByOne(sequenceName);
+            return sn + 1;
+        }
     }
 }

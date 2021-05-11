@@ -8,11 +8,19 @@
         SELECT value FROM sequence WHERE name = #{sequenceName}
     </select>
 
+    <!-- 获得序列号的锁 -->
+    <select id="lockSequenceByName" resultType="int">
+        SELECT value FROM sequence WHERE name = #{sequenceName} FOR UPDATE
+    </select>
+
+    <!-- 创建序列号 -->
+    <insert id="createSequence">
+        INSERT INTO sequence(name, value) VALUES (#{sequenceName}, #{value})
+    </insert>
+
     <!-- 序列号增加 1 -->
-    <update id="increaseSequenceByName">
-        INSERT INTO sequence(name, value) VALUES (#{sequenceName}, 1)
-        ON DUPLICATE KEY
-        UPDATE value = value + 1
+    <update id="increaseSequenceByOne">
+        UPDATE sequence SET value = value + 1 WHERE name = #{sequenceName}
     </update>
 
     <!-- 测试 XA 命令 -->

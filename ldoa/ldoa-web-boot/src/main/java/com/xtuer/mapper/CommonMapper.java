@@ -18,11 +18,27 @@ public interface CommonMapper {
     int findSequenceByName(String sequenceName);
 
     /**
+     * 获得序列化的锁
+     *
+     * @param sequenceName 序列号名字
+     * @return 返回查询到的序列号
+     */
+    Integer lockSequenceByName(String sequenceName);
+
+    /**
+     * 创建序列号
+     *
+     * @param sequenceName 序列号名字
+     * @param value 初始序列号的值
+     */
+    void createSequence(String sequenceName, int value);
+
+    /**
      * 序列号增加 1
      *
      * @param sequenceName 序列号名字
      */
-    void increaseSequenceByName(String sequenceName);
+    void increaseSequenceByOne(String sequenceName);
 
     /**
      * 测试 XA 命令
