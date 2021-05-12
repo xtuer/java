@@ -16,6 +16,11 @@
 物料管理和产品管理: 每个人都可以添加，但是每个人只能编辑和删除自己添加的东西
 
 共享文件部分也是每个人都可以上传，下载，增加编辑和删除功能，但是每个人只能编辑和删除自己上传的文件
+
+销售系统模块只有销售人员、财务人员、以及管理者可以看到
+销售订单的录入只有销售人员可以录入
+收款金额部分只有财务人员可以填写
+管理者可以查看销售系统的信息
 */
 
 /**
@@ -48,8 +53,26 @@ const hasPermissionForStockIn = function() {
     return roles.indexOf('ROLE_PRODUCE_QUALITY') > -1 || roles.indexOf('ROLE_PRODUCE_SCHEDULE') > -1;
 };
 
+/**
+ * 是否有操作销售订单的权限
+ */
+const hasPermissionForSalesOrder = function() {
+    const roles = this.$store.getters.roles;
+    return roles.indexOf('ROLE_SALE_SALESPERSON') > -1;
+};
+
+/**
+ * 是否有财务的权限
+ */
+const hasPermissionForFinance = function() {
+    const roles = this.$store.getters.roles;
+    return roles.indexOf('ROLE_FINANCE') > -1;
+};
+
 export default {
     hasPermissionForMaintenance,
     hasPermissionOfSuperAdmin,
     hasPermissionForStockIn,
+    hasPermissionForSalesOrder,
+    hasPermissionForFinance,
 };

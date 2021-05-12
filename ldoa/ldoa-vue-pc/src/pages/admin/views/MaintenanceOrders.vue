@@ -12,6 +12,7 @@
                 <!-- 状态 -->
                 <Select v-model="filter.state" data-prepend-label="状态" class="prepend-label" style="width: 100%; min-width: 150px" @on-change="searchOrders">
                     <Option :value="-1">全部</Option>
+                    <Option :value="0">初始化</Option>
                     <Option :value="1">审批中</Option>
                     <Option :value="2">审批拒绝</Option>
                     <Option :value="3">审批通过</Option>
@@ -43,7 +44,7 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" :disabled="!this.hasPermissionForMaintenance()" @click="editOrder()">新建维保订单</Button>
+            <Button type="primary" icon="md-add" :disabled="!hasPermissionForMaintenance()" @click="editOrder()">新建维保订单</Button>
         </div>
 
         <!-- 维保订单列表 -->

@@ -20,6 +20,7 @@ public enum Role {
     ROLE_ADMIN_SYSTEM("系统管理员"),
     ROLE_ADMIN_ORG("机构管理员"),
     ROLE_ADMIN("管理者"),
+    ROLE_FINANCE("财务"),
 
     ROLE_SALE_SALESPERSON("销售部销售"),
     ROLE_SALE_SUPPORT("销售部技术支持"),

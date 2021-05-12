@@ -22,7 +22,7 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" @click="editSalesOrder('0')">创建销售订单</Button>
+            <Button type="primary" icon="md-add" :disabled="!hasPermissionForSalesOrder()" @click="editSalesOrder('0')">创建销售订单</Button>
         </div>
 
         <!-- 销售订单列表 -->
@@ -45,8 +45,8 @@
 
             <!-- 操作按钮 -->
             <template slot-scope="{ row: salesOrder }" slot="action">
-                <a @click="editSalesOrder(salesOrder.salesOrderId)">编辑</a>
-                <a class="delete">删除</a>
+                <a :disabled="!hasPermissionForSalesOrder()" @click="editSalesOrder(salesOrder.salesOrderId)">编辑</a>
+                <a :disabled="!hasPermissionForSalesOrder()" class="delete">删除</a>
             </template>
         </Table>
 

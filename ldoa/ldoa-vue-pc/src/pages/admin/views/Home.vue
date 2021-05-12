@@ -65,7 +65,7 @@ export default {
                         { label: '客户中心', name: 'customers' },
                         { label: '销售订单', name: 'sales-orders' },
                         { label: '订单收款', name: 'sales-order-payments' },
-                    ], roles: ['ROLE_SALE_SALESPERSON', 'ROLE_ADMIN_SYSTEM']
+                    ], roles: ['ROLE_SALE_SALESPERSON', 'ROLE_ADMIN_SYSTEM', 'ROLE_ADMIN', 'ROLE_FINANCE']
                 },
                 { label: '共享文件', icon: 'md-photos', menuItems:
                     [

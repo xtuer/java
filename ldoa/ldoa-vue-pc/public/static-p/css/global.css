@@ -189,6 +189,9 @@
 .table-action a:last-child:after {
     display: none;
 }
+.table-action a[disabled] {
+    color: #ccc;
+}
 
 .table-index .ivu-table-cell {
     padding: 2px;

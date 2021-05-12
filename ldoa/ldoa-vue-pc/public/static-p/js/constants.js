@@ -16,6 +16,7 @@
 
 ROLE_ADMIN_SYSTEM("系统管理员"),
 ROLE_ADMIN("管理者"),
+ROLE_FINANCE("财务"),
 
 ROLE_SALE_SALESPERSON("销售部销售"),
 ROLE_SALE_SUPPORT("销售部技术支持"),
@@ -33,6 +34,7 @@ ROLE_TECHNIQUE_SOFTWARE("技术部软件技术");
 window.ROLES = [
     { value: 'ROLE_ADMIN_SYSTEM', name: '系统管理员' },
     { value: 'ROLE_ADMIN',        name: '管理者' },
+    { value: 'ROLE_FINANCE',      name: '财务' },
 
     { value: 'ROLE_SALE_SALESPERSON', name: '销售部销售' },
     { value: 'ROLE_SALE_SUPPORT',     name: '销售部技术支持' },

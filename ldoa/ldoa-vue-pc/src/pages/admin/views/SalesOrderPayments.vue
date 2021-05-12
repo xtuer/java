@@ -57,7 +57,7 @@
 
             <!-- 订单状态 -->
             <template slot-scope="{ row: salesOrder }" slot="state">
-                <Button v-if="shouldPay(salesOrder)" type="primary" size="small" @click="showPay(salesOrder)">点击收款</Button>
+                <Button v-if="shouldPay(salesOrder)" type="primary" size="small" :disabled="!hasPermissionForFinance()" @click="showPay(salesOrder)">点击收款</Button>
                 <Tag v-else :color="salesOrder.state | colorForValue(window.SALES_ORDER_STATES)" type="border">{{ salesOrder.state | labelForValue(window.SALES_ORDER_STATES) }}</Tag>
             </template>
         </Table>
