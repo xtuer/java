@@ -8,7 +8,7 @@
             <!-- 左侧侧边栏 -->
             <div class="sidebar">
                 <Menu :active-name="activeMenuItemName" :open-names="openSubMenuIndexes" width="auto" @on-select="navigateTo">
-                    <Submenu v-for="(sm, index) in subMenus" :key="index" :name="index">
+                    <Submenu v-for="(sm, index) in mySubMenus" :key="index" :name="index">
                         <template slot="title"><Icon :type="sm.icon" /> {{ sm.label }}</template>
                         <MenuItem v-for="item in sm.menuItems" :key="item.name" :name="item.name">{{ item.label }}</MenuItem>
                     </Submenu>
@@ -65,7 +65,7 @@ export default {
                         { label: '客户中心', name: 'customers' },
                         { label: '销售订单', name: 'sales-orders' },
                         { label: '订单收款', name: 'sales-order-payments' },
-                    ]
+                    ], roles: ['ROLE_SALE_SALESPERSON', 'ROLE_ADMIN_SYSTEM']
                 },
                 { label: '共享文件', icon: 'md-photos', menuItems:
                     [
@@ -86,12 +86,6 @@ export default {
                         { label: '审批配置', name: 'audit-config' },
                     ]
                 },
-                // { label: '其他菜单', icon: 'md-cog', menuItems:
-                //     [
-                //         { label: '订单管理', name: 'admin-courses'       },
-                //         { label: '用户管理', name: 'question-statistics' },
-                //     ]
-                // },
             ],
         };
     },
@@ -114,6 +108,42 @@ export default {
                     }
                 }
             });
+        },
+        // 权限判断逻辑:
+        hasPermission(menu, role) {
+            // 如果菜单项没有角色数组、或者角色数组为空、或者角色数组中包含了当前用户的角色，则有权访问
+            return !menu.roles || menu.roles.length === 0 || menu.roles.includes(role);
+        }
+    },
+    computed: {
+        // 根据用户权限，过滤菜单
+        mySubMenus() {
+            const retSubMenus = [];
+            const userRole = this.$store.state.user.roles[0] || '无';
+
+            // 处理一级菜单
+            for (let subMenu of this.subMenus) {
+                if (this.hasPermission(subMenu, userRole)) {
+                    let retSubMenu = Utils.clone(subMenu);
+                    retSubMenu.menuItems = [];
+                    retSubMenus.push(retSubMenu);
+
+                    // 没用子菜单则继续下一个
+                    if (!subMenu.menuItems) {
+                        continue;
+                    }
+
+                    // 处理二级菜单
+                    for (let menuItem of subMenu.menuItems) {
+                        if (this.hasPermission(menuItem, userRole)) {
+                            let retMenuItem = Utils.clone(menuItem);
+                            retSubMenu.menuItems.push(retMenuItem);
+                        }
+                    }
+                }
+            }
+
+            return retSubMenus;
         }
     },
     watch: {
