@@ -15,7 +15,10 @@
                 </Input>
             </div>
 
-            <Button type="primary" icon="md-add" @click="editProduct()">添加产品</Button>
+            <div>
+                <Button type="primary" icon="md-add" class="margin-right-10" @click="editProduct()">添加产品</Button>
+                <Button type="info" icon="md-arrow-down" :loading="exporting" @click="exportProducts()">导出产品</Button>
+            </div>
         </div>
 
         <!-- 产品列表 -->
@@ -100,6 +103,7 @@ export default {
             reloading : false,
             modal     : false, // 是否显示编辑对话框
             saving    : false, // 保存中
+            exporting : false, // 导出中
             itemSelect: false, // 物料选择弹窗是否可见
             tableName : 'products-table', // 表名
             // 产品的列
@@ -252,6 +256,13 @@ export default {
             } else {
                 this.productClone.items.push(productItem);
             }
+        },
+        // 导出产品
+        exportProducts() {
+            this.exporting = true;
+            this.exportFile(ProductDao.exportProducts(this.filter)).then(() => {
+                this.exporting = false;
+            });
         },
         // 判断是否有编辑权限
         canEdit(product) {

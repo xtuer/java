@@ -1,14 +1,19 @@
 package com.xtuer.service;
 
-import com.xtuer.bean.product.Product;
-import com.xtuer.bean.product.ProductItem;
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
+import com.xtuer.bean.product.Product;
+import com.xtuer.bean.product.ProductFilter;
+import com.xtuer.bean.product.ProductItem;
 import com.xtuer.mapper.ProductMapper;
 import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * 产品服务
@@ -100,5 +105,17 @@ public class ProductService extends BaseService {
         productMapper.upsertProductItem(item);
 
         return Result.ok(item);
+    }
+
+    /**
+     * 导出产品
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportProducts(ProductFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<Product> products = productMapper.findProducts(filter, page);
+        return super.exportExcel("products", Product.class, products);
     }
 }

@@ -15,8 +15,8 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        // exportExcel();
-        importExcel();
+        exportExcel();
+        // importExcel();
     }
 
     public static void exportExcel() throws Exception {
@@ -26,7 +26,7 @@ public class Test {
         students.add(new Student().setId(3).setName("小白").setGender(2).setBirthday(new Date()));
 
         Workbook book = ExcelExportUtil.exportExcel(new ExportParams("计算机一班学生", "学生"), Student.class, students);
-        book.write(new FileOutputStream("/Users/Biao/Desktop/x.xls"));
+        book.write(new FileOutputStream("C:/temp/x.xls"));
     }
 
     public static void importExcel() throws Exception {

@@ -73,6 +73,7 @@ public interface Urls {
     // 产品
     String API_PRODUCTS            = "/api/products";             // 所有产品
     String API_PRODUCTS_BY_ID      = "/api/products/{productId}"; // 指定 ID 的产品
+    String API_PRODUCTS_EXPORT     = "/api/products/export";      // 导出产品
     String API_PRODUCT_ITEMS       = "/api/productItems";         // 所有产品项
     String API_PRODUCT_ITEMS_BY_ID = "/api/productItems/{productItemId}"; // 指定 ID 的产品项
 

@@ -1,13 +1,20 @@
 package com.xtuer.service;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.github.wujun234.uid.impl.CachedUidGenerator;
 import com.xtuer.config.AppConfig;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 
 @Service
 public class BaseService {
@@ -57,5 +64,32 @@ public class BaseService {
         String sn   = sequenceName + "-" + date + "-" + StringUtils.leftPad(n, 4, "0");
 
         return sn;
+    }
+
+    /**
+     * 导出的 Excel 文件 (存放在临时文件夹中)
+     *
+     * @param prefix 前缀
+     * @return 返回 Excel 文件
+     */
+    public File exportedExcelFile(String prefix) {
+        String sn = commonService.nextSequence("export-excel") + "";
+        return tempFileService.getTempFile(prefix + "-" + sn + ".xls");
+    }
+
+    /**
+     * 导出 Excel
+     * @param excelName excel 文件名
+     * @param pojoClass 实体类
+     * @param dataSet   数据集
+     * @return 返回访问 Excel 文件的 URL
+     * @throws IOException 导出异常
+     */
+    public String exportExcel(String excelName,  Class<?> pojoClass, Collection<?> dataSet) throws IOException {
+        File excel = exportedExcelFile(excelName);
+        Workbook book = ExcelExportUtil.exportExcel(new ExportParams(null, null), pojoClass, dataSet);
+        book.write(new FileOutputStream(excel));
+
+        return tempFileService.getTempFileUrl(excel);
     }
 }

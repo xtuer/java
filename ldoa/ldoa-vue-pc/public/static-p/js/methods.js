@@ -29,6 +29,29 @@ const download = function(url) {
 };
 
 /**
+ * 导出文件并下载到本地，不管成功还是失败，返回的 Promise 都执行 resolve 函数。
+ *
+ * 示例:
+ * this.exporting = true;
+ * this.exportFile(ProductDao.exportProducts(this.filter)).then(() => {
+ *     this.exporting = false;
+ * }
+ *
+ * @param {Promise} 执行导出的 Promise 请求，其执行成功的参数为导出文件的 URL
+ * @return 无返回值
+ */
+const exportFile = function(p) {
+    return new Promise(function(resolve) {
+        p.then(url => {
+            download(url);
+            resolve();
+        }).catch(() => {
+            resolve();
+        });
+    });
+};
+
+/**
  * 返回上一路由
  *
  * 案例: <Button @click="goBack()">返回</Button>
@@ -137,6 +160,7 @@ const ensureInt = function(obj, field, n) {
 
 export default {
     download,
+    exportFile,
     goBack,
     isSystemAdmin,
     isCurrentUser,

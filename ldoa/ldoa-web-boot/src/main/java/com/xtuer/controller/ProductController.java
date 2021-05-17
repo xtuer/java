@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -45,6 +46,22 @@ public class ProductController extends BaseController {
     @GetMapping(Urls.API_PRODUCTS)
     public Result<List<Product>> findProducts(ProductFilter filter, Page page) {
         return Result.ok(productMapper.findProducts(filter, page));
+    }
+
+    /**
+     * 导出符合条件的产品
+     * 网址: http://localhost:8080/api/products/export
+     * 参数:
+     *      name       [可选]: 名字
+     *      code       [可选]: 编码
+     *      productIds [可选]: 产品 ID
+     *
+     * @param filter 过滤条件
+     * @return payload 为导出的 Excel 文件的 URL
+     */
+    @GetMapping(Urls.API_PRODUCTS_EXPORT)
+    public Result<String> exportProducts(ProductFilter filter) throws IOException {
+        return Result.ok(productService.exportProducts(filter));
     }
 
     /**

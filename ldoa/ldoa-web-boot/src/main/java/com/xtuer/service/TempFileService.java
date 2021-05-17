@@ -68,6 +68,27 @@ public class TempFileService extends BaseService {
     }
 
     /**
+     * 获取临时文件的 URL
+     *
+     * @param filename 文件名
+     * @return 返回 URL
+     */
+    public String getTempFileUrl(String filename) {
+        String name = FilenameUtils.getName(filename);
+        return Urls.URL_TEMP_FILE_PREFIX + name; // 临时文件的 URI: /file/temp/165694386577866752.png
+    }
+
+    /**
+     * 获取临时文件的 URL
+     *
+     * @param file 文件
+     * @return 返回 URL
+     */
+    public String getTempFileUrl(File file) {
+        return getTempFileUrl(file.getName());
+    }
+
+    /**
      * 判断传入的 url 是否临时文件的 url
      *
      * @param url 文件的  url

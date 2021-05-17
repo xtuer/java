@@ -22,6 +22,23 @@ export default class ProductDao {
     }
 
     /**
+     * 导出符合条件的产品
+     * 网址: http://localhost:8080/api/products/export
+     * 参数:
+     *      name       [可选]: 名字
+     *      code       [可选]: 编码
+     *      productIds [可选]: 产品 ID
+     *
+     * @param {JSON} filter 过滤条件
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为导出的 Excel 文件的 URL，reject 的参数为错误信息
+     */
+    static exportProducts(filter) {
+        return Rest.get(Urls.API_PRODUCTS_EXPORT, { data: filter }).then(({ data: url, success, message }) => {
+            return Utils.response(url, success, message);
+        });
+    }
+
+    /**
      * 创建或者更新产品
      *
      * 网址: http://localhost:8080/api/products/{productId}
