@@ -26,7 +26,8 @@
             <!-- 其他按钮 -->
             <div>
                 <Button type="default" icon="md-add" @click="editCustomer()">添加客户</Button>
-                <FileUpload class="margin-left-10" excel @on-success="importCustomers">导入客户</FileUpload>
+                <FileUpload class="margin-left-10 margin-right-10" excel @on-success="importCustomers">导入客户</FileUpload>
+                <Button type="info" icon="md-arrow-down" :loading="exporting" @click="exportCustomers()">导出客户</Button>
             </div>
         </div>
 
@@ -91,6 +92,7 @@ export default {
             more     : false, // 是否还有更多客户
             loading  : false, // 加载中
             reloading: false,
+            exporting: false, // 导出中
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
                 { key : 'customerSn', title: '客户编号', width: 150, resizable: true },
@@ -136,6 +138,13 @@ export default {
                 this.loading   = false;
                 this.reloading = false;
                 this.filter.pageNumber++;
+            });
+        },
+        // 导出客户
+        exportCustomers() {
+            this.exporting = true;
+            this.exportFile(CustomerDao.exportCustomers(this.filter)).then(() => {
+                this.exporting = false;
             });
         },
         // 导入客户

@@ -31,8 +31,9 @@ public interface CustomerMapper {
      * 插入或者更新客户
      *
      * @param customer 客户对象
+     * @param forImport 是否导入，导入时不更新 contacts_json 字段
      */
-    void upsertCustomer(Customer customer);
+    void upsertCustomer(Customer customer, boolean forImport);
 
     /**
      * 删除指定 ID 的客户

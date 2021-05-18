@@ -117,6 +117,7 @@ public interface Urls {
     String API_SALES_CUSTOMERS_BY_ID   = "/api/sales/customers/{customerId}"; // 指定 ID 的客户
     String API_SALES_CUSTOMERS_FINANCE = "/api/sales/customers/{customerId}/finance"; // 指定 ID 的客户财务信息
     String API_SALES_CUSTOMERS_IMPORT  = "/api/sales/customers/import"; // 导入客户
+    String API_SALES_CUSTOMERS_EXPORT  = "/api/sales/customers/export"; // 导出客户
     String API_SALES_ORDERS            = "/api/sales/salesOrders"; // 销售订单
     String API_SALES_ORDERS_BY_ID      = "/api/sales/salesOrders/{salesOrderId}"; // 指定 ID 的销售订单
     String API_SALES_ORDERS_PAYMENTS   = "/api/sales/salesOrders/{salesOrderId}/payments"; // 订单收款

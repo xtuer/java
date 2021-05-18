@@ -38,13 +38,18 @@
     <insert id="upsertCustomer">
         INSERT INTO customer(customer_id, customer_sn, name, business, region, type, phone,
             level, importance, status, address, owner, remark, contacts_json)
-        VALUES (#{customerId}, #{customerSn}, #{name}, #{business}, #{region}, #{type}, #{phone},
-            #{level}, #{importance}, #{status}, #{address}, #{owner}, #{remark}, #{contactsJson})
+        VALUES (#{customer.customerId}, #{customer.customerSn}, #{customer.name}, #{customer.business},
+            #{customer.region}, #{customer.type}, #{customer.phone},
+            #{customer.level}, #{customer.importance}, #{customer.status}, #{customer.address},
+            #{customer.owner}, #{customer.remark}, #{customer.contactsJson})
 
         ON DUPLICATE KEY
-        UPDATE name = #{name}, business = #{business}, region = #{region}, type = #{type},
-            phone = #{phone}, level = #{level}, importance = #{importance}, status = #{status},
-            address = #{address}, owner = #{owner}, remark = #{remark}, contacts_json = #{contactsJson}
+        UPDATE name = #{customer.name}, business = #{customer.business}, region = #{customer.region}, type = #{customer.type},
+            phone = #{customer.phone}, level = #{customer.level}, importance = #{customer.importance}, status = #{customer.status},
+            address = #{customer.address}, owner = #{customer.owner}, remark = #{customer.remark}
+            <if test="forImport == false">
+                , contacts_json = #{customer.contactsJson}
+            </if>
     </insert>
 
     <!-- 删除指定 ID 的客户 -->

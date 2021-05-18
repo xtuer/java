@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -53,6 +54,19 @@ public class CustomerController extends BaseController {
     @GetMapping(Urls.API_SALES_CUSTOMERS)
     public Result<List<Customer>> findCustomers(CustomerFilter filter, Page page) {
         return Result.ok(customerMapper.findCustomers(filter, page));
+    }
+
+    /**
+     * 导出客户
+     *
+     * 网址: http://localhost:8080/api/sales/customers/export
+     * 参数: 无
+     *
+     * @return payload 为导出的 Excel 文件的 URL
+     */
+    @GetMapping(Urls.API_SALES_CUSTOMERS_EXPORT)
+    public Result<String> exportCustomers(CustomerFilter filter) throws IOException {
+        return Result.ok(customerService.exportCustomers(filter));
     }
 
     /**

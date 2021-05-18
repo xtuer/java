@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -79,6 +80,7 @@ public class BaseService {
 
     /**
      * 导出 Excel
+     *
      * @param excelName excel 文件名
      * @param pojoClass 实体类
      * @param dataSet   数据集
@@ -88,7 +90,10 @@ public class BaseService {
     public String exportExcel(String excelName,  Class<?> pojoClass, Collection<?> dataSet) throws IOException {
         File excel = exportedExcelFile(excelName);
         Workbook book = ExcelExportUtil.exportExcel(new ExportParams(null, null), pojoClass, dataSet);
-        book.write(new FileOutputStream(excel));
+
+        try (OutputStream out = new FileOutputStream(excel)) {
+            book.write(out);
+        }
 
         return tempFileService.getTempFileUrl(excel);
     }

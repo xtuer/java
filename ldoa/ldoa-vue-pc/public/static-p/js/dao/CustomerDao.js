@@ -38,6 +38,20 @@ export default class CustomerDao {
     }
 
     /**
+     * 导出客户
+     *
+     * 网址: http://localhost:8080/api/sales/customers/export
+     * 参数: 无
+     *
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为导出的 Excel 文件的 URL，reject 的参数为错误信息
+     */
+    static exportCustomers(filter) {
+        return Rest.get(Urls.API_SALES_CUSTOMERS_EXPORT, { data: filter }).then(({ data: url, success, message }) => {
+            return Utils.response(url, success, message);
+        });
+    }
+
+    /**
      * 导入客户
      *
      * 网址: http://localhost:8080/api/sales/customers/import

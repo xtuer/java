@@ -2,8 +2,10 @@ package com.xtuer.service;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.sales.Customer;
+import com.xtuer.bean.sales.CustomerFilter;
 import com.xtuer.mapper.CustomerMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,7 +42,7 @@ public class CustomerService extends BaseService {
         }
 
         // [3] 保存到数据库
-        customerMapper.upsertCustomer(customer);
+        customerMapper.upsertCustomer(customer, false);
 
         return Result.ok(customer);
     }
@@ -65,7 +68,19 @@ public class CustomerService extends BaseService {
         // [3] 保存客户到数据库
         customers.stream().filter(c -> StringUtils.isNotBlank(c.getCustomerSn())).forEach(c -> {
             c.setCustomerId(super.nextId());
-            customerMapper.upsertCustomer(c);
+            customerMapper.upsertCustomer(c, true);
         });
+    }
+
+    /**
+     * 导出客户
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportCustomers(CustomerFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<Customer> customers = customerMapper.findCustomers(filter, page);
+        return super.exportExcel("customers", Customer.class, customers);
     }
 }
