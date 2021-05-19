@@ -20,6 +20,8 @@
                     <span slot="prepend">数量小于</span>
                 </Input>
             </div>
+
+            <Button type="info" icon="md-arrow-down" :loading="exporting" @click="exportStocks()">导出库存</Button>
         </div>
 
         <!-- 物料列表 -->
@@ -64,6 +66,7 @@ export default {
             reloading: false, // 重新加载中
             modal    : false, // 是否显示编辑对话框
             saving   : false, // 保存中
+            exporting: false, // 是否导出中
             tableName: 'stocks-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
@@ -111,7 +114,14 @@ export default {
             return {
                 'text-color-error': item.count <= item.warnCount
             };
-        }
+        },
+        // 导出库存
+        exportStocks() {
+            this.exporting = true;
+            this.exportFile(StockDao.exportStocks(this.filter)).then(() => {
+                this.exporting = false;
+            });
+        },
     },
 };
 </script>

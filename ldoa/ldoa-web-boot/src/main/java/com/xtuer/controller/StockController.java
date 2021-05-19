@@ -13,6 +13,7 @@ import com.xtuer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -194,5 +195,25 @@ public class StockController extends BaseController {
     @GetMapping(Urls.API_STOCKS)
     public Result<List<ProductItem>> findStocks(StockFilter filter, Page page) {
         return Result.ok(stockMapper.findStocks(filter, page));
+    }
+
+    /**
+     * 导出物料的库存
+     *
+     * 网址: http://localhost:8080/api/stocks/export
+     * 参数:
+     *      productItemId [可选]: 物料 ID
+     *      name          [可选]: 物料名称
+     *      code          [可选]: 物料编码
+     *      batch         [可选]: 入库批次
+     *      count         [可选]: 数量 (大于 0 时查询小于等于 count 的产品项)
+     *
+     * @param filter 过滤条件
+     *
+     * @return payload 为导出的 Excel 的 URL
+     */
+    @GetMapping(Urls.API_STOCKS_EXPORT)
+    public Result<String> exportStocks(StockFilter filter) throws IOException {
+        return Result.ok(stockService.exportStocks(filter));
     }
 }

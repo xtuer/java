@@ -106,6 +106,7 @@ public interface Urls {
     String API_STOCKS_RECORDS  = "/api/stocks/records";  // 库存操作记录
     String API_STOCKS_IN       = "/api/stocks/in";       // 入库
     String API_STOCKS_OUT      = "/api/stocks/out";      // 出库
+    String API_STOCKS_EXPORT   = "/api/stocks/export";   // 库存导出
     String API_STOCKS_RECORDS_BY_ID      = "/api/stocks/records/{recordId}"; // 库存操作记录
     String API_STOCKS_OUT_REQUESTS       = "/api/stocks/out/requests"; // 出库申请
     String API_STOCKS_OUT_REQUESTS_BY_ID = "/api/stocks/out/requests/{requestId}"; // 指定 ID 的出库申请

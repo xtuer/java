@@ -1,17 +1,18 @@
 package com.xtuer.service;
 
 import com.xtuer.bean.Const;
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.product.BatchCount;
 import com.xtuer.bean.product.ProductItem;
+import com.xtuer.bean.stock.StockFilter;
 import com.xtuer.bean.stock.StockOutRequestFormBean;
 import com.xtuer.bean.stock.StockRecord;
 import com.xtuer.bean.stock.StockRequest;
 import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.ProductMapper;
 import com.xtuer.mapper.StockMapper;
-import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -386,5 +388,17 @@ public class StockService extends BaseService {
         }
 
         return Result.ok();
+    }
+
+    /**
+     * 导出客户
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportStocks(StockFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<ProductItem> items = stockMapper.findStocks(filter, page);
+        return super.exportExcel("stocks", ProductItem.class, items);
     }
 }

@@ -60,6 +60,7 @@ const Urls = {
 
     // 库存
     API_STOCKS                   : '/api/stocks',              // 库存
+    API_STOCKS_EXPORT            : '/api/stocks/export',       // 库存导出
     API_STOCKS_RECORDS           : '/api/stocks/records',      // 库存操作记录
     API_STOCKS_RECORDS_BY_ID     : '/api/stocks/records/{recordId}', // 库存操作记录
     API_STOCKS_IN                : '/api/stocks/in',           // 入库
