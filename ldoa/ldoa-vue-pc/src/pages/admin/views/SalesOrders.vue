@@ -22,7 +22,10 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" :disabled="!hasPermissionForSalesOrder()" @click="editSalesOrder('0')">创建销售订单</Button>
+            <div>
+                <Button type="primary" icon="md-add" :disabled="!hasPermissionForSalesOrder()" @click="editSalesOrder('0')">创建销售订单</Button>
+                <Button type="info" icon="md-arrow-down" :loading="exporting" class="margin-left-10" @click="exportSalesOrders()">导出销售订单</Button>
+            </div>
         </div>
 
         <!-- 销售订单列表 -->
@@ -80,6 +83,7 @@ export default {
             more     : false, // 是否还有更多销售订单
             loading  : false, // 加载中
             reloading: false,
+            exporting: false, // 导出中
             tableName: 'sales-orders-table',
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
@@ -165,6 +169,13 @@ export default {
         showSalesOrderDetails(salesOrder) {
             this.salesOrderId = salesOrder.salesOrderId;
             this.salesOrderDetails = true;
+        },
+        // 导出销售订单
+        exportSalesOrders() {
+            this.exporting = true;
+            this.exportFile(SalesOrderDao.exportSalesOrders(this.filter)).then(() => {
+                this.exporting = false;
+            });
         },
         // 新建搜索条件
         newFilter() {

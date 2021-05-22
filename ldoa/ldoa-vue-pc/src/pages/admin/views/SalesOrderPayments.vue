@@ -33,6 +33,8 @@
                         <Option value="topic">主题</Option>
                     </Select>
                 </Input>
+
+                <Button type="info" icon="md-arrow-down" :loading="exporting" class="margin-left-10" @click="exportSalesOrdersForPayment()">导出收款订单</Button>
             </div>
         </div>
 
@@ -103,6 +105,7 @@ export default {
             payModal       : false, // 支付弹窗是否可见
             paying         : false, // 支付中
             completing     : false, // 完成订单中
+            exporting      : false, // 导出中
 
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
@@ -209,6 +212,13 @@ export default {
                 this.$Message.success('订单完成');
                 this.completing = false;
                 this.payModal = false;
+            });
+        },
+        // 导出支付信息的销售订单
+        exportSalesOrdersForPayment() {
+            this.exporting = true;
+            this.exportFile(SalesOrderDao.exportSalesOrdersForPayment(this.filter)).then(() => {
+                this.exporting = false;
             });
         },
         // 新建搜索条件

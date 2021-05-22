@@ -40,7 +40,7 @@ public class Order {
     /**
      * 订单编号
      */
-    @Excel(name = "生产单号", width = 24, orderNum = "1")
+    @Excel(name = "订单编号", width = 24, orderNum = "1")
     private String orderSn;
 
     /**

@@ -9,14 +9,19 @@ import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.sales.CustomerFinance;
 import com.xtuer.bean.sales.SalesOrder;
 import com.xtuer.bean.sales.SalesOrderFilter;
+import com.xtuer.bean.sales.SalesOrderForPayment;
 import com.xtuer.mapper.AuditMapper;
 import com.xtuer.mapper.SalesOrderMapper;
 import com.xtuer.util.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -67,6 +72,33 @@ public class SalesOrderService extends BaseService {
      * @return 返回销售订单的数组
      */
     public List<SalesOrder> findSalesOrders(SalesOrderFilter filter, Page page) {
+        final int searchType = filter.getSearchType();
+        final Date current = new Date();
+
+        // 待支付订单
+        if (searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
+            filter.setState(-1);
+        }
+        // 本月已收款订单
+        else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_MONTH) {
+            filter.setPaidAtStart(Utils.monthStart(current));
+            filter.setPaidAtEnd(Utils.monthEnd(current));
+        }
+        // 本年已收款订单
+        else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_YEAR) {
+            filter.setPaidAtStart(Utils.yearStart(current));
+            filter.setPaidAtEnd(Utils.yearEnd(current));
+        }
+
+        // 搜索所有订单或者应收款订单时设置签约时间，否则删除签约时间
+        if (searchType == SalesOrderFilter.SEARCH_TYPE_ALL || searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
+            filter.setAgreementStart(Utils.dayStart(filter.getAgreementStart()));
+            filter.setAgreementEnd(Utils.dayEnd(filter.getAgreementEnd()));
+        } else {
+            filter.setAgreementStart(null);
+            filter.setAgreementEnd(null);
+        }
+
         return salesOrderMapper.findSalesOrders(filter, page);
     }
 
@@ -189,5 +221,54 @@ public class SalesOrderService extends BaseService {
         }
 
         return finance;
+    }
+
+    /**
+     * 导出销售订单
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportSalesOrders(SalesOrderFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<SalesOrder> orders = this.findSalesOrders(filter, page);
+        return super.exportExcel("销售订单", SalesOrder.class, orders);
+    }
+
+    /**
+     * 导出支付信息的销售订单
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportSalesOrdersForPayment(SalesOrderFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<SalesOrder> orders = this.findSalesOrders(filter, page);
+        List<SalesOrderForPayment> ps = new LinkedList<>();
+
+        for (SalesOrder order : orders) {
+            SalesOrderForPayment p = new SalesOrderForPayment();
+            BeanUtils.copyProperties(order, p);
+            ps.add(p);
+        }
+
+        // 导出文件名
+        String name = "";
+        switch (filter.getSearchType()) {
+            case SalesOrderFilter.SEARCH_TYPE_ALL:
+                name = "收款订单-所有订单";
+                break;
+            case SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY:
+                name = "收款订单-应收款订单";
+                break;
+            case SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_MONTH:
+                name = "收款订单-本月已收款";
+                break;
+            case SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_YEAR:
+                name = "收款订单-本年已收款";
+                break;
+        }
+
+        return super.exportExcel(name, SalesOrderForPayment.class, ps);
     }
 }

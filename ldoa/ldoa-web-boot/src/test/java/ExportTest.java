@@ -3,10 +3,8 @@ import com.xtuer.bean.order.MaintenanceOrderFilter;
 import com.xtuer.bean.order.OrderFilter;
 import com.xtuer.bean.product.ProductFilter;
 import com.xtuer.bean.sales.CustomerFilter;
-import com.xtuer.service.CustomerService;
-import com.xtuer.service.MaintenanceOrderService;
-import com.xtuer.service.OrderService;
-import com.xtuer.service.ProductService;
+import com.xtuer.bean.sales.SalesOrderFilter;
+import com.xtuer.service.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +24,9 @@ public class ExportTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private SalesOrderService salesOrderService;
 
     // 导出产品
     @Test
@@ -54,6 +55,24 @@ public class ExportTest {
         OrderFilter filter = new OrderFilter();
         filter.setState(-1);
         String url = orderService.exportOrders(filter);
+        System.out.println(url);
+    }
+
+    // 导出销售订单
+    @Test
+    public void exportSalesOrders() throws IOException {
+        SalesOrderFilter filter = new SalesOrderFilter();
+        filter.setState(-1);
+        String url = salesOrderService.exportSalesOrders(filter);
+        System.out.println(url);
+    }
+
+    // 导出支付信息的销售订单
+    @Test
+    public void exportSalesOrdersForPayment() throws IOException {
+        SalesOrderFilter filter = new SalesOrderFilter();
+        filter.setSearchType(SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY);
+        String url = salesOrderService.exportSalesOrdersForPayment(filter);
         System.out.println(url);
     }
 }

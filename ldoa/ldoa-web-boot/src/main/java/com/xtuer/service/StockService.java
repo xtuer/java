@@ -391,7 +391,7 @@ public class StockService extends BaseService {
     }
 
     /**
-     * 导出客户
+     * 导出库存
      *
      * @param filter 过滤条件
      * @return 返回导出的 Excel 的 URL

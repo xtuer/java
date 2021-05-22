@@ -55,6 +55,36 @@ export default class SalesOrderDao {
     }
 
     /**
+     * 导出销售订单
+     *
+     * 网址: http://localhost:8080/api/sales/salesOrders/export
+     * 参数: 参考 findSalesOrders
+     *
+     * @param {JSON} filter 过滤条件
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为导出的 Excel 的 URL，reject 的参数为错误信息
+     */
+    static exportSalesOrders(filter) {
+        return Rest.get(Urls.API_SALES_ORDERS_EXPORT, { data: filter }).then(({ data: url, success, message }) => {
+            return Utils.response(url, success, message);
+        });
+    }
+
+    /**
+     * 导出支付信息的销售订单
+     *
+     * 网址: http://localhost:8080/api/sales/salesOrders/export-payment
+     * 参数: 参考 findSalesOrders
+     *
+     * @param {JSON} filter 过滤条件
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为导出的 Excel 的 URL，reject 的参数为错误信息
+     */
+    static exportSalesOrdersForPayment(filter) {
+        return Rest.get(Urls.API_SALES_ORDERS_EXPORT_PAY, { data: filter }).then(({ data: url, success, message }) => {
+            return Utils.response(url, success, message);
+        });
+    }
+
+    /**
      * 更新或者插入销售订单
      *
      * 网址: http://localhost:8080/api/sales/salesOrders/{salesOrderId}

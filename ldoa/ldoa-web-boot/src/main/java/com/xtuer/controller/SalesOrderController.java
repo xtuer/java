@@ -15,7 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -63,34 +63,35 @@ public class SalesOrderController extends BaseController {
      */
     @GetMapping(Urls.API_SALES_ORDERS)
     public Result<List<SalesOrder>> findSalesOrders(SalesOrderFilter filter, Page page) {
-        final int searchType = filter.getSearchType();
-        final Date current = new Date();
-
-        // 待支付订单
-        if (searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
-            filter.setState(-1);
-        }
-        // 本月已收款订单
-        else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_MONTH) {
-            filter.setPaidAtStart(Utils.monthStart(current));
-            filter.setPaidAtEnd(Utils.monthEnd(current));
-        }
-        // 本年已收款订单
-        else if (searchType == SalesOrderFilter.SEARCH_TYPE_PAID_THIS_CURRENT_YEAR) {
-            filter.setPaidAtStart(Utils.yearStart(current));
-            filter.setPaidAtEnd(Utils.yearEnd(current));
-        }
-
-        // 搜索所有订单或者应收款订单时设置签约时间，否则删除签约时间
-        if (searchType == SalesOrderFilter.SEARCH_TYPE_ALL || searchType == SalesOrderFilter.SEARCH_TYPE_SHOULD_PAY) {
-            filter.setAgreementStart(Utils.dayStart(filter.getAgreementStart()));
-            filter.setAgreementEnd(Utils.dayEnd(filter.getAgreementEnd()));
-        } else {
-            filter.setAgreementStart(null);
-            filter.setAgreementEnd(null);
-        }
-
         return Result.ok(salesOrderService.findSalesOrders(filter, page));
+    }
+
+    /**
+     * 导出销售订单
+     *
+     * 网址: http://localhost:8080/api/sales/salesOrders/export
+     * 参数: 参考 findSalesOrders
+     *
+     * @param filter 过滤条件
+     * @return payload 为导出的 Excel 的 URL
+     */
+    @GetMapping(Urls.API_SALES_ORDERS_EXPORT)
+    public Result<String> exportSalesOrders(SalesOrderFilter filter) throws IOException {
+        return Result.ok(salesOrderService.exportSalesOrders(filter));
+    }
+
+    /**
+     * 导出支付信息的销售订单
+     *
+     * 网址: http://localhost:8080/api/sales/salesOrders/export-payment
+     * 参数: 参考 findSalesOrders
+     *
+     * @param filter 过滤条件
+     * @return payload 为导出的 Excel 的 URL
+     */
+    @GetMapping(Urls.API_SALES_ORDERS_EXPORT_PAY)
+    public Result<String> exportSalesOrdersForPayment(SalesOrderFilter filter) throws IOException {
+        return Result.ok(salesOrderService.exportSalesOrdersForPayment(filter));
     }
 
     /**
