@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xtuer.bean.Mime;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.SecurityConst;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RegExUtils;
@@ -290,8 +291,10 @@ public final class WebUtils {
      * @param request HttpServletRequest 对象
      * @return 返回请求的文件名
      */
+    @SneakyThrows
     public static String getUriFilename(HttpServletRequest request) {
         String uri = request.getRequestURI();
+        uri = URLDecoder.decode(uri, StandardCharsets.UTF_8.name()); // 解码 URI 中的特殊字符，如中文字符
         String filename = FilenameUtils.getName(uri);
 
         return filename;
