@@ -81,6 +81,6 @@ public class CustomerService extends BaseService {
     public String exportCustomers(CustomerFilter filter) throws IOException {
         Page page = Page.of(1, Integer.MAX_VALUE);
         List<Customer> customers = customerMapper.findCustomers(filter, page);
-        return super.exportExcel("customers", Customer.class, customers);
+        return super.exportExcel("客户", Customer.class, customers);
     }
 }

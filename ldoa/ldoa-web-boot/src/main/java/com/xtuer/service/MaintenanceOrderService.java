@@ -1,8 +1,10 @@
 package com.xtuer.service;
 
+import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.User;
 import com.xtuer.bean.order.MaintenanceOrder;
+import com.xtuer.bean.order.MaintenanceOrderFilter;
 import com.xtuer.bean.order.MaintenanceOrderItem;
 import com.xtuer.mapper.MaintenanceOrderMapper;
 import com.xtuer.util.Utils;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -153,5 +156,17 @@ public class MaintenanceOrderService extends BaseService {
      */
     public void completeOrder(long orderId) {
         orderMapper.updateMaintenanceOrderState(orderId, MaintenanceOrder.STATE_COMPLETE);
+    }
+
+    /**
+     * 导出客户
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportMaintenanceOrders(MaintenanceOrderFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<MaintenanceOrder> items = orderMapper.findMaintenanceOrders(filter, page);
+        return super.exportExcel("维保订单", MaintenanceOrder.class, items);
     }
 }

@@ -44,7 +44,10 @@
             </div>
 
             <!-- 其他按钮 -->
-            <Button type="primary" icon="md-add" :disabled="!hasPermissionForMaintenance()" @click="editOrder()">新建维保订单</Button>
+            <div>
+                <Button type="primary" icon="md-add" :disabled="!hasPermissionForMaintenance()" @click="editOrder()">新建维保订单</Button>
+                <Button type="info" icon="md-arrow-down" :loading="exporting" class="margin-left-10" @click="exportMaintenanceOrders()">导出维保订单</Button>
+            </div>
         </div>
 
         <!-- 维保订单列表 -->
@@ -173,6 +176,7 @@ export default {
             more     : false, // 是否还有更多维保订单
             loading  : false, // 加载中
             reloading: false,
+            exporting: false, // 是否导出中
             tableName: 'maintenance-orders-table', // 表名
             columns  : [
                 // 设置 width, minWidth，当大小不够时 Table 会出现水平滚动条
@@ -358,6 +362,13 @@ export default {
                         this.$Message.success('删除成功');
                     });
                 }
+            });
+        },
+        // 导出维保订单
+        exportMaintenanceOrders() {
+            this.exporting = true;
+            this.exportFile(MaintenanceOrderDao.exportMaintenanceOrders(this.filter)).then(() => {
+                this.exporting = false;
             });
         },
         // 新建搜索条件

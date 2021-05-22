@@ -116,6 +116,6 @@ public class ProductService extends BaseService {
     public String exportProducts(ProductFilter filter) throws IOException {
         Page page = Page.of(1, Integer.MAX_VALUE);
         List<Product> products = productMapper.findProducts(filter, page);
-        return super.exportExcel("products", Product.class, products);
+        return super.exportExcel("产品", Product.class, products);
     }
 }

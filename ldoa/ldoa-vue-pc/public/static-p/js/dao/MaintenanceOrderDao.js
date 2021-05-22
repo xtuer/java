@@ -28,6 +28,29 @@ export default class {
     }
 
     /**
+     * 查询符合条件的维保订单
+     *
+     * 网址: http://localhost:8080/api/maintenance-orders
+     * 参数:
+     *      state              [可选]: 状态，为 -1 则查询所有
+     *      maintenanceOrderSn [可选]: 维保单号
+     *      salespersonName    [可选]: 销售人员
+     *      customerName       [可选]: 客户
+     *      productName        [可选]: 产品名称
+     *      productCode        [可选]: 产品编码
+     *      receivedStartAt    [可选]: 收货开始时间
+     *      receivedEndAt      [可选]: 收货结束时间
+     *
+     * @param {JSON} filter 过滤条件
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为导出的 Excel 的 URL，reject 的参数为错误信息
+     */
+    static exportMaintenanceOrders(filter) {
+        return Rest.get(Urls.API_MAINTENANCE_ORDERS_EXPORT, { data: filter }).then(({ data: url, success, message }) => {
+            return Utils.response(url, success, message);
+        });
+    }
+
+    /**
      * 查询指定 ID 的维保订单
      *
      * 网址: http://localhost:8080/api/maintenance-orders/{orderId}

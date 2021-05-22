@@ -83,11 +83,12 @@ public interface Urls {
     String API_ORDERS_COMPLETE = "/api/orders/{orderId}/complete"; // 完成订单
 
     // 维保订单
-    String API_MAINTENANCE_ORDERS = "/api/maintenance-orders";
-    String API_MAINTENANCE_ORDERS_BY_ID = "/api/maintenance-orders/{orderId}";
+    String API_MAINTENANCE_ORDERS          = "/api/maintenance-orders";
+    String API_MAINTENANCE_ORDERS_BY_ID    = "/api/maintenance-orders/{orderId}";
     String API_MAINTENANCE_ORDERS_COMPLETE = "/api/maintenance-orders/{orderId}/complete"; // 完成订单
     String API_MAINTENANCE_ORDERS_PROGRESS = "/api/maintenance-orders/{orderId}/progress"; // 订单的进度
     String API_MAINTENANCE_ORDER_ITEMS     = "/api/maintenance-orders/{orderId}/items";    // 维保订单项
+    String API_MAINTENANCE_ORDERS_EXPORT   = "/api/maintenance-orders/export";             // 导出维保订单
 
     // 审批
     String API_AUDITS                = "/api/audits";                               // 审批

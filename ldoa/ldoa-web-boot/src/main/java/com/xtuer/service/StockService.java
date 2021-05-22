@@ -399,6 +399,6 @@ public class StockService extends BaseService {
     public String exportStocks(StockFilter filter) throws IOException {
         Page page = Page.of(1, Integer.MAX_VALUE);
         List<ProductItem> items = stockMapper.findStocks(filter, page);
-        return super.exportExcel("stocks", ProductItem.class, items);
+        return super.exportExcel("库存", ProductItem.class, items);
     }
 }
