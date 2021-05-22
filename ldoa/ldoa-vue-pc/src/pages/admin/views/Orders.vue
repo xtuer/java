@@ -14,7 +14,10 @@
                     <span slot="prepend">产品名称</span>
                 </Input>
             </div>
-            <Button type="primary" icon="md-add" @click="editOrder()">新建订单</Button>
+            <div>
+                <Button type="primary" icon="md-add" class="margin-right-10" @click="editOrder()">新建订单</Button>
+                <Button type="info" icon="md-arrow-down" :loading="exporting" @click="exportOrders()">导出订单</Button>
+            </div>
         </div>
 
         <!-- 订单列表 -->
@@ -102,6 +105,7 @@ export default {
             more      : false, // 是否还有更多订单
             loading   : false, // 加载中
             reloading : false, // 重新加载
+            exporting : false, // 导出订单中
             orderEditModal: false, // 订单编辑弹窗是否可见
             editedOrderId : '0',   // 编辑的订单 ID
             orderDetailsModal: false, // 订单详情弹窗是否可见
@@ -194,7 +198,14 @@ export default {
             } else {
                 return false;
             }
-        }
+        },
+        // 导出订单
+        exportOrders() {
+            this.exporting = true;
+            this.exportFile(OrderDao.exportOrders(this.filter)).then(() => {
+                this.exporting = false;
+            });
+        },
     }
 };
 </script>

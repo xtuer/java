@@ -1,8 +1,8 @@
 package com.xtuer.bean.order;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.xtuer.bean.UploadedFile;
 import com.xtuer.bean.User;
-import com.xtuer.bean.order.OrderItem;
 import com.xtuer.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,17 +40,20 @@ public class Order {
     /**
      * 订单编号
      */
+    @Excel(name = "生产单号", width = 24, orderNum = "1")
     private String orderSn;
 
     /**
      * 订单类型: 0 (销售订单)、1 (样品订单)
      */
+    @Excel(name = "订单类型", width = 20, orderNum = "4", replace = {"销售订单_0", "样品订单_1"})
     private int type;
 
     /**
      * 客户单位
      */
     @NotBlank(message = "客户单位不能为空")
+    @Excel(name = "客户单位", width = 40, orderNum = "2")
     private String customerCompany;
 
     /**
@@ -69,18 +72,26 @@ public class Order {
      * 订单日期
      */
     @NotNull(message = "订单日期不能为空")
+    @Excel(name = "订单日期", width = 20, orderNum = "5", exportFormat = "yyyy-MM-dd")
     private Date orderDate;
 
     /**
      * 交货日期
      */
     @NotNull(message = "交货日期不能为空")
+    @Excel(name = "交货日期", width = 20, orderNum = "6", exportFormat = "yyyy-MM-dd")
     private Date deliveryDate;
 
     /**
-     * 销售员
+     * 销售员 ID
      */
     private long salespersonId;
+
+    /**
+     * 销售员名字
+     */
+    @Excel(name = "销售负责人", width = 20, orderNum = "7")
+    private String salespersonName;
 
     /**
      * 是否校准
@@ -110,6 +121,7 @@ public class Order {
     /**
      * 状态: 0 (初始化), 1 (待审批), 2 (审批拒绝), 3 (审批完成), 4 (完成)
      */
+    @Excel(name = "状态", width = 20, orderNum = "8", replace = {"初始化_0", "待审批_1", "审批拒绝_2", "审批完成_3", "完成_4"})
     private int state;
 
     /**
@@ -120,6 +132,7 @@ public class Order {
     /**
      * 订单的产品名称，使用逗号分隔，方便搜索
      */
+    @Excel(name = "产品名称", width = 20, orderNum = "3")
     private String productNames;
 
     /**
@@ -149,5 +162,9 @@ public class Order {
      */
     public String getStateLabel() {
         return Utils.getStateLabel(STATE_LABELS, state);
+    }
+
+    public String getSalespersonName() {
+        return salesperson.getNickname();
     }
 }

@@ -1,9 +1,11 @@
 import com.xtuer.Application;
 import com.xtuer.bean.order.MaintenanceOrderFilter;
+import com.xtuer.bean.order.OrderFilter;
 import com.xtuer.bean.product.ProductFilter;
 import com.xtuer.bean.sales.CustomerFilter;
 import com.xtuer.service.CustomerService;
 import com.xtuer.service.MaintenanceOrderService;
+import com.xtuer.service.OrderService;
 import com.xtuer.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class ExportTest {
 
     @Autowired
     private MaintenanceOrderService maintenanceOrderService;
+
+    @Autowired
+    private OrderService orderService;
 
     // 导出产品
     @Test
@@ -40,6 +45,15 @@ public class ExportTest {
     @Test
     public void exportMaintenanceOrders() throws IOException {
         String url = maintenanceOrderService.exportMaintenanceOrders(new MaintenanceOrderFilter());
+        System.out.println(url);
+    }
+
+    // 导出生产订单
+    @Test
+    public void exportOrders() throws IOException {
+        OrderFilter filter = new OrderFilter();
+        filter.setState(-1);
+        String url = orderService.exportOrders(filter);
         System.out.println(url);
     }
 }

@@ -1,11 +1,9 @@
 package com.xtuer.service;
 
-import com.xtuer.bean.Const;
-import com.xtuer.bean.Result;
-import com.xtuer.bean.UploadedFile;
-import com.xtuer.bean.User;
+import com.xtuer.bean.*;
 import com.xtuer.bean.audit.Audit;
 import com.xtuer.bean.order.Order;
+import com.xtuer.bean.order.OrderFilter;
 import com.xtuer.bean.order.OrderItem;
 import com.xtuer.bean.product.Product;
 import com.xtuer.mapper.FileMapper;
@@ -16,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -207,5 +206,17 @@ public class OrderService extends BaseService {
      */
     public void completeOrder(long orderId) {
         orderMapper.updateOrderState(orderId, Order.STATE_COMPLETE);
+    }
+
+    /**
+     * 导出生产订单
+     *
+     * @param filter 过滤条件
+     * @return 返回导出的 Excel 的 URL
+     */
+    public String exportOrders(OrderFilter filter) throws IOException {
+        Page page = Page.of(1, Integer.MAX_VALUE);
+        List<Order> orders = orderMapper.findOrders(filter, page);
+        return super.exportExcel("生产订单", Order.class, orders);
     }
 }

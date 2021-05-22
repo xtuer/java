@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -61,6 +62,24 @@ public class OrderController extends BaseController {
     @GetMapping(Urls.API_ORDERS)
     public Result<List<Order>> findOrders(OrderFilter filter, Page page) {
         return Result.ok(orderMapper.findOrders(filter, page));
+    }
+
+    /**
+     * 导出符合条件的订单
+     *
+     * 网址: http://localhost:8080/api/orders
+     * 参数:
+     *      orderSn      [可选]: 订单编号
+     *      productCodes [可选]: 产品编号
+     *      productNames [可选]: 产品名称
+     *      state        [可选]: 状态
+     *
+     * @param filter 过滤器
+     * @return payload 为导出的 Excel URL
+     */
+    @GetMapping(Urls.API_ORDERS_EXPORT)
+    public Result<String> exportOrders(OrderFilter filter) throws IOException {
+        return Result.ok(orderService.exportOrders(filter));
     }
 
     /**

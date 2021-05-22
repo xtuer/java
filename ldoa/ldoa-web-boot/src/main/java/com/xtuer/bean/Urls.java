@@ -78,9 +78,10 @@ public interface Urls {
     String API_PRODUCT_ITEMS_BY_ID = "/api/productItems/{productItemId}"; // 指定 ID 的产品项
 
     // 订单
-    String API_ORDERS = "/api/orders"; // 订单
-    String API_ORDERS_BY_ID = "/api/orders/{orderId}"; // 指定 ID 的订单
+    String API_ORDERS          = "/api/orders";                    // 订单
+    String API_ORDERS_BY_ID    = "/api/orders/{orderId}";          // 指定 ID 的订单
     String API_ORDERS_COMPLETE = "/api/orders/{orderId}/complete"; // 完成订单
+    String API_ORDERS_EXPORT   = "/api/orders/export";             // 导出订单
 
     // 维保订单
     String API_MAINTENANCE_ORDERS          = "/api/maintenance-orders";

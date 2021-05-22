@@ -37,13 +37,31 @@ export default class {
      *      pageSize     [可选]: 数量
      *      notInStockRequest [可选]: 是否在出库请求中有记录
      *
-     * @param filter 过滤器
-     * @param page   分页对象
+     * @param {JSON} filter 过滤器
      * @return {Promise} 返回 Promise 对象，resolve 的参数为订单的数组，reject 的参数为错误信息
      */
     static findOrders(filter) {
         return Rest.get(Urls.API_ORDERS, { data: filter }).then(({ data: orders, success, message }) => {
             return Utils.response(orders, success, message);
+        });
+    }
+
+    /**
+     * 导出符合条件的订单
+     *
+     * 网址: http://localhost:8080/api/orders
+     * 参数:
+     *      orderSn      [可选]: 订单编号
+     *      productCodes [可选]: 产品编号
+     *      productNames [可选]: 产品名称
+     *      state        [可选]: 状态
+     *
+     * @param {JSON} filter 过滤器
+     * @return {Promise} 返回 Promise 对象，resolve 的参数为导出的 Excel URL，reject 的参数为错误信息
+     */
+    static exportOrders(filter) {
+        return Rest.get(Urls.API_ORDERS_EXPORT, { data: filter }).then(({ data: url, success, message }) => {
+            return Utils.response(url, success, message);
         });
     }
 
