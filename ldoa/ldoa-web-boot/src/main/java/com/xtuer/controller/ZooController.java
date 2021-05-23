@@ -2,6 +2,7 @@ package com.xtuer.controller;
 
 import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
+import com.xtuer.bean.order.Order;
 import com.xtuer.mapper.CommonMapper;
 import com.xtuer.service.CommonService;
 import com.xtuer.service.OrderService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -148,5 +150,18 @@ public class ZooController extends BaseController {
     @GetMapping("/api/xa-test")
     public Result<Map> xaTest() {
         return Result.ok(commonMapper.xaTest());
+    }
+
+    /**
+     * 测试 @Valid 校验不通过时抛出异常
+     *
+     * 网址: http://localhost:8080/api/demo/order-invalid
+     * 参数: 可有可无
+     *
+     * @param order 订单
+     */
+    @GetMapping("/api/demo/order-invalid")
+    public Result<String> validDemo(@Valid Order order) {
+        return Result.ok();
     }
 }

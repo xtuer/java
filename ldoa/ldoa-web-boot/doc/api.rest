@@ -92,3 +92,7 @@ productItemId=450766548500480&count=10&batch=2020-11-22&warehouse=北京
 PUT http://localhost:8080/api/maintenance-orders/0
 Content-Type: application/x-www-form-urlencoded
 auth-token: {{token}}
+
+### 创建或者更新产品项
+GET {{host}}/api/demo/order-invalid
+X-Requested-With: XMLHttpRequest
