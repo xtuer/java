@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @ControllerAdvice
 @Order(1)
-public class ValidExceptionHandler extends BaseExceptionHandler {
+public final class ValidExceptionHandler extends BaseExceptionHandler {
     @ExceptionHandler(value = BindException.class)
     public ModelAndView argumentInvalidHandler(HttpServletRequest request, HttpServletResponse response, BindException ex) {
         String error = Utils.getBindingMessage(ex.getBindingResult()); // 错误消息
