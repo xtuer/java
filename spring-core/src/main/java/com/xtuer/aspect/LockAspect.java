@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 @Slf4j
 @Component
 public class LockAspect {
-    private ExpressionParser parser = new SpelExpressionParser();
-    private LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
+    private final ExpressionParser parser = new SpelExpressionParser();
+    private final LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
 
     /**
      * 使用自定义注解配置切入点

@@ -9,6 +9,10 @@ john:        # field name
 users:
   - id: 14     # bean's field
     name: Jack # bean's field
+    token: |
+      a
+      b
+      c
   -
     id: 15
     name: Sophie

@@ -3,6 +3,7 @@ package com.xtuer.controller;
 import com.xtuer.bean.Page;
 import com.xtuer.bean.Result;
 import com.xtuer.bean.order.Order;
+import com.xtuer.exception.ApplicationException;
 import com.xtuer.mapper.CommonMapper;
 import com.xtuer.service.CommonService;
 import com.xtuer.service.OrderService;
@@ -163,5 +164,25 @@ public class ZooController extends BaseController {
     @GetMapping("/api/demo/order-invalid")
     public Result<String> validDemo(@Valid Order order) {
         return Result.ok();
+    }
+
+    /**
+     * 参数无效时抛出 IllegalArgumentException 异常，验证响应的消息
+     *
+     * 网址: http://localhost:8080/api/demo/illegal-argument
+     */
+    @GetMapping("/api/demo/illegal-argument")
+    public Result<String> illegalArgument() {
+        throw new IllegalArgumentException("参数无效");
+    }
+
+    /**
+     * Application 异常
+     *
+     * 网址: http://localhost:8080/api/demo/application-exception
+     */
+    @GetMapping("/api/demo/application-exception")
+    public Result<String> applicationException() {
+        throw new ApplicationException("应用程序异常", 505);
     }
 }
